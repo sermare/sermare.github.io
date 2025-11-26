@@ -143,142 +143,8 @@ Link to your social media connections, too. This theme is set up to use [Font Aw
 
     </div>    
 
-
-<!-- Chess Widget - Add this section before the publications div -->
-<div class="chess-widget" style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-  <div class="row align-items-center">
-    <div class="col-md-8">
-      <h3 style="margin-bottom: 0.5rem; display: flex; align-items: center;">
-        <i class="fas fa-chess" style="margin-right: 10px; color: #2c3e50;"></i>
-        Chess Enthusiast
-      </h3>
-      <p style="margin-bottom: 0.75rem; font-size: 0.95rem; color: #555;">
-        I love chess—I've been playing since I moved to the US! Check out my current ratings below. 
-        Feel free to <a href="https://lichess.org/@/sensaciondelbosque" target="_blank" style="color: #2c3e50; font-weight: 500; text-decoration: underline;">send me an invite</a> and let's play together! ♟️
-      </p>
-      
-      <div id="chess-ratings" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
-        <!-- Ratings will be loaded here -->
-        <div style="text-align: center;">
-          <span style="color: #7f8c8d; font-size: 0.85rem;">Loading ratings...</span>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col-md-4 text-center">
-      <a href="https://lichess.org/@/sensaciondelbosque" target="_blank">
-        <img src="https://lichess1.org/export/puzzle/activity/sensaciondelbosque.gif" 
-             alt="Chess Activity" 
-             style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
-      </a>
-    </div>
-  </div>
-</div>
-
-<style>
-.rating-badge {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-  min-width: 100px;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.rating-badge:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-}
-
-.rating-type {
-  font-size: 0.75rem;
-  color: #7f8c8d;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.rating-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 0.25rem;
-}
-
-.rating-games {
-  font-size: 0.7rem;
-  color: #95a5a6;
-}
-
-.rating-provisional {
-  color: #f39c12 !important;
-}
-
-@media (max-width: 768px) {
-  #chess-ratings {
-    justify-content: center;
-  }
-}
-</style>
-
-<script>
-// Fetch Lichess ratings
-async function loadChessRatings() {
-  try {
-    const response = await fetch('https://lichess.org/api/user/sensaciondelbosque');
-    const data = await response.json();
-    
-    const ratingsContainer = document.getElementById('chess-ratings');
-    const perfTypes = [
-      { key: 'rapid', name: 'Rapid' },
-      { key: 'blitz', name: 'Blitz' },
-      { key: 'bullet', name: 'Bullet' },
-      { key: 'classical', name: 'Classical' }
-    ];
-    
-    let ratingsHTML = '';
-    
-    perfTypes.forEach(perf => {
-      if (data.perfs[perf.key] && data.perfs[perf.key].games > 0) {
-        const perfData = data.perfs[perf.key];
-        const isProvisional = perfData.prov ? ' rating-provisional' : '';
         
-        ratingsHTML += `
-          <div class="rating-badge">
-            <span class="rating-type">${perf.name}</span>
-            <span class="rating-value${isProvisional}">${perfData.rating}</span>
-            <span class="rating-games">${perfData.games} games</span>
-          </div>
-        `;
-      }
-    });
-    
-    if (ratingsHTML) {
-      ratingsContainer.innerHTML = ratingsHTML;
-    } else {
-      ratingsContainer.innerHTML = '<span style="color: #95a5a6;">No ratings available yet</span>';
-    }
-  } catch (error) {
-    console.error('Error loading chess ratings:', error);
-    document.getElementById('chess-ratings').innerHTML = 
-      '<span style="color: #e74c3c; font-size: 0.85rem;">Unable to load ratings. <a href="https://lichess.org/@/sensaciondelbosque" target="_blank">View on Lichess</a></span>';
-  }
-}
-
-// Load ratings when page loads
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loadChessRatings);
-} else {
-  loadChessRatings();
-}
-</script>
-        
-    
-
+  
     
       <div class="publications">
 
@@ -535,6 +401,208 @@ if (document.readyState === 'loading') {
 
     </div>
 
+<!-- Chess Widget - Add this section before the publications div -->
+<div class="chess-widget" style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+  <div class="row align-items-center">
+    <div class="col-md-8">
+      <h3 style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+        <i class="fas fa-chess" style="margin-right: 10px; color: #2c3e50;"></i>
+        Chess Enthusiast
+      </h3>
+      <p style="margin-bottom: 0.75rem; font-size: 0.95rem; color: #555;">
+        I love chess—I've been playing since I moved to the US! Check out my current ratings below. 
+        Feel free to <a href="https://lichess.org/@/sensaciondelbosque" target="_blank" style="color: #2c3e50; font-weight: 500; text-decoration: underline;">send me an invite</a> and let's play together! ♟️
+      </p>
+      
+      <div id="chess-ratings" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
+        <!-- Ratings will be loaded here -->
+        <div style="text-align: center;">
+          <span style="color: #7f8c8d; font-size: 0.85rem;">Loading ratings...</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 text-center">
+      <div id="last-game-container">
+        <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+          <span style="color: #7f8c8d; font-size: 0.85rem;">Loading last game...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.rating-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  min-width: 100px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.rating-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+}
+
+.rating-type {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.rating-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.rating-games {
+  font-size: 0.7rem;
+  color: #95a5a6;
+}
+
+.rating-provisional {
+  color: #f39c12 !important;
+}
+
+@media (max-width: 768px) {
+  #chess-ratings {
+    justify-content: center;
+  }
+}
+</style>
+
+<script>
+// Fetch Lichess ratings
+async function loadChessRatings() {
+  try {
+    const response = await fetch('https://lichess.org/api/user/sensaciondelbosque');
+    const data = await response.json();
+    
+    const ratingsContainer = document.getElementById('chess-ratings');
+    const perfTypes = [
+      { key: 'rapid', name: 'Rapid' },
+      { key: 'blitz', name: 'Blitz' },
+      { key: 'bullet', name: 'Bullet' },
+      { key: 'classical', name: 'Classical' }
+    ];
+    
+    let ratingsHTML = '';
+    
+    perfTypes.forEach(perf => {
+      if (data.perfs[perf.key] && data.perfs[perf.key].games > 0) {
+        const perfData = data.perfs[perf.key];
+        const isProvisional = perfData.prov ? ' rating-provisional' : '';
+        
+        ratingsHTML += `
+          <div class="rating-badge">
+            <span class="rating-type">${perf.name}</span>
+            <span class="rating-value${isProvisional}">${perfData.rating}</span>
+            <span class="rating-games">${perfData.games} games</span>
+          </div>
+        `;
+      }
+    });
+    
+    if (ratingsHTML) {
+      ratingsContainer.innerHTML = ratingsHTML;
+    } else {
+      ratingsContainer.innerHTML = '<span style="color: #95a5a6;">No ratings available yet</span>';
+    }
+  } catch (error) {
+    console.error('Error loading chess ratings:', error);
+    document.getElementById('chess-ratings').innerHTML = 
+      '<span style="color: #e74c3c; font-size: 0.85rem;">Unable to load ratings. <a href="https://lichess.org/@/sensaciondelbosque" target="_blank">View on Lichess</a></span>';
+  }
+}
+
+// Fetch last game played
+async function loadLastGame() {
+  try {
+    const response = await fetch('https://lichess.org/api/games/user/sensaciondelbosque?max=1&pgnInJson=false');
+    const text = await response.text();
+    
+    // Parse the NDJSON response (newline-delimited JSON)
+    const games = text.trim().split('\n').map(line => JSON.parse(line));
+    
+    if (games.length > 0) {
+      const game = games[0];
+      const gameId = game.id;
+      const lastMove = game.lastMove || '';
+      
+      // Determine result and color
+      const username = 'sensaciondelbosque';
+      const playedAsWhite = game.players.white.user?.id === username;
+      const myColor = playedAsWhite ? 'white' : 'black';
+      
+      let resultText = '';
+      if (game.status === 'draw') {
+        resultText = 'Draw';
+      } else if (game.winner === myColor) {
+        resultText = '<span style="color: #27ae60;">Won</span>';
+      } else if (game.winner) {
+        resultText = '<span style="color: #e74c3c;">Lost</span>';
+      }
+      
+      // Get opponent name
+      const opponent = playedAsWhite ? 
+        (game.players.black.user?.id || 'Anonymous') : 
+        (game.players.white.user?.id || 'Anonymous');
+      
+      const lastGameContainer = document.getElementById('last-game-container');
+      lastGameContainer.innerHTML = `
+        <div style="background: white; padding: 0.75rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+          <div style="font-size: 0.75rem; color: #7f8c8d; margin-bottom: 0.5rem; font-weight: 600;">
+            LAST GAME
+          </div>
+          <a href="https://lichess.org/${gameId}" target="_blank" style="display: block;">
+            <img src="https://lichess1.org/game/export/gif/${myColor}/${gameId}.gif" 
+                 alt="Last game position" 
+                 style="max-width: 100%; border-radius: 4px; margin-bottom: 0.5rem;">
+          </a>
+          <div style="font-size: 0.8rem; color: #2c3e50;">
+            <div style="margin-bottom: 0.25rem;">
+              <strong>vs ${opponent}</strong>
+            </div>
+            <div style="color: #7f8c8d; font-size: 0.75rem;">
+              ${game.perf || 'Game'} • ${resultText}
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      document.getElementById('last-game-container').innerHTML = 
+        '<span style="color: #95a5a6;">No recent games found</span>';
+    }
+  } catch (error) {
+    console.error('Error loading last game:', error);
+    document.getElementById('last-game-container').innerHTML = 
+      '<span style="color: #e74c3c; font-size: 0.85rem;">Unable to load last game</span>';
+  }
+}
+
+// Load both ratings and last game when page loads
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    loadChessRatings();
+    loadLastGame();
+  });
+} else {
+  loadChessRatings();
+  loadLastGame();
+}
+</script>
+    
     <!-- Footer -->
 
     
