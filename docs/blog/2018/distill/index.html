@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Sergio E. Mares | BioEMU Deep Dive: From Interview to Research Vision</title>
+<title>Sergio E. Mares | BioEMU Deep Dive: Research Vision</title>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
 <script defer type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js"></script>
@@ -165,14 +165,14 @@ footer {
 
 <div class="content-wrapper">
 <header style="margin: 40px 0 60px 0;">
-<h1>BioEMU Deep Dive: From Interview to Research Vision</h1>
+<h1>BioEMU Deep Dive: From Discussion to Research Vision</h1>
 <p class="lead">A comprehensive exploration of protein ensemble modeling, molecular dynamics integration, and the future of structural biology through the lens of a Microsoft Research internship interview</p>
 <p style="color: #999;"><em>Published: November 25, 2025</em></p>
 </header>
 
 <div class="image-placeholder">
   <i class="fas fa-image" style="font-size: 3rem; margin-bottom: 20px;"></i>
-  <p style="margin: 0;">[https://github.com/sermare/sermare.github.io/blob/main/docs/blog/2018/distill/imagine2.png]</p>
+  <p style="margin: 0;">[image](https://github.com/sermare/sermare.github.io/blob/main/docs/blog/2018/distill/imagine2.png)</p>
   <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.8;">Suggested: Protein conformational ensemble visualization or BioEMU architecture diagram</p>
 </div>
 
@@ -180,9 +180,9 @@ footer {
 
 <h2 class="section-header">Introduction: Breaking AlphaFold2</h2>
 
-<p>The field of structural biology has been revolutionized by AlphaFold2, but proteins aren't static structures—they're dynamic ensembles. This realization has driven me to explore BioEMU, Microsoft's approach to generating protein conformational ensembles using molecular dynamics simulations. This post synthesizes my research notes, interview insights with a senior researcher from Microsoft's BioEMU team, and the broader implications for computational biology.</p>
+<p>The field of structural biology has been revolutionized by AlphaFold2, but proteins aren't static structures—they're dynamic ensembles. This realization has driven me to explore BioEMU, Microsoft's approach to generating protein conformational ensembles using molecular dynamics simulations. This post synthesizes my research notes, talk insights with a senior researcher from Microsoft's BioEMU team, and the broader implications for computational biology.</p>
 
-<p>During my interview, the conversation repeatedly circled back to a fundamental truth: proteins are not frozen sculptures but rather dynamic entities that breathe, flex, and transition between multiple conformational states. This dynamism is not a bug—it's a feature that enables biological function. Enzymes need conformational changes for catalysis, receptors must shift shape upon ligand binding, and antibodies require flexibility to recognize diverse antigens.</p>
+<p>We circled back to a fundamental truth: proteins are not frozen sculptures but rather dynamic entities that breathe, flex, and transition between multiple conformational states. This dynamism is not a bug—it's a feature that enables biological function. Enzymes need conformational changes for catalysis, receptors must shift shape upon ligand binding, and antibodies require flexibility to recognize diverse antigens.</p>
 
 <div class="technical-note">
 <strong>The Core Problem: What AlphaFold2 Misses</strong>
@@ -223,7 +223,7 @@ While AlphaFold2 achieves near-experimental accuracy for static structure predic
 
 <h3>Stage 1: Pre-training with AlphaFold2 Evoformer</h3>
 
-<p>The first stage uses the <strong>AlphaFold2 Evoformer module completely unchanged</strong>. This is critical—BioEMU doesn't reinvent the MSA-based structure prediction wheel. During the interview, this architectural decision was emphasized as strategic: the Evoformer has been refined through extensive research and captures evolutionary constraints exceptionally well. Rather than competing with this component, BioEMU builds on top of it.</p>
+<p>The first stage uses the <strong>AlphaFold2 Evoformer module completely unchanged</strong>. This is critical—BioEMU doesn't reinvent the MSA-based structure prediction wheel. This architectural decision was emphasized as strategic: the Evoformer has been refined through extensive research and captures evolutionary constraints exceptionally well. Rather than competing with this component, BioEMU builds on top of it.</p>
 
 
 
@@ -286,7 +286,7 @@ The hierarchy of simulation methods represents fundamental tradeoffs between acc
 
 <h2 class="section-header">From Data Scarcity to Structure-Guided Design</h2>
 
-<p>My path to this interview reflects the broader challenges facing computational biology: how do we make predictions when data is scarce, biased, or incomplete? My work on MHC-peptide binding prediction embodies this struggle and the creative solutions required.</p>
+<p>My path to this discussion reflects the broader challenges facing computational biology: how do we make predictions when data is scarce, biased, or incomplete? My work on MHC-peptide binding prediction embodies this struggle and the creative solutions required.</p>
 
 
 <h3>Project 1: Transformer-Based MHC Binding Prediction</h3>
@@ -420,7 +420,7 @@ BioEMU's approach of averaging two structures sampled from the conformational di
 This choice appears in tension with the goal of ensemble modeling. If we're trying to capture the conformational landscape, shouldn't we sample it more thoroughly? Or is there something optimal about two samples that balances information content with practical usability?
 </div>
 
-<p>Several possible explanations emerged from my analysis and the interview discussion:</p>
+<p>Several possible explanations emerged from my analysis and the discussion:</p>
 
 <ul>
 <li><strong>Computational efficiency for production deployment:</strong> Generating each sample requires running the diffusion process, which is computationally expensive. For a web service or high-throughput application, limiting to two samples makes deployment feasible.</li>
@@ -482,7 +482,7 @@ I initially focused on MHC complexes, highlighting their well-characterized bind
 I also mentioned emerging cryo-EM work from labs at Berkeley. Cryo-EM has the advantage of capturing conformational heterogeneity natively—particles in different conformational states are all present in the data, and advanced classification methods can separate them. However, the data is noisier than crystallography and requires sophisticated 3D reconstruction algorithms. The resolution is also generally lower, though this is rapidly improving with better detectors and software.
 </div>
 
-<p>The interviewer made an important point: many MHC structures are already in the PDB and thus included in AlphaFold2's training data. This pushed me to think more broadly about truly untapped data sources that aren't just "more of the same."</p>
+<p>Many MHC structures are already in the PDB and thus included in AlphaFold2's training data. This pushed me to think more broadly about truly untapped data sources that aren't just "more of the same."</p>
 
 <div class="technical-note">
 <strong>Critical Considerations: Beyond Static Structures</strong>
@@ -551,7 +551,7 @@ Cryo-EM offers conformational heterogeneity, but requires new analysis paradigms
 
 <div class="interview-quote">
 <strong>Discussion on MSAs and the SimpleFold Failure</strong>
-I raised the tension between MSA-based approaches and single-sequence models, especially given the push toward synthetic data generation from language models. The interviewer's perspective was unambiguous: MSAs remain essential. While some researchers argue that single-sequence approaches augmented with language models can match MSA-based performance, empirical evidence suggests otherwise.<br><br>
+I raised the tension between MSA-based approaches and single-sequence models, especially given the push toward synthetic data generation from language models. The perspective was unambiguous: MSAs remain essential. While some researchers argue that single-sequence approaches augmented with language models can match MSA-based performance, empirical evidence suggests otherwise.<br><br>
 
 The Apple SimpleFold paper served as a cautionary tale. They attempted to replace AlphaFold2's MSA pathway with embeddings from the ESM language model—essentially asking whether ESM could capture everything that MSAs provide. The result was clear: SimpleFold achieved worse performance than AlphaFold2 across benchmarks. This demonstrates that evolutionary information from MSAs cannot yet be fully replaced by language models, despite ESM's impressive capabilities.
 </div>
@@ -828,7 +828,7 @@ If BioEMU-based ensemble modeling can improve neoantigen selection (identifying 
 
 <h2 class="section-header">Data Quality vs. Quantity: The Evo2 Lesson</h2>
 
-<p>A recurring theme throughout my research and the interview was the critical importance of data quality over raw quantity. This came into sharp focus when discussing recent controversies around large-scale genomic foundation models.</p>
+<p>A recurring theme throughout my research and the discussion was the critical importance of data quality over raw quantity. This came into sharp focus when discussing recent controversies around large-scale genomic foundation models.</p>
 
 <div class="interview-quote">
 <strong>The Evo2 Data Quality Problem</strong>
@@ -846,7 +846,7 @@ I contrasted Evo2's approach with Yun Song's work from Berkeley, which uses phyl
 A more directed, curated approach—understanding evolutionary context, ensuring phylogenetic balance, filtering for quality—appears substantially more useful than throwing massive computational resources at unstructured data. The benchmarks support this: Evo2 underperformed expectations despite its massive scale, while phylogenetically-informed models achieved better results with less data.
 </div>
 
-<p>This observation led to one of my key insights during the interview, which I stated plainly: "I don't think throwing GPUs at a problem is going to solve the problem." Computational resources are valuable, but they're not a substitute for careful thought about what data to use and how to use it.</p>
+<p>This observation led to one of my key insights during the discussion, which I stated plainly: "I don't think throwing GPUs at a problem is going to solve the problem." Computational resources are valuable, but they're not a substitute for careful thought about what data to use and how to use it.</p>
 
 <div class="technical-note">
 <strong>Why Indiscriminate Scaling Fails</strong>
@@ -913,7 +913,7 @@ The success of phylogenetically-informed models validates this approach. By focu
 
 <h3>The Conformational Dynamics Revolution</h3>
 
-<p>The overarching lesson from both my research and the interview is clear: the field is undergoing a shift from static structure prediction to conformational ensemble modeling. AlphaFold2 solved the static structure problem for most proteins. The next frontier is dynamics—understanding not just what proteins look like, but how they move, what conformational states they access, and how dynamics enables function.</p>
+<p>The overarching lesson from both my research and the discussion is clear: the field is undergoing a shift from static structure prediction to conformational ensemble modeling. AlphaFold2 solved the static structure problem for most proteins. The next frontier is dynamics—understanding not just what proteins look like, but how they move, what conformational states they access, and how dynamics enables function.</p>
 
 <p>BioEMU represents one approach to this challenge: learn from massive MD simulations to generate conformational ensembles. But it's not the only approach, and the field is exploring multiple paths:</p>
 
@@ -971,7 +971,7 @@ The success of phylogenetically-informed models validates this approach. By focu
 
 <h3>Open Questions That Excite Me</h3>
 
-<p>Several questions emerged from the interview that I'm eager to explore:</p>
+<p>Several questions emerged from the discussion that I'm eager to explore:</p>
 
 <ol>
 <li><strong>Do ensemble models learn thermodynamics or just statistics?</strong> Can we probe BioEMU representations to see if it encodes free energy barriers, transition rates, and other thermodynamic quantities? Or does it just learn statistical patterns from MD trajectories without understanding the underlying physics?</li>
