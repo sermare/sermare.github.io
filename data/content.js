@@ -136,26 +136,6 @@ export const featured = [
     },
   },
   {
-    ordering: 7,
-    card: {
-      id: 'emperor-maladies',
-      type: 'reading',
-      large: false,
-      properties: {
-        type: 'Books',
-        title: 'The Emperor of All Maladies',
-        author: 'Siddhartha Mukherjee',
-        coverUrl:
-          'https://covers.openlibrary.org/b/isbn/9781439170915-L.jpg',
-        tags: [{ color: 'green', label: 'FINISHED' }],
-        link: {
-          url: 'https://www.goodreads.com/book/show/7170627-the-emperor-of-all-maladies',
-          tooltipLabel: 'Goodreads',
-        },
-      },
-    },
-  },
-  {
     ordering: 8,
     card: {
       id: 'molecular-modeling',
@@ -256,26 +236,6 @@ export const featured = [
     },
   },
   {
-    ordering: 13,
-    card: {
-      id: 'deep-learning-book',
-      type: 'reading',
-      large: false,
-      properties: {
-        type: 'Books',
-        title: 'Deep Learning',
-        author: 'Ian Goodfellow, Yoshua Bengio & Aaron Courville',
-        coverUrl:
-          'https://covers.openlibrary.org/b/isbn/9780262035613-L.jpg',
-        tags: [{ color: 'amber', label: 'READING' }],
-        link: {
-          url: 'https://www.deeplearningbook.org/',
-          tooltipLabel: 'Website',
-        },
-      },
-    },
-  },
-  {
     ordering: 14,
     card: {
       id: 'carp-biomarker',
@@ -289,8 +249,7 @@ export const featured = [
         authors: 'Sergio E. Mares, M. King, A. Kubo, et al.',
         description:
           'Studying the conservation of carP and its potential as a biomarker for Pseudomonas aeruginosa.',
-        imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/5/5e/Pseudomonas_aeruginosa_pyocyanin.jpg',
+        imageUrl: '/images/pseudomonas.gif',
         link: {
           url: 'https://doi.org/10.1099/mic.0.001004',
           tooltipLabel: 'DOI',
@@ -317,7 +276,8 @@ export const featured = [
           'Domokos I. Lauko, Taro Ohkawa, Sergio E. Mares, Matthew D. Welch',
         description:
           'Investigating how AcMNPV protein ARIF-1 induces formation of cortical concentrations of polymerized actin in insect cells.',
-        imageUrl: '/images/pseudomonas.gif',
+        imageUrl:
+          'https://upload.wikimedia.org/wikipedia/commons/4/46/Baculovirus.jpg',
         link: {
           url: 'https://doi.org/10.1091/mbc.E20-11-0705',
           tooltipLabel: 'DOI',
