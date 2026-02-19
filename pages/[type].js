@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import CardGrid from '../components/CardGrid';
 import Footer from '../components/Footer';
 import { featured, siteConfig } from '../data/content';
+import { getAllPosts, postsToCards } from '../lib/posts';
 
 const validTypes = ['research', 'writing', 'reading', 'hobbies'];
 
@@ -25,7 +26,7 @@ export default function TypePage({ type, cards }) {
           <p className="mt-2 text-neutral-400">
             {type === 'research' && 'Publications and research projects.'}
             {type === 'writing' && 'Blog posts and essays.'}
-            {type === 'reading' && 'Books and papers I\'ve been reading.'}
+            {type === 'reading' && "Books and papers I've been reading."}
             {type === 'hobbies' && 'Things I enjoy outside of research.'}
           </p>
         </div>
@@ -44,9 +45,18 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const filtered = featured.filter(
-    (item) => item.card.type === params.type
-  );
+  let allCards = [...featured];
+
+  if (params.type === 'writing') {
+    const posts = getAllPosts();
+    const postCards = postsToCards(posts);
+    allCards = [...allCards, ...postCards];
+  }
+
+  const filtered = allCards
+    .filter((item) => item.card.type === params.type)
+    .sort((a, b) => a.ordering - b.ordering);
+
   return {
     props: {
       type: params.type,
