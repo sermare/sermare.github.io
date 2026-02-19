@@ -29,7 +29,7 @@
         </div>
         <div class="bio">
           <p>
-            I am a fourth year Computational Biology Ph.D. Candidate at UC Berkeley, advised by
+            I am a fifth year Computational Biology Ph.D. Candidate at UC Berkeley, advised by
             Professor <a href="https://ioannidislab.berkeley.edu/">Nilah Ioannidis</a>
             at the Center for Computational Biology and Professor
             <a href="https://costellolab.ucsf.edu/">Joseph Costello</a>
@@ -62,6 +62,7 @@
     <!-- ===== Tabs ===== -->
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('publications')">Publications</button>
+      <button class="tab-btn" onclick="switchTab('blog')">Blog</button>
       <button class="tab-btn" onclick="switchTab('reading')">Reading</button>
       <button class="tab-btn" onclick="switchTab('hobbies')">Hobbies</button>
     </div>
@@ -96,7 +97,7 @@
 
       <div class="pub-entry">
         <div class="pub-image">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/RFdiffusion_learns_the_distribution_of_the_denoising_process%2C_and_inference_efficiency_can_be_improved.webp/320px-RFdiffusion_learns_the_distribution_of_the_denoising_process%2C_and_inference_efficiency_can_be_improved.webp" alt="Diffusion models">
+          <img src="data/graphical_abstract2.png" alt="Structure-guided pMHC-I design">
         </div>
         <div class="pub-text">
           <div class="pub-title">
@@ -120,7 +121,7 @@
 
       <div class="pub-entry">
         <div class="pub-image">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Calmodulin_Binding_sites.gif/220px-Calmodulin_Binding_sites.gif" alt="Calcium signaling">
+          <img src="data/5H0P_camera-spin.gif" alt="Calcium signaling protein structure">
         </div>
         <div class="pub-text">
           <div class="pub-title">
@@ -145,7 +146,7 @@
 
       <div class="pub-entry">
         <div class="pub-image">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Baculovirus.jpg/220px-Baculovirus.jpg" alt="Baculovirus">
+          <img src="data/mc-e20-11-0705-s05.gif" alt="Baculovirus invadosome dynamics">
         </div>
         <div class="pub-text">
           <div class="pub-title">
@@ -191,7 +192,7 @@
 
       <div class="pub-entry">
         <div class="pub-image">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Myxococcus_swarming_and_fruiting_bodies.png/220px-Myxococcus_swarming_and_fruiting_bodies.png" alt="Myxococcota">
+          <img src="data/Myxococcus_swarming_and_fruiting_bodies.png" alt="Myxococcota swarming">
         </div>
         <div class="pub-text">
           <div class="pub-title">
@@ -213,6 +214,122 @@
             strategy that evolved circa 500 million years ago.
           </div>
         </div>
+      </div>
+
+    </div>
+
+    <!-- ===== Blog Tab ===== -->
+    <div id="tab-blog" class="tab-content">
+
+      <div class="blog-entry" onclick="toggleBlogPost('blog-post-1')">
+        <div class="blog-thumb">
+          <img src="data/blog-plm-pretraining.png" alt="Blog post image">
+        </div>
+        <div class="blog-preview">
+          <div class="blog-title">Teaching a Protein Language Model to Speak "Immune"</div>
+          <div class="blog-date">February 2026</div>
+          <div class="blog-snippet">
+            A walkthrough of our MLCB 2025 paper on continued pre-training of protein language models
+            for pMHC-I binding prediction &mdash; why we did it, how it works, and what surprised us.
+          </div>
+        </div>
+      </div>
+      <div id="blog-post-1" class="blog-full" style="display:none;">
+        <article>
+          <h2>Teaching a Protein Language Model to Speak "Immune"</h2>
+
+          <p>Here's a fact that keeps immunologists up at night: your immune system has to figure out which tiny protein fragments (peptides) sitting on the surface of your cells are "self" versus "intruder." This recognition happens through a molecular handshake between peptides and MHC class I molecules &mdash; and it's the foundation of how your body fights cancer. If we could predict which peptides bind well to which MHC molecules, we could design better cancer vaccines and T-cell therapies. The problem? There are roughly 30,000 known HLA alleles (the human version of MHC), and for most of them, we have almost no experimental binding data.</p>
+
+          <p>This is the problem that led me, along with Ariel and Nilah, to ask a deceptively simple question: can we take an off-the-shelf protein language model &mdash; one that already "understands" proteins in general &mdash; and teach it to specialize in the language of immune recognition?</p>
+
+          <h3>The Intuition: Language Models Already Know Proteins</h3>
+
+          <p>Large protein language models like ESM Cambrian have been trained on millions of protein sequences. They've learned a kind of grammar &mdash; which amino acids tend to appear together, what patterns form functional domains, how evolution shapes sequence diversity. Think of it like a model that's read every book ever written. It understands English really well. But if you need it to write radiology reports, it would help to let it read a bunch of medical literature first, right?</p>
+
+          <p>That's exactly what continued pre-training is. We took ESM Cambrian (300 million parameters, 30 transformer layers) and gave it a reading list of HLA-associated peptides from the IEDB &mdash; the main repository of immune epitope data. The model didn't get any labels at this stage. It just learned to fill in masked amino acids in peptide sequences, the same masked-language-modeling trick that made BERT famous. The idea is that by seeing thousands of peptides in the context of their MHC partners, the model would internalize the subtle patterns of what makes a peptide "MHC-compatible."</p>
+
+          <h3>The Key Insight: When Does This Actually Help?</h3>
+
+          <p>Here's what surprised us. The benefit of continued pre-training wasn't universal &mdash; it depended on how much labeled data you had for a given allele. We found a clear sweet spot:</p>
+
+          <p>For alleles with very few measurements (under 500 peptides), the continued pre-training didn't help much. The model simply didn't have enough downstream examples to leverage its new knowledge. For alleles with moderate data (500 to 2,000 peptides), continued pre-training gave us a boost of about 0.10 in Spearman correlation &mdash; a meaningful jump in this field. And for data-rich alleles (over 4,000 peptides), the gains leveled off because there was already enough signal in the fine-tuning data.</p>
+
+          <p>That moderate-data regime is exactly where most clinically relevant alleles live. So the technique lands where it matters most.</p>
+
+          <h3>A Deliberate Choice: No Mass Spec</h3>
+
+          <p>One decision we were pretty deliberate about was training exclusively on IC50 binding affinity data from functional assays and completely avoiding mass spectrometry data. Mass spec datasets are huge and tempting, but they systematically over-represent peptides with canonical anchor residues. They tell you what was easy to detect, not necessarily what binds. By sticking to quantitative IC50 measurements &mdash; log-transformed and rebalanced &mdash; we traded quantity for quality. And it paid off.</p>
+
+          <h3>How Did We Do?</h3>
+
+          <p>When we benchmarked against state-of-the-art tools on a held-out test set of peptides deposited in IEDB between 2020 and 2025, our model (ESMCBA) achieved a median Spearman correlation of 0.62 across 25 common HLA alleles. For comparison, NetMHCpan 4.1 &mdash; the field's workhorse, an ensemble of 50 networks trained on over 13 million data points &mdash; scored 0.56. MHCflurry came in at 0.49. We also outperformed NetMHCpan on distinguishing low-affinity binders from intermediate-affinity binders (AUROC 0.95 vs. 0.84), which is arguably the classification that matters most for therapeutic peptide selection.</p>
+
+          <p>Not bad for a single model with some targeted reading.</p>
+
+          <h3>So What Does This Mean?</h3>
+
+          <p>The broader takeaway is pretty encouraging: you don't always need a massive domain-specific dataset or a bespoke architecture. Sometimes, modest and targeted continued pre-training on a strong foundation model can get you surprisingly far. Going forward, we're excited about extending this to MHC class II, incorporating structural features, and exploring whether these adapted representations can help with the even harder problem of predicting immunogenicity &mdash; not just whether a peptide binds, but whether it actually triggers a T-cell response. That's where the real clinical impact lives.</p>
+
+          <p><em>This work was accepted at the 20th Machine Learning in Computational Biology (MLCB) meeting.</em></p>
+        </article>
+      </div>
+
+      <div class="blog-entry" onclick="toggleBlogPost('blog-post-2')">
+        <div class="blog-thumb">
+          <img src="data/blog-diffusion-pmhc.png" alt="Blog post image">
+        </div>
+        <div class="blog-preview">
+          <div class="blog-title">What If We Could Design Immune Peptides from Scratch &mdash; Using Physics Instead of Data?</div>
+          <div class="blog-date">February 2026</div>
+          <div class="blog-snippet">
+            A walkthrough of our ICML 2025 workshop paper on generating pMHC-I libraries
+            with diffusion models &mdash; the dataset bias problem, our structure-first approach,
+            and why existing predictors completely failed on our designed peptides.
+          </div>
+        </div>
+      </div>
+      <div id="blog-post-2" class="blog-full" style="display:none;">
+        <article>
+          <h2>What If We Could Design Immune Peptides from Scratch &mdash; Using Physics Instead of Data?</h2>
+
+          <p>If you've been following the MHC binding prediction space, you've probably noticed a pattern: everyone trains on the same datasets, benchmarks on the same test splits, and reports incremental improvements. But there's an uncomfortable question lurking underneath all of this &mdash; what if those datasets are biased in ways that make our models look better than they actually are?</p>
+
+          <p>That question is what drove this project. Together with Ariel and Nilah, we set out to build a benchmark of MHC-binding peptides that doesn't come from the usual experimental pipelines. Instead, we designed peptides from scratch using diffusion models conditioned on crystal structure geometry. The goal was to create peptides that should bind &mdash; based on physical structure &mdash; but that no existing model has ever seen during training.</p>
+
+          <h3>The Problem with Current Benchmarks</h3>
+
+          <p>Most of the peptide-MHC data we have comes from mass spectrometry experiments or binding assays. These methods are fantastic, but they have blind spots. Mass spec systematically under-detects certain peptides (cysteine-containing ones, for instance) and over-represents peptides with strong canonical anchor residues. When you train a model on biased data, you get a model that's great at recognizing the patterns in that bias &mdash; and not necessarily great at recognizing genuine binding.</p>
+
+          <p>It's like training a food critic exclusively on Italian restaurants and then asking them to evaluate Thai food. They might still have good instincts, but you wouldn't fully trust the score.</p>
+
+          <h3>Our Approach: Let the Structure Do the Talking</h3>
+
+          <p>Here's the idea. We have about 119 high-resolution crystal structures of peptide-MHC complexes sitting in the Protein Data Bank. These structures show us, at atomic resolution, exactly how peptides nestle into the MHC binding groove &mdash; which residues make close contacts (within 3.5 angstroms), which ones form looser associations (3.5 to 5.0 angstroms), and where the anchoring happens.</p>
+
+          <p>We used these contact maps as conditioning constraints for RFdiffusion, a structure-generation diffusion model. The process works like this: we take an MHC crystal structure, rip out the peptide, and ask RFdiffusion to hallucinate a new peptide backbone that fits the groove. We run 50 diffusion steps, generating backbones for peptides of 9 to 11 residues. Then we hand those backbones to ProteinMPNN, which designs 64 amino acid sequences per backbone and ranks them by fit. Finally, we fold every designed peptide-MHC complex with AlphaFold2-Multimer and filter for structural confidence &mdash; keeping only designs where the peptide pLDDT hits at least 0.80.</p>
+
+          <p>The result is a library of computationally designed peptides spanning 27 HLA alleles that should be structurally compatible with their MHC partners, but that were never derived from any experimental binding dataset.</p>
+
+          <h3>The Fun Part: Breaking Existing Predictors</h3>
+
+          <p>This is where things got really interesting. We took seven state-of-the-art binding predictors &mdash; NetMHCpan, MHCflurry, HLApollo, HLAthena, MixMHCpred, MHCnuggets, and our own ESMCBA &mdash; and asked them to distinguish our structurally designed peptides from experimentally validated strong binders. If these predictors truly understand MHC binding, they should score our well-designed peptides similarly to known binders.</p>
+
+          <p>They didn't. AUROCs ranged from 0.03 (MHCnuggets) to 0.19 (HLApollo). That's essentially random or worse. The same predictors scored above 0.88 when discriminating validated binders from random peptides &mdash; so they're not broken in general. They just can't recognize binding potential in peptides that look different from their training data.</p>
+
+          <p>This is a big deal. It means there are entire regions of peptide sequence space that are structurally plausible binders but invisible to current tools.</p>
+
+          <h3>Sanity Check: Do the Designs Make Biological Sense?</h3>
+
+          <p>We were careful to check that our diffusion pipeline wasn't just generating nonsense. When we looked at anchor residue preferences, the designs reproduced known biology beautifully. For HLA-A*02:01, we saw the expected Leucine enrichment at position 2 and Valine at the C-terminus. For HLA-B*57:01, the signature Tryptophan anchor at the C-terminus showed up clearly. And peptides with proper anchors had significantly higher AlphaFold2 confidence scores &mdash; so the structural validation and the sequence motifs aligned perfectly.</p>
+
+          <h3>Why This Matters</h3>
+
+          <p>We see this resource serving two purposes. First, it's an unbiased benchmark. If you're developing a new binding predictor, you can test it against these structurally designed peptides to see whether it's truly learning binding physics or just memorizing dataset patterns. Second, these libraries represent a starting point for discovering genuinely novel peptide ligands &mdash; candidates that existing methods would overlook but that might make excellent vaccine targets or therapeutic leads.</p>
+
+          <p>Next, we want to incorporate T-cell receptor constraints into the design pipeline &mdash; because binding to MHC is only half the story. The peptide also has to be recognized by a T-cell receptor to trigger an immune response. That's the real frontier.</p>
+
+          <p><em>This work was accepted at the 2nd Workshop on Generative AI and Biology at ICML 2025.</em></p>
+        </article>
       </div>
 
     </div>
@@ -275,6 +392,28 @@
         </div>
       </div>
 
+      <div class="book-entry">
+        <div class="book-cover">
+          <img src="https://covers.openlibrary.org/b/isbn/0345379187-M.jpg" alt="Miles de millones">
+        </div>
+        <div class="book-info">
+          <div class="book-title">Miles de millones</div>
+          <div class="book-author">Carl Sagan</div>
+          <span class="tag tag-reading">Currently Reading</span>
+        </div>
+      </div>
+
+      <div class="book-entry">
+        <div class="book-cover">
+          <img src="https://covers.openlibrary.org/b/isbn/0060883286-M.jpg" alt="Cien a&ntilde;os de soledad">
+        </div>
+        <div class="book-info">
+          <div class="book-title">Cien a&ntilde;os de soledad</div>
+          <div class="book-author">Gabriel Garc&iacute;a M&aacute;rquez</div>
+          <span class="tag tag-reading">Currently Reading</span>
+        </div>
+      </div>
+
     </div>
 
     <!-- ===== Hobbies Tab ===== -->
@@ -317,6 +456,17 @@
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById('tab-' + tabName).classList.add('active');
       event.currentTarget.classList.add('active');
+    }
+
+    // Blog post expand/collapse
+    function toggleBlogPost(id) {
+      const el = document.getElementById(id);
+      if (el.style.display === 'none') {
+        el.style.display = 'block';
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        el.style.display = 'none';
+      }
     }
 
     // Dark/Light mode
