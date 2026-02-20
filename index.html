@@ -61,6 +61,7 @@
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('publications')">Publications</button>
       <button class="tab-btn" onclick="switchTab('blog')">Blog</button>
+      <button class="tab-btn" onclick="switchTab('summaries')">Paper Summaries</button>
       <button class="tab-btn" onclick="switchTab('reading')">Reading</button>
       <button class="tab-btn" onclick="switchTab('hobbies')">Hobbies</button>
     </div>
@@ -331,6 +332,330 @@
           <p>Next, we want to incorporate T-cell receptor constraints into the design pipeline &mdash; because binding to MHC is only half the story. The peptide also has to be recognized by a T-cell receptor to trigger an immune response. That's the real frontier.</p>
 
           <p><em>This work was accepted at the 2nd Workshop on Generative AI and Biology at ICML 2025.</em></p>
+        </article>
+      </div>
+
+    </div>
+
+    <!-- ===== Paper Summaries Tab ===== -->
+    <div id="tab-summaries" class="tab-content">
+
+      <p class="summaries-intro">
+        A collection of informal reviews of papers I find interesting &mdash; mostly in the protein
+        structure prediction, protein design, and protein language model space. These are from
+        <a href="https://scholar.google.com/citations?hl=en&user=8KJ9gf4AAAAJ&view_op=list_works&sortby=pubdate">Sergey Ovchinnikov's lab</a>
+        and related groups. Just my thoughts, nothing too formal.
+      </p>
+
+      <!-- ===== Paper 1: Protein Diffusion Models as Statistical Potentials ===== -->
+      <div class="blog-entry" onclick="toggleBlogPost('summary-1')">
+        <div class="blog-preview">
+          <div class="blog-title">Protein Diffusion Models as Statistical Potentials</div>
+          <div class="blog-date">Roney, Ou, Ovchinnikov &middot; bioRxiv 2025</div>
+          <div class="blog-snippet">
+            What if we could repurpose protein diffusion models as energy functions?
+            ProteinEBM does exactly that &mdash; turning a generative model into a scoring function
+            that can rank structures, predict conformational landscapes, and estimate mutation effects.
+          </div>
+        </div>
+      </div>
+      <div id="summary-1" class="blog-full" style="display:none;">
+        <article>
+          <h2>Protein Diffusion Models as Statistical Potentials</h2>
+          <p><em>James P. Roney, Chenxi Ou, Sergey Ovchinnikov &middot; bioRxiv, 2025</em></p>
+
+          <p>Alright, so here's the setup. Diffusion models have been crushing it in protein structure generation &mdash; you've probably heard of RFdiffusion and friends. But this paper asks a really clever question: what if instead of just using these models to generate new proteins, we could use them as energy functions? Like, what if the model's learned score function could tell us how "good" a given protein conformation is?</p>
+
+          <p>That's basically what ProteinEBM is. They take a pre-trained protein diffusion model and derive an energy-based model from it. The key insight is that the denoising process in a diffusion model implicitly learns a probability distribution over protein structures. If you can extract the energy landscape from that distribution, you've got yourself a statistical potential that knows what realistic protein conformations look like.</p>
+
+          <p>What's cool is how broadly useful this turns out to be. They show that ProteinEBM can rank the correctness of protein structures (which fold is more native-like?), do actual structure prediction from sequence, sample multiple conformational states of flexible proteins, and even predict the energetic effects of point mutations. And it's competitive with or better than both traditional physics-based force fields and other ML methods across these tasks.</p>
+
+          <p>The mutation effect prediction part is particularly interesting to me. There's been a ton of work on predicting delta-delta-G from sequence-based models, but having a structure-aware energy function that can do this feels like the right approach. You're literally asking "how does this mutation change the energy landscape?" which is what's actually happening physically.</p>
+
+          <p>The big picture here is that generative models contain way more information than we typically extract from them. We train them to generate, but the learned distribution itself is a rich model of protein physics. This paper is a nice reminder that sometimes the most interesting applications of a model aren't the ones it was originally trained for.</p>
+
+          <p><a href="https://www.biorxiv.org/content/10.1101/2025.12.09.693073v1">Read the paper</a></p>
+        </article>
+      </div>
+
+      <!-- ===== Paper 2: Designing Novel Solenoid Proteins ===== -->
+      <div class="blog-entry" onclick="toggleBlogPost('summary-2')">
+        <div class="blog-preview">
+          <div class="blog-title">Designing Novel Solenoid Proteins with In Silico Evolution</div>
+          <div class="blog-date">Pretorius, Nikov, Washio, Florent, Taunt, Ovchinnikov, Murray &middot; Communications Chemistry 2025</div>
+          <div class="blog-snippet">
+            Solenoid proteins are nature's modular building blocks. This paper
+            uses AlphaFold2 as an oracle inside a genetic algorithm to design entirely
+            new solenoid folds &mdash; and 20% of them actually work in the lab.
+          </div>
+        </div>
+      </div>
+      <div id="summary-2" class="blog-full" style="display:none;">
+        <article>
+          <h2>Designing Novel Solenoid Proteins with In Silico Evolution</h2>
+          <p><em>Daniella Pretorius, Georgi I. Nikov, Kono Washio, Steve-William Florent, Henry N. Taunt, Sergey Ovchinnikov, James W. Murray &middot; Communications Chemistry (Nature), 2025</em></p>
+
+          <p>Solenoid proteins are one of those protein architectures that feel almost too elegant. They're built from repeating structural units &mdash; think of them like a spiral staircase made of protein. Nature uses them everywhere: from beta-helices in antifreeze proteins to TPR repeats that mediate protein-protein interactions. But the natural repertoire of solenoid topologies is limited. What if we could design new ones?</p>
+
+          <p>This paper takes a really fun approach. Instead of using the fancy generative models that everyone's been working on lately, they go old school: a genetic algorithm. But with a twist &mdash; they use AlphaFold2 as the fitness function. So you have a population of sequences that evolve over generations, and at each step, AlphaFold2 tells them which sequences fold into the desired solenoid topology. There's also a solenoid discrimination network that helps filter candidates.</p>
+
+          <p>What I like about this is the simplicity of the concept. You don't need to train a specialized generative model. You just need a good oracle (AlphaFold2) and a search strategy (the genetic algorithm). It's kind of like directed evolution, but entirely in silico. And it works &mdash; they designed alpha-solenoids, beta-solenoids, and alpha-beta solenoids, spanning both natural topologies and folds that haven't been seen in nature.</p>
+
+          <p>The experimental validation is solid too. They picked a handful of designs, expressed them in E. coli, and got five that were highly stable. That's a 20% experimental success rate, which is actually pretty good for de novo protein design. It's not 100%, but for a method that's essentially guessing-and-checking with AlphaFold2, it's encouraging.</p>
+
+          <p>One thing that struck me is how this approach reveals that the space of possible solenoid topologies is larger than what nature has explored. There are stable folds out there that evolution just never stumbled upon. That's a pretty cool thought &mdash; we're not just redesigning nature, we're expanding the protein universe.</p>
+
+          <p><a href="https://www.nature.com/articles/s42004-025-01817-3">Read the paper</a></p>
+        </article>
+      </div>
+
+      <!-- ===== Paper 3: CIRPIN ===== -->
+      <div class="blog-entry" onclick="toggleBlogPost('summary-3')">
+        <div class="blog-preview">
+          <div class="blog-title">CIRPIN: Learning Circular Permutation-Invariant Representations to Uncover Putative Protein Homologs</div>
+          <div class="blog-date">Kolodziej, Abulnaga, Ovchinnikov &middot; bioRxiv 2025</div>
+          <div class="blog-snippet">
+            Most structure comparison tools miss proteins that are related by circular permutation.
+            CIRPIN fixes this with a clever graph neural network that doesn't care where the chain starts &mdash;
+            uncovering thousands of hidden evolutionary relationships.
+          </div>
+        </div>
+      </div>
+      <div id="summary-3" class="blog-full" style="display:none;">
+        <article>
+          <h2>CIRPIN: Learning Circular Permutation-Invariant Representations</h2>
+          <p><em>Aiden R. Kolodziej, S. Mazdak Abulnaga, Sergey Ovchinnikov &middot; bioRxiv, 2025</em></p>
+
+          <p>Here's a problem that's been hiding in plain sight for years. Say you have two proteins that fold into essentially the same 3D shape, but one of them has its chain "rewired" &mdash; the N-terminus of one lines up with some internal position of the other. This is called circular permutation, and it's surprisingly common in nature. Proteins can evolve to swap where their chain starts and ends while keeping the same overall fold.</p>
+
+          <p>The problem? Most of our structural comparison tools &mdash; things like TM-align, Foldseek, DALI &mdash; are sensitive to chain topology. They compare structures in a way that cares about which residue comes first, second, third in the linear sequence. So two circularly permuted proteins that look basically identical in 3D can score as completely unrelated. That's a pretty big blind spot.</p>
+
+          <p>CIRPIN tackles this head-on with a graph neural network that's explicitly designed to be invariant to circular permutations. The clever bit is the data augmentation: during training, they synthetically circularly permute proteins so the model learns representations that are the same regardless of where you cut the chain. It's one of those ideas that seems obvious in hindsight but actually requires careful implementation.</p>
+
+          <p>The results are striking. They search through the SCOPe database and the AlphaFold Cluster Representatives and find thousands of novel circularly permuted pairs that previous methods completely missed. My favorite finding is that PDZ domains &mdash; one of the most studied protein families in structural biology &mdash; naturally exist in four distinct circularly permuted forms. Four! And we didn't know about some of these until CIRPIN found them.</p>
+
+          <p>This matters because circular permutation isn't just a structural curiosity. It can change a protein's function, stability, and interactions. If our homology detection tools are systematically missing these relationships, we're leaving a lot of biology on the table. CIRPIN fills that gap nicely.</p>
+
+          <p><a href="https://www.biorxiv.org/content/10.1101/2025.11.18.689110v1">Read the paper</a></p>
+        </article>
+      </div>
+
+      <!-- ===== Paper 4: Hit or Miss ===== -->
+      <div class="blog-entry" onclick="toggleBlogPost('summary-4')">
+        <div class="blog-preview">
+          <div class="blog-title">Hit or Miss: Understanding Emergence and Absence of Homo-oligomeric Contacts in Protein Language Models</div>
+          <div class="blog-date">Zhang, Akiyama, Cho, Jajoo, Ovchinnikov &middot; bioRxiv 2025</div>
+          <div class="blog-snippet">
+            Protein language models are trained on single chains, yet they somehow learn about
+            protein-protein interfaces. This paper digs into how and why &mdash; and finds that
+            bigger models keep getting better at inter-chain contacts even after intra-chain accuracy plateaus.
+          </div>
+        </div>
+      </div>
+      <div id="summary-4" class="blog-full" style="display:none;">
+        <article>
+          <h2>Hit or Miss: Understanding Emergence and Absence of Homo-oligomeric Contacts in Protein Language Models</h2>
+          <p><em>Zhidian Zhang, Yo Akiyama, Yehlin Cho, Samarth Jajoo, Sergey Ovchinnikov &middot; bioRxiv, 2025</em></p>
+
+          <p>This one scratches a theoretical itch I've had for a while. Protein language models like ESM-2 are trained on individual protein sequences &mdash; single chains, one at a time. They never see protein complexes during training. And yet, when you extract attention maps or contact predictions from these models, they somehow know about inter-subunit contacts in homo-oligomers (proteins that assemble into copies of themselves). How?</p>
+
+          <p>The authors dig into this with a really systematic analysis. First, the scaling behavior is fascinating: as you make the model bigger, its ability to predict inter-chain contacts keeps improving, even after single-chain contact prediction accuracy has plateaued. That's a striking emergent property &mdash; the model discovers quaternary structure information as a byproduct of learning more about individual sequences.</p>
+
+          <p>There's also a cool comparison between ESM-2 and MSA-based approaches (MSA Pairformer). When you restrict multiple sequence alignments to close evolutionary neighbors, the MSA approach edges out ESM-2 on interface contact recovery (0.44 vs 0.33). But ESM-2 doesn't need any alignment at all &mdash; it works from a single sequence. So there's a tradeoff between the coevolutionary signal you get from alignments and the implicit knowledge baked into a massive language model.</p>
+
+          <p>One really practical result: the largest ESM-2 model can accurately distinguish genuine biological interfaces from crystal packing artifacts. This is a classic problem in structural biology &mdash; when you solve a crystal structure, you see contacts between protein copies in the crystal lattice, and it's not always obvious which of those contacts are biologically real. Having a sequence-based model that can make this call is genuinely useful.</p>
+
+          <p>The "hit or miss" framing in the title is apt. The model doesn't learn all interfaces equally. Some it nails, others it completely misses. Understanding which ones and why is where the real mechanistic insight lies, and this paper makes good progress on that front.</p>
+
+          <p><a href="https://www.biorxiv.org/content/10.1101/2025.11.16.688745v1">Read the paper</a></p>
+        </article>
+      </div>
+
+      <!-- ===== Paper 5: Coevolution-based contact predictions (2013) ===== -->
+      <div class="blog-entry" onclick="toggleBlogPost('summary-5')">
+        <div class="blog-preview">
+          <div class="blog-title">Assessing the Utility of Coevolution-Based Residue&ndash;Residue Contact Predictions in a Sequence- and Structure-Rich Era</div>
+          <div class="blog-date">Kamisetty, Ovchinnikov, Baker &middot; PNAS 2013</div>
+          <div class="blog-snippet">
+            The 2013 paper that helped establish when coevolution-based contact
+            prediction is actually useful. A foundational work that set the stage for
+            everything from direct coupling analysis to AlphaFold.
+          </div>
+        </div>
+      </div>
+      <div id="summary-5" class="blog-full" style="display:none;">
+        <article>
+          <h2>Assessing the Utility of Coevolution-Based Contact Predictions</h2>
+          <p><em>Hetunandan Kamisetty, Sergey Ovchinnikov, David Baker &middot; PNAS, 2013</em></p>
+
+          <p>Going back to 2013 for this one, and honestly, reading it now with the benefit of hindsight is wild. This is from the era before AlphaFold, before protein language models, before any of the deep learning revolution in structural biology. The big question was: can we use the patterns of correlated mutations in multiple sequence alignments to predict which residues are in physical contact in a protein's 3D structure?</p>
+
+          <p>The answer had been "sort of, sometimes" for a while. What this paper does is lay out clearly when coevolution-based contact prediction actually works well and when it doesn't. The key finding is a simple but powerful rule of thumb: you need at least 5L non-redundant aligned sequences (where L is the protein length) for the predictions to be reliable. Below that threshold, the signal-to-noise ratio just isn't good enough.</p>
+
+          <p>They also make a practical argument about when accurate contacts are most useful for structure modeling. If you already have a close homolog with a known structure, the contacts don't add much &mdash; you can just thread your sequence onto the known template. But when your best structural template is distant, predicted contacts can bridge the gap and dramatically improve models. It's about finding the sweet spot where you have enough sequences for coevolution but not enough structural information from homology alone.</p>
+
+          <p>What makes this paper historically important is that it helped establish the credibility of coevolution-based methods at a time when many people were skeptical. The computational community needed convincing that these predictions were accurate enough to be useful, and this paper provided the benchmarks and the practical guidelines that moved the field forward.</p>
+
+          <p>Looking back, this work was laying the intellectual groundwork for everything that followed. The idea that evolutionary information contains structural information &mdash; that patterns in sequences encode 3D contacts &mdash; is the same insight that powers AlphaFold's Evoformer and the MSA processing in ESMFold. The methods got fancier, but the core principle established here still holds.</p>
+
+          <p><a href="https://www.pnas.org/doi/10.1073/pnas.1314045110">Read the paper</a></p>
+        </article>
+      </div>
+
+      <h3 class="summaries-divider">More papers I find interesting</h3>
+
+      <!-- ===== Paper 6: RFdiffusion ===== -->
+      <div class="blog-entry" onclick="toggleBlogPost('summary-6')">
+        <div class="blog-preview">
+          <div class="blog-title">De Novo Design of Protein Structure and Function with RFdiffusion</div>
+          <div class="blog-date">Watson, Juergens, Bennett et al. &middot; Nature 2023</div>
+          <div class="blog-snippet">
+            The paper that brought diffusion models to protein design in a big way.
+            RFdiffusion generates protein backbones from scratch and can design binders,
+            symmetric assemblies, and enzyme scaffolds &mdash; many validated experimentally.
+          </div>
+        </div>
+      </div>
+      <div id="summary-6" class="blog-full" style="display:none;">
+        <article>
+          <h2>De Novo Design of Protein Structure and Function with RFdiffusion</h2>
+          <p><em>Joseph L. Watson, David Juergens, Nathaniel R. Bennett et al. &middot; Nature, 2023</em></p>
+
+          <p>If there's one paper that made everyone in structural biology sit up and pay attention to diffusion models, it's this one. RFdiffusion takes the RoseTTAFold structure prediction architecture and fine-tunes it on a denoising task: starting from random noise, iteratively denoise until you get a plausible protein backbone. It's the same idea as image diffusion models (Stable Diffusion, DALL-E), but for 3D protein structures.</p>
+
+          <p>What makes this paper really stand out isn't just the method &mdash; it's the sheer range of design challenges they tackle. Unconditional monomer design? Check. Topology-constrained design? Check. Protein binder design where you specify a target surface and the model hallucates a complementary protein? Check. Symmetric homo-oligomer design? Also check. Enzyme active site scaffolding? Yep, that too.</p>
+
+          <p>And they don't just design things computationally. There's extensive experimental validation. They express hundreds of designs, characterize them with various biophysical methods, and even solve cryo-EM structures of some symmetric assemblies. The designed binders actually bind. The symmetric assemblies actually assemble. It's not just pretty pictures from a generative model &mdash; these things work in the real world.</p>
+
+          <p>The underlying trick is elegant: by training on the denoising objective, the model learns a gradient field over protein structure space that points "uphill" toward realistic folds. Conditioning the denoising on different constraints (target surface, symmetry operations, motif coordinates) lets you steer generation toward specific design goals. It's a really flexible framework.</p>
+
+          <p>For my own work on pMHC design, RFdiffusion is the backbone generation engine. So I have a personal stake in understanding this paper well. The conditioning mechanism is what lets us specify MHC groove geometry and get peptide backbones that fit &mdash; it's a direct application of the tools developed here.</p>
+
+          <p><a href="https://www.nature.com/articles/s41586-023-06415-8">Read the paper</a></p>
+        </article>
+      </div>
+
+      <!-- ===== Paper 7: ESMFold ===== -->
+      <div class="blog-entry" onclick="toggleBlogPost('summary-7')">
+        <div class="blog-preview">
+          <div class="blog-title">Evolutionary-Scale Prediction of Atomic-Level Protein Structure with a Language Model (ESMFold)</div>
+          <div class="blog-date">Lin, Abanades, Rao, Johnson, Rives et al. &middot; Science 2023</div>
+          <div class="blog-snippet">
+            What if you could predict protein structure from a single sequence, no alignment needed?
+            ESMFold does this at AlphaFold-like accuracy with a 15 billion parameter language model,
+            enabling structure prediction for 600+ million metagenomic proteins.
+          </div>
+        </div>
+      </div>
+      <div id="summary-7" class="blog-full" style="display:none;">
+        <article>
+          <h2>ESMFold: Protein Structure from a Language Model</h2>
+          <p><em>Zeming Lin, Halil Akin, Roshan Rao, Jeff Johnson, Alexander Rives et al. &middot; Science, 2023</em></p>
+
+          <p>AlphaFold2 was a revolution, but it has a practical bottleneck: it needs multiple sequence alignments (MSAs). For every protein you want to fold, you first have to search databases, build an alignment, and then run the model. This is slow, and for orphan proteins with few homologs, the alignments can be thin and noisy.</p>
+
+          <p>ESMFold's pitch is simple: what if a large enough language model, trained on enough protein sequences, could learn the evolutionary information implicitly? No alignment needed &mdash; just give it a single sequence and it predicts the structure. The language model (ESM-2, up to 15 billion parameters) acts as a replacement for the entire MSA pipeline.</p>
+
+          <p>The accuracy is impressive. It doesn't quite match AlphaFold2 on every benchmark, but it gets close enough to be extremely useful, especially because it's orders of magnitude faster. And for proteins where building a good MSA is hard or impossible (think metagenomic sequences with no close relatives), ESMFold can still make predictions. That's a huge practical advantage.</p>
+
+          <p>The real flex in this paper is the ESM Metagenomic Atlas. They ran ESMFold on 617 million metagenomic protein sequences and predicted structures for all of them. This was simply not feasible with AlphaFold2's MSA requirement. The resulting atlas reveals an enormous amount of structural diversity in environmental sequences &mdash; folds that we've never seen in lab-characterized proteins.</p>
+
+          <p>For the protein language model community, ESMFold is an important proof of concept. It shows that the representations learned by masked language modeling on protein sequences contain enough structural information to fold proteins. The model isn't just learning sequence patterns &mdash; it's learning physics. That's conceptually very satisfying and has big implications for how we think about what these models are actually capturing.</p>
+
+          <p><a href="https://www.science.org/doi/10.1126/science.ade2574">Read the paper</a></p>
+        </article>
+      </div>
+
+      <!-- ===== Paper 8: ESM3 ===== -->
+      <div class="blog-entry" onclick="toggleBlogPost('summary-8')">
+        <div class="blog-preview">
+          <div class="blog-title">Simulating 500 Million Years of Evolution with a Language Model (ESM3)</div>
+          <div class="blog-date">Hayes, Rao, Akin et al. &middot; Science 2025</div>
+          <div class="blog-snippet">
+            ESM3 is a 98-billion-parameter multimodal model that reasons over protein sequence,
+            structure, and function simultaneously. It designed a novel fluorescent protein with
+            only 58% identity to anything in nature &mdash; equivalent to 500 million years of evolution.
+          </div>
+        </div>
+      </div>
+      <div id="summary-8" class="blog-full" style="display:none;">
+        <article>
+          <h2>Simulating 500 Million Years of Evolution with ESM3</h2>
+          <p><em>Thomas Hayes, Roshan Rao, Halil Akin et al. &middot; Science, 2025</em></p>
+
+          <p>Okay, so this paper is kind of a big deal. ESM3 is a 98-billion-parameter model that doesn't just look at protein sequences &mdash; it simultaneously reasons over sequence, structure, and function. It's multimodal in the protein sense: trained on 3.15 billion sequences, 236 million structures, and 539 million function annotations. That's 771 billion tokens total.</p>
+
+          <p>The headline result is esmGFP, a computationally designed fluorescent protein that has only 58% sequence identity to any known fluorescent protein. To put that in perspective, natural GFP variants across all of biology (jellyfish, corals, sea anemones) typically share more than 58% identity with each other. The authors estimate this level of divergence would take over 500 million years of natural evolution to achieve. And yet, when they expressed esmGFP in the lab, it fluoresced. It actually worked.</p>
+
+          <p>That result is remarkable, but let's be honest about what it means and doesn't mean. The model didn't "simulate evolution" in any mechanistic sense &mdash; it's not running a phylogenetic process. What it did was learn the manifold of viable protein sequences well enough to navigate far from known sequences while staying on the functional surface. That's impressive in a different way. It means the model has a deep enough understanding of protein fitness landscapes to make large creative leaps.</p>
+
+          <p>The multimodal training is key here. By jointly learning from sequence, structure, and function data, ESM3 can be prompted in any combination of these modalities. Want a protein with a specific fold? Prompt with structure. Want a specific function? Prompt with function tokens. Want both? Prompt with both. This flexibility is what enables the GFP design &mdash; they could specify "be fluorescent" and "fold like a beta-barrel" and let the model figure out a sequence that satisfies both constraints.</p>
+
+          <p>The scale is also hard to ignore. 98 billion parameters is massive, and the training data spans essentially all known protein diversity. Whether this approach scales further (can you design even more novel proteins with even bigger models?) is an open question, but ESM3 suggests the answer is probably yes.</p>
+
+          <p><a href="https://www.science.org/doi/10.1126/science.ads0018">Read the paper</a></p>
+        </article>
+      </div>
+
+      <!-- ===== Paper 9: AlphaFold 3 ===== -->
+      <div class="blog-entry" onclick="toggleBlogPost('summary-9')">
+        <div class="blog-preview">
+          <div class="blog-title">Accurate Structure Prediction of Biomolecular Interactions with AlphaFold 3</div>
+          <div class="blog-date">Abramson, Adler, Dunger et al. &middot; Nature 2024</div>
+          <div class="blog-snippet">
+            AlphaFold 3 moves beyond proteins to predict the structures of complexes involving
+            DNA, RNA, small molecules, and ions &mdash; with a diffusion-based architecture that
+            substantially outperforms specialized tools for drug-like interactions.
+          </div>
+        </div>
+      </div>
+      <div id="summary-9" class="blog-full" style="display:none;">
+        <article>
+          <h2>AlphaFold 3: Biomolecular Interactions, Not Just Proteins</h2>
+          <p><em>Josh Abramson, Jonas Adler, Jack Dunger et al. &middot; Nature, 2024</em></p>
+
+          <p>AlphaFold 2 was a protein structure prediction tool. AlphaFold 3 is something broader &mdash; it's a biomolecular interaction prediction tool. The difference matters. Biology doesn't run on isolated proteins; it runs on proteins bound to DNA, RNA, small molecules, metal ions, and each other. AF3 handles all of these in a unified framework.</p>
+
+          <p>The architectural change is significant. AF2 used an iterative recycling mechanism with specialized modules for MSA processing and pairwise reasoning. AF3 replaces much of this with a diffusion-based approach. The model predicts atomic coordinates directly through a denoising process, which turns out to be more natural for handling the diversity of molecular types (you can't really use the same residue-level representation for a protein and a small molecule).</p>
+
+          <p>The results on protein-ligand interactions are what caught the drug discovery community's attention. AF3 substantially outperforms established docking tools for predicting how drugs bind to proteins. That's a big deal because molecular docking has been a cornerstone of computational drug discovery for decades, and having a learned model surpass physics-based approaches suggests a real paradigm shift.</p>
+
+          <p>For protein-nucleic acid interactions, AF3 also beats specialized tools. And for antibody-antigen prediction &mdash; notoriously one of the hardest problems in structural biology because CDR loops are so flexible &mdash; it significantly improves over AF2-Multimer. These are all areas where having accurate structural predictions has immediate practical applications.</p>
+
+          <p>The catch (there's always a catch) is that diffusion-based structure prediction introduces stochasticity. You get different predictions on different runs, which is both a feature (you can sample conformational diversity) and a complication (you need to run multiple seeds and assess confidence carefully). But overall, AF3 represents a genuine step forward in our ability to model the full complexity of cellular molecular machinery.</p>
+
+          <p><a href="https://www.nature.com/articles/s41586-024-07487-w">Read the paper</a></p>
+        </article>
+      </div>
+
+      <!-- ===== Paper 10: pLMs Learn Evolutionary Statistics ===== -->
+      <div class="blog-entry" onclick="toggleBlogPost('summary-10')">
+        <div class="blog-preview">
+          <div class="blog-title">Protein Language Models Learn Evolutionary Statistics of Interacting Sequence Motifs</div>
+          <div class="blog-date">Zhang, Wayment-Steele, Brixi, Wang, Kern, Ovchinnikov &middot; PNAS 2024</div>
+          <div class="blog-snippet">
+            What do protein language models actually learn? This paper shows ESM-2
+            stores coevolutionary statistics as motifs of pairwise contacts &mdash;
+            bridging the gap between classical coevolution and modern deep learning.
+          </div>
+        </div>
+      </div>
+      <div id="summary-10" class="blog-full" style="display:none;">
+        <article>
+          <h2>What Do Protein Language Models Actually Learn?</h2>
+          <p><em>Zhidian Zhang, Hannah K. Wayment-Steele, Garyk Brixi, Haobo Wang, Dorothee Kern, Sergey Ovchinnikov &middot; PNAS, 2024</em></p>
+
+          <p>This paper is important because it tries to open the black box. We all know that protein language models like ESM-2 learn useful representations &mdash; you can predict structure, function, fitness effects, and all sorts of things from their embeddings. But what exactly are they learning? Is it deep, emergent reasoning about protein physics? Or something simpler?</p>
+
+          <p>The answer, at least for contact prediction, turns out to be more interpretable than you might expect. The authors develop an unsupervised method to probe what ESM-2 has learned and find that the model stores statistics of coevolving residues &mdash; essentially the same coevolutionary signal that classical methods like direct coupling analysis (DCA) extract from multiple sequence alignments. But instead of computing these statistics from alignments at inference time, ESM-2 has memorized them during pre-training.</p>
+
+          <p>Even more specifically, ESM-2 predicts contacts by storing "motifs" &mdash; small groups of pairwise contacts that tend to co-occur. It's not doing some deep chain of reasoning across the entire protein. It's more like pattern matching against a library of local contact patterns. This is both reassuring (the model is learning something real and interpretable) and a little humbling (it's not doing anything as sophisticated as we might have imagined).</p>
+
+          <p>One surprising finding: ESM-2 doesn't actually need the full sequence context to predict inter-residue contacts. You can mask or truncate large portions of the sequence and the model still predicts contacts for the remaining region. This suggests the model is doing local pattern recognition rather than global inference, which is consistent with the motif-based explanation.</p>
+
+          <p>For the field, this kind of mechanistic understanding is crucial. If we know what the model learns, we can design better models, identify failure modes, and figure out what information is still missing. It also connects the protein language model revolution back to the coevolution-based methods that came before &mdash; showing that there's a continuous intellectual thread from DCA to transformer attention maps.</p>
+
+          <p><a href="https://www.pnas.org/doi/10.1073/pnas.2406285121">Read the paper</a></p>
         </article>
       </div>
 
