@@ -64,6 +64,7 @@
       <button class="tab-btn" onclick="switchTab('summaries')">Paper Summaries</button>
       <button class="tab-btn" onclick="switchTab('reading')">Reading</button>
       <button class="tab-btn" onclick="switchTab('hobbies')">Hobbies</button>
+      <button class="tab-btn" onclick="switchTab('training')">Training</button>
     </div>
 
     <!-- ===== Publications Tab ===== -->
@@ -764,6 +765,151 @@
         </div>
         <div class="hobby-desc">
           Building tools at the intersection of ML and biology. Check out my projects on GitHub.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== Training Tab ===== -->
+    <div id="tab-training" class="tab-content">
+
+      <p class="training-updated">Last updated: March 7, 2026</p>
+
+      <!-- Contact Classifier -->
+      <div class="training-card">
+        <div class="training-card-header">
+          <h3 class="training-card-title">Contact Classifier (Stage 1 &mdash; Multi-task Encoder)</h3>
+          <span class="training-status status-active">Training</span>
+        </div>
+
+        <div class="training-goal">
+          <strong>Goal:</strong> Train a transformer encoder from scratch on CATH 4.2 dataset (18k proteins) to jointly predict CATH class/architecture labels AND inter-residue contact maps from sequence alone. The learned embeddings encode spatial proximity information needed for Stage 2.
+        </div>
+
+        <div class="training-details">
+          <div class="training-detail-item">
+            <span class="detail-label">Architecture</span>
+            <span class="detail-value">ContactClassifier &mdash; 1.2M params, dim=128, 2 transformer towers, d_pair=64, 2 contact prediction blocks with outer product mean</span>
+          </div>
+          <div class="training-detail-item">
+            <span class="detail-label">Training</span>
+            <span class="detail-value">Single GPU (1080 Ti), batch_size=24, lr=2e-4 with warmup cosine schedule, patience=15 early stopping</span>
+          </div>
+          <div class="training-detail-item">
+            <span class="detail-label">Resilience</span>
+            <span class="detail-value">Per-epoch checkpoints with auto-resume, CSV loss logging, self-resubmitting watchdog system on SLURM</span>
+          </div>
+        </div>
+
+        <h4 class="training-progress-heading">Training Progress (through epoch 4)</h4>
+        <div class="training-table-wrapper">
+          <table class="training-table">
+            <thead>
+              <tr>
+                <th>Epoch</th>
+                <th>Val Total Loss</th>
+                <th>Train Class Acc</th>
+                <th>Val Class Acc</th>
+                <th>Train Arch Acc</th>
+                <th>Contact Recall (Val)</th>
+                <th>Contact BCE (Val)</th>
+                <th>LR</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>4.846</td>
+                <td>47.5%</td>
+                <td>41.8%</td>
+                <td>16.1%</td>
+                <td>69.6%</td>
+                <td>0.759</td>
+                <td>3.33e-05</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>4.626</td>
+                <td>58.2%</td>
+                <td>54.9%</td>
+                <td>25.4%</td>
+                <td>72.3%</td>
+                <td>0.725</td>
+                <td>6.67e-05</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>4.454</td>
+                <td>65.9%</td>
+                <td>53.8%</td>
+                <td>33.8%</td>
+                <td>73.9%</td>
+                <td>0.702</td>
+                <td>1.00e-04</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>4.356</td>
+                <td>70.0%</td>
+                <td>58.4%</td>
+                <td>39.2%</td>
+                <td>73.8%</td>
+                <td>0.693</td>
+                <td>1.33e-04</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="training-observations">
+          <h4>Key Observations</h4>
+          <ul>
+            <li>Model learning all 3 tasks simultaneously &mdash; class accuracy from random (25%) to 70% in 4 epochs</li>
+            <li>Architecture accuracy climbing steadily (38+ categories)</li>
+            <li>Contact recall at ~74% &mdash; the model is learning spatial proximity from sequence</li>
+            <li>Still in LR warmup phase, expect continued improvement</li>
+            <li>Training survives SLURM preemptions via checkpoint resume</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Diffusion Model -->
+      <div class="training-card">
+        <div class="training-card-header">
+          <h3 class="training-card-title">Protein Backbone Diffusion Model (Stage 2 &mdash; v9, pending)</h3>
+          <span class="training-status status-pending">Pending</span>
+        </div>
+
+        <div class="training-goal">
+          <strong>Goal:</strong> Generate realistic protein backbone structures (C&alpha; coordinates) conditioned on sequence, using contact-aware embeddings from Stage 1.
+        </div>
+
+        <div class="training-details">
+          <div class="training-detail-item">
+            <span class="detail-label">Architecture</span>
+            <span class="detail-value">ContactConditionedPairStack + Denoiser9 (8 EGNN layers, dx_clamp=1.0) + RgPredictor &mdash; ~14.6M params total (1.2M frozen encoder + 13.4M trainable)</span>
+          </div>
+          <div class="training-detail-item">
+            <span class="detail-label">Key innovations over v8</span>
+            <span class="detail-value">Contact map probabilities injected via gated projection into pair representation; contact attention bias in denoiser; FAPE loss (frame-aligned point error); predicted radius of gyration instead of fixed Rg=10; 8 denoiser layers (was 6), dx_clamp=1.0 (was 0.5)</span>
+          </div>
+        </div>
+
+        <div class="training-observations">
+          <h4>Current v8 Results</h4>
+          <ul>
+            <li>Val loss 2.086, RMSD ~14.5&Aring;, TM-score ~0.13</li>
+            <li>The information bottleneck from the frozen classifier was identified as the main limitation</li>
+          </ul>
+        </div>
+
+        <div class="training-pending-note">
+          Waiting for Contact Classifier training to complete before starting v9 training.
         </div>
       </div>
 
