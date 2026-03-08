@@ -1148,7 +1148,7 @@
       <!-- Diffusion Model -->
       <div class="training-card">
         <div class="training-card-header">
-          <h3 class="training-card-title">Protein Backbone Diffusion Model (Stage 2 &mdash; v9)</h3>
+          <h3 class="training-card-title">Protein Backbone Diffusion Model (Stage 2 &mdash; v10)</h3>
           <span class="training-status status-active">Training</span>
         </div>
 
@@ -1193,13 +1193,23 @@
           </ul>
         </div>
 
-        <h4 class="training-progress-heading">Run 3 &mdash; v9 Training Progress (current)</h4>
         <div class="training-observations">
-          <h4>Fixes applied (cumulative)</h4>
+          <h4>v9 Run 3 (Epochs 1&ndash;7) &mdash; Failed</h4>
           <ul>
-            <li>All Run 2 fixes retained: reversed bond annealing (1.0&rarr;5.0 over 15 epochs), dx_clamp=0.5, tighter loss clamping, aux distance CE in total loss, EMA for DDIM eval every 3 epochs</li>
-            <li>w_clash reduced from 2.0 to 1.0 (was drowning other signals)</li>
-            <li>LR schedule: 5-epoch linear warmup (0.01x&rarr;1x) then CosineAnnealingWarmRestarts (T_0=15 epochs, eta_min=1e-5)</li>
+            <li>Best: E1 DDIM TM=0.097, RMSD=16.3A (best ever). Val loss improved to 8.33 by E4.</li>
+            <li>E7 val total spiked to 19.6. Clash loss still dominated (~47% of total at w_clash=1.0). DDIM TM declined steadily: 0.097&rarr;0.049&rarr;0.028.</li>
+            <li>Root cause: clash threshold of 3.0A applied in Rg-normalized coordinates maps to ~30A in real space, penalizing nearly all non-bonded pairs with noisy gradients.</li>
+          </ul>
+        </div>
+
+        <h4 class="training-progress-heading">v10 &mdash; Training Progress (current)</h4>
+        <div class="training-observations">
+          <h4>v10 changes</h4>
+          <ul>
+            <li>Clash loss removed entirely (was broken in normalized coordinate space, dominated gradients with noise)</li>
+            <li>FAPE now uses all residues as targets (was random 16, too noisy to drive learning)</li>
+            <li>DistanceHead pair input no longer detached &mdash; aux_dist_ce gradients now train the pair stack</li>
+            <li>All prior fixes retained: reversed bond annealing, dx_clamp=0.5, tighter clamping, 5-epoch warmup + cosine restarts</li>
           </ul>
         </div>
         <div class="training-table-wrapper">
@@ -1218,53 +1228,21 @@
               </tr>
             </thead>
             <tbody id="v9-run2-tbody">
-              <tr>
-                <td>1</td>
-                <td>11.060</td>
-                <td>0.898</td>
-                <td>2.029</td>
-                <td>0.983</td>
-                <td>1.812</td>
-                <td>16.27&Aring;</td>
-                <td>0.097</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>9.410</td>
-                <td>1.528</td>
-                <td>2.321</td>
-                <td>0.043</td>
-                <td>1.075</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>8.340</td>
-                <td>1.848</td>
-                <td>2.419</td>
-                <td>0.040</td>
-                <td>0.367</td>
-                <td>23.50&Aring;</td>
-                <td>0.049</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              </tbody>
+              <!-- AUTO-UPDATED by update_website_v10.py -->
+            </tbody>
           </table>
         </div>
 
-        <h4 class="training-progress-heading">Loss Curves (through Epoch 3)</h4>
+        <h4 class="training-progress-heading">Loss Curves</h4>
         <div style="text-align: center; margin: 16px 0;">
-          <img src="data/training/v9_loss_curves.png" alt="V9 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+          <img src="data/training/v10_loss_curves.png" alt="V10 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
 
         <div class="training-pending-note" id="v9-run2-status">
-          Run 3: 3 epochs completed. Best val loss: 8.340 at epoch 3. Patience: 0/15. Best DDIM TM-score: 0.097 (E1). Running on single A40 GPU (savio3) with auto-resume.
+          v10 in progress on single A40 GPU (savio3). Awaiting first epoch results.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-08 19:39 UTC
+          Last updated: 2026-03-08 19:50 UTC
         </div>
       </div>
 
