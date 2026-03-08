@@ -1184,17 +1184,22 @@
           </ul>
         </div>
 
-        <h4 class="training-progress-heading">Run 2 &mdash; v9 Training Progress (with fixes)</h4>
         <div class="training-observations">
-          <h4>Hyperparameter fixes applied</h4>
+          <h4>Run 2 (Epochs 1&ndash;5) &mdash; Failed</h4>
           <ul>
-            <li>Bond annealing reversed: starts at 1.0, ramps up to 5.0 over 15 epochs (was 4.6&rarr;1.0)</li>
-            <li>LR schedule: CosineAnnealingWarmRestarts (T_0=15 epochs, eta_min=1e-5) replaces dying cosine</li>
-            <li>dx_clamp reduced from 1.0 to 0.5 for stability</li>
-            <li>Clash weight increased from 0.5 to 2.0</li>
-            <li>Per-component loss clamping tightened (dist/bond: 10, clash: 25, fape: 10)</li>
-            <li>Auxiliary distance CE (w=0.3) now included in total loss</li>
-            <li>DDIM evaluation uses EMA weights, runs every 3 epochs</li>
+            <li>Applied 7 fixes from Run 1 diagnosis (reversed bond annealing, dx_clamp=0.5, tighter clamping, aux loss, EMA DDIM, etc.).</li>
+            <li>w_clash=2.0 dominated the total loss (~4.8 of ~11 total), drowning out structural signals. LR lacked warmup and started decaying immediately.</li>
+            <li>Val total spiked at E5 (11.0&rarr;14.9). DDIM TM declined from 0.035 (E1) to 0.025 (E3). Cancelled after 5 epochs.</li>
+          </ul>
+        </div>
+
+        <h4 class="training-progress-heading">Run 3 &mdash; v9 Training Progress (current)</h4>
+        <div class="training-observations">
+          <h4>Fixes applied (cumulative)</h4>
+          <ul>
+            <li>All Run 2 fixes retained: reversed bond annealing (1.0&rarr;5.0 over 15 epochs), dx_clamp=0.5, tighter loss clamping, aux distance CE in total loss, EMA for DDIM eval every 3 epochs</li>
+            <li>w_clash reduced from 2.0 to 1.0 (was drowning other signals)</li>
+            <li>LR schedule: 5-epoch linear warmup (0.01x&rarr;1x) then CosineAnnealingWarmRestarts (T_0=15 epochs, eta_min=1e-5)</li>
           </ul>
         </div>
         <div class="training-table-wrapper">
@@ -1215,59 +1220,51 @@
             <tbody id="v9-run2-tbody">
               <tr>
                 <td>1</td>
-                <td>12.586</td>
-                <td>2.476</td>
-                <td>2.662</td>
-                <td>0.041</td>
-                <td>1.883</td>
+                <td>11.060</td>
+                <td>0.898</td>
+                <td>2.029</td>
+                <td>0.983</td>
+                <td>1.812</td>
                 <td>&mdash;</td>
                 <td>&mdash;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
               <tr>
                 <td>2</td>
-                <td>11.124</td>
-                <td>3.015</td>
-                <td>2.817</td>
-                <td>0.039</td>
-                <td>0.939</td>
+                <td>9.410</td>
+                <td>1.528</td>
+                <td>2.321</td>
+                <td>0.043</td>
+                <td>1.075</td>
                 <td>&mdash;</td>
                 <td>&mdash;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
               <tr>
                 <td>3</td>
-                <td>11.050</td>
-                <td>3.149</td>
-                <td>2.832</td>
-                <td>0.038</td>
-                <td>0.733</td>
+                <td>8.340</td>
+                <td>1.848</td>
+                <td>2.419</td>
+                <td>0.040</td>
+                <td>0.367</td>
                 <td>&mdash;</td>
                 <td>&mdash;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>11.432</td>
-                <td>2.885</td>
-                <td>2.772</td>
-                <td>0.038</td>
-                <td>0.589</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 1</span></td>
               </tr>
               </tbody>
           </table>
         </div>
 
-        <h4 class="training-progress-heading">Loss Curves (through Epoch 4)</h4>
+        <h4 class="training-progress-heading">Loss Curves (through Epoch 3)</h4>
         <div style="text-align: center; margin: 16px 0;">
           <img src="data/training/v9_loss_curves.png" alt="V9 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
 
         <div class="training-pending-note" id="v9-run2-status">
-          Run 2: 4 epochs completed. Best val loss: 11.050 at epoch 3. Patience: 1/15. Running on single A40 GPU (savio3) with auto-resume.
+          Run 3: 3 epochs completed. Best val loss: 8.340 at epoch 3. Patience: 0/15. Running on single A40 GPU (savio3) with auto-resume.
+        </div>
+        <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
+          Last updated: 2026-03-08 19:39 UTC
         </div>
       </div>
 
