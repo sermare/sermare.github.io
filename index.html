@@ -1119,10 +1119,28 @@
         <div style="text-align: center; margin: 16px 0;">
           <img src="data/training/contact_predictions.png" alt="Ground truth vs predicted contact maps" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
+        <div class="training-observations">
+          <p style="margin-bottom: 8px;">
+            Each row shows a held-out test protein from a different CATH structural class. The left column is the ground truth contact map (binary: two C&alpha; atoms &lt; 8&Aring; apart), and the right column is the model&rsquo;s predicted probability of contact from sequence alone. Metrics (precision P, recall R, and Top-L long-range accuracy) are annotated on each prediction panel.
+          </p>
+          <ul>
+            <li><strong>1bf0.A</strong> (L=60, Few Secondary Structure): A small protein with sparse, irregular contacts. The model captures the overall topology despite limited structural regularity.</li>
+            <li><strong>3ggm.A</strong> (L=81, Mainly Beta): Beta-sheet proteins produce characteristic off-diagonal block patterns from strand&ndash;strand hydrogen bonding. The model recovers these long-range parallel and anti-parallel strand pairings well.</li>
+            <li><strong>1f9x.A</strong> (L=120, Mainly Alpha): Alpha-helical proteins show strong banded diagonal patterns from helix-internal i&rarr;i+4 contacts. The model reproduces both the local helical periodicity and inter-helix contacts at larger separations.</li>
+          </ul>
+          <p style="margin-top: 8px;">
+            These results demonstrate that a 1.2M-parameter transformer encoder trained from scratch on CATH 4.2 (~18k proteins) can learn meaningful spatial proximity signals across all major fold classes &mdash; without any pretrained language model or evolutionary information.
+          </p>
+        </div>
 
         <h4 class="training-progress-heading">Learned Embedding Space (PCA &amp; UMAP)</h4>
         <div style="text-align: center; margin: 16px 0;">
           <img src="data/training/embedding_clustering.png" alt="PCA and UMAP of learned protein embeddings colored by CATH class and architecture" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+        </div>
+        <div class="training-observations">
+          <p>
+            Attention-pooled protein embeddings (128-dim) from the encoder&rsquo;s val+test set, projected via PCA and UMAP. The encoder learns to separate CATH classes without explicit contrastive loss &mdash; mainly-alpha and mainly-beta proteins form distinct clusters, while alpha-beta proteins span the intermediate region. UMAP reveals finer sub-structure at the architecture level, with several CATH architectures forming tight, well-separated clusters (e.g., 3.40 Rossmann fold, 1.10 orthogonal bundle). This confirms the multi-task training objective (classification + contact prediction) produces structurally meaningful representations suitable for conditioning the downstream diffusion model.
+          </p>
         </div>
 
       </div>
