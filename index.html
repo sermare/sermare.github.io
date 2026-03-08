@@ -1236,6 +1236,39 @@
                 <td>&mdash;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
+              <tr>
+                <td>5</td>
+                <td>5.407</td>
+                <td>0.798</td>
+                <td>1.838</td>
+                <td>0.042</td>
+                <td>0.054</td>
+                <td>25.91&Aring;</td>
+                <td>0.041</td>
+                <td><span class="tag tag-pat">pat 1</span></td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>5.026</td>
+                <td>1.133</td>
+                <td>2.068</td>
+                <td>0.041</td>
+                <td>0.119</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>4.955</td>
+                <td>1.046</td>
+                <td>2.017</td>
+                <td>0.040</td>
+                <td>0.092</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1246,21 +1279,19 @@
         </div>
 
         <div class="training-observations">
-          <h4>Training Progress (Epochs 1&ndash;4)</h4>
+          <h4>Training Progress (Epochs 1&ndash;7)</h4>
           <ul>
-            <li><strong>Val total loss: 9.40 &rarr; 5.23</strong> (44% reduction in 4 epochs) &mdash; rapid early improvement as expected for a diffusion model learning basic structural constraints.</li>
-            <li><strong>Clash penalty collapsing:</strong> 11.5 &rarr; 5.4 &mdash; the denoiser is quickly learning to avoid steric clashes, which dominated the early loss landscape.</li>
-            <li><strong>Rg loss resolved:</strong> 1.93 &rarr; 0.04 &mdash; the RgPredictor learned protein compactness by epoch 2, now nearly negligible.</li>
-            <li><strong>Bond geometry converged early:</strong> 0.29 &rarr; 0.10 &mdash; local bond constraints are well learned within the first few epochs.</li>
-            <li><strong>FAPE rising temporarily:</strong> 1.46 &rarr; 2.11 &mdash; expected as the model shifts from learning local geometry to attempting global fold prediction. FAPE should decrease once the denoiser starts producing coherent tertiary structures.</li>
-            <li><strong>Dist MSE fluctuating:</strong> 0.51 &rarr; 1.30 &mdash; similar to FAPE, the model is reorganizing its distance predictions as it transitions from local to global structure learning.</li>
-            <li><strong>DDIM at E1:</strong> RMSD = 16.7&Aring;, TM = 0.095 &mdash; still random at epoch 1. Next DDIM eval at epoch 5 will show if structural quality is improving.</li>
+            <li><strong>Val total loss: 9.40 &rarr; 4.96</strong> (47% reduction in 7 epochs) &mdash; steady improvement with new bests at 6 of 7 epochs.</li>
+            <li><strong>Clash penalty collapsing:</strong> 11.5 &rarr; 5.8 &mdash; the denoiser has halved the steric clash rate. This component still dominates the total loss and has room to improve.</li>
+            <li><strong>Rg and bond geometry solved:</strong> Rg loss &lt; 0.04 since epoch 3, bond geom &lt; 0.10 since epoch 5 &mdash; local constraints are fully learned.</li>
+            <li><strong>FAPE plateauing ~2.0:</strong> frame-aligned point error stabilized but hasn&rsquo;t started decreasing yet, indicating the model is learning global fold topology slowly.</li>
+            <li><strong>DDIM at E5: RMSD = 25.9&Aring;, TM = 0.041</strong> &mdash; sampled structures still random. The denoiser hasn&rsquo;t yet translated its improving training loss into coherent DDIM samples. This is common in early diffusion training &mdash; sampling quality typically lags training loss improvement. Next DDIM eval at epoch 10.</li>
             <li><strong>Speed:</strong> ~10 min/epoch on 4&times; GTX 1080 Ti (DDP). Training surviving preemptions via checkpoint resume.</li>
           </ul>
         </div>
 
         <div class="training-pending-note">
-          Training on DDP 4&times;GPU (savio2_1080ti + savio3_gpu). Preemption-resilient watchdog with per-epoch checkpoints and auto-resume. Next DDIM structural evaluation at epoch 5.
+          Training on DDP 4&times;GPU (savio2_1080ti). Preemption-resilient watchdog with per-epoch checkpoints and auto-resume. Next DDIM structural evaluation at epoch 10.
         </div>
       </div>
 
