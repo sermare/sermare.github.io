@@ -1109,13 +1109,29 @@
             <li>Training survived 7 SLURM job allocations with checkpoint resume</li>
           </ul>
         </div>
+
+        <h4 class="training-progress-heading">Training Curves</h4>
+        <div style="text-align: center; margin: 16px 0;">
+          <img src="data/training/contact_loss_curves.png" alt="Contact classifier training curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+        </div>
+
+        <h4 class="training-progress-heading">Contact Map Predictions (3 test proteins)</h4>
+        <div style="text-align: center; margin: 16px 0;">
+          <img src="data/training/contact_predictions.png" alt="Ground truth vs predicted contact maps" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+        </div>
+
+        <h4 class="training-progress-heading">Learned Embedding Space (PCA &amp; UMAP)</h4>
+        <div style="text-align: center; margin: 16px 0;">
+          <img src="data/training/embedding_clustering.png" alt="PCA and UMAP of learned protein embeddings colored by CATH class and architecture" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+        </div>
+
       </div>
 
       <!-- Diffusion Model -->
       <div class="training-card">
         <div class="training-card-header">
           <h3 class="training-card-title">Protein Backbone Diffusion Model (Stage 2 &mdash; v9)</h3>
-          <span class="training-status status-pending">Ready to train</span>
+          <span class="training-status status-active">Training</span>
         </div>
 
         <div class="training-goal">
@@ -1142,7 +1158,7 @@
         </div>
 
         <div class="training-pending-note">
-          Contact Classifier (Stage 1) training complete &mdash; encoder weights ready for v9 integration.
+          Training launched on dual GPU tracks (savio2_1080ti + savio3_gpu A40) with preemption-resilient watchdog system. Auto-resumes from per-epoch checkpoints.
         </div>
       </div>
 
