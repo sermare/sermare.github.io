@@ -1335,6 +1335,17 @@
                 <td>&mdash;</td>
                 <td><span class="tag tag-pat">pat 4</span></td>
               </tr>
+              <tr>
+                <td>14</td>
+                <td>7.409</td>
+                <td>1.024</td>
+                <td>1.966</td>
+                <td>0.038</td>
+                <td>2.313</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-pat">pat 5</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1345,12 +1356,12 @@
         </div>
 
         <div class="training-observations">
-          <h4>Training Progress (Epochs 1&ndash;13)</h4>
+          <h4>Training Progress (Epochs 1&ndash;14)</h4>
           <ul>
             <li>Best val total loss: 4.82 at epoch 9 (49% reduction from E1). Training hit an instability at E10&ndash;11, where bond geometry and clash penalties spiked before beginning recovery at E12&ndash;13.</li>
             <li>DDIM at E10: RMSD = 54.6&Aring;, TM = 0.010 &mdash; generated structures still unfolded. The denoiser has not yet learned to produce coherent backbones during reverse diffusion. This is expected given the instability; DDIM quality should improve as training stabilizes.</li>
             <li>Instability pattern: clash loss dropped to 5.3 (E10) then spiked to 12.8 (E11, worse than E1). Bond geometry jumped from 0.14 to 2.4. Meanwhile, dist_mse and FAPE temporarily improved (E11: dist=0.59, FAPE=1.51), suggesting the model briefly over-optimized local distance metrics at the cost of geometric validity.</li>
-            <li>Recovery in progress: E12&ndash;13 show clash returning toward 6.0. The cosine LR schedule is decaying (1.87e-4 &rarr; 1.12e-4), which should help stabilize. Patience 4/15 with 47 epochs remaining.</li>
+            <li>Recovery in progress: E12&ndash;14 show clash stabilized at ~6.0 and val loss slowly declining (8.26 &rarr; 7.49 &rarr; 7.47 &rarr; 7.41). Bond geom remains elevated (~2.3). The cosine LR schedule is decaying (1.87e-4 &rarr; 8.9e-5), which should help. Patience 5/15 with 46 epochs remaining.</li>
             <li>Rg remains solved throughout (&lt; 0.04). The frozen contact classifier encoder provides stable conditioning.</li>
             <li>Running on NVIDIA A40 (47.6 GB) on savio3 &mdash; ~15 min/epoch with auto-resume.</li>
           </ul>
