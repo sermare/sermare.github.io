@@ -1168,15 +1168,60 @@
         </div>
 
         <div class="training-observations">
-          <h4>Current v8 Results</h4>
+          <h4>v8 Baseline</h4>
           <ul>
             <li>Val loss 2.086, RMSD ~14.5&Aring;, TM-score ~0.13</li>
             <li>The information bottleneck from the frozen classifier was identified as the main limitation</li>
           </ul>
         </div>
 
+        <h4 class="training-progress-heading">v9 Training Progress</h4>
+        <div class="training-table-wrapper">
+          <table class="training-table">
+            <thead>
+              <tr>
+                <th>Epoch</th>
+                <th>Val Total</th>
+                <th>Val Dist MSE</th>
+                <th>Val FAPE</th>
+                <th>Val Rg Loss</th>
+                <th>Val Bond Geom</th>
+                <th>DDIM RMSD</th>
+                <th>DDIM TM-score</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>9.367</td>
+                <td>0.539</td>
+                <td>1.543</td>
+                <td>1.269</td>
+                <td>0.393</td>
+                <td>16.70&Aring;</td>
+                <td>0.095</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="training-observations">
+          <h4>Epoch 1 Interpretation</h4>
+          <ul>
+            <li><strong>Val total loss = 9.37</strong> &mdash; expected to be high at epoch 1 since the denoiser starts from random weights. The multi-component loss sums distance MSE, bond geometry, FAPE, Rg prediction, chirality, angle, and clash penalties.</li>
+            <li><strong>Clash loss dominates</strong> (11.0 of 9.4 total on val) &mdash; the model hasn&rsquo;t yet learned to avoid steric overlaps. This is the first thing the denoiser learns to fix and typically drops rapidly in the next 5&ndash;10 epochs.</li>
+            <li><strong>FAPE = 1.54</strong> &mdash; frame-aligned point error is high, meaning predicted local frames don&rsquo;t yet match the true backbone geometry. For reference, AlphaFold2 achieves FAPE &lt; 0.3 on structured regions.</li>
+            <li><strong>Rg loss = 1.27</strong> &mdash; the RgPredictor is not yet calibrating protein compactness well; proteins likely expand to fill the coordinate space rather than folding to a compact radius.</li>
+            <li><strong>DDIM: RMSD = 16.7&Aring;, TM = 0.095</strong> &mdash; sampled structures are essentially random (TM &lt; 0.17 = random). This is expected at epoch 1. The v8 baseline achieved RMSD ~14.5&Aring; / TM ~0.13 after full training, so we need significant improvement from here.</li>
+            <li><strong>Bond geometry = 0.39</strong> &mdash; already relatively low, indicating the model quickly learns local bond length/angle constraints even before global fold accuracy.</li>
+            <li><strong>Speed:</strong> ~17 min/epoch on a single 2080 Ti. DDP (4-GPU) training also launched for faster convergence.</li>
+          </ul>
+        </div>
+
         <div class="training-pending-note">
-          Training launched on dual GPU tracks (savio2_1080ti + savio3_gpu A40) with preemption-resilient watchdog system. Auto-resumes from per-epoch checkpoints.
+          Training running on three tracks: savio2_1080ti (1 GPU, 40 min), savio3_gpu (1 GPU, 30 min), and savio3_gpu DDP (4 GPUs, 4 hr). Preemption-resilient watchdog system with per-epoch checkpoints and auto-resume.
         </div>
       </div>
 
