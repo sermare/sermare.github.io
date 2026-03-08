@@ -1269,6 +1269,28 @@
                 <td>&mdash;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
+              <tr>
+                <td>8</td>
+                <td>4.915</td>
+                <td>1.343</td>
+                <td>2.161</td>
+                <td>0.039</td>
+                <td>0.176</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td>4.819</td>
+                <td>1.043</td>
+                <td>2.017</td>
+                <td>0.038</td>
+                <td>0.144</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1279,19 +1301,20 @@
         </div>
 
         <div class="training-observations">
-          <h4>Training Progress (Epochs 1&ndash;7)</h4>
+          <h4>Training Progress (Epochs 1&ndash;9)</h4>
           <ul>
-            <li><strong>Val total loss: 9.40 &rarr; 4.96</strong> (47% reduction in 7 epochs) &mdash; steady improvement with new bests at 6 of 7 epochs.</li>
-            <li><strong>Clash penalty collapsing:</strong> 11.5 &rarr; 5.8 &mdash; the denoiser has halved the steric clash rate. This component still dominates the total loss and has room to improve.</li>
-            <li><strong>Rg and bond geometry solved:</strong> Rg loss &lt; 0.04 since epoch 3, bond geom &lt; 0.10 since epoch 5 &mdash; local constraints are fully learned.</li>
-            <li><strong>FAPE plateauing ~2.0:</strong> frame-aligned point error stabilized but hasn&rsquo;t started decreasing yet, indicating the model is learning global fold topology slowly.</li>
-            <li><strong>DDIM at E5: RMSD = 25.9&Aring;, TM = 0.041</strong> &mdash; sampled structures still random. The denoiser hasn&rsquo;t yet translated its improving training loss into coherent DDIM samples. This is common in early diffusion training &mdash; sampling quality typically lags training loss improvement. Next DDIM eval at epoch 10.</li>
-            <li><strong>Speed:</strong> ~10 min/epoch on 4&times; GTX 1080 Ti (DDP). Training surviving preemptions via checkpoint resume.</li>
+            <li>Val total loss: 9.40 &rarr; 4.82 (49% reduction in 9 epochs) &mdash; steady improvement with new bests at 8 of 9 epochs.</li>
+            <li>Clash penalty: 11.5 &rarr; 5.47 &mdash; the denoiser has cut steric clashes by more than half. This component still dominates the total loss and has room to improve.</li>
+            <li>Distance learning: dist_mse dropped to 1.04 at E9 (from 1.34 at E8), indicating pairwise distance predictions are sharpening.</li>
+            <li>FAPE back to 2.02 at E9 &mdash; frame-aligned point error is slowly declining, suggesting the model is beginning to capture global fold topology.</li>
+            <li>Rg and bond geometry solved: Rg loss &lt; 0.04 since epoch 3, bond geom &lt; 0.18 &mdash; local constraints remain well learned.</li>
+            <li>DDIM at E5: RMSD = 25.9&Aring;, TM = 0.041 &mdash; sampled structures still random at that point. Next DDIM eval at epoch 10 should show whether the improving loss translates to better samples.</li>
+            <li>Now running on a single NVIDIA A40 (47.6 GB) on savio3 &mdash; ~15 min/epoch, much faster than the previous 4&times; GTX 1080 Ti DDP setup which was stuck due to degraded scratch filesystem on the compute node.</li>
           </ul>
         </div>
 
         <div class="training-pending-note">
-          Training on DDP 4&times;GPU (savio2_1080ti). Preemption-resilient watchdog with per-epoch checkpoints and auto-resume. Next DDIM structural evaluation at epoch 10.
+          Training on single A40 GPU (savio3). Preemption-resilient watchdog with per-epoch checkpoints and auto-resume. Next DDIM structural evaluation at epoch 10.
         </div>
       </div>
 
