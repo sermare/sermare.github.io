@@ -1194,34 +1194,73 @@
             <tbody>
               <tr>
                 <td>1</td>
-                <td>9.367</td>
-                <td>0.539</td>
-                <td>1.543</td>
-                <td>1.269</td>
-                <td>0.393</td>
+                <td>9.396</td>
+                <td>0.513</td>
+                <td>1.463</td>
+                <td>1.928</td>
+                <td>0.287</td>
                 <td>16.70&Aring;</td>
                 <td>0.095</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>7.036</td>
+                <td>1.161</td>
+                <td>1.962</td>
+                <td>0.110</td>
+                <td>0.150</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>6.218</td>
+                <td>0.898</td>
+                <td>1.839</td>
+                <td>0.045</td>
+                <td>0.097</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>5.227</td>
+                <td>1.299</td>
+                <td>2.109</td>
+                <td>0.043</td>
+                <td>0.101</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
             </tbody>
           </table>
         </div>
 
+        <h4 class="training-progress-heading">Loss Curves</h4>
+        <div style="text-align: center; margin: 16px 0;">
+          <img src="data/training/v9_loss_curves.png" alt="V9 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+        </div>
+
         <div class="training-observations">
-          <h4>Epoch 1 Interpretation</h4>
+          <h4>Training Progress (Epochs 1&ndash;4)</h4>
           <ul>
-            <li><strong>Val total loss = 9.37</strong> &mdash; expected to be high at epoch 1 since the denoiser starts from random weights. The multi-component loss sums distance MSE, bond geometry, FAPE, Rg prediction, chirality, angle, and clash penalties.</li>
-            <li><strong>Clash loss dominates</strong> (11.0 of 9.4 total on val) &mdash; the model hasn&rsquo;t yet learned to avoid steric overlaps. This is the first thing the denoiser learns to fix and typically drops rapidly in the next 5&ndash;10 epochs.</li>
-            <li><strong>FAPE = 1.54</strong> &mdash; frame-aligned point error is high, meaning predicted local frames don&rsquo;t yet match the true backbone geometry. For reference, AlphaFold2 achieves FAPE &lt; 0.3 on structured regions.</li>
-            <li><strong>Rg loss = 1.27</strong> &mdash; the RgPredictor is not yet calibrating protein compactness well; proteins likely expand to fill the coordinate space rather than folding to a compact radius.</li>
-            <li><strong>DDIM: RMSD = 16.7&Aring;, TM = 0.095</strong> &mdash; sampled structures are essentially random (TM &lt; 0.17 = random). This is expected at epoch 1. The v8 baseline achieved RMSD ~14.5&Aring; / TM ~0.13 after full training, so we need significant improvement from here.</li>
-            <li><strong>Bond geometry = 0.39</strong> &mdash; already relatively low, indicating the model quickly learns local bond length/angle constraints even before global fold accuracy.</li>
-            <li><strong>Speed:</strong> ~17 min/epoch on a single 2080 Ti. DDP (4-GPU) training also launched for faster convergence.</li>
+            <li><strong>Val total loss: 9.40 &rarr; 5.23</strong> (44% reduction in 4 epochs) &mdash; rapid early improvement as expected for a diffusion model learning basic structural constraints.</li>
+            <li><strong>Clash penalty collapsing:</strong> 11.5 &rarr; 5.4 &mdash; the denoiser is quickly learning to avoid steric clashes, which dominated the early loss landscape.</li>
+            <li><strong>Rg loss resolved:</strong> 1.93 &rarr; 0.04 &mdash; the RgPredictor learned protein compactness by epoch 2, now nearly negligible.</li>
+            <li><strong>Bond geometry converged early:</strong> 0.29 &rarr; 0.10 &mdash; local bond constraints are well learned within the first few epochs.</li>
+            <li><strong>FAPE rising temporarily:</strong> 1.46 &rarr; 2.11 &mdash; expected as the model shifts from learning local geometry to attempting global fold prediction. FAPE should decrease once the denoiser starts producing coherent tertiary structures.</li>
+            <li><strong>Dist MSE fluctuating:</strong> 0.51 &rarr; 1.30 &mdash; similar to FAPE, the model is reorganizing its distance predictions as it transitions from local to global structure learning.</li>
+            <li><strong>DDIM at E1:</strong> RMSD = 16.7&Aring;, TM = 0.095 &mdash; still random at epoch 1. Next DDIM eval at epoch 5 will show if structural quality is improving.</li>
+            <li><strong>Speed:</strong> ~10 min/epoch on 4&times; GTX 1080 Ti (DDP). Training surviving preemptions via checkpoint resume.</li>
           </ul>
         </div>
 
         <div class="training-pending-note">
-          Training running on three tracks: savio2_1080ti (1 GPU, 40 min), savio3_gpu (1 GPU, 30 min), and savio3_gpu DDP (4 GPUs, 4 hr). Preemption-resilient watchdog system with per-epoch checkpoints and auto-resume.
+          Training on DDP 4&times;GPU (savio2_1080ti + savio3_gpu). Preemption-resilient watchdog with per-epoch checkpoints and auto-resume. Next DDIM structural evaluation at epoch 5.
         </div>
       </div>
 
