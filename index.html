@@ -1423,29 +1423,40 @@
                 <td>&mdash;</td>
                 <td><span class="tag tag-pat">pat 12</span></td>
               </tr>
+              <tr>
+                <td>22</td>
+                <td>7.486</td>
+                <td>1.051</td>
+                <td>2.000</td>
+                <td>0.047</td>
+                <td>2.396</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-pat">pat 13</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
 
-        <h4 class="training-progress-heading">Loss Curves (through Epoch 21)</h4>
+        <h4 class="training-progress-heading">Loss Curves (through Epoch 22)</h4>
         <div style="text-align: center; margin: 16px 0;">
           <img src="data/training/v9_loss_curves.png" alt="V9 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
 
         <div class="training-observations">
-          <h4>Training Progress (Epochs 1&ndash;21)</h4>
+          <h4>Training Progress (Epochs 1&ndash;22)</h4>
           <ul>
             <li>Best val total loss: 4.82 at epoch 9 (49% reduction from E1). Training hit an instability at E10&ndash;11, where bond geometry and clash penalties spiked catastrophically.</li>
             <li>Instability pattern: clash loss dropped to 5.3 (E10) then spiked to 12.8 (E11, worse than E1). Bond geometry jumped from 0.14 to 2.4. The model briefly over-optimized local distance metrics at the cost of geometric validity.</li>
             <li>Recovery failed: E12&ndash;21 show val loss locked at ~7.4&ndash;7.5 (vs best 4.82 at E9). The cosine LR schedule decayed to 1e-6, leaving no learning capacity to escape the loss plateau.</li>
             <li>DDIM at E5: TM=0.041 (best); E10: TM=0.010; E15: TM=0.010; E20: TM=0.012 &mdash; generated structures remain unfolded noise throughout. The denoiser never learned coherent backbone generation.</li>
-            <li>Currently at E21, patience 12/15. Early stopping expected at E24. Best weights from E9 are preserved.</li>
+            <li>Currently at E22, patience 13/15. Early stopping expected at E24. Best weights from E9 are preserved.</li>
             <li>Running on NVIDIA A40 (47.6 GB) on savio3 &mdash; ~15 min/epoch with auto-resume and SLURM signal traps.</li>
           </ul>
         </div>
 
         <div class="training-pending-note">
-          Training on single A40 GPU (savio3). Patience 12/15 &mdash; early stopping expected at epoch 24. Best model saved at epoch 9 (val=4.82). The model never recovered from the E10 instability. DDIM sampling produces unfolded structures (TM~0.01), indicating the denoiser has not learned coherent backbone generation at this scale.
+          Training on single A40 GPU (savio3). Patience 13/15 &mdash; early stopping expected at epoch 24. Best model saved at epoch 9 (val=4.82). The model never recovered from the E10 instability. DDIM sampling produces unfolded structures (TM~0.01), indicating the denoiser has not learned coherent backbone generation at this scale.
         </div>
       </div>
 
