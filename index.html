@@ -1291,6 +1291,50 @@
                 <td>&mdash;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
+              <tr>
+                <td>10</td>
+                <td>6.075</td>
+                <td>1.343</td>
+                <td>2.142</td>
+                <td>0.037</td>
+                <td>0.983</td>
+                <td>54.62&Aring;</td>
+                <td>0.010</td>
+                <td><span class="tag tag-pat">pat 1</span></td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td>8.258</td>
+                <td>0.594</td>
+                <td>1.506</td>
+                <td>0.038</td>
+                <td>0.381</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-pat">pat 2</span></td>
+              </tr>
+              <tr>
+                <td>12</td>
+                <td>7.489</td>
+                <td>1.044</td>
+                <td>1.979</td>
+                <td>0.037</td>
+                <td>2.397</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-pat">pat 3</span></td>
+              </tr>
+              <tr>
+                <td>13</td>
+                <td>7.471</td>
+                <td>1.044</td>
+                <td>1.986</td>
+                <td>0.037</td>
+                <td>2.377</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-pat">pat 4</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1301,20 +1345,19 @@
         </div>
 
         <div class="training-observations">
-          <h4>Training Progress (Epochs 1&ndash;9)</h4>
+          <h4>Training Progress (Epochs 1&ndash;13)</h4>
           <ul>
-            <li>Val total loss: 9.40 &rarr; 4.82 (49% reduction in 9 epochs) &mdash; steady improvement with new bests at 8 of 9 epochs.</li>
-            <li>Clash penalty: 11.5 &rarr; 5.47 &mdash; the denoiser has cut steric clashes by more than half. This component still dominates the total loss and has room to improve.</li>
-            <li>Distance learning: dist_mse dropped to 1.04 at E9 (from 1.34 at E8), indicating pairwise distance predictions are sharpening.</li>
-            <li>FAPE back to 2.02 at E9 &mdash; frame-aligned point error is slowly declining, suggesting the model is beginning to capture global fold topology.</li>
-            <li>Rg and bond geometry solved: Rg loss &lt; 0.04 since epoch 3, bond geom &lt; 0.18 &mdash; local constraints remain well learned.</li>
-            <li>DDIM at E5: RMSD = 25.9&Aring;, TM = 0.041 &mdash; sampled structures still random at that point. Next DDIM eval at epoch 10 should show whether the improving loss translates to better samples.</li>
-            <li>Now running on a single NVIDIA A40 (47.6 GB) on savio3 &mdash; ~15 min/epoch, much faster than the previous 4&times; GTX 1080 Ti DDP setup which was stuck due to degraded scratch filesystem on the compute node.</li>
+            <li>Best val total loss: 4.82 at epoch 9 (49% reduction from E1). Training hit an instability at E10&ndash;11, where bond geometry and clash penalties spiked before beginning recovery at E12&ndash;13.</li>
+            <li>DDIM at E10: RMSD = 54.6&Aring;, TM = 0.010 &mdash; generated structures still unfolded. The denoiser has not yet learned to produce coherent backbones during reverse diffusion. This is expected given the instability; DDIM quality should improve as training stabilizes.</li>
+            <li>Instability pattern: clash loss dropped to 5.3 (E10) then spiked to 12.8 (E11, worse than E1). Bond geometry jumped from 0.14 to 2.4. Meanwhile, dist_mse and FAPE temporarily improved (E11: dist=0.59, FAPE=1.51), suggesting the model briefly over-optimized local distance metrics at the cost of geometric validity.</li>
+            <li>Recovery in progress: E12&ndash;13 show clash returning toward 6.0. The cosine LR schedule is decaying (1.87e-4 &rarr; 1.12e-4), which should help stabilize. Patience 4/15 with 47 epochs remaining.</li>
+            <li>Rg remains solved throughout (&lt; 0.04). The frozen contact classifier encoder provides stable conditioning.</li>
+            <li>Running on NVIDIA A40 (47.6 GB) on savio3 &mdash; ~15 min/epoch with auto-resume.</li>
           </ul>
         </div>
 
         <div class="training-pending-note">
-          Training on single A40 GPU (savio3). Preemption-resilient watchdog with per-epoch checkpoints and auto-resume. Next DDIM structural evaluation at epoch 10.
+          Training on single A40 GPU (savio3). Preemption-resilient with per-epoch checkpoints and auto-resume. Best model saved at epoch 9 (val=4.82). Recovering from instability. Next DDIM eval at epoch 15.
         </div>
       </div>
 
