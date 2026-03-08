@@ -1390,6 +1390,28 @@
                 <td>&mdash;</td>
                 <td><span class="tag tag-pat">pat 9</span></td>
               </tr>
+              <tr>
+                <td>19</td>
+                <td>7.523</td>
+                <td>1.056</td>
+                <td>1.993</td>
+                <td>0.047</td>
+                <td>2.397</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-pat">pat 10</span></td>
+              </tr>
+              <tr>
+                <td>20</td>
+                <td>7.480</td>
+                <td>1.042</td>
+                <td>1.963</td>
+                <td>0.047</td>
+                <td>2.366</td>
+                <td>57.37&Aring;</td>
+                <td>0.012</td>
+                <td><span class="tag tag-pat">pat 11</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1400,19 +1422,19 @@
         </div>
 
         <div class="training-observations">
-          <h4>Training Progress (Epochs 1&ndash;18)</h4>
+          <h4>Training Progress (Epochs 1&ndash;20)</h4>
           <ul>
             <li>Best val total loss: 4.82 at epoch 9 (49% reduction from E1). Training hit an instability at E10&ndash;11, where bond geometry and clash penalties spiked before beginning recovery at E12&ndash;13.</li>
             <li>DDIM at E10: RMSD = 54.6&Aring;, TM = 0.010 &mdash; generated structures still unfolded. The denoiser has not yet learned to produce coherent backbones during reverse diffusion. This is expected given the instability; DDIM quality should improve as training stabilizes.</li>
             <li>Instability pattern: clash loss dropped to 5.3 (E10) then spiked to 12.8 (E11, worse than E1). Bond geometry jumped from 0.14 to 2.4. Meanwhile, dist_mse and FAPE temporarily improved (E11: dist=0.59, FAPE=1.51), suggesting the model briefly over-optimized local distance metrics at the cost of geometric validity.</li>
-            <li>Recovery stalled: E12&ndash;18 show val loss plateauing at ~7.4 (vs best 4.82 at E9). Bond geom stuck at ~2.3. LR decayed to 1.4e-5 &mdash; effectively frozen. Patience 9/15, early stopping expected around E24. Best weights from E9 are preserved.</li>
+            <li>Recovery failed: E12&ndash;20 show val loss locked at ~7.5 (vs best 4.82 at E9). DDIM at E20: RMSD=57.4&Aring;, TM=0.012 &mdash; generated structures are still unfolded noise. LR at minimum (1e-6), patience 11/15. Early stopping in ~4 epochs. Best weights from E9 are preserved.</li>
             <li>Rg remains solved throughout (&lt; 0.04). The frozen contact classifier encoder provides stable conditioning.</li>
             <li>Running on NVIDIA A40 (47.6 GB) on savio3 &mdash; ~15 min/epoch with auto-resume.</li>
           </ul>
         </div>
 
         <div class="training-pending-note">
-          Training on single A40 GPU (savio3). Preemption-resilient with per-epoch checkpoints and auto-resume. Best model saved at epoch 9 (val=4.82). Recovering from instability. Next DDIM eval at epoch 15.
+          Training on single A40 GPU (savio3). Best model saved at epoch 9 (val=4.82). The model never recovered from the E10 instability &mdash; early stopping imminent. DDIM sampling produces unfolded structures (TM~0.01), indicating the denoiser has not learned coherent backbone generation at this scale.
         </div>
       </div>
 
