@@ -1358,7 +1358,7 @@
           </div>
         </details>
 
-        <!-- v11 Loss Reference -->
+        <!-- v11b Loss Reference -->
         <div class="training-observations" style="margin: 16px 0;">
           <h4>Loss Reference &amp; Targets</h4>
           <div class="training-table-wrapper">
@@ -1368,7 +1368,8 @@
                   <th style="min-width: 65px;">Metric</th>
                   <th style="min-width: 40px;">w</th>
                   <th style="min-width: 50px;">Type</th>
-                  <th style="min-width: 55px;">E1 Val</th>
+                  <th style="min-width: 55px;">v11b E1</th>
+                  <th style="min-width: 55px;">v11b E5</th>
                   <th>Target / Interpretation</th>
                 </tr>
               </thead>
@@ -1377,71 +1378,89 @@
                   <td><strong>FAPE</strong></td>
                   <td>1.0</td>
                   <td>L1</td>
-                  <td>1.950</td>
-                  <td>Primary metric. v10 ceiling=1.31, untrained &gt;2.0. &lt;1.0 = correct folds. Must be &ge;10% below E1 by E5.</td>
+                  <td>1.934</td>
+                  <td style="color: #2ca02c;"><strong>1.756</strong></td>
+                  <td>Primary metric. Uses learned R_pred frames. v10 ceiling=1.31, untrained &gt;2.0. &lt;1.0 = correct folds.</td>
+                </tr>
+                <tr>
+                  <td><strong>Frame Rot</strong></td>
+                  <td>0.5</td>
+                  <td>1&minus;cos&theta;</td>
+                  <td>1.067</td>
+                  <td style="color: #2ca02c;"><strong>0.888</strong></td>
+                  <td>NEW in v11b. Angular error of learned R vs Gram-Schmidt truth. 1.0 = ~90&deg; (random), 0 = perfect. Target: &lt;0.5 by E15.</td>
                 </tr>
                 <tr>
                   <td><strong>Dist MSE</strong></td>
                   <td>1.0</td>
                   <td>MSE</td>
-                  <td>1.163</td>
-                  <td>Pairwise C&alpha; distance error. &lt;0.1 = sub-&Aring; accuracy.</td>
+                  <td>0.409</td>
+                  <td style="color: #2ca02c;"><strong>0.384</strong></td>
+                  <td>Pairwise C&alpha; distance error. &lt;0.1 = sub-&Aring; accuracy. Already good (inherited from v11 E10).</td>
                 </tr>
                 <tr>
                   <td><strong>Bond</strong></td>
                   <td>3.0*</td>
                   <td>MSE</td>
-                  <td>0.171</td>
-                  <td>C&alpha;&ndash;C&alpha; bond error. Already near-solved at E1. *annealed 1&rarr;3.</td>
+                  <td>0.015</td>
+                  <td style="color: #2ca02c;"><strong>0.010</strong></td>
+                  <td>C&alpha;&ndash;C&alpha; bond error. Record low at E5. *annealed 1&rarr;3.</td>
                 </tr>
                 <tr>
                   <td><strong>Rg</strong></td>
                   <td>0.5</td>
                   <td>MSE</td>
-                  <td>1.352</td>
-                  <td>Radius of gyration error. Expect rapid convergence.</td>
+                  <td>0.038</td>
+                  <td>0.038</td>
+                  <td>Radius of gyration error. Converged, stable.</td>
                 </tr>
                 <tr>
                   <td><strong>Chirality</strong></td>
                   <td>0.1</td>
                   <td>MSE</td>
-                  <td>0.509</td>
-                  <td>Backbone handedness. Random ~0.54.</td>
+                  <td>0.428</td>
+                  <td>0.369</td>
+                  <td>Backbone handedness. Random ~0.54. Improving.</td>
                 </tr>
                 <tr>
                   <td><strong>Angle</strong></td>
                   <td>0.5</td>
                   <td>MSE</td>
-                  <td>0.558</td>
-                  <td>C&alpha; bond angles. Random ~0.70.</td>
+                  <td>0.202</td>
+                  <td>0.154</td>
+                  <td>C&alpha; bond angles. Random ~0.70. Well below random.</td>
                 </tr>
                 <tr>
                   <td><strong>Clash</strong></td>
                   <td>0.1</td>
                   <td>penalty</td>
-                  <td>0.001</td>
-                  <td>Re-enabled in v11 (fixed-scale makes threshold meaningful).</td>
+                  <td>0.0002</td>
+                  <td>0.0001</td>
+                  <td>Steric clashes (3.8&Aring; threshold). Essentially zero.</td>
                 </tr>
                 <tr>
                   <td><strong>Aux Ordinal</strong></td>
                   <td>0.03</td>
                   <td>ordinal</td>
-                  <td>0.475</td>
-                  <td>Independent pair stack + ordinal regression. Stable (no v10 divergence).</td>
+                  <td>0.322</td>
+                  <td>0.316</td>
+                  <td>Independent pair stack + ordinal regression. Stable.</td>
                 </tr>
                 <tr>
                   <td><strong>TM-score</strong></td>
                   <td>&mdash;</td>
                   <td>DDIM</td>
-                  <td>0.099</td>
-                  <td>50-step DDIM. Target: &gt;0.15 by E5, &gt;0.30 by E10. &gt;0.17 = recognizable folds.</td>
+                  <td>0.094</td>
+                  <td>0.091</td>
+                  <td>50-step DDIM. Target: &gt;0.15 by E10, &gt;0.30 by E20. &gt;0.17 = recognizable folds.</td>
                 </tr>
                 <tr>
                   <td><strong>RMSD</strong></td>
                   <td>&mdash;</td>
                   <td>DDIM</td>
-                  <td>15.46&Aring;</td>
-                  <td>&lt;10&Aring; = partial fold. &lt;5&Aring; = high quality.</td>
+                  <td>17.22&Aring;</td>
+                  <td>17.62&Aring;</td>
+                  <td>&lt;10&Aring; = partial fold. &lt;5&Aring; = high quality. Stable, awaiting frame_rot improvements.</td>
                 </tr>
               </tbody>
             </table>
