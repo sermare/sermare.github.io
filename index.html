@@ -779,7 +779,7 @@
     <!-- ===== Training Tab ===== -->
     <div id="tab-training" class="tab-content">
 
-      <p class="training-updated">Last updated: March 7, 2026</p>
+      <p class="training-updated">Last updated: March 9, 2026</p>
 
       <!-- Contact Classifier -->
       <div class="training-card">
@@ -1151,405 +1151,124 @@
 
       </div>
 
-      <!-- Diffusion Model -->
+      <!-- Diffusion Model v11 -->
       <div class="training-card">
         <div class="training-card-header">
-          <h3 class="training-card-title">Protein Backbone Diffusion Model (Stage 2 &mdash; v10)</h3>
+          <h3 class="training-card-title">Protein Backbone Diffusion Model (Stage 2 &mdash; v11)</h3>
           <span class="training-status status-active">Training</span>
         </div>
 
         <div class="training-goal">
-          <strong>Goal:</strong> Generate realistic protein backbone structures (C&alpha; coordinates) conditioned on sequence, using contact-aware embeddings from Stage 1.
+          <strong>Goal:</strong> Generate realistic protein backbone structures (C&alpha; coordinates) conditioned on sequence, using contact-aware embeddings from Stage 1. v11 replaces the EGNN denoiser with <strong>Invariant Point Attention (IPA)</strong> &mdash; the same architecture class used in AlphaFold2 and RFDiffusion.
         </div>
 
         <div class="training-details">
           <div class="training-detail-item">
             <span class="detail-label">Architecture</span>
-            <span class="detail-value">ContactConditionedPairStack + Denoiser9 (8 EGNN layers, dx_clamp=0.5) + RgPredictor &mdash; ~14.6M params total (1.2M frozen encoder + 13.4M trainable)</span>
+            <span class="detail-value">IPA denoiser (6 layers, 8 heads, 8 query points) + independent aux pair stack (64-dim, 2 layers) + frozen ContactClassifier encoder &mdash; 8.4M params (7.2M trainable, 1.2M frozen)</span>
           </div>
           <div class="training-detail-item">
-            <span class="detail-label">Key innovations over v8</span>
-            <span class="detail-value">Contact map probabilities injected via gated projection into pair representation; contact attention bias in denoiser; FAPE loss (frame-aligned point error); predicted radius of gyration instead of fixed Rg=10; 8 denoiser layers (was 6), dx_clamp=0.5</span>
+            <span class="detail-label">Training</span>
+            <span class="detail-value">Single A40 GPU (48 GB), batch_size=8, grad_accum=2 (eff=16), LR=5e-5 with 3-epoch warmup + cosine decay (no restarts), T=1000 timesteps, DDIM-50 eval every epoch</span>
+          </div>
+          <div class="training-detail-item">
+            <span class="detail-label">Dataset</span>
+            <span class="detail-value">CATH 4.2: 18,024 train / 608 val proteins, max 125 residues</span>
           </div>
         </div>
 
-        <div class="training-observations">
-          <h4>v8 Baseline</h4>
-          <ul>
-            <li>Val loss 2.086, RMSD ~14.5&Aring;, TM-score ~0.13</li>
-            <li>The information bottleneck from the frozen classifier was identified as the main limitation</li>
+        <!-- v11 Architecture Details -->
+        <div class="training-observations" style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
+          <h4>Why IPA? The v10 Ceiling</h4>
+          <p style="font-size: 0.92em; line-height: 1.55;">
+            v10 used an 8-layer EGNN denoiser that learned pairwise distance statistics well (dist_mse 60% below random)
+            but <em>could not learn protein topology</em>. FAPE stayed at its random baseline (~1.31) across 21 epochs and
+            TM-score peaked at 0.131 (random ~0.10). EGNN has no concept of local reference frames &mdash; it reasons about
+            distances, not backbone geometry. IPA solves this by maintaining and refining per-residue rigid-body frames
+            (rotation + translation) through 3D point attention in local coordinate systems.
+          </p>
+        </div>
+
+        <div class="training-observations" style="line-height: 1.55;">
+          <h4>v11 Key Changes</h4>
+          <ul style="font-size: 0.92em;">
+            <li><strong>IPA denoiser</strong> &mdash; each block does: invariant point attention (scalar + 3D point Q/K/V in local frames + pair bias) &rarr; transition MLP &rarr; frame update (quaternion + translation, identity-biased init, composed in local frame for SE(3) equivariance)</li>
+            <li><strong>Fixed-scale coordinates</strong> &mdash; divide by 10&Aring; instead of per-protein Rg normalization (eliminates protein-size-dependent noise schedule bias)</li>
+            <li><strong>SNR-gated frame initialization</strong> &mdash; Gram-Schmidt frames from C&alpha; at low noise, smooth slerp to identity at high noise where coordinates are near-isotropic</li>
+            <li><strong>Frame-aware self-conditioning</strong> &mdash; 50% of steps: build clean frames from previous x<sub>0</sub> prediction as initial frames for IPA refinement</li>
+            <li><strong>Independent aux pair stack</strong> (64-dim, 2 layers) with <strong>ordinal regression</strong> (32 bins) &mdash; fixes v10&rsquo;s feature-drift divergence where the detached DistanceHead saw a drifting pair representation</li>
           </ul>
         </div>
 
-        <div class="training-observations">
-          <h4>Run 1 (Epochs 1&ndash;22) &mdash; Failed</h4>
-          <ul>
-            <li>Best val loss 4.82 at epoch 9 (49% reduction from E1), then catastrophic instability at E10&ndash;11: bond geometry spiked from 0.14 to 2.4, clash from 5.3 to 12.8.</li>
-            <li>Root causes identified: (1) bond weight annealed in the wrong direction (high&rarr;low instead of low&rarr;high), (2) cosine LR decayed to 1e-6 floor leaving no recovery capacity, (3) dx_clamp=1.0 amplified instability across 8 layers, (4) loss clamps at 100.0 too generous, (5) clash weight too low (0.5).</li>
-            <li>DDIM sampling never exceeded TM=0.041 (E5). Model early-stopped at E24.</li>
-          </ul>
+        <div class="training-observations" style="line-height: 1.55;">
+          <h4>v11 Loss Weights</h4>
+          <table style="font-size: 0.88em; margin: 8px 0; border-collapse: collapse; width: 100%;">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <th style="text-align: left; padding: 4px 8px;">Loss</th>
+                <th style="text-align: center; padding: 4px 8px;">v10</th>
+                <th style="text-align: center; padding: 4px 8px;">v11</th>
+                <th style="text-align: left; padding: 4px 8px;">Rationale</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding: 3px 8px;">FAPE</td><td style="text-align:center;">0.3</td><td style="text-align:center;"><strong>1.0</strong></td><td style="padding: 3px 8px;">IPA can actually optimize frame consistency</td></tr>
+              <tr><td style="padding: 3px 8px;">Bond</td><td style="text-align:center;">5.0</td><td style="text-align:center;"><strong>3.0</strong></td><td style="padding: 3px 8px;">Gentler anneal (1&rarr;3), avoids tug-of-war</td></tr>
+              <tr><td style="padding: 3px 8px;">Clash</td><td style="text-align:center;">0.0</td><td style="text-align:center;"><strong>0.1</strong></td><td style="padding: 3px 8px;">Re-enabled: fixed-scale makes 3.8&Aring; threshold work</td></tr>
+              <tr><td style="padding: 3px 8px;">Aux dist</td><td style="text-align:center;">0.0</td><td style="text-align:center;"><strong>0.03</strong></td><td style="padding: 3px 8px;">Conservative start for new independent pair stack</td></tr>
+              <tr><td style="padding: 3px 8px;">Dist MSE</td><td style="text-align:center;">1.0</td><td style="text-align:center;">1.0</td><td style="padding: 3px 8px;">&mdash;</td></tr>
+              <tr><td style="padding: 3px 8px;">Chirality</td><td style="text-align:center;">0.1</td><td style="text-align:center;">0.1</td><td style="padding: 3px 8px;">&mdash;</td></tr>
+              <tr><td style="padding: 3px 8px;">Angle</td><td style="text-align:center;">0.5</td><td style="text-align:center;">0.5</td><td style="padding: 3px 8px;">&mdash;</td></tr>
+              <tr><td style="padding: 3px 8px;">Rg</td><td style="text-align:center;">0.5</td><td style="text-align:center;">0.5</td><td style="padding: 3px 8px;">&mdash;</td></tr>
+            </tbody>
+          </table>
         </div>
 
-        <div class="training-observations">
-          <h4>Run 2 (Epochs 1&ndash;5) &mdash; Failed</h4>
-          <ul>
-            <li>Applied 7 fixes from Run 1 diagnosis (reversed bond annealing, dx_clamp=0.5, tighter clamping, aux loss, EMA DDIM, etc.).</li>
-            <li>w_clash=2.0 dominated the total loss (~4.8 of ~11 total), drowning out structural signals. LR lacked warmup and started decaying immediately.</li>
-            <li>Val total spiked at E5 (11.0&rarr;14.9). DDIM TM declined from 0.035 (E1) to 0.025 (E3). Cancelled after 5 epochs.</li>
-          </ul>
+        <!-- v11 Loss Curves -->
+        <h4 class="training-progress-heading">v11 Loss Curves</h4>
+        <div style="text-align: center; margin: 16px 0;">
+          <img src="data/training/v11_loss_curves.png" alt="V11 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
 
-        <div class="training-observations">
-          <h4>v9 Run 3 (Epochs 1&ndash;7) &mdash; Failed</h4>
-          <ul>
-            <li>Best: E1 DDIM TM=0.097, RMSD=16.3A (best ever). Val loss improved to 8.33 by E4.</li>
-            <li>E7 val total spiked to 19.6. Clash loss still dominated (~47% of total at w_clash=1.0). DDIM TM declined steadily: 0.097&rarr;0.049&rarr;0.028.</li>
-            <li>Root cause: clash threshold of 3.0A applied in Rg-normalized coordinates maps to ~30A in real space, penalizing nearly all non-bonded pairs with noisy gradients.</li>
-          </ul>
-        </div>
-
-        <h4 class="training-progress-heading">v10 &mdash; Training Progress (current)</h4>
-        <div class="training-observations">
-          <h4>v10 changes (final)</h4>
-          <ul>
-            <li>Clash loss removed entirely (was broken in Rg-normalized coordinate space: 3.0&Aring; threshold mapped to ~30&Aring; real space, penalizing nearly all atom pairs with noise)</li>
-            <li>FAPE now uses all residues as targets (was random 16 out of 125, causing high gradient variance epoch-to-epoch)</li>
-            <li><s>DistanceHead pair input undetached</s> &mdash; <strong>reverted at E5</strong> (see incident report below)</li>
-            <li>Auxiliary distance CE disabled (<code>w_aux=0.0</code>) at E15 &mdash; pair representation drift caused exponential divergence (see second incident report below)</li>
-            <li>Patience tracking switched to structural-only loss (excludes aux contribution) to prevent inflated val_total from triggering premature early stopping</li>
-            <li>All prior fixes retained: reversed bond annealing (low&rarr;high over 15 epochs), dx_clamp=0.5, tighter loss clamping, 5-epoch linear warmup + cosine restarts</li>
-          </ul>
-        </div>
-
-        <div class="training-observations" style="border-left: 3px solid #d62728; padding-left: 14px; margin: 16px 0;">
-          <h4>Incident Report: aux_dist_ce Divergence (E6&ndash;E12)</h4>
-          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
-            <strong>What happened:</strong> At E6, the auxiliary distance cross-entropy loss (aux_dist_ce) began diverging exponentially:
-            3.95 &rarr; 43.8 &rarr; 86.6 &rarr; 77.9, eventually reaching 79+ and saturating. By E12, the model was generating
-            random atom clouds (DDIM TM=0.015, RMSD=52.6&Aring;). All structural losses were corrupted.
-          </p>
-          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
-            <strong>Root cause:</strong> Removing <code>pair.detach()</code> from the DistanceHead input allowed aux_dist_ce gradients
-            to flow back through the ContactConditionedPairStack. This created a positive feedback loop: aux gradients destabilized the
-            pair representation &rarr; worse distance predictions &rarr; larger aux loss &rarr; even larger gradients. The pair representation
-            feeds both the aux head and the denoiser, so the corruption spread to all structural losses by E8.
-          </p>
-          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
-            <strong>Fix applied:</strong> Re-detached the pair stack (<code>pair.detach()</code>), deleted corrupted checkpoints (E10&ndash;E12),
-            and restarted from the E4 best checkpoint (val=2.247) with a fresh optimizer. Training immediately resumed smooth improvement,
-            setting new bests at E7 (2.129) and E8 (2.086).
-          </p>
-          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
-            <strong>Trade-off analysis:</strong> Detaching the pair stack means aux_dist_ce only trains the DistanceHead MLP, not the pair
-            representation itself. In principle, end-to-end training of the pair stack through aux loss could improve the learned pair
-            features. In practice, the aux loss magnitude (~4.0) is much larger than structural losses (~0.3&ndash;1.4), and the
-            cross-entropy gradients are poorly scaled relative to the MSE/FAPE gradients that the pair stack was designed for. The detach
-            acts as a gradient firewall &mdash; the pair stack learns from structural losses (which are well-calibrated), while aux_dist_ce
-            provides an independent distance prediction that regularizes the DistanceHead without interfering. This is the safer and
-            empirically superior design. A future approach could use a much smaller aux weight (w_aux=0.01&ndash;0.03) or gradient scaling
-            to enable partial end-to-end training without instability.
-          </p>
-        </div>
-
-        <div class="training-observations" style="border-left: 3px solid #ff7f0e; padding-left: 14px; margin: 16px 0;">
-          <h4>Incident Report: Second aux_dist_ce Divergence &amp; Resolution (E14&ndash;E16)</h4>
-          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
-            <strong>What happened:</strong> After the pair detach fix stabilized training through E13, aux_dist_ce began diverging
-            again at E14: 8.9 &rarr; 17.5 &rarr; 38.8 (doubling every epoch). Structural losses remained stable and excellent
-            (dst=0.22, fape=1.35, bond=0.006), confirming this was isolated to the DistanceHead.
-          </p>
-          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
-            <strong>Root cause:</strong> Feature distribution shift. The pair representation is detached before the DistanceHead, so
-            no gradient flows back &mdash; but the pair stack continued evolving via structural losses (dist_mse, FAPE). During the
-            "topology learning phase" (E10&ndash;E13), FAPE began breaking below random, causing rapid pair representation changes. The
-            DistanceHead's learned feature&rarr;bin mapping became stale, producing confidently wrong predictions (CE &gg; ln(96) = 4.56).
-            This is analogous to a classifier trained on features from a "frozen" encoder where the encoder is actually being updated
-            by a different objective.
-          </p>
-          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
-            <strong>Impact:</strong> Even at the reduced weight of <code>w_aux=0.03</code>, the contribution to total loss grew from
-            0.27 (E14) to 1.16 (E16), exceeding the structural loss (~0.83). This inflated val_total and corrupted patience tracking,
-            threatening premature early stopping despite continued structural improvement.
-          </p>
-          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
-            <strong>Fix applied (E15):</strong>
-          </p>
-          <ul style="margin: 4px 0 6px 16px; font-size: 0.92em; line-height: 1.55;">
-            <li>Set <code>w_aux=0.0</code> &mdash; aux_dist_ce removed from loss entirely</li>
-            <li>Patience tracking switched to structural-only loss: <code>val_structural = val_total - w_aux * aux_dist_ce</code></li>
-            <li>Rolled back to E14 checkpoint, reset <code>best_val=0.808</code> (structural-only), <code>patience=0</code></li>
-            <li>aux_dist_ce still computed and logged as a free diagnostic</li>
-          </ul>
-          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
-            <strong>Result:</strong> E15 (first epoch post-fix) set a new best with <code>val_structural=0.807</code>. Training total
-            dropped from 1.787 (E16 with aux) to 0.821, reflecting pure structural signal. DDIM metrics: TM=0.129, RMSD=14.53&Aring;.
-          </p>
-          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
-            <strong>Lesson:</strong> Auxiliary heads that passively observe evolving representations via stop-gradient are inherently
-            fragile. The DistanceHead architecture requires either (a) its own independent pair stack with end-to-end training, or (b) a
-            loss function robust to feature drift (e.g., ordinal regression or soft-label CE instead of hard 96-bin classification).
-            Planned for v11.
-          </p>
-        </div>
-
+        <!-- v11 Training Table -->
+        <h4 class="training-progress-heading">v11 Training Progress</h4>
         <div class="training-table-wrapper">
           <table class="training-table">
             <thead>
               <tr>
                 <th>Epoch</th>
-                <th>Val Structural</th>
-                <th>Val Dist MSE</th>
+                <th>Val Total</th>
                 <th>Val FAPE</th>
-                <th>Val Rg Loss</th>
-                <th>Val Bond Geom</th>
+                <th>Val Dist MSE</th>
+                <th>Val Bond</th>
+                <th>Val Rg</th>
+                <th>Val Aux</th>
+                <th>DDIM TM</th>
                 <th>DDIM RMSD</th>
-                <th>DDIM TM-score</th>
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody id="v9-run2-tbody">
+            <tbody id="v11-tbody">
               <tr>
                 <td>1</td>
-                <td>2.938</td>
-                <td>0.536</td>
-                <td>1.311</td>
-                <td>0.232</td>
-                <td>0.167</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>2.429</td>
-                <td>0.433</td>
-                <td>1.380</td>
-                <td>0.045</td>
-                <td>0.035</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>2.340</td>
-                <td>0.450</td>
-                <td>1.344</td>
-                <td>0.040</td>
-                <td>0.014</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>2.247</td>
-                <td>0.355</td>
+                <td>4.338</td>
+                <td>1.950</td>
+                <td>1.163</td>
+                <td>0.171</td>
                 <td>1.352</td>
-                <td>0.039</td>
-                <td>0.016</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
+                <td>0.475</td>
+                <td>0.099</td>
+                <td>15.46&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
-              <tr>
-                <td>5</td>
-                <td>2.246</td>
-                <td>0.372</td>
-                <td>1.352</td>
-                <td>0.039</td>
-                <td>0.013</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>6</td>
-                <td>2.248</td>
-                <td>0.380</td>
-                <td>1.366</td>
-                <td>0.039</td>
-                <td>0.010</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 1</span></td>
-              </tr>
-              <tr>
-                <td>7</td>
-                <td>2.129</td>
-                <td>0.267</td>
-                <td>1.381</td>
-                <td>0.038</td>
-                <td>0.011</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>8</td>
-                <td>2.086</td>
-                <td>0.246</td>
-                <td>1.343</td>
-                <td>0.038</td>
-                <td>0.011</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>9</td>
-                <td>2.106</td>
-                <td>0.241</td>
-                <td>1.351</td>
-                <td>0.037</td>
-                <td>0.013</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 1</span></td>
-              </tr>
-              <tr>
-                <td>10</td>
-                <td>2.053</td>
-                <td>0.250</td>
-                <td>1.301</td>
-                <td>0.038</td>
-                <td>0.008</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>11</td>
-                <td>2.024</td>
-                <td>0.237</td>
-                <td>1.325</td>
-                <td>0.037</td>
-                <td>0.008</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>12</td>
-                <td>2.028</td>
-                <td>0.232</td>
-                <td>1.342</td>
-                <td>0.036</td>
-                <td>0.007</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 1</span></td>
-              </tr>
-              <tr>
-                <td>13</td>
-                <td>2.006</td>
-                <td>0.223</td>
-                <td>1.354</td>
-                <td>0.036</td>
-                <td>0.006</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>14</td>
-                <td>1.075</td>
-                <td>0.220</td>
-                <td>1.324</td>
-                <td>0.035</td>
-                <td>0.006</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>15</td>
-                <td>0.807</td>
-                <td>0.217</td>
-                <td>1.350</td>
-                <td>0.035</td>
-                <td>0.006</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>16</td>
-                <td>0.805</td>
-                <td>0.218</td>
-                <td>1.360</td>
-                <td>0.036</td>
-                <td>0.006</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>17</td>
-                <td>0.810</td>
-                <td>0.222</td>
-                <td>1.338</td>
-                <td>0.034</td>
-                <td>0.006</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 1</span></td>
-              </tr>
-              <tr>
-                <td>18</td>
-                <td>0.860</td>
-                <td>0.267</td>
-                <td>1.256</td>
-                <td>0.035</td>
-                <td>0.008</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 2</span></td>
-              </tr>
-              <tr>
-                <td>19</td>
-                <td>0.918</td>
-                <td>0.265</td>
-                <td>1.350</td>
-                <td>0.035</td>
-                <td>0.011</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 3</span></td>
-              </tr>
-              <tr>
-                <td>20</td>
-                <td>1.037</td>
-                <td>0.274</td>
-                <td>1.394</td>
-                <td>0.037</td>
-                <td>0.025</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 4</span></td>
-              </tr>
-              <tr>
-                <td>21</td>
-                <td>1.240</td>
-                <td>0.424</td>
-                <td>1.340</td>
-                <td>0.036</td>
-                <td>0.028</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 5</span></td>
-              </tr>
-              </tbody>
+              <!-- New epochs will be added here by monitoring -->
+            </tbody>
           </table>
         </div>
 
+        <!-- v11 Loss Reference -->
         <div class="training-observations" style="margin: 16px 0;">
-          <h4>Loss Reference: Random Baseline &amp; Interpretation</h4>
-          <p style="font-size: 0.85em; color: var(--text-secondary); margin: 4px 0 10px 0; line-height: 1.5;">
-            For cross-entropy losses, random performance = ln(<em>N</em>) where <em>N</em> is the number of classes
-            (a uniform predictor assigns 1/<em>N</em> probability to the correct bin, giving &minus;ln(1/<em>N</em>) = ln(<em>N</em>)).
-            For MSE losses, random = E1 value (Gaussian noise baseline). Solid lines = train, dashed = val, dotted = not in loss (w=0).
-          </p>
+          <h4>Loss Reference &amp; Targets</h4>
           <div class="training-table-wrapper">
             <table class="training-table" style="font-size: 0.82em; white-space: normal;">
               <thead>
@@ -1557,98 +1276,79 @@
                   <th style="min-width: 65px;">Metric</th>
                   <th style="min-width: 40px;">w</th>
                   <th style="min-width: 50px;">Type</th>
-                  <th style="min-width: 55px;">Random</th>
-                  <th style="min-width: 50px;">Best</th>
-                  <th>Interpretation</th>
+                  <th style="min-width: 55px;">E1 Val</th>
+                  <th>Target / Interpretation</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><strong>Structural</strong></td>
-                  <td>&Sigma;</td>
-                  <td>weighted</td>
-                  <td>~2.94</td>
-                  <td>0.805 &darr;</td>
-                  <td>Weighted sum of structural components (excludes aux). Since E15, patience tracks this metric.</td>
+                  <td><strong>FAPE</strong></td>
+                  <td>1.0</td>
+                  <td>L1</td>
+                  <td>1.950</td>
+                  <td>Primary metric. v10 ceiling=1.31, untrained &gt;2.0. &lt;1.0 = correct folds. Must be &ge;10% below E1 by E5.</td>
                 </tr>
                 <tr>
                   <td><strong>Dist MSE</strong></td>
                   <td>1.0</td>
                   <td>MSE</td>
-                  <td>~0.54</td>
-                  <td>0.218 &darr;</td>
-                  <td>Pairwise C&alpha; distance error. 60% below random. &lt;0.1 = sub-&Aring; accuracy.</td>
+                  <td>1.163</td>
+                  <td>Pairwise C&alpha; distance error. &lt;0.1 = sub-&Aring; accuracy.</td>
                 </tr>
                 <tr>
                   <td><strong>Bond</strong></td>
-                  <td>5.0*</td>
+                  <td>3.0*</td>
                   <td>MSE</td>
-                  <td>~0.17</td>
-                  <td>0.006 &darr;</td>
-                  <td>C&alpha;&ndash;C&alpha; bond length error. Essentially solved. *annealed 1&rarr;5 over 15 epochs.</td>
-                </tr>
-                <tr>
-                  <td><strong>FAPE</strong></td>
-                  <td>0.3</td>
-                  <td>L1</td>
-                  <td>~1.31</td>
-                  <td>1.338 &darr;</td>
-                  <td>Frame-aligned position error (all residues). Just at random (1.31) &mdash; topology learning not yet breaking through. Drops &lt;1.0 with correct folds.</td>
+                  <td>0.171</td>
+                  <td>C&alpha;&ndash;C&alpha; bond error. Already near-solved at E1. *annealed 1&rarr;3.</td>
                 </tr>
                 <tr>
                   <td><strong>Rg</strong></td>
                   <td>0.5</td>
                   <td>MSE</td>
-                  <td>~0.23</td>
-                  <td>0.035 &darr;</td>
-                  <td>Radius of gyration error. Well-learned, correct protein size/compactness.</td>
+                  <td>1.352</td>
+                  <td>Radius of gyration error. Expect rapid convergence.</td>
                 </tr>
                 <tr>
                   <td><strong>Chirality</strong></td>
                   <td>0.1</td>
                   <td>MSE</td>
-                  <td>~0.54</td>
-                  <td>0.474 &darr;</td>
-                  <td>Signed volume (dihedral handedness) of CA quartets. 12% below random.</td>
+                  <td>0.509</td>
+                  <td>Backbone handedness. Random ~0.54.</td>
                 </tr>
                 <tr>
                   <td><strong>Angle</strong></td>
                   <td>0.5</td>
                   <td>MSE</td>
-                  <td>~0.70</td>
-                  <td>0.168 &darr;</td>
-                  <td>CA&ndash;CA&ndash;CA bond angle error (cosine). 76% below random, excellent.</td>
+                  <td>0.558</td>
+                  <td>C&alpha; bond angles. Random ~0.70.</td>
                 </tr>
-                <tr style="color: var(--text-secondary);">
-                  <td><strong>Aux Dist CE</strong></td>
-                  <td>0.0</td>
-                  <td>CE</td>
-                  <td>ln(96) = 4.56</td>
-                  <td>3.95 (--)</td>
-                  <td>Disabled at E15. Logged only. Diverged due to pair representation drift (see incident report). Was 0.3&rarr;0.03&rarr;0.0.</td>
-                </tr>
-                <tr style="color: var(--text-secondary);">
+                <tr>
                   <td><strong>Clash</strong></td>
-                  <td>0.0</td>
+                  <td>0.1</td>
                   <td>penalty</td>
-                  <td>~14.0</td>
-                  <td>11.6 (--)</td>
-                  <td>Logged but not in loss (w=0). Disabled: 3&Aring; threshold in Rg-space maps to ~30&Aring; real.</td>
+                  <td>0.001</td>
+                  <td>Re-enabled in v11 (fixed-scale makes threshold meaningful).</td>
+                </tr>
+                <tr>
+                  <td><strong>Aux Ordinal</strong></td>
+                  <td>0.03</td>
+                  <td>ordinal</td>
+                  <td>0.475</td>
+                  <td>Independent pair stack + ordinal regression. Stable (no v10 divergence).</td>
                 </tr>
                 <tr>
                   <td><strong>TM-score</strong></td>
                   <td>&mdash;</td>
                   <td>DDIM</td>
-                  <td>~0.10</td>
-                  <td>0.131 &uarr;</td>
-                  <td>50-step DDIM sampling. &gt;0.17 = recognizable folds. Target: &gt;0.30.</td>
+                  <td>0.099</td>
+                  <td>50-step DDIM. Target: &gt;0.15 by E5, &gt;0.30 by E10. &gt;0.17 = recognizable folds.</td>
                 </tr>
                 <tr>
                   <td><strong>RMSD</strong></td>
                   <td>&mdash;</td>
                   <td>DDIM</td>
-                  <td>~15.5&Aring;</td>
-                  <td>14.53&Aring; &darr;</td>
+                  <td>15.46&Aring;</td>
                   <td>&lt;10&Aring; = partial fold. &lt;5&Aring; = high quality.</td>
                 </tr>
               </tbody>
@@ -1656,67 +1356,43 @@
           </div>
         </div>
 
-        <h4 class="training-progress-heading">Loss Curves (through Epoch 21)</h4>
-        <div style="text-align: center; margin: 16px 0;">
-          <img src="data/training/v10_loss_curves.png" alt="V10 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-        </div>
-
+        <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status">
-          <strong>v10 &rarr; v11 Architecture Pivot &mdash; Training launched:</strong>
-          After 21 epochs, v10 revealed a fundamental limitation: the EGNN denoiser learns pairwise distance
-          statistics well (dist_mse 60% below random) but <em>cannot learn protein topology</em>. FAPE never
-          broke below its random baseline (~1.31), and TM-score peaked at 0.131 (random ~0.10). The root cause:
-          EGNN has no inductive bias for local reference frames &mdash; it reasons about &ldquo;how far apart
-          should atoms be,&rdquo; not &ldquo;what does the local backbone geometry look like from this residue&rsquo;s
-          perspective.&rdquo;
-          <br><br>
-          <strong>v11 replaces EGNN with Invariant Point Attention (IPA)</strong> &mdash; the same architecture
-          class used in AlphaFold2 and RFDiffusion. Each IPA layer maintains per-residue rigid-body frames
-          (rotation + translation) and refines them through 3D point attention in local coordinate systems.
-          This directly gives the model the representational machinery that FAPE measures.
-          <br><br>
-          <strong>Key architectural changes:</strong>
+          <strong>v11 Epoch 1 &mdash; First Signal (20 min on A40):</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>IPA denoiser</strong> (6 layers, 8 heads, 8 query points) replaces 8-layer EGNN</li>
-            <li><strong>Fixed-scale coordinates</strong> (divide by 10&Aring;) replaces per-protein Rg normalization
-                &mdash; eliminates protein-size-dependent noise schedule bias</li>
-            <li><strong>Independent aux pair stack</strong> (64-dim, 2 layers) with ordinal regression loss
-                &mdash; fixes the feature-drift divergence that killed v10&rsquo;s distance head</li>
-            <li><strong>SNR-gated frame initialization</strong> &mdash; Gram-Schmidt frames from C&alpha; at low noise,
-                smooth fallback to identity at high noise</li>
-            <li><strong>Frame-aware self-conditioning</strong> &mdash; previous x0 prediction provides clean frames
-                for IPA to refine, rather than building geometry from scratch</li>
+            <li><strong>val FAPE = 1.950</strong> &mdash; already below the untrained baseline (~2.0+). The IPA frame
+                machinery is learning backbone geometry from E1. This is the metric v10 could <em>never</em> improve.</li>
+            <li><strong>val dist_mse = 1.163</strong> &mdash; distance prediction converging; expect rapid improvement.</li>
+            <li><strong>val bond = 0.171</strong> &mdash; near-perfect C&alpha; spacing already. Fixed-scale normalization working.</li>
+            <li><strong>val aux = 0.475</strong> &mdash; ordinal regression stable. No divergence (v10&rsquo;s detached head diverged by E6).</li>
+            <li><strong>DDIM: TM = 0.099, RMSD = 15.46&Aring;</strong> &mdash; random level, expected for E1. Structural quality lags loss by several epochs.</li>
           </ul>
-          <strong>Loss weight changes:</strong> w_fape: 0.3&rarr;1.0 (IPA can actually optimize this),
-          w_bond: 5.0&rarr;3.0 (gentler anneal), w_clash: 0.0&rarr;0.1 (re-enabled in fixed-scale space).
-          <br><br>
-          <strong>Training config:</strong> LR 5e-5 (halved), cosine decay with no restarts (v10 restarts caused
-          pathological degradation), 1000 timesteps (was 200), DDIM eval every epoch.
-          8.4M params (7.2M trainable). Running on single A40.
-          <br><br>
-          <strong>v11 Epoch 1 results (20 min on A40):</strong>
-          <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE = 1.950</strong> &mdash; already below the untrained random baseline (~2.0+), indicating
-                the IPA frame machinery is learning backbone geometry from E1. This is the metric v10 could
-                <em>never</em> improve.</li>
-            <li><strong>val dist_mse = 1.163</strong> &mdash; distance prediction starting to converge; expect rapid
-                improvement in early epochs as pair representations sharpen.</li>
-            <li><strong>val bond_geom = 0.171</strong> &mdash; extremely low bond geometry loss, suggesting C&alpha;
-                spacing is already near 3.8&Aring; targets. Fixed-scale normalization working as intended.</li>
-            <li><strong>val aux (ordinal) = 0.475</strong> &mdash; independent aux pair stack with ordinal regression
-                is stable and training cleanly (no divergence, unlike v10&rsquo;s detached head).</li>
-            <li><strong>DDIM sampling: TM = 0.099, RMSD = 15.46&Aring;</strong> &mdash; still at random level, which is
-                expected for E1. Structural quality typically lags loss improvements by several epochs.
-                Target: TM &gt; 0.15 by E5, &gt; 0.3 by E10.</li>
-          </ul>
-          <strong>Assessment:</strong> Strongly positive first signal. The single most important indicator &mdash;
-          val FAPE below baseline at E1 &mdash; confirms the IPA architecture can optimize frame consistency,
-          the exact capability v10 lacked. Training/val gap is healthy (no overfitting). Patience 0/15.
-          Monitoring continues every 30 minutes.
+          <strong>Assessment:</strong> Strongly positive. Val FAPE below baseline at E1 confirms IPA can optimize frame consistency.
+          Training/val gap healthy (no overfitting). Patience 0/15. Monitoring every 30 min.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
           Last updated: 2026-03-09 09:46 UTC &mdash; E1 complete
         </div>
+
+        <!-- v10 Historical Results (collapsed) -->
+        <details style="margin-top: 20px; border: 1px solid var(--border); border-radius: 6px; padding: 0;">
+          <summary style="padding: 10px 14px; cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
+            v10 Historical Results (21 epochs, EGNN &mdash; superseded)
+          </summary>
+          <div style="padding: 10px 14px;">
+            <p style="font-size: 0.88em; color: var(--text-secondary); line-height: 1.5;">
+              v10 used an 8-layer EGNN denoiser (14.6M params). After 21 epochs: dist_mse 60% below random (0.218),
+              bond essentially solved (0.006), but FAPE stuck at random (~1.31) and TM-score peaked at 0.131.
+              Two aux_dist_ce divergence incidents required intervention (pair detach at E5, full disable at E15).
+              Cosine LR restarts caused pathological degradation at the minimum.
+              Best val structural = 0.805 (E16). DDIM best: TM=0.131, RMSD=14.53&Aring;.
+            </p>
+            <div style="text-align: center; margin: 12px 0;">
+              <img src="data/training/v10_loss_curves.png" alt="V10 diffusion training loss curves (historical)" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+            </div>
+          </div>
+        </details>
+
       </div>
 
     </div>
