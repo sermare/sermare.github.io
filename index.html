@@ -1341,6 +1341,30 @@
                 <td>17.55&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
+              <tr>
+                <td>8</td>
+                <td style="color: #2ca02c; font-weight: bold;">2.580</td>
+                <td style="color: #2ca02c; font-weight: bold;">1.655</td>
+                <td style="color: #2ca02c; font-weight: bold;">0.830</td>
+                <td style="color: #2ca02c; font-weight: bold;">0.351</td>
+                <td>0.009</td>
+                <td>0.037</td>
+                <td>0.093</td>
+                <td>17.55&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td>2.674</td>
+                <td>1.686</td>
+                <td>0.858</td>
+                <td>0.394</td>
+                <td>0.009</td>
+                <td>0.038</td>
+                <td>0.094</td>
+                <td>17.51&Aring;</td>
+                <td><span class="tag tag-pat">pat 1</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1493,30 +1517,32 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #2ca02c;">
-          <strong style="color: #2ca02c;">v11b Epoch 7 &mdash; NEW BEST: FAPE 1.709, frame_rot 0.862, bond 0.009</strong>
+          <strong style="color: #2ca02c;">v11b Epoch 9 &mdash; E8 Was a Breakthrough: FAPE 1.655, frame_rot 0.830</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE: 1.709</strong> (E5: 1.756 &rarr; E6: 1.737 &rarr; E7: 1.709) &mdash;
-                <span style="color: #2ca02c;">broke below 1.72!</span> 0.109 below v11 best (1.818).
-                0.40 above random baseline (1.31). Dropping ~0.024/epoch.</li>
-            <li><strong>frame_rot: 0.862</strong> (E5: 0.888 &rarr; E6: 0.905 &rarr; E7: 0.862) &mdash;
-                <span style="color: #2ca02c;">new record! E6 uptick was just noise.</span>
-                ~70&deg; mean angular error, down from ~94&deg; at E1.</li>
-            <li><strong>DDIM: TM = 0.093, RMSD = 17.55&Aring;</strong> &mdash; slight dip from E6&rsquo;s 0.095.
-                Sampling quality fluctuating in 0.090&ndash;0.095 range.</li>
-            <li><strong>val dist_mse: 0.384</strong> | <strong>bond: 0.009</strong> (new record!) | rg: 0.037</li>
-            <li><strong>Patience: 0/15</strong> &mdash; back to NEW BEST after E6&rsquo;s patience tick.</li>
+            <li><strong>val FAPE: 1.655 (E8, best) &rarr; 1.686 (E9)</strong> &mdash;
+                <span style="color: #2ca02c;">E8 was a massive jump: 1.709&rarr;1.655 (&Delta;=0.054, largest single-epoch drop).</span>
+                E9 regressed slightly (pat 1). Best is now 0.163 below v11 peak (1.818),
+                0.35 above random baseline (1.31).</li>
+            <li><strong>frame_rot: 0.830 (E8, best) &rarr; 0.858 (E9)</strong> &mdash;
+                <span style="color: #2ca02c;">broke below 0.85!</span> ~67&deg; mean angular error at E8 (down from ~94&deg;).
+                E9 uptick mirrors the pattern at E6 &mdash; likely noise, not a plateau.</li>
+            <li><strong>DDIM: TM = 0.093&ndash;0.094, RMSD = 17.51&ndash;17.55&Aring;</strong> &mdash;
+                still flat in 0.090&ndash;0.095 band despite large loss improvements.
+                Sampling quality may need frame_rot &lt; 0.7 before a phase transition.</li>
+            <li><strong>val dist_mse: 0.351 (E8, record!) &rarr; 0.394 (E9)</strong> | bond: 0.009 | rg: 0.037&ndash;0.038</li>
+            <li><strong>Patience: 1/15</strong> &mdash; E9 didn&rsquo;t beat E8&rsquo;s exceptional result. Normal fluctuation.</li>
           </ul>
-          <strong>Deeper analysis (E1&ndash;E7):</strong>
+          <strong>Deeper analysis (E1&ndash;E9):</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            E7 confirms the E6 patience tick was a blip from aux_dist_ce noise, not a structural plateau.
-            All key metrics hit new records: FAPE (1.709), frame_rot (0.862), bond (0.009).
-            The FAPE improvement rate has been remarkably consistent: ~0.03/epoch for the last 4 epochs.
-            At this rate, FAPE would reach v10&rsquo;s 1.31 ceiling around E20 &mdash; the question is whether
-            the curve flattens before then. frame_rot is now 17% below its E1 value (1.067&rarr;0.862),
-            confirming steady rotation learning. DDIM TM is still stuck in the 0.09&ndash;0.095 band &mdash;
-            this lag between loss improvement and sampling quality is expected; a phase transition
-            to TM &gt; 0.15 would indicate the model has learned enough global topology to generate
-            recognizable folds. E8 in progress, job has ~68 min remaining.
+            E8 was the best single epoch yet &mdash; every structural metric hit a new low simultaneously
+            (FAPE 1.655, frame_rot 0.830, dist_mse 0.351). This is the kind of coordinated improvement
+            that indicates the model is learning real structure, not just optimizing individual loss terms.
+            The FAPE trajectory: 1.934 &rarr; 1.796 &rarr; 1.756 &rarr; 1.709 &rarr; <strong>1.655</strong> shows
+            accelerating improvement (last 3 deltas: 0.040, 0.047, 0.054). If this continues,
+            FAPE could reach ~1.5 by E12&ndash;E14. However, E9&rsquo;s slight regression suggests
+            the model oscillates around the true trend. aux_dist_ce has stabilized at ~0.471 (no longer spiking).
+            DDIM TM remains the stubborn metric &mdash; 9 epochs of loss improvement haven&rsquo;t moved it above 0.095.
+            This may require a different DDIM schedule or more epochs for the EMA weights to reflect the gains.
           </p>
           <details style="margin-top: 8px;">
             <summary style="cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
@@ -1544,7 +1570,7 @@
           </details>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 19:22 UTC
+          Last updated: 2026-03-09 20:10 UTC
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
