@@ -1405,7 +1405,31 @@
                 <td>23.97&Aring;</td>
                 <td><span class="tag tag-pat">pat 3</span></td>
               </tr>
-              <!-- New epochs will be added here by monitoring -->
+              <tr style="background: rgba(214, 39, 40, 0.08);">
+                <td>14</td>
+                <td>2.651</td>
+                <td>1.976</td>
+                <td>0.428</td>
+                <td>0.017</td>
+                <td>0.037</td>
+                <td>0.488</td>
+                <td>0.053</td>
+                <td>23.66&Aring;</td>
+                <td><span class="tag tag-pat">pat 4</span></td>
+              </tr>
+              <tr style="background: rgba(214, 39, 40, 0.12);">
+                <td>15</td>
+                <td>2.726</td>
+                <td style="color: #d62728; font-weight: bold;">2.052</td>
+                <td>0.411</td>
+                <td>0.019</td>
+                <td>0.042</td>
+                <td>0.488</td>
+                <td style="color: #d62728; font-weight: bold;">0.046</td>
+                <td>24.80&Aring;</td>
+                <td><span class="tag tag-pat">pat 5</span></td>
+              </tr>
+              <!-- v11 training stopped after E15 — architectural fix needed -->
             </tbody>
           </table>
         </div>
@@ -1502,38 +1526,52 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #d62728;">
-          <strong style="color: #d62728;">v11 Training STOPPED at Epoch 13 &mdash; Job Terminated, Awaiting Intervention</strong>
+          <strong style="color: #d62728;">v11 STOPPED at E15 &mdash; Architectural Bug Found, Fix Implemented</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>Job status: TERMINATED</strong> &mdash; SLURM job hit 2-hour wall time after E13; auto-resubmit did not fire.
-                No new epochs since 06:26 UTC.</li>
-            <li><strong>DDIM: TM = 0.128 (E3) &rarr; 0.053 (E13)</strong> &mdash; generating worse-than-random structures.
-                RMSD = 23.97&Aring; (was 14.53 at E3).</li>
-            <li><strong>val FAPE: 1.818 (E10 best) &rarr; 1.919 (E13)</strong> &mdash; 5.6% above best.
-                Train FAPE: 2.011 (above E1 baseline of 2.129).</li>
-            <li><strong>val dist_mse: 0.380 (E13)</strong> &mdash; distance learning remains strong (near E10 best 0.382).</li>
-            <li><strong>Patience: 3/15</strong> &mdash; three consecutive non-best epochs.</li>
+            <li><strong>E15 val FAPE: 2.052</strong> &mdash; worst epoch, above E1 baseline (1.950). Tripwire violated at E5 (3% vs required 10%).</li>
+            <li><strong>DDIM: TM = 0.046</strong> &mdash; below random (~0.10). RMSD=24.80&Aring;. Generating atom clouds.</li>
+            <li><strong>Patience: 5/15.</strong> Training stopped (model code changed, resubmit crashed).</li>
           </ul>
-          <strong>5-Hour Post-Mortem:</strong>
+          <strong>Gradient Diagnostic Results:</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            <strong>Summary:</strong> v11 IPA denoiser trained 13 epochs (~5 hours on A40). Phase 1 (E1&ndash;E3) showed
-            rapid distance/bond/Rg convergence. Phase 2 (E4&ndash;E10) achieved FAPE descent from 1.889 to 1.818 (6.8% below
-            initial). Phase 3 (E11&ndash;E13) saw frame instability: FAPE regressed while distances remained healthy.
-            DDIM generation collapsed to TM=0.053 (random ~0.10).
-            <br><br>
-            <strong>Core problem:</strong> The IPA frame update mechanism destabilized. Distance learning (pair-level) is robust,
-            but per-residue frame coherence broke down after E10. Self-conditioning likely amplified frame errors in a
-            positive feedback loop. The EMA model (used for DDIM) accumulated unstable frame updates.
-            <br><br>
-            <strong>Next steps (manual intervention required):</strong>
-            (1) Roll back to E10 checkpoint (best val=2.416, FAPE=1.818, DDIM TM~0.09).
-            (2) Reduce LR from 4.8e-5 to 2e-5.
-            (3) Clamp frame update magnitude per IPA layer.
-            (4) Reduce self-conditioning frequency from 50% to 25%.
-            (5) Resubmit with these changes.
+            Ran comprehensive gradient audit on E10 best weights. Key findings:
           </p>
+          <table style="font-size: 0.88em; width: 100%; border-collapse: collapse; margin: 8px 0;">
+            <tr style="background: var(--bg-secondary);">
+              <th style="text-align: left; padding: 4px 8px;">Hypothesis</th>
+              <th style="text-align: center; padding: 4px 8px;">Result</th>
+            </tr>
+            <tr><td style="padding: 4px 8px;">Frame confidence starving updates</td>
+                <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">NO &mdash; 57.7% of timesteps have conf &gt; 0.5</td></tr>
+            <tr><td style="padding: 4px 8px;">Gradients dead at frame_update MLP</td>
+                <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">NO &mdash; frame_update has <strong>highest</strong> grad norm (4.017)</td></tr>
+            <tr><td style="padding: 4px 8px;">FAPE gradient reaches frame_update</td>
+                <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">YES &mdash; FAPE&rarr;frame_update: 13.03 (largest of all losses)</td></tr>
+            <tr><td style="padding: 4px 8px;">Learned rotations R used in output</td>
+                <td style="text-align: center; padding: 4px 8px; color: #d62728;"><strong>NO &mdash; R discarded at line 729</strong></td></tr>
+          </table>
+          <p style="font-size: 0.92em; line-height: 1.55; margin: 8px 0;">
+            <strong>Root cause:</strong> The denoiser outputs <code>x0_pred = t_vec</code> (translations only). The learned frame
+            rotations R from 6 IPA layers are <strong>discarded</strong>. FAPE loss rebuilds frames from output coordinates via
+            Gram-Schmidt, so all FAPE gradient flows through the <strong>translation</strong> path. The rotation quaternion outputs
+            in the last IPA layer receive <strong>zero gradient</strong> (R is never used after the last layer). Earlier layers get
+            weak, second-order rotation gradient through IPA point attention.
+            <br><br>
+            The model learns translations well (dist_mse &darr;60%) but rotations are unsupervised.
+            IPA runs as a fancy EGNN &mdash; exactly the same failure mode as v10.
+          </p>
+          <strong>v11b Fix (implemented, ready to submit):</strong>
+          <ol style="font-size: 0.92em; margin: 6px 0 6px 18px; line-height: 1.55;">
+            <li><strong>frame_rotation_loss</strong> (w=0.5): Direct angular distance between learned R and Gram-Schmidt
+                ground truth. Gives rotation path first-order gradient signal.</li>
+            <li><strong>fape_loss_with_frames</strong>: FAPE computed using learned R_pred instead of rebuilding from coords.
+                FAPE gradients now flow through both rotation AND translation paths.</li>
+            <li><strong>Denoiser returns (x0_pred, R)</strong>: Learned rotations are no longer discarded.</li>
+            <li>LR = 2e-5 (halved), SC = 0.25 (halved). Rollback to E10 best weights.</li>
+          </ol>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 14:32 UTC
+          Last updated: 2026-03-09 15:30 UTC &mdash; v11 stopped, v11b fix ready
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
