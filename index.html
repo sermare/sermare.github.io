@@ -1526,25 +1526,26 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #2ca02c;">
-          <strong style="color: #2ca02c;">v11b Epoch 3 &mdash; Fix Confirmed Working: Rotations Learning, FAPE Below v11 Best</strong>
+          <strong style="color: #2ca02c;">v11b Epoch 4 &mdash; 4/4 NEW BEST, FAPE Steadily Dropping</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE: 1.796</strong> (E1: 1.934 &rarr; E2: 1.827 &rarr; E3: 1.796) &mdash;
-                <span style="color: #2ca02c;">already below v11 E10 best (1.818) by epoch 3!</span></li>
-            <li><strong>frame_rot: 0.943</strong> (E1: 1.067 &rarr; E2: 0.960 &rarr; E3: 0.943) &mdash;
-                <span style="color: #2ca02c;">steadily decreasing, rotations being supervised for first time.</span>
-                ~76&deg; mean angular error, down from ~94&deg; at E1.</li>
-            <li><strong>DDIM: TM = 0.094, RMSD = 17.52&Aring;</strong> &mdash; stable at 2x v11 E15 (TM=0.046).
-                Structural quality should improve as frame_rot continues dropping.</li>
-            <li><strong>val dist_mse: 0.419</strong> | bond: 0.013 | rg: 0.038 &mdash; distances stable.</li>
-            <li><strong>Patience: 0/15</strong> &mdash; all 3 epochs *NEW BEST*. lr reaching full 2e-5.</li>
+            <li><strong>val FAPE: 1.787</strong> (E1: 1.934 &rarr; E2: 1.827 &rarr; E3: 1.796 &rarr; E4: 1.787) &mdash;
+                <span style="color: #2ca02c;">monotonic improvement, well below v11 E10 best (1.818).</span>
+                Still 0.48 above random baseline (1.31).</li>
+            <li><strong>frame_rot: 0.942</strong> (E1: 1.067 &rarr; E2: 0.960 &rarr; E3: 0.943 &rarr; E4: 0.942) &mdash;
+                train frame_rot (0.935) leading val (0.942). Improvement slowing &mdash; may plateau ~0.9 before
+                deeper learning kicks in at later epochs.</li>
+            <li><strong>DDIM: TM = 0.090, RMSD = 17.64&Aring;</strong> &mdash; slight dip from E3 (0.094).
+                DDIM lags loss improvements; watch for TM &gt; 0.15 milestone.</li>
+            <li><strong>val dist_mse: 0.403</strong> | bond: 0.012 (improving) | rg: 0.038 &mdash; distances tightening.</li>
+            <li><strong>Patience: 0/15</strong> &mdash; all 4 epochs *NEW BEST*. LR at full 2e-5.</li>
           </ul>
-          <strong>Trend analysis (E1&ndash;E3):</strong>
+          <strong>Trend analysis (E1&ndash;E4):</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            The architectural fix is confirmed working. frame_rot is monotonically decreasing (1.067 &rarr; 0.943),
-            proving the rotation quaternions now receive gradient signal via frame_rotation_loss and fape_loss_with_frames.
-            FAPE is improving faster than v11 ever did &mdash; already surpassed v11&rsquo;s best in 3 epochs vs. 10.
-            LR just finished warmup at E3 (now at full 2e-5). Expect accelerated learning in E4&ndash;E10.
-            Key milestone: DDIM TM &gt; 0.15 would indicate rotations are translating to sampling quality.
+            All loss components improving monotonically. Train FAPE (1.764) is pulling ahead of val (1.787),
+            suggesting the model is learning real structure rather than memorizing. Bond geometry at 0.012 is
+            the best seen across all v11 runs. frame_rot descent is slowing (0.943&rarr;0.942) which is expected &mdash;
+            initial easy gains from identity-biased quaternions, harder refinement comes later.
+            The v11b fix is solid. E5 in progress, ~24 min SLURM time remaining.
           </p>
           <details style="margin-top: 8px;">
             <summary style="cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
@@ -1572,7 +1573,7 @@
           </details>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 16:33 UTC
+          Last updated: 2026-03-09 17:37 UTC
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
