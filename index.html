@@ -1154,12 +1154,12 @@
       <!-- Diffusion Model v11 -->
       <div class="training-card">
         <div class="training-card-header">
-          <h3 class="training-card-title">Protein Backbone Diffusion Model (Stage 2 &mdash; v11)</h3>
+          <h3 class="training-card-title">Protein Backbone Diffusion Model (Stage 2 &mdash; v11b)</h3>
           <span class="training-status status-active">Training</span>
         </div>
 
         <div class="training-goal">
-          <strong>Goal:</strong> Generate realistic protein backbone structures (C&alpha; coordinates) conditioned on sequence, using contact-aware embeddings from Stage 1. v11 replaces the EGNN denoiser with <strong>Invariant Point Attention (IPA)</strong> &mdash; the same architecture class used in AlphaFold2 and RFDiffusion.
+          <strong>Goal:</strong> Generate realistic protein backbone structures (C&alpha; coordinates) conditioned on sequence, using contact-aware embeddings from Stage 1. v11b uses <strong>Invariant Point Attention (IPA)</strong> with direct frame rotation supervision &mdash; fixing a critical bug where learned rotation matrices were discarded in v11.
         </div>
 
         <div class="training-details">
@@ -1169,7 +1169,7 @@
           </div>
           <div class="training-detail-item">
             <span class="detail-label">Training</span>
-            <span class="detail-value">Single A40 GPU (48 GB), batch_size=8, grad_accum=2 (eff=16), LR=5e-5 with 3-epoch warmup + cosine decay (no restarts), T=1000 timesteps, DDIM-50 eval every epoch</span>
+            <span class="detail-value">Single A40 GPU (48 GB), batch_size=8, grad_accum=2 (eff=16), LR=2e-5 with 3-epoch warmup + cosine decay, T=1000, DDIM-50 eval, SC=0.25, w_frame_rot=0.5</span>
           </div>
           <div class="training-detail-item">
             <span class="detail-label">Dataset</span>
@@ -1190,32 +1190,40 @@
         </div>
 
         <div class="training-observations" style="line-height: 1.55;">
-          <h4>v11 Key Changes</h4>
+          <h4>v11b Key Changes (from v11)</h4>
           <ul style="font-size: 0.92em;">
-            <li><strong>IPA denoiser</strong> &mdash; each block does: invariant point attention (scalar + 3D point Q/K/V in local frames + pair bias) &rarr; transition MLP &rarr; frame update (quaternion + translation, identity-biased init, composed in local frame for SE(3) equivariance)</li>
-            <li><strong>Fixed-scale coordinates</strong> &mdash; divide by 10&Aring; instead of per-protein Rg normalization (eliminates protein-size-dependent noise schedule bias)</li>
-            <li><strong>SNR-gated frame initialization</strong> &mdash; Gram-Schmidt frames from C&alpha; at low noise, smooth slerp to identity at high noise where coordinates are near-isotropic</li>
-            <li><strong>Frame-aware self-conditioning</strong> &mdash; 50% of steps: build clean frames from previous x<sub>0</sub> prediction as initial frames for IPA refinement</li>
-            <li><strong>Independent aux pair stack</strong> (64-dim, 2 layers) with <strong>ordinal regression</strong> (32 bins) &mdash; fixes v10&rsquo;s feature-drift divergence where the detached DistanceHead saw a drifting pair representation</li>
+            <li><strong>Frame rotation loss (w=0.5)</strong> &mdash; direct angular distance: <code>1 - cos(angle)</code> between learned R and Gram-Schmidt ground truth. Gives rotation quaternions direct gradient for the first time.</li>
+            <li><strong>FAPE with learned frames</strong> &mdash; <code>fape_loss_with_frames</code> uses R_pred from IPA layers instead of rebuilding from coordinates. The R &rarr; FAPE gradient path is now intact.</li>
+            <li><strong>LR halved</strong> &mdash; 2e-5 (from 5e-5) to prevent overshooting now that rotations receive gradient</li>
+            <li><strong>Self-conditioning reduced</strong> &mdash; SC probability 0.25 (from 0.5) to let the model learn from scratch more</li>
+            <li><strong>Initialized from v11 E10 best</strong> &mdash; EMA weights only, fresh optimizer + scheduler</li>
+          </ul>
+          <h4>v11 Architecture (shared with v11b)</h4>
+          <ul style="font-size: 0.92em;">
+            <li><strong>IPA denoiser</strong> &mdash; each block: invariant point attention (scalar + 3D point Q/K/V in local frames + pair bias) &rarr; transition MLP &rarr; frame update (quaternion + translation, identity-biased init, composed in local frame for SE(3) equivariance)</li>
+            <li><strong>Fixed-scale coordinates</strong> &mdash; divide by 10&Aring; instead of per-protein Rg normalization</li>
+            <li><strong>SNR-gated frame initialization</strong> &mdash; Gram-Schmidt frames from C&alpha; at low noise, slerp to identity at high noise</li>
+            <li><strong>Independent aux pair stack</strong> (64-dim, 2 layers) with <strong>ordinal regression</strong> (32 bins)</li>
           </ul>
         </div>
 
         <div class="training-observations" style="line-height: 1.55;">
-          <h4>v11 Loss Weights</h4>
+          <h4>v11b Loss Weights</h4>
           <table style="font-size: 0.88em; margin: 8px 0; border-collapse: collapse; width: 100%;">
             <thead>
               <tr style="border-bottom: 1px solid var(--border);">
                 <th style="text-align: left; padding: 4px 8px;">Loss</th>
-                <th style="text-align: center; padding: 4px 8px;">v10</th>
                 <th style="text-align: center; padding: 4px 8px;">v11</th>
+                <th style="text-align: center; padding: 4px 8px;">v11b</th>
                 <th style="text-align: left; padding: 4px 8px;">Rationale</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td style="padding: 3px 8px;">FAPE</td><td style="text-align:center;">0.3</td><td style="text-align:center;"><strong>1.0</strong></td><td style="padding: 3px 8px;">IPA can actually optimize frame consistency</td></tr>
-              <tr><td style="padding: 3px 8px;">Bond</td><td style="text-align:center;">5.0</td><td style="text-align:center;"><strong>3.0</strong></td><td style="padding: 3px 8px;">Gentler anneal (1&rarr;3), avoids tug-of-war</td></tr>
-              <tr><td style="padding: 3px 8px;">Clash</td><td style="text-align:center;">0.0</td><td style="text-align:center;"><strong>0.1</strong></td><td style="padding: 3px 8px;">Re-enabled: fixed-scale makes 3.8&Aring; threshold work</td></tr>
-              <tr><td style="padding: 3px 8px;">Aux dist</td><td style="text-align:center;">0.0</td><td style="text-align:center;"><strong>0.03</strong></td><td style="padding: 3px 8px;">Conservative start for new independent pair stack</td></tr>
+              <tr><td style="padding: 3px 8px;">FAPE (w/ learned R)</td><td style="text-align:center;">1.0</td><td style="text-align:center;">1.0</td><td style="padding: 3px 8px;">v11b uses learned R_pred instead of Gram-Schmidt rebuilt frames</td></tr>
+              <tr><td style="padding: 3px 8px;"><strong>Frame Rot</strong></td><td style="text-align:center;">&mdash;</td><td style="text-align:center;"><strong>0.5</strong></td><td style="padding: 3px 8px;">NEW: direct angular loss on learned R vs ground truth. The v11b fix.</td></tr>
+              <tr><td style="padding: 3px 8px;">Bond</td><td style="text-align:center;">3.0</td><td style="text-align:center;">3.0</td><td style="padding: 3px 8px;">&mdash;</td></tr>
+              <tr><td style="padding: 3px 8px;">Clash</td><td style="text-align:center;">0.1</td><td style="text-align:center;">0.1</td><td style="padding: 3px 8px;">&mdash;</td></tr>
+              <tr><td style="padding: 3px 8px;">Aux dist</td><td style="text-align:center;">0.03</td><td style="text-align:center;">0.03</td><td style="padding: 3px 8px;">&mdash;</td></tr>
               <tr><td style="padding: 3px 8px;">Dist MSE</td><td style="text-align:center;">1.0</td><td style="text-align:center;">1.0</td><td style="padding: 3px 8px;">&mdash;</td></tr>
               <tr><td style="padding: 3px 8px;">Chirality</td><td style="text-align:center;">0.1</td><td style="text-align:center;">0.1</td><td style="padding: 3px 8px;">&mdash;</td></tr>
               <tr><td style="padding: 3px 8px;">Angle</td><td style="text-align:center;">0.5</td><td style="text-align:center;">0.5</td><td style="padding: 3px 8px;">&mdash;</td></tr>
@@ -1224,14 +1232,14 @@
           </table>
         </div>
 
-        <!-- v11 Loss Curves -->
-        <h4 class="training-progress-heading">v11 Loss Curves (through Epoch 21)</h4>
+        <!-- v11b Loss Curves -->
+        <h4 class="training-progress-heading">v11b Loss Curves</h4>
         <div style="text-align: center; margin: 16px 0;">
-          <img src="data/training/v11_loss_curves.png" alt="V11 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+          <img src="data/training/v11b_loss_curves.png" alt="V11b diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
 
-        <!-- v11 Training Table -->
-        <h4 class="training-progress-heading">v11 Training Progress</h4>
+        <!-- v11b Training Table -->
+        <h4 class="training-progress-heading">v11b Training Progress</h4>
         <div class="training-table-wrapper">
           <table class="training-table">
             <thead>
@@ -1239,200 +1247,116 @@
                 <th>Epoch</th>
                 <th>Val Total</th>
                 <th>Val FAPE</th>
+                <th>Val Frame Rot</th>
                 <th>Val Dist MSE</th>
                 <th>Val Bond</th>
                 <th>Val Rg</th>
-                <th>Val Aux</th>
                 <th>DDIM TM</th>
                 <th>DDIM RMSD</th>
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody id="v11-tbody">
+            <tbody id="v11b-tbody">
               <tr>
                 <td>1</td>
-                <td>4.338</td>
-                <td>1.950</td>
-                <td>1.163</td>
-                <td>0.171</td>
-                <td>1.352</td>
-                <td>0.475</td>
-                <td>0.099</td>
-                <td>15.46&Aring;</td>
+                <td>3.057</td>
+                <td>1.934</td>
+                <td>1.067</td>
+                <td>0.409</td>
+                <td>0.015</td>
+                <td>0.038</td>
+                <td>0.094</td>
+                <td>17.22&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
               <tr>
                 <td>2</td>
-                <td>2.922</td>
-                <td>1.977</td>
-                <td>0.633</td>
-                <td>0.037</td>
-                <td>0.049</td>
-                <td>0.385</td>
-                <td>0.102</td>
-                <td>15.32&Aring;</td>
+                <td>2.860</td>
+                <td>1.827</td>
+                <td>0.960</td>
+                <td>0.382</td>
+                <td>0.014</td>
+                <td>0.038</td>
+                <td>0.093</td>
+                <td>17.44&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
               <tr>
                 <td>3</td>
-                <td>2.741</td>
-                <td>1.988</td>
-                <td>0.479</td>
-                <td>0.022</td>
-                <td>0.044</td>
-                <td>0.323</td>
-                <td>0.128</td>
-                <td>14.53&Aring;</td>
+                <td>2.852</td>
+                <td>1.796</td>
+                <td>0.943</td>
+                <td>0.419</td>
+                <td>0.013</td>
+                <td>0.038</td>
+                <td>0.094</td>
+                <td>17.52&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
               <tr>
                 <td>4</td>
-                <td>2.593</td>
-                <td>1.889</td>
-                <td>0.447</td>
-                <td>0.019</td>
-                <td>0.041</td>
-                <td>0.316</td>
-                <td>0.088</td>
-                <td>17.89&Aring;</td>
+                <td>2.823</td>
+                <td>1.787</td>
+                <td>0.942</td>
+                <td>0.403</td>
+                <td>0.012</td>
+                <td>0.038</td>
+                <td>0.090</td>
+                <td>17.64&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
               <tr>
                 <td>5</td>
-                <td>2.602</td>
-                <td>1.892</td>
-                <td>0.463</td>
-                <td>0.020</td>
-                <td>0.040</td>
-                <td>0.469</td>
-                <td>0.088</td>
-                <td>17.73&Aring;</td>
-                <td><span class="tag tag-pat">pat 1</span></td>
-              </tr>
-              <tr>
-                <td>6</td>
-                <td>2.558</td>
-                <td>1.865</td>
-                <td>0.448</td>
-                <td>0.019</td>
-                <td>0.039</td>
-                <td>0.488</td>
-                <td>0.095</td>
-                <td>17.24&Aring;</td>
+                <td>2.736</td>
+                <td>1.756</td>
+                <td style="color: #2ca02c; font-weight: bold;">0.888</td>
+                <td>0.384</td>
+                <td style="color: #2ca02c; font-weight: bold;">0.010</td>
+                <td>0.038</td>
+                <td>0.091</td>
+                <td>17.62&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
-              <tr>
-                <td>7</td>
-                <td>2.544</td>
-                <td>1.885</td>
-                <td>0.422</td>
-                <td>0.016</td>
-                <td>0.038</td>
-                <td>0.488</td>
-                <td>0.094</td>
-                <td>17.37&Aring;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>8</td>
-                <td>2.507</td>
-                <td>1.849</td>
-                <td>0.416</td>
-                <td>0.016</td>
-                <td>0.038</td>
-                <td>0.488</td>
-                <td>0.093</td>
-                <td>17.46&Aring;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr>
-                <td>9</td>
-                <td>2.514</td>
-                <td>1.837</td>
-                <td>0.430</td>
-                <td>0.018</td>
-                <td>0.038</td>
-                <td>0.488</td>
-                <td>0.090</td>
-                <td>17.80&Aring;</td>
-                <td><span class="tag tag-pat">pat 1</span></td>
-              </tr>
-              <tr>
-                <td>10</td>
-                <td>2.431</td>
-                <td>1.818</td>
-                <td>0.382</td>
-                <td>0.015</td>
-                <td>0.038</td>
-                <td>0.488</td>
-                <td>0.087</td>
-                <td>18.34&Aring;</td>
-                <td><span class="tag tag-best">NEW BEST</span></td>
-              </tr>
-              <tr style="background: rgba(214, 39, 40, 0.06);">
-                <td>11</td>
-                <td>2.677</td>
-                <td>1.984</td>
-                <td>0.455</td>
-                <td>0.015</td>
-                <td>0.037</td>
-                <td>0.488</td>
-                <td>0.081</td>
-                <td>18.71&Aring;</td>
-                <td><span class="tag tag-pat">pat 1</span></td>
-              </tr>
-              <tr style="background: rgba(214, 39, 40, 0.08);">
-                <td>12</td>
-                <td>2.707</td>
-                <td>2.022</td>
-                <td>0.426</td>
-                <td>0.019</td>
-                <td>0.037</td>
-                <td>0.488</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 2</span></td>
-              </tr>
-              <tr style="background: rgba(214, 39, 40, 0.08);">
-                <td>13</td>
-                <td>2.539</td>
-                <td>1.919</td>
-                <td>0.380</td>
-                <td>0.016</td>
-                <td>0.037</td>
-                <td>0.488</td>
-                <td>0.053</td>
-                <td>23.97&Aring;</td>
-                <td><span class="tag tag-pat">pat 3</span></td>
-              </tr>
-              <tr style="background: rgba(214, 39, 40, 0.08);">
-                <td>14</td>
-                <td>2.651</td>
-                <td>1.976</td>
-                <td>0.428</td>
-                <td>0.017</td>
-                <td>0.037</td>
-                <td>0.488</td>
-                <td>0.053</td>
-                <td>23.66&Aring;</td>
-                <td><span class="tag tag-pat">pat 4</span></td>
-              </tr>
-              <tr style="background: rgba(214, 39, 40, 0.12);">
-                <td>15</td>
-                <td>2.726</td>
-                <td style="color: #d62728; font-weight: bold;">2.052</td>
-                <td>0.411</td>
-                <td>0.019</td>
-                <td>0.042</td>
-                <td>0.488</td>
-                <td style="color: #d62728; font-weight: bold;">0.046</td>
-                <td>24.80&Aring;</td>
-                <td><span class="tag tag-pat">pat 5</span></td>
-              </tr>
-              <!-- v11 training stopped after E15 — architectural fix needed -->
             </tbody>
           </table>
         </div>
+
+        <!-- v11 Historical Results (collapsed) -->
+        <details style="margin-top: 20px; border: 1px solid var(--border); border-radius: 6px; padding: 0;">
+          <summary style="padding: 10px 14px; cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
+            v11 Historical Results (15 epochs, no frame rotation supervision &mdash; superseded)
+          </summary>
+          <div style="padding: 10px 14px;">
+            <p style="font-size: 0.88em; color: var(--text-secondary); line-height: 1.5;">
+              v11 used the same IPA architecture but had a critical bug: <code>x0_pred = t_vec</code> discarded
+              learned rotation matrices R. FAPE rebuilt frames from coordinates via Gram-Schmidt, so rotation
+              quaternions received no direct gradient. FAPE peaked at 1.818 (E10) then degraded to 2.052 (E15).
+              DDIM TM-score collapsed from 0.095 to 0.046. Stopped after E15 for architectural fix.
+            </p>
+            <h4 class="training-progress-heading" style="margin-top: 12px;">v11 Loss Curves</h4>
+            <div style="text-align: center; margin: 12px 0;">
+              <img src="data/training/v11_loss_curves.png" alt="V11 diffusion training loss curves (historical)" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+            </div>
+            <h4 class="training-progress-heading" style="margin-top: 12px;">v11 Training Table (E1&ndash;E15)</h4>
+            <div class="training-table-wrapper">
+              <table class="training-table" style="font-size: 0.85em;">
+                <thead>
+                  <tr>
+                    <th>Epoch</th><th>Val Total</th><th>Val FAPE</th><th>Val Dist</th><th>Val Bond</th><th>DDIM TM</th><th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>4.338</td><td>1.950</td><td>1.163</td><td>0.171</td><td>0.099</td><td><span class="tag tag-best">BEST</span></td></tr>
+                  <tr><td>3</td><td>2.741</td><td>1.988</td><td>0.479</td><td>0.022</td><td>0.128</td><td><span class="tag tag-best">BEST</span></td></tr>
+                  <tr><td>6</td><td>2.558</td><td>1.865</td><td>0.448</td><td>0.019</td><td>0.095</td><td><span class="tag tag-best">BEST</span></td></tr>
+                  <tr><td>10</td><td>2.431</td><td>1.818</td><td>0.382</td><td>0.015</td><td>0.087</td><td><span class="tag tag-best">BEST (peak)</span></td></tr>
+                  <tr style="background: rgba(214, 39, 40, 0.08);"><td>13</td><td>2.539</td><td>1.919</td><td>0.380</td><td>0.016</td><td>0.053</td><td><span class="tag tag-pat">pat 3</span></td></tr>
+                  <tr style="background: rgba(214, 39, 40, 0.12);"><td>15</td><td>2.726</td><td style="color: #d62728;">2.052</td><td>0.411</td><td>0.019</td><td style="color: #d62728;">0.046</td><td><span class="tag tag-pat">pat 5 (stopped)</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
 
         <!-- v11 Loss Reference -->
         <div class="training-observations" style="margin: 16px 0;">
@@ -1575,7 +1499,7 @@
           </details>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 17:04 UTC
+          Last updated: 2026-03-09 18:15 UTC
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
