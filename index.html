@@ -1297,6 +1297,18 @@
                 <td>17.89&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
+              <tr>
+                <td>5</td>
+                <td>2.602</td>
+                <td>1.892</td>
+                <td>0.463</td>
+                <td>0.020</td>
+                <td>0.040</td>
+                <td>0.469</td>
+                <td>0.088</td>
+                <td>17.73&Aring;</td>
+                <td><span class="tag tag-pat">pat 1</span></td>
+              </tr>
               <!-- New epochs will be added here by monitoring -->
             </tbody>
           </table>
@@ -1394,26 +1406,35 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status">
-          <strong>v11 Epoch 4 &mdash; First FAPE Improvement</strong>
+          <strong>v11 Epoch 5 &mdash; Phase 1 Checkpoint</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE: 1.950 &rarr; 1.977 &rarr; 1.988 &rarr; 1.889</strong> &mdash; first real FAPE drop! Broke below 1.9
-                for the first time. After 3 epochs of plateau (learning distances/compactness), the IPA frames are now improving.
-                This is the signal we needed &mdash; v10 never achieved this.</li>
-            <li><strong>val dist_mse: 1.163 &rarr; 0.479 &rarr; 0.447</strong> &mdash; 62% below E1, still improving.</li>
-            <li><strong>val total: 4.338 &rarr; 2.593</strong> &mdash; 40% drop over 4 epochs, all NEW BEST.</li>
-            <li><strong>val chirality: 0.509 &rarr; 0.488</strong> &mdash; starting to learn backbone handedness.</li>
-            <li><strong>val aux: 0.475 &rarr; 0.316</strong> &mdash; ordinal regression stable and improving (no v10-style divergence).</li>
-            <li><strong>DDIM: TM = 0.128 &rarr; 0.088, RMSD = 14.53 &rarr; 17.89&Aring;</strong> &mdash; sampling quality regressed
-                this epoch. DDIM metrics are noisy (small val set) and can fluctuate. The loss improvements (especially FAPE) are the
-                more reliable signal. If FAPE continues dropping, DDIM will follow.</li>
+            <li><strong>val FAPE: 1.950 &rarr; 1.988 &rarr; 1.889 &rarr; 1.892</strong> &mdash; E4 dipped to 1.889 (best), E5 flat at
+                1.892. FAPE is 3.1% below E1 &mdash; short of the 10% target by E5. However, train FAPE (1.871) is pulling ahead,
+                suggesting the model <em>is</em> learning frame consistency but hasn&rsquo;t generalized yet.</li>
+            <li><strong>val dist_mse: 1.163 &rarr; 0.447 &rarr; 0.463</strong> &mdash; slight uptick at E5 but 60% below E1. Distance
+                learning may be saturating in this early regime.</li>
+            <li><strong>val aux: 0.316 &rarr; 0.469</strong> &mdash; jumped up at E5. Ordinal regression loss increased by 48%.
+                Not v10-style exponential divergence (that reached 40+), but needs monitoring. Independent pair stack should
+                prevent catastrophic feedback, but feature distribution could be shifting.</li>
+            <li><strong>DDIM: TM = 0.088 (E4-E5), RMSD = 17.73&Aring;</strong> &mdash; stalled at E3&rsquo;s regression level.
+                Sampling quality hasn&rsquo;t recovered from E3&rsquo;s peak (TM=0.128). Concerning if this persists past E7.</li>
+            <li><strong>Patience: 1/15</strong> &mdash; first non-best epoch. val total 2.602 vs best 2.584.</li>
           </ul>
-          <strong>Assessment:</strong> The FAPE drop at E4 is the most important event so far. v10&rsquo;s EGNN never moved FAPE below
-          ~1.95 (its E1 value was already near ceiling). v11&rsquo;s IPA is now actively improving frame consistency. The DDIM regression
-          is a noisy fluctuation &mdash; not concerning given the strong loss trajectory. All 4 epochs NEW BEST. Patience 0/15.
-          E5 in progress (~21 min remaining in SLURM allocation).
+          <strong>Hourly Analysis (E1&ndash;E5, ~1.5 hours elapsed):</strong>
+          <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
+            The training is in a <em>transition phase</em>. E1&ndash;E3 showed rapid convergence of distance, bond, and compactness
+            losses (the &ldquo;easy wins&rdquo; phase). E4 gave the first FAPE improvement, suggesting frame learning is beginning.
+            E5 plateaued &mdash; this is normal: LR just reached peak and cosine decay is starting, and the model may need several
+            more epochs to consolidate frame learning before FAPE drops further. The aux loss jump at E5 needs watching but is not
+            yet alarming (v10&rsquo;s divergence was 10x worse by the same stage).
+            <br><br>
+            <strong>Tripwire status:</strong> FAPE at 3.1% below E1 vs 10% target by E5 &mdash; below target but showing the right
+            direction. Will escalate if FAPE hasn&rsquo;t reached 1.75 (~10% below E1) by E8. DDIM TM stalled at 0.088 &mdash; need
+            recovery above 0.10 by E7. Auto-resubmit working correctly (job 32385342 running E6).
+          </p>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 11:00 UTC &mdash; E4 complete, E5 in progress
+          Last updated: 2026-03-09 11:30 UTC &mdash; E5 complete, E6 in progress (job 32385342)
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
