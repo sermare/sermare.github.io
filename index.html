@@ -1215,6 +1215,8 @@
             <li>Clash loss removed entirely (was broken in Rg-normalized coordinate space: 3.0&Aring; threshold mapped to ~30&Aring; real space, penalizing nearly all atom pairs with noise)</li>
             <li>FAPE now uses all residues as targets (was random 16 out of 125, causing high gradient variance epoch-to-epoch)</li>
             <li><s>DistanceHead pair input undetached</s> &mdash; <strong>reverted at E5</strong> (see incident report below)</li>
+            <li>Auxiliary distance CE disabled (<code>w_aux=0.0</code>) at E15 &mdash; pair representation drift caused exponential divergence (see second incident report below)</li>
+            <li>Patience tracking switched to structural-only loss (excludes aux contribution) to prevent inflated val_total from triggering premature early stopping</li>
             <li>All prior fixes retained: reversed bond annealing (low&rarr;high over 15 epochs), dx_clamp=0.5, tighter loss clamping, 5-epoch linear warmup + cosine restarts</li>
           </ul>
         </div>
@@ -1248,12 +1250,54 @@
             to enable partial end-to-end training without instability.
           </p>
         </div>
+
+        <div class="training-observations" style="border-left: 3px solid #ff7f0e; padding-left: 14px; margin: 16px 0;">
+          <h4>Incident Report: Second aux_dist_ce Divergence &amp; Resolution (E14&ndash;E16)</h4>
+          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
+            <strong>What happened:</strong> After the pair detach fix stabilized training through E13, aux_dist_ce began diverging
+            again at E14: 8.9 &rarr; 17.5 &rarr; 38.8 (doubling every epoch). Structural losses remained stable and excellent
+            (dst=0.22, fape=1.35, bond=0.006), confirming this was isolated to the DistanceHead.
+          </p>
+          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
+            <strong>Root cause:</strong> Feature distribution shift. The pair representation is detached before the DistanceHead, so
+            no gradient flows back &mdash; but the pair stack continued evolving via structural losses (dist_mse, FAPE). During the
+            "topology learning phase" (E10&ndash;E13), FAPE began breaking below random, causing rapid pair representation changes. The
+            DistanceHead's learned feature&rarr;bin mapping became stale, producing confidently wrong predictions (CE &gg; ln(96) = 4.56).
+            This is analogous to a classifier trained on features from a "frozen" encoder where the encoder is actually being updated
+            by a different objective.
+          </p>
+          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
+            <strong>Impact:</strong> Even at the reduced weight of <code>w_aux=0.03</code>, the contribution to total loss grew from
+            0.27 (E14) to 1.16 (E16), exceeding the structural loss (~0.83). This inflated val_total and corrupted patience tracking,
+            threatening premature early stopping despite continued structural improvement.
+          </p>
+          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
+            <strong>Fix applied (E15):</strong>
+          </p>
+          <ul style="margin: 4px 0 6px 16px; font-size: 0.92em; line-height: 1.55;">
+            <li>Set <code>w_aux=0.0</code> &mdash; aux_dist_ce removed from loss entirely</li>
+            <li>Patience tracking switched to structural-only loss: <code>val_structural = val_total - w_aux * aux_dist_ce</code></li>
+            <li>Rolled back to E14 checkpoint, reset <code>best_val=0.808</code> (structural-only), <code>patience=0</code></li>
+            <li>aux_dist_ce still computed and logged as a free diagnostic</li>
+          </ul>
+          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
+            <strong>Result:</strong> E15 (first epoch post-fix) set a new best with <code>val_structural=0.807</code>. Training total
+            dropped from 1.787 (E16 with aux) to 0.821, reflecting pure structural signal. DDIM metrics: TM=0.129, RMSD=14.53&Aring;.
+          </p>
+          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
+            <strong>Lesson:</strong> Auxiliary heads that passively observe evolving representations via stop-gradient are inherently
+            fragile. The DistanceHead architecture requires either (a) its own independent pair stack with end-to-end training, or (b) a
+            loss function robust to feature drift (e.g., ordinal regression or soft-label CE instead of hard 96-bin classification).
+            Planned for v11.
+          </p>
+        </div>
+
         <div class="training-table-wrapper">
           <table class="training-table">
             <thead>
               <tr>
                 <th>Epoch</th>
-                <th>Val Total</th>
+                <th>Val Structural</th>
                 <th>Val Dist MSE</th>
                 <th>Val FAPE</th>
                 <th>Val Rg Loss</th>
@@ -1407,16 +1451,27 @@
                 <td>&mdash;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
-              <tr>
+              <tr style="border-top: 2px solid var(--border);">
                 <td>14</td>
-                <td>2.190</td>
-                <td>0.228</td>
-                <td>1.321</td>
+                <td>0.808</td>
+                <td>0.220</td>
+                <td>1.324</td>
                 <td>0.035</td>
                 <td>0.006</td>
                 <td>&mdash;</td>
                 <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 1</span></td>
+                <td><span class="tag tag-best">NEW BEST</span> <span style="font-size:0.75em; color:var(--text-secondary);">w_aux&rarr;0.0</span></td>
+              </tr>
+              <tr>
+                <td>15</td>
+                <td>0.807</td>
+                <td>0.217</td>
+                <td>1.350</td>
+                <td>0.035</td>
+                <td>0.006</td>
+                <td>14.53&Aring;</td>
+                <td>0.129</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
               </tbody>
           </table>
@@ -1443,75 +1498,75 @@
               </thead>
               <tbody>
                 <tr>
-                  <td><strong>Total</strong></td>
+                  <td><strong>Structural</strong></td>
                   <td>&Sigma;</td>
                   <td>weighted</td>
                   <td>~2.94</td>
-                  <td>2.053 &darr;</td>
-                  <td>Weighted sum of all components below. &darr; = learning to denoise backbones.</td>
+                  <td>0.807 &darr;</td>
+                  <td>Weighted sum of structural components (excludes aux). Since E15, patience tracks this metric.</td>
                 </tr>
                 <tr>
                   <td><strong>Dist MSE</strong></td>
                   <td>1.0</td>
                   <td>MSE</td>
                   <td>~0.54</td>
-                  <td>0.241 &darr;</td>
-                  <td>Pairwise C&alpha; distance error. &lt;0.1 = sub-&Aring; accuracy.</td>
+                  <td>0.217 &darr;</td>
+                  <td>Pairwise C&alpha; distance error. 60% below random. &lt;0.1 = sub-&Aring; accuracy.</td>
                 </tr>
                 <tr>
                   <td><strong>Bond</strong></td>
                   <td>5.0*</td>
                   <td>MSE</td>
                   <td>~0.17</td>
-                  <td>0.008 &darr;</td>
-                  <td>C&alpha;&ndash;C&alpha; bond length error. &lt;0.02 = within 0.1&Aring; of 3.8&Aring;. *annealed 1&rarr;5 over 15 epochs.</td>
+                  <td>0.006 &darr;</td>
+                  <td>C&alpha;&ndash;C&alpha; bond length error. Essentially solved. *annealed 1&rarr;5 over 15 epochs.</td>
                 </tr>
                 <tr>
                   <td><strong>FAPE</strong></td>
                   <td>0.3</td>
                   <td>L1</td>
                   <td>~1.31</td>
-                  <td>1.301 &darr;</td>
-                  <td>Frame-aligned position error (all residues). Just broke below random (1.31) &mdash; topology learning starting. Drops &lt;1.0 with correct folds.</td>
+                  <td>1.324 &darr;</td>
+                  <td>Frame-aligned position error (all residues). Just below random &mdash; topology learning starting. Drops &lt;1.0 with correct folds.</td>
                 </tr>
                 <tr>
                   <td><strong>Rg</strong></td>
                   <td>0.5</td>
                   <td>MSE</td>
                   <td>~0.23</td>
-                  <td>0.037 &darr;</td>
-                  <td>Radius of gyration error. &lt;0.05 = correct protein size/compactness.</td>
+                  <td>0.035 &darr;</td>
+                  <td>Radius of gyration error. Well-learned, correct protein size/compactness.</td>
                 </tr>
                 <tr>
                   <td><strong>Chirality</strong></td>
                   <td>0.1</td>
                   <td>MSE</td>
                   <td>~0.54</td>
-                  <td>0.485 &darr;</td>
-                  <td>Signed volume (dihedral handedness) of CA quartets. Normalized to [&minus;1, 1].</td>
+                  <td>0.482 &darr;</td>
+                  <td>Signed volume (dihedral handedness) of CA quartets. 11% below random.</td>
                 </tr>
                 <tr>
                   <td><strong>Angle</strong></td>
                   <td>0.5</td>
                   <td>MSE</td>
                   <td>~0.70</td>
-                  <td>0.290 &darr;</td>
-                  <td>CA&ndash;CA&ndash;CA bond angle error (cosine). &lt;0.1 = correct backbone angles.</td>
+                  <td>0.181 &darr;</td>
+                  <td>CA&ndash;CA&ndash;CA bond angle error (cosine). 74% below random, excellent.</td>
                 </tr>
-                <tr>
+                <tr style="color: var(--text-secondary);">
                   <td><strong>Aux Dist CE</strong></td>
-                  <td>0.03</td>
+                  <td>0.0</td>
                   <td>CE</td>
                   <td>ln(96) = 4.56</td>
-                  <td>3.95 &darr;</td>
-                  <td>CE over 96 distance bins (2&ndash;40&Aring;). Pair detached. Reduced 0.3&rarr;0.03 after E14 spikes.</td>
+                  <td>3.95 (--)</td>
+                  <td>Disabled at E15. Logged only. Diverged due to pair representation drift (see incident report). Was 0.3&rarr;0.03&rarr;0.0.</td>
                 </tr>
                 <tr style="color: var(--text-secondary);">
                   <td><strong>Clash</strong></td>
                   <td>0.0</td>
                   <td>penalty</td>
                   <td>~14.0</td>
-                  <td>11.9 (--)</td>
+                  <td>11.6 (--)</td>
                   <td>Logged but not in loss (w=0). Disabled: 3&Aring; threshold in Rg-space maps to ~30&Aring; real.</td>
                 </tr>
                 <tr>
@@ -1519,7 +1574,7 @@
                   <td>&mdash;</td>
                   <td>DDIM</td>
                   <td>~0.10</td>
-                  <td>0.125 &uarr;</td>
+                  <td>0.131 &uarr;</td>
                   <td>50-step DDIM sampling. &gt;0.17 = recognizable folds. Target: &gt;0.30.</td>
                 </tr>
                 <tr>
@@ -1527,7 +1582,7 @@
                   <td>&mdash;</td>
                   <td>DDIM</td>
                   <td>~15.5&Aring;</td>
-                  <td>14.92&Aring; &darr;</td>
+                  <td>14.53&Aring; &darr;</td>
                   <td>&lt;10&Aring; = partial fold. &lt;5&Aring; = high quality.</td>
                 </tr>
               </tbody>
@@ -1535,16 +1590,16 @@
           </div>
         </div>
 
-        <h4 class="training-progress-heading">Loss Curves (through Epoch 13)</h4>
+        <h4 class="training-progress-heading">Loss Curves (through Epoch 15)</h4>
         <div style="text-align: center; margin: 16px 0;">
           <img src="data/training/v10_loss_curves.png" alt="V10 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
 
         <div class="training-pending-note" id="v9-run2-status">
-          v10: 13 epochs completed. Best val loss: 2.006 at epoch 13. Patience: 0/15. Best DDIM TM-score: 0.131 (E12). aux weight reduced 0.3&rarr;0.03 after E14&ndash;E15 spikes; restarting from E13 checkpoint. Running on single A40 GPU (savio3) with auto-resume.
+          v10: 15 epochs completed. Best val structural loss: 0.807 at epoch 15. Patience: 0/15. Best DDIM TM-score: 0.131 (E12). aux_dist_ce disabled (w=0.0) at E15 after exponential divergence due to pair representation drift; patience now tracks structural-only loss. Running on single A40 GPU (savio3) with auto-resume.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-08 20:45 UTC
+          Last updated: 2026-03-09 06:30 UTC
         </div>
       </div>
 
@@ -1576,7 +1631,7 @@
           $$\mathcal{L}_{\text{total}} = w_{\text{dist}} \cdot \mathcal{L}_{\text{dist}} + \beta(e) \cdot \mathcal{L}_{\text{bond}} + w_{\text{aux}} \cdot \mathcal{L}_{\text{aux}} + w_{\chi} \cdot \mathcal{L}_{\chi} + w_{\theta} \cdot \mathcal{L}_{\theta} + w_{\text{fape}} \cdot \mathcal{L}_{\text{fape}} + w_{\text{rg}} \cdot \mathcal{L}_{\text{rg}}$$
         </div>
         <p style="font-size: 0.88em; color: var(--text-secondary);">
-          Clash loss is logged but excluded (\(w_{\text{clash}} = 0\)). See incident report for rationale.
+          Clash loss and auxiliary distance CE are logged but excluded (\(w_{\text{clash}} = 0\), \(w_{\text{aux}} = 0\)). See incident reports for rationale.
         </p>
       </div>
 
@@ -1690,7 +1745,7 @@
       </div>
 
       <div class="training-observations" style="line-height: 1.7;">
-        <h4>7. Auxiliary Distance Cross-Entropy &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w_{\text{aux}} = 0.03\)</span></h4>
+        <h4>7. Auxiliary Distance Cross-Entropy &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w_{\text{aux}} = 0.0\) (disabled)</span></h4>
         <p style="font-size: 0.93em;">
           Cross-entropy loss on binned pairwise distances, predicted by a DistanceHead MLP from the
           <strong>detached</strong> pair representation:
@@ -1710,8 +1765,10 @@
         </p>
         <p style="font-size: 0.88em; color: var(--text-secondary);">
           <strong>Random baseline:</strong> \(\ln(96) = 4.56\). A uniform predictor assigns \(1/96\) to each bin,
-          giving \(-\ln(1/96) = \ln(96)\). Originally weighted at 0.3; reduced to 0.03 after aux spikes at E14&ndash;E15
-          inflated the total loss.
+          giving \(-\ln(1/96) = \ln(96)\). Weight history: 0.3 (E1&ndash;E13) &rarr; 0.03 (E14) &rarr; 0.0 (E15+, disabled).
+          Disabled because the pair representation evolves via structural losses while the DistanceHead observes it
+          through a stop-gradient wall, causing irrecoverable feature drift and exponential CE divergence.
+          Still computed and logged as a diagnostic.
         </p>
       </div>
 
@@ -1749,7 +1806,7 @@
               <tr><td style="font-weight: 600;">Mixed precision</td><td>AMP with GradScaler, \(\texttt{dx\_clamp} = 0.5\)</td></tr>
               <tr><td style="font-weight: 600;">EMA</td><td>Decay = 0.999, used for DDIM evaluation</td></tr>
               <tr><td style="font-weight: 600;">Self-conditioning</td><td>50% probability during training</td></tr>
-              <tr><td style="font-weight: 600;">Early stopping</td><td>Patience = 15 epochs on val total loss</td></tr>
+              <tr><td style="font-weight: 600;">Early stopping</td><td>Patience = 15 epochs on val structural loss (excludes aux_dist_ce)</td></tr>
               <tr><td style="font-weight: 600;">DDIM evaluation</td><td>50 steps, every 3 epochs, using EMA weights</td></tr>
               <tr><td style="font-weight: 600;">Hardware</td><td>Single NVIDIA A40 (48 GB), ~15 min/epoch</td></tr>
               <tr><td style="font-weight: 600;">Dataset</td><td>CATH 4.3: 18,024 train / 608 val, max 125 residues</td></tr>
