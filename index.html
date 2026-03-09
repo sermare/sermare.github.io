@@ -1662,7 +1662,40 @@
         </div>
 
         <div class="training-pending-note" id="v9-run2-status">
-          v10: 21 epochs completed. Best val loss: 0.805 at epoch 16. Patience: 5/15. Running on single A40 GPU (savio3) with auto-resume.
+          <strong>v10 &rarr; v11 Architecture Pivot &mdash; Training launched:</strong>
+          After 21 epochs, v10 revealed a fundamental limitation: the EGNN denoiser learns pairwise distance
+          statistics well (dist_mse 60% below random) but <em>cannot learn protein topology</em>. FAPE never
+          broke below its random baseline (~1.31), and TM-score peaked at 0.131 (random ~0.10). The root cause:
+          EGNN has no inductive bias for local reference frames &mdash; it reasons about &ldquo;how far apart
+          should atoms be,&rdquo; not &ldquo;what does the local backbone geometry look like from this residue&rsquo;s
+          perspective.&rdquo;
+          <br><br>
+          <strong>v11 replaces EGNN with Invariant Point Attention (IPA)</strong> &mdash; the same architecture
+          class used in AlphaFold2 and RFDiffusion. Each IPA layer maintains per-residue rigid-body frames
+          (rotation + translation) and refines them through 3D point attention in local coordinate systems.
+          This directly gives the model the representational machinery that FAPE measures.
+          <br><br>
+          <strong>Key architectural changes:</strong>
+          <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
+            <li><strong>IPA denoiser</strong> (6 layers, 8 heads, 8 query points) replaces 8-layer EGNN</li>
+            <li><strong>Fixed-scale coordinates</strong> (divide by 10&Aring;) replaces per-protein Rg normalization
+                &mdash; eliminates protein-size-dependent noise schedule bias</li>
+            <li><strong>Independent aux pair stack</strong> (64-dim, 2 layers) with ordinal regression loss
+                &mdash; fixes the feature-drift divergence that killed v10&rsquo;s distance head</li>
+            <li><strong>SNR-gated frame initialization</strong> &mdash; Gram-Schmidt frames from C&alpha; at low noise,
+                smooth fallback to identity at high noise</li>
+            <li><strong>Frame-aware self-conditioning</strong> &mdash; previous x0 prediction provides clean frames
+                for IPA to refine, rather than building geometry from scratch</li>
+          </ul>
+          <strong>Loss weight changes:</strong> w_fape: 0.3&rarr;1.0 (IPA can actually optimize this),
+          w_bond: 5.0&rarr;3.0 (gentler anneal), w_clash: 0.0&rarr;0.1 (re-enabled in fixed-scale space).
+          <br><br>
+          <strong>Training config:</strong> LR 5e-5 (halved), cosine decay with no restarts (v10 restarts caused
+          pathological degradation), 1000 timesteps (was 200), DDIM eval every epoch.
+          8.4M params (7.2M trainable). Running on single A40.
+          <br><br>
+          <strong>v11 training launched</strong> &mdash; awaiting first epoch results. All correctness tests passed
+          pre-launch (SE(3) equivariance, gradient flow through frames, frame stability at high noise).
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
           Last updated: 2026-03-09 08:33 UTC
@@ -1673,7 +1706,159 @@
 
     <!-- ===== Model Details Tab ===== -->
     <div id="tab-details" class="tab-content">
-      <h3 class="section-heading">Diffusion v10 &mdash; Architecture &amp; Loss Function</h3>
+
+      <!-- ── v11 Architecture ── -->
+      <h3 class="section-heading">Diffusion v11 &mdash; IPA-Based Frame Denoising (Current)</h3>
+
+      <div class="training-observations" style="line-height: 1.7; border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
+        <h4>Why the Pivot from v10</h4>
+        <p style="font-size: 0.93em;">
+          v10 used an 8-layer EGNN denoiser that updates C&alpha; coordinates through distance-weighted
+          pairwise messages. After 21 epochs on CATH, it achieved dist_mse 60% below random
+          (learning &ldquo;proteins are compact blobs of the right size&rdquo;) but FAPE remained at
+          its random baseline (~1.31) and TM-score peaked at 0.131 (random ~0.10). The model could not
+          learn correct protein <em>topology</em>.
+        </p>
+        <p style="font-size: 0.93em;">
+          <strong>Root cause:</strong> EGNN has no concept of local reference frames. It passes messages
+          based on pairwise distances and updates coordinates through distance-weighted vectors. FAPE
+          measures frame-aligned point error &mdash; whether predicted local coordinate frames match ground
+          truth frames &mdash; which EGNN has no inductive bias to optimize. Increasing w_fape on the old
+          architecture means fighting the inductive bias.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>v11 Overview</h4>
+        <p style="font-size: 0.93em;">
+          v11 replaces the EGNN denoiser with an <strong>Invariant Point Attention (IPA)</strong> structure
+          module that explicitly maintains and refines per-residue rigid-body frames (rotation &isin; SO(3)
+          + translation &isin; &Ropf;&sup3;). The architecture class is the same used in AlphaFold2&rsquo;s
+          structure module and RFDiffusion. Everything upstream (frozen ContactClassifier encoder, pair stack,
+          Rg predictor) is carried forward from v10 &mdash; these components work.
+        </p>
+        <p style="font-size: 0.93em;">
+          8.4M total parameters (7.2M trainable, 1.2M frozen encoder). Training on CATH (18,024 train /
+          608 val, max 125 residues) on a single A40 GPU.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>IPA Denoiser (6 layers)</h4>
+        <p style="font-size: 0.93em;">
+          Each IPA block performs three operations:
+        </p>
+        <ol style="font-size: 0.93em; margin-left: 18px;">
+          <li><strong>Invariant Point Attention</strong> &mdash; standard multi-head attention on the single
+              representation, augmented with (a) pair bias from the contact-conditioned pair stack and
+              (b) 3D point attention: each head generates query/key/value points in &Ropf;&sup3; that are
+              transformed into each residue&rsquo;s local frame. Attention weights depend on geometric
+              distances between learned points &mdash; invariant to global rotation/translation.</li>
+          <li><strong>Transition MLP</strong> &mdash; 2-layer feedforward on the single representation.</li>
+          <li><strong>Frame update</strong> &mdash; predicts a small quaternion + translation update per residue,
+              composed in the local frame (right-multiplication for SE(3) equivariance). Initialized near-zero
+              so frames are approximately preserved in early training.</li>
+        </ol>
+        <p style="font-size: 0.93em;">
+          The pair representation is <em>static</em> through the IPA stack (not updated). If FAPE stalls
+          after E15, adding outer-product pair updates is the first planned intervention.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>SNR-Gated Frame Initialization</h4>
+        <p style="font-size: 0.93em;">
+          Per-residue rigid frames are built from noised C&alpha; coordinates via Gram-Schmidt
+          orthogonalization on consecutive backbone triplets. At high noise (&sigma;<sub>t</sub> where
+          SNR &lt; 1.0, roughly t &gt; 700), the noised coordinates are near-isotropic and Gram-Schmidt
+          is numerically unstable. The frame confidence mechanism smoothly blends toward identity frames:
+        </p>
+        <div style="overflow-x: auto; margin: 8px 0; font-size: 0.93em;">
+          $$\text{conf}(t) = \text{clamp}\!\left(\frac{\text{SNR}(t) - 0.2}{1.0 - 0.2},\, 0,\, 1\right), \qquad
+          R_{\text{init}} = \text{slerp}(I,\, R_{\text{GS}},\, \text{conf})$$
+        </div>
+        <p style="font-size: 0.93em;">
+          The first IPA layer&rsquo;s frame update is scaled by this confidence, so unreliable initial
+          frames at high noise are attenuated rather than propagated.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>Frame-Aware Self-Conditioning</h4>
+        <p style="font-size: 0.93em;">
+          50% of training steps: run a no-grad forward pass to get x<sub>0</sub><sup>prev</sup>, build clean
+          frames from it (treated as t=0), and use those as the initial frames for the second pass. At high
+          noise where x<sub>t</sub> frames are identity, self-conditioning provides the model&rsquo;s best
+          guess at clean local geometry &mdash; the IPA layers refine good frames instead of building them
+          from scratch. This is qualitatively more powerful than v10&rsquo;s coordinate-only self-conditioning.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>Fixed-Scale Coordinates</h4>
+        <p style="font-size: 0.93em;">
+          v11 replaces per-protein Rg normalization with division by a fixed constant (10&Aring;).
+          <strong>Why:</strong> Rg normalization caused the noise schedule to be protein-size-dependent.
+          A protein with Rg=5&Aring; had coordinate values ~1.0 after normalization while Rg=25&Aring; gave
+          ~0.2&ndash;0.5, meaning the same noise level destroyed more signal for larger proteins. This
+          silently caps TM-scores and looks like a &ldquo;plateau&rdquo; rather than a systematic bias.
+          All successful protein diffusion models (FrameDiff, RFDiffusion, Genie) use fixed-scale coordinates.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>Independent Auxiliary Distance Head</h4>
+        <p style="font-size: 0.93em;">
+          v10&rsquo;s DistanceHead read from the main pair stack through <code>detach()</code>, causing
+          feature drift divergence (aux_dist_ce: 3.95&rarr;38.8 over 3 epochs). v11 uses a completely
+          independent lightweight pair stack (64-dim, 2 triangle attention layers, ~500K params) reading from
+          the frozen encoder outputs. <strong>Ordinal regression</strong> with 32 bins replaces 96-bin
+          cross-entropy &mdash; adjacent-bin errors are penalized proportionally to distance, not as hard
+          misclassifications.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>v11 Loss Weights</h4>
+        <table style="font-size: 0.88em; margin: 8px 0; border-collapse: collapse; width: 100%;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <th style="text-align: left; padding: 4px 8px;">Loss</th>
+              <th style="text-align: center; padding: 4px 8px;">v10</th>
+              <th style="text-align: center; padding: 4px 8px;">v11</th>
+              <th style="text-align: left; padding: 4px 8px;">Change rationale</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding: 3px 8px;">FAPE</td><td style="text-align:center;">0.3</td><td style="text-align:center;"><strong>1.0</strong></td><td style="padding: 3px 8px;">IPA can actually optimize frame consistency</td></tr>
+            <tr><td style="padding: 3px 8px;">Bond</td><td style="text-align:center;">5.0</td><td style="text-align:center;"><strong>3.0</strong></td><td style="padding: 3px 8px;">Gentler anneal (1&rarr;3 over E1-E10), avoids tug-of-war</td></tr>
+            <tr><td style="padding: 3px 8px;">Clash</td><td style="text-align:center;">0.0</td><td style="text-align:center;"><strong>0.1</strong></td><td style="padding: 3px 8px;">Re-enabled: fixed-scale coords make 3.8&Aring; threshold meaningful</td></tr>
+            <tr><td style="padding: 3px 8px;">Aux dist</td><td style="text-align:center;">0.0</td><td style="text-align:center;"><strong>0.03</strong></td><td style="padding: 3px 8px;">Conservative start for new independent pair stack</td></tr>
+            <tr><td style="padding: 3px 8px;">Dist MSE</td><td style="text-align:center;">1.0</td><td style="text-align:center;">1.0</td><td style="padding: 3px 8px;">&mdash;</td></tr>
+            <tr><td style="padding: 3px 8px;">Angle</td><td style="text-align:center;">0.5</td><td style="text-align:center;">0.5</td><td style="padding: 3px 8px;">&mdash;</td></tr>
+            <tr><td style="padding: 3px 8px;">Chirality</td><td style="text-align:center;">0.1</td><td style="text-align:center;">0.1</td><td style="padding: 3px 8px;">&mdash;</td></tr>
+            <tr><td style="padding: 3px 8px;">Rg</td><td style="text-align:center;">0.5</td><td style="text-align:center;">0.5</td><td style="padding: 3px 8px;">&mdash;</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>v11 Training Protocol</h4>
+        <p style="font-size: 0.93em;">
+          LR: 5e-5 (halved from v10). Cosine decay to 1e-6 over 55 epochs with 3-epoch warmup, <strong>no
+          restarts</strong> (v10 restarts caused pathological degradation at the LR minimum). 1000 diffusion
+          timesteps (was 200). DDIM-50 evaluation every epoch. DDPM training with cosine noise schedule.
+        </p>
+        <p style="font-size: 0.93em;">
+          <strong>Phase 1 (E1-E10):</strong> FAPE must be &ge;10% below E1 baseline by E5, &ge;20% by E10.
+          <strong>Phase 2 (E10-E40):</strong> Target TM-score &gt; 0.3.
+          <strong>Phase 3 (E40-E60):</strong> LR decay for final refinement and EMA stabilization.
+        </p>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid var(--border); margin: 24px 0;">
+
+      <h3 class="section-heading" style="color: var(--text-secondary);">Diffusion v10 &mdash; Architecture &amp; Loss Function (Previous)</h3>
 
       <div class="training-observations" style="line-height: 1.7;">
         <h4>Overview</h4>
