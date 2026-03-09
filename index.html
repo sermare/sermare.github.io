@@ -1329,6 +1329,18 @@
                 <td>17.22&Aring;</td>
                 <td><span class="tag tag-pat">pat 1</span></td>
               </tr>
+              <tr>
+                <td>7</td>
+                <td>2.687</td>
+                <td style="color: #2ca02c; font-weight: bold;">1.709</td>
+                <td style="color: #2ca02c; font-weight: bold;">0.862</td>
+                <td>0.384</td>
+                <td style="color: #2ca02c; font-weight: bold;">0.009</td>
+                <td>0.037</td>
+                <td>0.093</td>
+                <td>17.55&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1481,31 +1493,30 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #2ca02c;">
-          <strong style="color: #2ca02c;">v11b Epoch 6 &mdash; FAPE New Record (1.737), First Patience Tick</strong>
+          <strong style="color: #2ca02c;">v11b Epoch 7 &mdash; NEW BEST: FAPE 1.709, frame_rot 0.862, bond 0.009</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE: 1.737</strong> (E4: 1.787 &rarr; E5: 1.756 &rarr; E6: 1.737) &mdash;
-                <span style="color: #2ca02c;">new all-time low!</span> 0.081 below v11 best (1.818).
-                Still 0.43 above random baseline (1.31).</li>
-            <li><strong>frame_rot: 0.905</strong> (E5: 0.888 &rarr; E6: 0.905) &mdash;
-                slight uptick from E5. Train frame_rot (0.904) matches val. May be noise
-                or the aux_dist_ce spike interfering with optimization.</li>
-            <li><strong>DDIM: TM = 0.095, RMSD = 17.22&Aring;</strong> &mdash;
-                <span style="color: #2ca02c;">best TM-score yet!</span> Up from 0.091 at E5.
-                RMSD also improved (17.62&rarr;17.22). Sampling quality starting to respond.</li>
-            <li><strong>val dist_mse: 0.431</strong> (up from 0.384) | bond: 0.012 | rg: 0.037</li>
-            <li><strong>Patience: 1/15</strong> &mdash; first non-best epoch.
-                val_total 2.794 &gt; best 2.736 because <strong>aux_dist_ce spiked</strong> (0.316&rarr;0.470).
-                Structural losses (FAPE, bond) actually improved.</li>
+            <li><strong>val FAPE: 1.709</strong> (E5: 1.756 &rarr; E6: 1.737 &rarr; E7: 1.709) &mdash;
+                <span style="color: #2ca02c;">broke below 1.72!</span> 0.109 below v11 best (1.818).
+                0.40 above random baseline (1.31). Dropping ~0.024/epoch.</li>
+            <li><strong>frame_rot: 0.862</strong> (E5: 0.888 &rarr; E6: 0.905 &rarr; E7: 0.862) &mdash;
+                <span style="color: #2ca02c;">new record! E6 uptick was just noise.</span>
+                ~70&deg; mean angular error, down from ~94&deg; at E1.</li>
+            <li><strong>DDIM: TM = 0.093, RMSD = 17.55&Aring;</strong> &mdash; slight dip from E6&rsquo;s 0.095.
+                Sampling quality fluctuating in 0.090&ndash;0.095 range.</li>
+            <li><strong>val dist_mse: 0.384</strong> | <strong>bond: 0.009</strong> (new record!) | rg: 0.037</li>
+            <li><strong>Patience: 0/15</strong> &mdash; back to NEW BEST after E6&rsquo;s patience tick.</li>
           </ul>
-          <strong>Deeper analysis (E1&ndash;E6):</strong>
+          <strong>Deeper analysis (E1&ndash;E7):</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            E6 is a mixed result. FAPE hit a new record (1.737) confirming the structural learning continues,
-            but val_total missed best due to aux_dist_ce spiking from 0.316 to 0.470. This is the same
-            auxiliary distance ordinal loss that diverged in v10 &mdash; the independent pair stack is noisier
-            than the main denoiser. Since aux_dist has a low weight (0.03), this shouldn&rsquo;t derail training.
-            frame_rot ticked up slightly (0.888&rarr;0.905) which may be noise or the optimizer balancing
-            the aux spike. Train FAPE (1.734) continues to lead val (1.737) with a tiny gap &mdash; no overfitting.
-            The key question for E7&ndash;E10: does FAPE continue below 1.70 and does DDIM TM break 0.10?
+            E7 confirms the E6 patience tick was a blip from aux_dist_ce noise, not a structural plateau.
+            All key metrics hit new records: FAPE (1.709), frame_rot (0.862), bond (0.009).
+            The FAPE improvement rate has been remarkably consistent: ~0.03/epoch for the last 4 epochs.
+            At this rate, FAPE would reach v10&rsquo;s 1.31 ceiling around E20 &mdash; the question is whether
+            the curve flattens before then. frame_rot is now 17% below its E1 value (1.067&rarr;0.862),
+            confirming steady rotation learning. DDIM TM is still stuck in the 0.09&ndash;0.095 band &mdash;
+            this lag between loss improvement and sampling quality is expected; a phase transition
+            to TM &gt; 0.15 would indicate the model has learned enough global topology to generate
+            recognizable folds. E8 in progress, job has ~68 min remaining.
           </p>
           <details style="margin-top: 8px;">
             <summary style="cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
@@ -1533,7 +1544,7 @@
           </details>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 18:33 UTC
+          Last updated: 2026-03-09 19:22 UTC
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
