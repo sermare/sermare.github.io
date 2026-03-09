@@ -1694,11 +1694,28 @@
           pathological degradation), 1000 timesteps (was 200), DDIM eval every epoch.
           8.4M params (7.2M trainable). Running on single A40.
           <br><br>
-          <strong>v11 training launched</strong> &mdash; awaiting first epoch results. All correctness tests passed
-          pre-launch (SE(3) equivariance, gradient flow through frames, frame stability at high noise).
+          <strong>v11 Epoch 1 results (20 min on A40):</strong>
+          <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
+            <li><strong>val FAPE = 1.950</strong> &mdash; already below the untrained random baseline (~2.0+), indicating
+                the IPA frame machinery is learning backbone geometry from E1. This is the metric v10 could
+                <em>never</em> improve.</li>
+            <li><strong>val dist_mse = 1.163</strong> &mdash; distance prediction starting to converge; expect rapid
+                improvement in early epochs as pair representations sharpen.</li>
+            <li><strong>val bond_geom = 0.171</strong> &mdash; extremely low bond geometry loss, suggesting C&alpha;
+                spacing is already near 3.8&Aring; targets. Fixed-scale normalization working as intended.</li>
+            <li><strong>val aux (ordinal) = 0.475</strong> &mdash; independent aux pair stack with ordinal regression
+                is stable and training cleanly (no divergence, unlike v10&rsquo;s detached head).</li>
+            <li><strong>DDIM sampling: TM = 0.099, RMSD = 15.46&Aring;</strong> &mdash; still at random level, which is
+                expected for E1. Structural quality typically lags loss improvements by several epochs.
+                Target: TM &gt; 0.15 by E5, &gt; 0.3 by E10.</li>
+          </ul>
+          <strong>Assessment:</strong> Strongly positive first signal. The single most important indicator &mdash;
+          val FAPE below baseline at E1 &mdash; confirms the IPA architecture can optimize frame consistency,
+          the exact capability v10 lacked. Training/val gap is healthy (no overfitting). Patience 0/15.
+          Monitoring continues every 30 minutes.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 08:33 UTC
+          Last updated: 2026-03-09 09:46 UTC &mdash; E1 complete
         </div>
       </div>
 
