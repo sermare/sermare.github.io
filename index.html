@@ -1381,6 +1381,18 @@
                 <td>18.71&Aring;</td>
                 <td><span class="tag tag-pat">pat 1</span></td>
               </tr>
+              <tr style="background: rgba(214, 39, 40, 0.08);">
+                <td>12</td>
+                <td>2.707</td>
+                <td>2.022</td>
+                <td>0.426</td>
+                <td>0.019</td>
+                <td>0.037</td>
+                <td>0.488</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-pat">pat 2</span></td>
+              </tr>
               <!-- New epochs will be added here by monitoring -->
             </tbody>
           </table>
@@ -1477,34 +1489,40 @@
         </div>
 
         <!-- Status / Live interpretation -->
-        <div class="training-pending-note" id="v9-run2-status">
-          <strong>v11 Epoch 11 &mdash; Val Loss Spike</strong>
+        <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #d62728;">
+          <strong style="color: #d62728;">v11 Epoch 12 &mdash; FAPE Regression: All Gains Lost</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE: 1.818 &rarr; 1.984</strong> &mdash; spiked back to E2&ndash;E3 levels. Worst since E3.
-                Train FAPE only slightly worse (1.794 &rarr; 1.828). Large train-val gap opened.</li>
-            <li><strong>val dist_mse: 0.382 &rarr; 0.455</strong> &mdash; also regressed (19% worse).</li>
-            <li><strong>val total: 2.431 &rarr; 2.677</strong> &mdash; jumped 10%. Biggest single-epoch regression so far.</li>
-            <li><strong>val aux: 0.488</strong> &mdash; stable as always (independent pair stack unaffected).</li>
-            <li><strong>DDIM: TM = 0.081, RMSD = 18.71&Aring;</strong> &mdash; worst yet. Continuing decline.</li>
-            <li><strong>Patience: 1/15</strong> &mdash; not a new best.</li>
+            <li><strong>val FAPE: 1.818 (E10) &rarr; 1.984 (E11) &rarr; 2.022 (E12)</strong> &mdash; <em>above E1 baseline</em>
+                (1.950). The model has regressed past its starting point. All FAPE improvements from E4&ndash;E10 are gone.</li>
+            <li><strong>TRAIN FAPE: 1.794 (E10) &rarr; 1.828 (E11) &rarr; 1.974 (E12)</strong> &mdash; train also spiked.
+                This is NOT overfitting &mdash; the model is regressing on both train and val.</li>
+            <li><strong>Train total: 2.416 &rarr; 2.451 &rarr; 2.631</strong> &mdash; train loss jumped 9% in one epoch.
+                Something destabilized the training dynamics.</li>
+            <li><strong>val aux: 0.488</strong> &mdash; aux is perfectly stable (independent pair stack unaffected).</li>
+            <li><strong>Patience: 2/15</strong> &mdash; two consecutive non-best epochs.</li>
           </ul>
-          <strong>Interpretation:</strong>
+          <strong>4-Hour Analysis &mdash; Regression Diagnosis:</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            This is concerning but not yet a failure signal. Train losses barely moved (2.416 &rarr; 2.451) while val losses
-            jumped significantly (2.431 &rarr; 2.677) &mdash; classic <strong>generalization gap widening</strong>. The model may
-            be starting to overfit to training data. However, E5 also showed a similar val blip (2.584 &rarr; 2.602) before
-            recovering at E6. Val-set noise on 608 proteins can produce single-epoch spikes.
+            <strong>Not a val blip.</strong> Both train and val FAPE spiked together (E11&ndash;E12). This rules out
+            overfitting and val-set noise. The model&rsquo;s frame predictions are actively getting worse.
             <br><br>
-            <strong>Key question for E12&ndash;E13:</strong> Does val FAPE recover to the E10 level (~1.82)? If yes, this was
-            a noisy outlier. If val FAPE stays above 1.9 for 2+ more epochs, the model is overfitting and we may need to
-            reduce LR or add dropout. The DDIM decline to 0.081 is now a 7-epoch streak of worsening (0.128 &rarr; 0.081).
+            <strong>Likely causes:</strong>
+            (1) <em>Self-conditioning instability</em> &mdash; frame-aware self-conditioning feeds predicted frames back as
+            input. If frame quality degrades slightly, self-conditioning amplifies the error (positive feedback loop).
+            (2) <em>Frame update accumulation</em> &mdash; 6 IPA layers compose small quaternion updates. A slight perturbation
+            in early layers can compound through the stack.
+            (3) <em>LR still too high</em> at 4.7e-5 (96% of peak). Cosine decay has barely started.
             <br><br>
-            <strong>Not canceling yet</strong> &mdash; patience at 1/15, train losses still at their best, and single-epoch
-            val spikes are common. But this epoch requires close monitoring of E12.
+            <strong>Critical:</strong> If FAPE doesn&rsquo;t recover below 1.9 by E14, this may indicate a fundamental
+            instability in the IPA frame update mechanism. The DDIM decline from 0.128 to ~0.08 over 8 epochs now makes more
+            sense &mdash; the model was already losing frame coherence before the loss metrics showed it.
+            <br><br>
+            <strong>Status: Continuing for now</strong> (patience 2/15, could recover). Will recommend intervention at E15
+            if FAPE remains above 1.9.
           </p>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 13:45 UTC &mdash; E11 complete, val spike under monitoring
+          Last updated: 2026-03-09 14:05 UTC &mdash; E12 complete, FAPE regression active
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
