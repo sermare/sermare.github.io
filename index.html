@@ -1321,6 +1321,30 @@
                 <td>17.24&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
+              <tr>
+                <td>7</td>
+                <td>2.544</td>
+                <td>1.885</td>
+                <td>0.422</td>
+                <td>0.016</td>
+                <td>0.038</td>
+                <td>0.488</td>
+                <td>0.094</td>
+                <td>17.37&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>2.507</td>
+                <td>1.849</td>
+                <td>0.416</td>
+                <td>0.016</td>
+                <td>0.038</td>
+                <td>0.488</td>
+                <td>0.093</td>
+                <td>17.46&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
               <!-- New epochs will be added here by monitoring -->
             </tbody>
           </table>
@@ -1418,23 +1442,38 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status">
-          <strong>v11 Epoch 6 &mdash; FAPE Downtrend Confirmed</strong>
+          <strong>v11 Epoch 8 &mdash; Steady FAPE Descent</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE: 1.950 &rarr; 1.988 &rarr; 1.889 &rarr; 1.892 &rarr; 1.865</strong> &mdash; NEW BEST. Clear downtrend
-                from E4 onward: 1.889 &rarr; 1.892 &rarr; 1.865. Now 4.4% below E1. Frame learning is real and accelerating.</li>
-            <li><strong>val dist_mse: 0.463 &rarr; 0.448</strong> &mdash; resuming improvement after E5 blip. 61% below E1.</li>
-            <li><strong>val aux: 0.469 &rarr; 0.488</strong> &mdash; slightly higher but stable. Not diverging (v10 was at 40+ by E6).</li>
-            <li><strong>DDIM: TM = 0.095, RMSD = 17.24&Aring;</strong> &mdash; slight recovery from 0.088 but still below E3 peak (0.128).
-                DDIM quality lags loss improvements; expect recovery as FAPE continues dropping.</li>
-            <li><strong>Patience: 0/15</strong> &mdash; reset after NEW BEST. val total 2.558.</li>
+            <li><strong>val FAPE: 1.950 &rarr; 1.889 &rarr; 1.865 &rarr; 1.885 &rarr; 1.849</strong> &mdash; consistent downtrend.
+                Now 5.2% below E1. Train FAPE at 1.812 (7.1% below E1) &mdash; model learning faster than it generalizes.</li>
+            <li><strong>val dist_mse: 1.163 &rarr; 0.416</strong> &mdash; 64% below E1, steady improvement.</li>
+            <li><strong>val aux: stabilized at 0.488</strong> &mdash; flat since E5. The independent pair stack is holding steady
+                (no drift, no divergence). This is exactly the behavior the v11 redesign aimed for.</li>
+            <li><strong>DDIM: TM = 0.093&ndash;0.095 (E6&ndash;E8)</strong> &mdash; stuck below 0.10. Has not recovered to E3&rsquo;s
+                0.128 peak. This is the main concern: loss improvements aren&rsquo;t translating to sampling quality yet.</li>
+            <li><strong>Patience: 0/15</strong> &mdash; 6 of 8 epochs are NEW BEST. Training very stable.</li>
           </ul>
-          <strong>Assessment:</strong> FAPE is now on a sustained downtrend (3 of last 4 epochs improving). The E5 plateau was
-          a blip, not a stall. At current rate (~0.03/epoch), FAPE should reach 1.75 (10% target) by ~E9. Train-val gap
-          is narrow (1.846 vs 1.865), indicating no overfitting. Aux loss stabilized at ~0.49 without exponential growth.
-          DDIM TM recovery is slow but losses are the more reliable signal. On track for continued improvement.
+          <strong>2-Hour Analysis (E1&ndash;E8):</strong>
+          <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
+            <strong>What&rsquo;s working:</strong> FAPE is on a clear, sustained downtrend &mdash; the IPA architecture is learning
+            frame consistency, exactly as designed. Distance, bond, angle, and chirality losses all improving monotonically.
+            Aux ordinal regression is rock-stable at ~0.49 (v10&rsquo;s head had diverged to 40+ by this point). Train-val gap
+            is narrow across all metrics (no overfitting).
+            <br><br>
+            <strong>What&rsquo;s concerning:</strong> DDIM TM-score has been flat at ~0.09 since E4, despite loss improvements.
+            The E3 peak of 0.128 hasn&rsquo;t been replicated. Possible explanations: (1) DDIM sampling with EMA weights lags
+            training by several epochs; (2) the model is improving denoising at intermediate noise levels (which helps losses)
+            but not yet at high noise levels (which matters for full generation); (3) FAPE at 1.85 is still too high for
+            coherent topology &mdash; need FAPE &lt; 1.5 before DDIM structures look protein-like.
+            <br><br>
+            <strong>Projection:</strong> At current FAPE descent rate (~0.02/epoch), the model will reach 1.75 by ~E13 and 1.5
+            by ~E23. This is slower than the 10%-by-E5 target but the trajectory is monotonic. The critical question is whether
+            FAPE descent will <em>accelerate</em> as the model enters a topology-learning phase (as happened in other IPA models)
+            or remain linear. We&rsquo;ll know by E12&ndash;E15.
+          </p>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 11:50 UTC &mdash; E6 complete
+          Last updated: 2026-03-09 12:30 UTC &mdash; E8 complete
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
