@@ -1393,6 +1393,18 @@
                 <td>&mdash;</td>
                 <td><span class="tag tag-pat">pat 2</span></td>
               </tr>
+              <tr style="background: rgba(214, 39, 40, 0.08);">
+                <td>13</td>
+                <td>2.539</td>
+                <td>1.919</td>
+                <td>0.380</td>
+                <td>0.016</td>
+                <td>0.037</td>
+                <td>0.488</td>
+                <td>0.053</td>
+                <td>23.97&Aring;</td>
+                <td><span class="tag tag-pat">pat 3</span></td>
+              </tr>
               <!-- New epochs will be added here by monitoring -->
             </tbody>
           </table>
@@ -1490,39 +1502,41 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #d62728;">
-          <strong style="color: #d62728;">v11 Epoch 12 &mdash; FAPE Regression: All Gains Lost</strong>
+          <strong style="color: #d62728;">v11 Epoch 13 &mdash; DDIM Collapsed, Frame Learning Unstable</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE: 1.818 (E10) &rarr; 1.984 (E11) &rarr; 2.022 (E12)</strong> &mdash; <em>above E1 baseline</em>
-                (1.950). The model has regressed past its starting point. All FAPE improvements from E4&ndash;E10 are gone.</li>
-            <li><strong>TRAIN FAPE: 1.794 (E10) &rarr; 1.828 (E11) &rarr; 1.974 (E12)</strong> &mdash; train also spiked.
-                This is NOT overfitting &mdash; the model is regressing on both train and val.</li>
-            <li><strong>Train total: 2.416 &rarr; 2.451 &rarr; 2.631</strong> &mdash; train loss jumped 9% in one epoch.
-                Something destabilized the training dynamics.</li>
-            <li><strong>val aux: 0.488</strong> &mdash; aux is perfectly stable (independent pair stack unaffected).</li>
-            <li><strong>Patience: 2/15</strong> &mdash; two consecutive non-best epochs.</li>
+            <li><strong>DDIM: TM = 0.128 (E3) &rarr; 0.056 (E12) &rarr; 0.053 (E13)</strong> &mdash; generating random atom clouds.
+                RMSD = 23.97&Aring; (was 14.53 at E3). 10-epoch collapse.</li>
+            <li><strong>val FAPE: 1.818 (E10) &rarr; 2.022 (E12) &rarr; 1.919 (E13)</strong> &mdash; partial val recovery, but
+                train FAPE worsened to 2.011 (above E1 baseline). Train and val are diverging in opposite directions.</li>
+            <li><strong>val dist_mse: 0.382 (E10) &rarr; 0.426 (E12) &rarr; 0.380 (E13)</strong> &mdash; distance learning recovered
+                to best. The model still learns distances well &mdash; it&rsquo;s specifically frame coherence that is failing.</li>
+            <li><strong>val aux: 0.488</strong> &mdash; stable. Independent pair stack fully robust.</li>
+            <li><strong>Patience: 3/15</strong> &mdash; three consecutive non-best epochs.</li>
           </ul>
-          <strong>4-Hour Analysis &mdash; Regression Diagnosis:</strong>
+          <strong>4.5-Hour Diagnosis:</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            <strong>Not a val blip.</strong> Both train and val FAPE spiked together (E11&ndash;E12). This rules out
-            overfitting and val-set noise. The model&rsquo;s frame predictions are actively getting worse.
+            <strong>Pattern:</strong> The model is experiencing <em>frame instability</em> while distance learning remains healthy.
+            This is the inverse of v10&rsquo;s problem: v10 learned distances but never learned frames; v11 showed early frame
+            learning (E4&ndash;E10) but the frames are now destabilizing. DDIM collapse to TM=0.053 (random ~0.10) means the
+            EMA model is generating worse-than-random structures.
             <br><br>
-            <strong>Likely causes:</strong>
-            (1) <em>Self-conditioning instability</em> &mdash; frame-aware self-conditioning feeds predicted frames back as
-            input. If frame quality degrades slightly, self-conditioning amplifies the error (positive feedback loop).
-            (2) <em>Frame update accumulation</em> &mdash; 6 IPA layers compose small quaternion updates. A slight perturbation
-            in early layers can compound through the stack.
-            (3) <em>LR still too high</em> at 4.7e-5 (96% of peak). Cosine decay has barely started.
+            <strong>Root cause hypothesis:</strong> The IPA frame update mechanism has an instability at this loss landscape
+            region. During E4&ndash;E10, frame updates were small (identity-biased init working correctly). As the model began
+            making larger frame corrections, the composition of 6 layers of quaternion updates may have entered an unstable
+            regime. Self-conditioning then amplifies this: degraded frames feed back as initial frames, pushing updates further
+            from equilibrium.
             <br><br>
-            <strong>Critical:</strong> If FAPE doesn&rsquo;t recover below 1.9 by E14, this may indicate a fundamental
-            instability in the IPA frame update mechanism. The DDIM decline from 0.128 to ~0.08 over 8 epochs now makes more
-            sense &mdash; the model was already losing frame coherence before the loss metrics showed it.
+            <strong>Recommended intervention (if no recovery by E15):</strong>
+            (1) Roll back to E10 checkpoint (best val=2.416, FAPE=1.818).
+            (2) Reduce LR to 2e-5 (halve from current).
+            (3) Consider clamping frame update magnitude or reducing self-conditioning frequency from 50% to 25%.
             <br><br>
-            <strong>Status: Continuing for now</strong> (patience 2/15, could recover). Will recommend intervention at E15
-            if FAPE remains above 1.9.
+            <strong>Status: Letting patience run</strong> (3/15). The E13 val recovery (2.022 &rarr; 1.919) is a positive sign,
+            but train FAPE at 2.011 and DDIM at 0.053 are deeply concerning.
           </p>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 14:05 UTC &mdash; E12 complete, FAPE regression active
+          Last updated: 2026-03-09 14:30 UTC &mdash; E13 complete, DDIM collapsed to 0.053
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
