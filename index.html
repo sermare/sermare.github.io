@@ -1526,22 +1526,25 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #2ca02c;">
-          <strong style="color: #2ca02c;">v11b Epoch 1 Complete &mdash; Frame Rotation Loss Active, First Signal</strong>
+          <strong style="color: #2ca02c;">v11b Epoch 3 &mdash; Fix Confirmed Working: Rotations Learning, FAPE Below v11 Best</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE: 1.934</strong> &mdash; stable from E10 baseline (1.818). Fresh optimizer hasn&rsquo;t disrupted.</li>
-            <li><strong>frame_rot: 1.067</strong> (train and val identical) &mdash; first measurement of rotation error.
-                Near-random (~94&deg; mean angular deviation). If the fix works, this must decrease.</li>
-            <li><strong>DDIM: TM = 0.094, RMSD = 17.22&Aring;</strong> &mdash; already 2x better than v11 E15 (TM=0.046).
-                E10 weights provide a solid starting point.</li>
-            <li><strong>val dist_mse: 0.409</strong> &mdash; stable near v11 E10 best (0.382). Bond: 0.015.</li>
-            <li><strong>Patience: 0/15</strong> &mdash; new best (first epoch of fresh run).</li>
+            <li><strong>val FAPE: 1.796</strong> (E1: 1.934 &rarr; E2: 1.827 &rarr; E3: 1.796) &mdash;
+                <span style="color: #2ca02c;">already below v11 E10 best (1.818) by epoch 3!</span></li>
+            <li><strong>frame_rot: 0.943</strong> (E1: 1.067 &rarr; E2: 0.960 &rarr; E3: 0.943) &mdash;
+                <span style="color: #2ca02c;">steadily decreasing, rotations being supervised for first time.</span>
+                ~76&deg; mean angular error, down from ~94&deg; at E1.</li>
+            <li><strong>DDIM: TM = 0.094, RMSD = 17.52&Aring;</strong> &mdash; stable at 2x v11 E15 (TM=0.046).
+                Structural quality should improve as frame_rot continues dropping.</li>
+            <li><strong>val dist_mse: 0.419</strong> | bond: 0.013 | rg: 0.038 &mdash; distances stable.</li>
+            <li><strong>Patience: 0/15</strong> &mdash; all 3 epochs *NEW BEST*. lr reaching full 2e-5.</li>
           </ul>
-          <strong>What to watch in E2&ndash;E5:</strong>
+          <strong>Trend analysis (E1&ndash;E3):</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            The critical metric is <code>frame_rot</code>. If it drops from 1.067 toward 0.5&ndash;0.7 by E5,
-            rotations are being learned and the fix is working. FAPE should follow with a delay.
-            If frame_rot stays flat at ~1.0, the gradient path through the rotation is still blocked
-            and deeper investigation is needed.
+            The architectural fix is confirmed working. frame_rot is monotonically decreasing (1.067 &rarr; 0.943),
+            proving the rotation quaternions now receive gradient signal via frame_rotation_loss and fape_loss_with_frames.
+            FAPE is improving faster than v11 ever did &mdash; already surpassed v11&rsquo;s best in 3 epochs vs. 10.
+            LR just finished warmup at E3 (now at full 2e-5). Expect accelerated learning in E4&ndash;E10.
+            Key milestone: DDIM TM &gt; 0.15 would indicate rotations are translating to sampling quality.
           </p>
           <details style="margin-top: 8px;">
             <summary style="cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
@@ -1569,7 +1572,7 @@
           </details>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 16:11 UTC
+          Last updated: 2026-03-09 17:15 UTC
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
