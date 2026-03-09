@@ -1362,80 +1362,144 @@
                 <td>0.125</td>
                 <td><span class="tag tag-pat">pat 1</span></td>
               </tr>
+              <tr>
+                <td>10</td>
+                <td>2.053</td>
+                <td>0.250</td>
+                <td>1.301</td>
+                <td>0.038</td>
+                <td>0.008</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
               </tbody>
           </table>
         </div>
 
         <div class="training-observations" style="margin: 16px 0;">
           <h4>Loss Reference: Random Baseline &amp; Interpretation</h4>
+          <p style="font-size: 0.85em; color: var(--text-secondary); margin: 4px 0 10px 0; line-height: 1.5;">
+            For cross-entropy losses, random performance = ln(<em>N</em>) where <em>N</em> is the number of classes
+            (a uniform predictor assigns 1/<em>N</em> probability to the correct bin, giving &minus;ln(1/<em>N</em>) = ln(<em>N</em>)).
+            For MSE losses, random = E1 value (Gaussian noise baseline). Solid lines = train, dashed = val, dotted = not in loss (w=0).
+          </p>
           <div class="training-table-wrapper">
             <table class="training-table" style="font-size: 0.82em; white-space: normal;">
               <thead>
                 <tr>
-                  <th style="min-width: 70px;">Metric</th>
-                  <th style="min-width: 50px;">Random</th>
-                  <th style="min-width: 55px;">Best</th>
+                  <th style="min-width: 65px;">Metric</th>
+                  <th style="min-width: 40px;">w</th>
+                  <th style="min-width: 50px;">Type</th>
+                  <th style="min-width: 55px;">Random</th>
+                  <th style="min-width: 50px;">Best</th>
                   <th>Interpretation</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td><strong>Total</strong></td>
+                  <td>&Sigma;</td>
+                  <td>weighted</td>
                   <td>~2.94</td>
-                  <td>2.086 &darr;</td>
-                  <td>Weighted sum of structural losses. &darr; = learning to denoise backbones.</td>
+                  <td>2.053 &darr;</td>
+                  <td>Weighted sum of all components below. &darr; = learning to denoise backbones.</td>
                 </tr>
                 <tr>
                   <td><strong>Dist MSE</strong></td>
+                  <td>1.0</td>
+                  <td>MSE</td>
                   <td>~0.54</td>
                   <td>0.241 &darr;</td>
                   <td>Pairwise C&alpha; distance error. &lt;0.1 = sub-&Aring; accuracy.</td>
                 </tr>
                 <tr>
+                  <td><strong>Bond</strong></td>
+                  <td>5.0*</td>
+                  <td>MSE</td>
+                  <td>~0.17</td>
+                  <td>0.008 &darr;</td>
+                  <td>C&alpha;&ndash;C&alpha; bond length error. &lt;0.02 = within 0.1&Aring; of 3.8&Aring;. *annealed 1&rarr;5 over 15 epochs.</td>
+                </tr>
+                <tr>
                   <td><strong>FAPE</strong></td>
+                  <td>0.3</td>
+                  <td>L1</td>
                   <td>~1.31</td>
-                  <td>1.343 &asymp;</td>
-                  <td>Frame-aligned position error. Plateau ~1.3 expected; drops &lt;1.0 when fold topology is learned (E15+).</td>
+                  <td>1.301 &darr;</td>
+                  <td>Frame-aligned position error (all residues). Just broke below random (1.31) &mdash; topology learning starting. Drops &lt;1.0 with correct folds.</td>
                 </tr>
                 <tr>
                   <td><strong>Rg</strong></td>
+                  <td>0.5</td>
+                  <td>MSE</td>
                   <td>~0.23</td>
                   <td>0.037 &darr;</td>
                   <td>Radius of gyration error. &lt;0.05 = correct protein size/compactness.</td>
                 </tr>
                 <tr>
-                  <td><strong>Bond</strong></td>
-                  <td>~0.17</td>
-                  <td>0.011 &darr;</td>
-                  <td>C&alpha;&ndash;C&alpha; bond length error. &lt;0.02 = within 0.1&Aring; of ideal 3.8&Aring; &mdash; physically valid.</td>
+                  <td><strong>Chirality</strong></td>
+                  <td>0.1</td>
+                  <td>MSE</td>
+                  <td>~0.54</td>
+                  <td>0.485 &darr;</td>
+                  <td>Signed volume (dihedral handedness) of CA quartets. Normalized to [&minus;1, 1].</td>
+                </tr>
+                <tr>
+                  <td><strong>Angle</strong></td>
+                  <td>0.5</td>
+                  <td>MSE</td>
+                  <td>~0.70</td>
+                  <td>0.290 &darr;</td>
+                  <td>CA&ndash;CA&ndash;CA bond angle error (cosine). &lt;0.1 = correct backbone angles.</td>
+                </tr>
+                <tr>
+                  <td><strong>Aux Dist CE</strong></td>
+                  <td>0.3</td>
+                  <td>CE</td>
+                  <td>ln(96) = 4.56</td>
+                  <td>3.95 &darr;</td>
+                  <td>Cross-entropy over 96 distance bins (2&ndash;40&Aring;). Pair stack detached. Uniform predictor = ln(96).</td>
+                </tr>
+                <tr style="color: var(--text-secondary);">
+                  <td><strong>Clash</strong></td>
+                  <td>0.0</td>
+                  <td>penalty</td>
+                  <td>~14.0</td>
+                  <td>11.9 (--)</td>
+                  <td>Logged but not in loss (w=0). Disabled: 3&Aring; threshold in Rg-space maps to ~30&Aring; real.</td>
                 </tr>
                 <tr>
                   <td><strong>TM-score</strong></td>
+                  <td>&mdash;</td>
+                  <td>DDIM</td>
                   <td>~0.10</td>
                   <td>0.125 &uarr;</td>
-                  <td>DDIM 50-step sampling quality. &gt;0.17 = recognizable folds. Target: &gt;0.30.</td>
+                  <td>50-step DDIM sampling. &gt;0.17 = recognizable folds. Target: &gt;0.30.</td>
                 </tr>
                 <tr>
                   <td><strong>RMSD</strong></td>
+                  <td>&mdash;</td>
+                  <td>DDIM</td>
                   <td>~15.5&Aring;</td>
                   <td>14.92&Aring; &darr;</td>
-                  <td>Deviation from ground truth. &lt;10&Aring; = partial fold. &lt;5&Aring; = high quality.</td>
+                  <td>&lt;10&Aring; = partial fold. &lt;5&Aring; = high quality.</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <h4 class="training-progress-heading">Loss Curves (through Epoch 9)</h4>
+        <h4 class="training-progress-heading">Loss Curves (through Epoch 10)</h4>
         <div style="text-align: center; margin: 16px 0;">
           <img src="data/training/v10_loss_curves.png" alt="V10 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
 
         <div class="training-pending-note" id="v9-run2-status">
-          v10: 9 epochs completed (post-fix). Best val loss: 2.086 at epoch 8. Patience: 1/15. Best DDIM TM-score: 0.125 (E9). aux_dist_ce divergence fixed at E5 by restoring pair.detach(). Model now training stably with clean structural gradients. Running on single A40 GPU (savio3) with auto-resume.
+          v10: 10 epochs completed (post-fix). Best val loss: 2.053 at epoch 10. Patience: 0/15. Best DDIM TM-score: 0.125 (E9). FAPE broke below random baseline (1.301 &lt; 1.31) &mdash; topology learning beginning. Running on single A40 GPU (savio3) with auto-resume.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-08 19:00 UTC
+          Last updated: 2026-03-08 19:15 UTC
         </div>
       </div>
 
