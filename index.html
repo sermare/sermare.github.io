@@ -1495,6 +1495,28 @@
                 <td>&mdash;</td>
                 <td><span class="tag tag-pat">pat 1</span></td>
               </tr>
+              <tr>
+                <td>18</td>
+                <td>0.860</td>
+                <td>0.267</td>
+                <td>1.256</td>
+                <td>0.035</td>
+                <td>0.008</td>
+                <td>22.58&Aring;</td>
+                <td>0.066</td>
+                <td><span class="tag tag-pat">pat 2</span></td>
+              </tr>
+              <tr>
+                <td>19</td>
+                <td>0.918</td>
+                <td>0.265</td>
+                <td>1.350</td>
+                <td>0.035</td>
+                <td>0.011</td>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td><span class="tag tag-pat">pat 3</span></td>
+              </tr>
               </tbody>
           </table>
         </div>
@@ -1612,24 +1634,16 @@
           </div>
         </div>
 
-        <h4 class="training-progress-heading">Loss Curves (through Epoch 17)</h4>
+        <h4 class="training-progress-heading">Loss Curves (through Epoch 19)</h4>
         <div style="text-align: center; margin: 16px 0;">
           <img src="data/training/v10_loss_curves.png" alt="V10 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
 
         <div class="training-pending-note" id="v9-run2-status">
-          <strong>Status (E17):</strong> Training is stable and slowly improving after the aux_dist_ce fix at E15.
-          Structural loss plateauing at ~0.805&ndash;0.810 (best: 0.805 at E16).
-          <strong>dist_mse</strong> steady at 0.218&ndash;0.222 (60% below random 0.54) &mdash; pairwise distance prediction is strong.
-          <strong>FAPE</strong> hovering at 1.34&ndash;1.36 (random ~1.31) &mdash; not yet breaking through; this is the key bottleneck for topology learning.
-          Bond geometry (0.006) and angle (0.17&ndash;0.18, 74% below random) remain excellent.
-          <strong>DDIM</strong> (E15): TM=0.129, RMSD=14.53&Aring; &mdash; best RMSD so far but TM still below 0.17 threshold for recognizable folds.
-          Patience: 1/15 (plenty of runway). Next DDIM eval at E18.
-          The model is learning good distance statistics but not yet producing correct local frame geometry (FAPE).
-          Increasing FAPE weight is the most promising next intervention.
+          v10: 19 epochs completed. Best val loss: 0.805 at epoch 16. Patience: 3/15. Best DDIM TM-score: 0.131 (E12). Running on single A40 GPU (savio3) with auto-resume.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 06:30 UTC
+          Last updated: 2026-03-09 06:33 UTC
         </div>
       </div>
 
