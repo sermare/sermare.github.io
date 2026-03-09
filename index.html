@@ -1662,22 +1662,10 @@
         </div>
 
         <div class="training-pending-note" id="v9-run2-status">
-          <strong>Status (E21) &mdash; Cosine restart in progress:</strong>
-          The model degraded steadily during the cosine LR minimum (E17&ndash;E20), with both train and val losses
-          increasing together (not overfitting &mdash; the loss surface slope pushed parameters into a worse region
-          via accumulated tiny steps). Bond geometry was the worst casualty: 0.006&rarr;0.025 (4&times; increase).
-          <br><br>
-          <strong>Cosine restart</strong> triggered mid-E21 (LR schedule was one epoch offset from our calculation).
-          E22 will be the first full post-restart epoch at LR~9.6e-05.
-          <strong>E21 DDIM:</strong> TM=0.103, RMSD=16.86&Aring; &mdash; partial recovery from E18&rsquo;s catastrophic TM=0.066,
-          but still below the E15 best of TM=0.129. Val dist_mse spiked to 0.424 (initial restart volatility).
-          <br><br>
-          <strong>Tripwires for E22&ndash;E23:</strong> bond must drop below 0.015 by E22; dist_mse below 0.25 by E23;
-          DDIM TM &gt; 0.10 at E24. If any fail &rarr; roll back to E16 checkpoint (val=0.805).
-          Best model at E16 is safe. Patience: 5/15 (10 epochs of runway).
+          v10: 21 epochs completed. Best val loss: 0.805 at epoch 16. Patience: 5/15. Best DDIM TM-score: 0.131 (E12). Running on single A40 GPU (savio3) with auto-resume.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 07:30 UTC
+          Last updated: 2026-03-09 07:33 UTC
         </div>
       </div>
 
