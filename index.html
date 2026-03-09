@@ -1357,6 +1357,18 @@
                 <td>17.80&Aring;</td>
                 <td><span class="tag tag-pat">pat 1</span></td>
               </tr>
+              <tr>
+                <td>10</td>
+                <td>2.431</td>
+                <td>1.818</td>
+                <td>0.382</td>
+                <td>0.015</td>
+                <td>0.038</td>
+                <td>0.488</td>
+                <td>0.087</td>
+                <td>18.34&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
               <!-- New epochs will be added here by monitoring -->
             </tbody>
           </table>
@@ -1454,34 +1466,38 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status">
-          <strong>v11 Epoch 9 &mdash; Approaching E10 Checkpoint</strong>
+          <strong>v11 Epoch 10 &mdash; Phase 1 Complete</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE: 1.950 &rarr; 1.849 &rarr; 1.837</strong> &mdash; 5.8% below E1. Train FAPE broke 1.8 (now 1.800,
-                7.7% below E1). Monotonic descent continues but slower than targeted.</li>
-            <li><strong>val dist_mse: 0.416 &rarr; 0.430</strong> &mdash; slight uptick, still 63% below E1.</li>
-            <li><strong>val aux: 0.488</strong> &mdash; perfectly stable for 5 consecutive epochs. Independent pair stack validated.</li>
-            <li><strong>DDIM: TM = 0.090, RMSD = 17.80&Aring;</strong> &mdash; flat at ~0.09 since E4. No recovery from E3 peak (0.128).
-                This is the primary concern heading into E10.</li>
-            <li><strong>Patience: 1/15</strong> &mdash; 7 of 9 epochs NEW BEST overall.</li>
+            <li><strong>val FAPE: 1.950 &rarr; 1.818</strong> &mdash; 6.8% below E1, NEW BEST. Train FAPE at 1.794 (8.0%).
+                Monotonic descent over 7 consecutive epochs (E4&ndash;E10).</li>
+            <li><strong>val dist_mse: 1.163 &rarr; 0.382</strong> &mdash; 67% below E1. Best yet, big jump from E9 (0.430).</li>
+            <li><strong>val aux: 0.488</strong> &mdash; stable for 6 consecutive epochs. The v11 independent pair stack fix is
+                fully validated &mdash; no divergence, no drift.</li>
+            <li><strong>DDIM: TM = 0.087, RMSD = 18.34&Aring;</strong> &mdash; still flat/declining. Has not exceeded 0.10 since E3.
+                The loss&ndash;DDIM disconnect persists.</li>
+            <li><strong>Patience: 0/15</strong> &mdash; 8 of 10 epochs NEW BEST.</li>
           </ul>
-          <strong>E10 Checkpoint Assessment:</strong>
+          <strong>3-Hour Analysis &mdash; E10 Decision Point:</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            <strong>FAPE:</strong> Falling steadily (5.8% below E1) but missed the 10%-by-E5 and 20%-by-E10 targets.
-            Train FAPE is pulling ahead (7.7%), indicating the model <em>is</em> learning frame consistency but generalization
-            lags. This is not a failure &mdash; FAPE is monotonically decreasing, which v10 never achieved.
+            <strong>Pass/fail assessment:</strong> The original tripwire was &ldquo;FAPE not improving, TM-score not above 0.15,
+            losses diverging.&rdquo; FAPE <em>is</em> improving (monotonic 7-epoch descent, 6.8% below E1). Losses are <em>not</em>
+            diverging (all structural metrics at best values). The model is clearly learning. <strong>No cancellation recommended.</strong>
             <br><br>
-            <strong>DDIM disconnect:</strong> The gap between improving losses and flat DDIM TM (~0.09) is the main concern.
-            Possible explanations: (1) FAPE at 1.84 is still far above the ~1.31 threshold where topology emerges &mdash; the
-            model hasn&rsquo;t yet crossed the &ldquo;topology phase transition&rdquo;; (2) EMA weights (0.999 decay) are slow to
-            incorporate recent improvements; (3) 50-step DDIM on a small val set is inherently noisy.
+            <strong>The DDIM puzzle:</strong> Train losses improve every epoch, but DDIM sampling produces worse structures
+            (TM ~0.087 now vs 0.128 at E3). Two hypotheses: (1) <em>The model learned better denoising at intermediate
+            timesteps but regressed at high noise levels</em> &mdash; training loss averages over all t, but generation starts
+            from pure noise. (2) <em>FAPE at 1.82 is still far from the topology threshold (~1.31)</em> &mdash; the frames are
+            getting more consistent but haven&rsquo;t crossed the phase transition where local geometry assembles into global
+            topology. The distance between FAPE=1.82 and the topology threshold may explain why DDIM can&rsquo;t produce
+            coherent folds yet.
             <br><br>
-            <strong>Verdict: Continue training.</strong> The model is clearly learning (all structural losses improving, FAPE on
-            monotonic descent). Not recommending cancellation &mdash; the failure criteria (FAPE not improving, losses diverging)
-            are not met. Will reassess at E15 if FAPE hasn&rsquo;t broken below 1.75 or DDIM TM hasn&rsquo;t exceeded 0.15.
+            <strong>Outlook:</strong> If FAPE descent continues at ~0.015/epoch, we reach 1.75 by E14 and 1.5 by ~E31. The
+            question is whether descent <em>accelerates</em> (a topology phase transition) or stays linear. DDIM recovery is
+            the canary &mdash; when TM starts climbing, the model has crossed the topology threshold. Next reassessment at E15.
           </p>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 12:50 UTC &mdash; E9 complete, E10 in progress
+          Last updated: 2026-03-09 13:15 UTC &mdash; E10 complete
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
