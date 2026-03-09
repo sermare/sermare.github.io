@@ -1261,6 +1261,30 @@
                 <td>15.46&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
+              <tr>
+                <td>2</td>
+                <td>2.922</td>
+                <td>1.977</td>
+                <td>0.633</td>
+                <td>0.037</td>
+                <td>0.049</td>
+                <td>0.385</td>
+                <td>0.102</td>
+                <td>15.32&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>2.741</td>
+                <td>1.988</td>
+                <td>0.479</td>
+                <td>0.022</td>
+                <td>0.044</td>
+                <td>0.323</td>
+                <td>0.128</td>
+                <td>14.53&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
               <!-- New epochs will be added here by monitoring -->
             </tbody>
           </table>
@@ -1358,21 +1382,27 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status">
-          <strong>v11 Epoch 1 &mdash; First Signal (20 min on A40):</strong>
+          <strong>v11 Epoch 3 &mdash; Rapid Convergence</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE = 1.950</strong> &mdash; already below the untrained baseline (~2.0+). The IPA frame
-                machinery is learning backbone geometry from E1. This is the metric v10 could <em>never</em> improve.</li>
-            <li><strong>val dist_mse = 1.163</strong> &mdash; distance prediction converging; expect rapid improvement.</li>
-            <li><strong>val bond = 0.171</strong> &mdash; near-perfect C&alpha; spacing already. Fixed-scale normalization working.</li>
-            <li><strong>val aux = 0.475</strong> &mdash; ordinal regression stable. No divergence (v10&rsquo;s detached head diverged by E6).</li>
-            <li><strong>DDIM: TM = 0.099, RMSD = 15.46&Aring;</strong> &mdash; random level, expected for E1. Structural quality lags loss by several epochs.</li>
+            <li><strong>val total: 4.338 &rarr; 2.922 &rarr; 2.741</strong> &mdash; 37% reduction in 3 epochs, all NEW BEST.</li>
+            <li><strong>val FAPE: 1.950 &rarr; 1.977 &rarr; 1.988</strong> &mdash; flat/slight increase. Still above v10&rsquo;s
+                ceiling (1.31). FAPE hasn&rsquo;t started dropping yet &mdash; expected behavior: the model first learns
+                distances and compactness, then frame consistency follows. This is the metric to watch.</li>
+            <li><strong>val dist_mse: 1.163 &rarr; 0.633 &rarr; 0.479</strong> &mdash; 59% drop. Learning pairwise distances
+                rapidly. Already approaching v10&rsquo;s best (0.218) with only 3 epochs.</li>
+            <li><strong>val bond: 0.171 &rarr; 0.037 &rarr; 0.022</strong> &mdash; solved. C&alpha; spacing near-perfect.</li>
+            <li><strong>val Rg: 1.352 &rarr; 0.049 &rarr; 0.044</strong> &mdash; 96.7% drop. Protein size/compactness learned.</li>
+            <li><strong>val aux: 0.475 &rarr; 0.385 &rarr; 0.323</strong> &mdash; ordinal regression improving steadily. No divergence.</li>
+            <li><strong>DDIM: TM = 0.099 &rarr; 0.102 &rarr; 0.128, RMSD = 15.46 &rarr; 15.32 &rarr; 14.53&Aring;</strong> &mdash;
+                already approaching v10&rsquo;s peak (TM=0.131, RMSD=14.53) after just 3 epochs vs v10&rsquo;s 21.</li>
           </ul>
-          <strong>Assessment:</strong> Strongly positive. Val FAPE below baseline at E1 confirms IPA can optimize frame consistency.
-          Training/val gap healthy (no overfitting). Patience 0/15. E2 currently in progress (~20 min/epoch).
-          Monitoring every 30 min.
+          <strong>Assessment:</strong> Very strong early trajectory. Distance, bond, and Rg losses are converging rapidly &mdash; the
+          model is learning &ldquo;proteins are compact blobs of the right size&rdquo; (same as v10). The critical question is
+          whether FAPE will break below its current plateau in the next 2&ndash;5 epochs. DDIM TM at 0.128 by E3 is remarkable &mdash;
+          v10 needed 21 epochs to reach 0.131. All 3 epochs are NEW BEST. Patience 0/15. LR just reached peak (5e-5) at E3 after warmup.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 10:04 UTC &mdash; E1 complete, E2 in progress
+          Last updated: 2026-03-09 10:35 UTC &mdash; E3 complete
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
