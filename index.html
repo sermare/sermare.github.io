@@ -1365,6 +1365,30 @@
                 <td>17.51&Aring;</td>
                 <td><span class="tag tag-pat">pat 1</span></td>
               </tr>
+              <tr>
+                <td>10</td>
+                <td>2.647</td>
+                <td>1.691</td>
+                <td>0.852</td>
+                <td>0.370</td>
+                <td style="color: #2ca02c; font-weight: bold;">0.008</td>
+                <td>0.038</td>
+                <td>0.094</td>
+                <td>17.66&Aring;</td>
+                <td><span class="tag tag-pat">pat 2</span></td>
+              </tr>
+              <tr style="background: rgba(214, 39, 40, 0.06);">
+                <td>11</td>
+                <td>2.797</td>
+                <td style="color: #d62728;">1.813</td>
+                <td>0.880</td>
+                <td>0.374</td>
+                <td>0.008</td>
+                <td>0.038</td>
+                <td style="color: #d62728;">0.079</td>
+                <td style="color: #d62728;">19.24&Aring;</td>
+                <td><span class="tag tag-pat">pat 3</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1516,33 +1540,34 @@
         </div>
 
         <!-- Status / Live interpretation -->
-        <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #2ca02c;">
-          <strong style="color: #2ca02c;">v11b Epoch 9 &mdash; E8 Was a Breakthrough: FAPE 1.655, frame_rot 0.830</strong>
+        <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #ff8c00;">
+          <strong style="color: #ff8c00;">v11b Epoch 11 &mdash; Regression Warning: FAPE 1.813, DDIM TM 0.079</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE: 1.655 (E8, best) &rarr; 1.686 (E9)</strong> &mdash;
-                <span style="color: #2ca02c;">E8 was a massive jump: 1.709&rarr;1.655 (&Delta;=0.054, largest single-epoch drop).</span>
-                E9 regressed slightly (pat 1). Best is now 0.163 below v11 peak (1.818),
-                0.35 above random baseline (1.31).</li>
-            <li><strong>frame_rot: 0.830 (E8, best) &rarr; 0.858 (E9)</strong> &mdash;
-                <span style="color: #2ca02c;">broke below 0.85!</span> ~67&deg; mean angular error at E8 (down from ~94&deg;).
-                E9 uptick mirrors the pattern at E6 &mdash; likely noise, not a plateau.</li>
-            <li><strong>DDIM: TM = 0.093&ndash;0.094, RMSD = 17.51&ndash;17.55&Aring;</strong> &mdash;
-                still flat in 0.090&ndash;0.095 band despite large loss improvements.
-                Sampling quality may need frame_rot &lt; 0.7 before a phase transition.</li>
-            <li><strong>val dist_mse: 0.351 (E8, record!) &rarr; 0.394 (E9)</strong> | bond: 0.009 | rg: 0.037&ndash;0.038</li>
-            <li><strong>Patience: 1/15</strong> &mdash; E9 didn&rsquo;t beat E8&rsquo;s exceptional result. Normal fluctuation.</li>
+            <li><strong>val FAPE: 1.655 (E8 best) &rarr; 1.691 (E10) &rarr; 1.813 (E11)</strong> &mdash;
+                <span style="color: #d62728;">E11 regressed to near v11 E10 level (1.818).</span>
+                3 consecutive non-best epochs. However, train FAPE (1.725) is still reasonable &mdash;
+                the train-val gap widened (0.088), suggesting val noise rather than true degradation.</li>
+            <li><strong>frame_rot: 0.830 (E8 best) &rarr; 0.852 (E10) &rarr; 0.880 (E11)</strong> &mdash;
+                drifting up from E8 best. Train frame_rot (0.885) roughly matches val (0.880).
+                Not yet alarming but direction is wrong.</li>
+            <li><strong>DDIM: TM = 0.079, RMSD = 19.24&Aring; (E11)</strong> &mdash;
+                <span style="color: #d62728;">worst DDIM yet.</span> Dropped from stable 0.093&ndash;0.095 band.
+                E11 ran on a 2080 Ti (11.5 GB) instead of A40 &mdash; possible GPU-related variation.</li>
+            <li><strong>val bond: 0.008 (E10, record!)</strong> | dist_mse: 0.370 (E10) &rarr; 0.374 (E11)</li>
+            <li><strong>Patience: 3/15</strong> &mdash; E8 best (val_total=2.566) hasn&rsquo;t been matched in 3 epochs.</li>
           </ul>
-          <strong>Deeper analysis (E1&ndash;E9):</strong>
+          <strong>Deeper analysis (E1&ndash;E11):</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            E8 was the best single epoch yet &mdash; every structural metric hit a new low simultaneously
-            (FAPE 1.655, frame_rot 0.830, dist_mse 0.351). This is the kind of coordinated improvement
-            that indicates the model is learning real structure, not just optimizing individual loss terms.
-            The FAPE trajectory: 1.934 &rarr; 1.796 &rarr; 1.756 &rarr; 1.709 &rarr; <strong>1.655</strong> shows
-            accelerating improvement (last 3 deltas: 0.040, 0.047, 0.054). If this continues,
-            FAPE could reach ~1.5 by E12&ndash;E14. However, E9&rsquo;s slight regression suggests
-            the model oscillates around the true trend. aux_dist_ce has stabilized at ~0.471 (no longer spiking).
-            DDIM TM remains the stubborn metric &mdash; 9 epochs of loss improvement haven&rsquo;t moved it above 0.095.
-            This may require a different DDIM schedule or more epochs for the EMA weights to reflect the gains.
+            E11 is concerning but not yet a failure signal. The regression pattern (E8 exceptional &rarr;
+            E9&ndash;E11 declining) mirrors v11&rsquo;s E10&rarr;E11 collapse, but there are key differences:
+            (1) train losses are still improving (FAPE 1.725 at E11 vs 1.709 at E8 &mdash; small gap),
+            (2) frame_rot is oscillating (0.830&ndash;0.880) rather than stagnating,
+            (3) bond geometry continues improving (0.008 record at E10).
+            The DDIM collapse to 0.079 at E11 is the most worrying signal &mdash; but E11 ran on a
+            2080 Ti instead of A40, which could affect mixed-precision behavior.
+            <strong>Assessment: not yet a failure. Monitor E12&ndash;E14 closely.</strong>
+            If FAPE stays above 1.75 and DDIM stays below 0.085 for 3+ more epochs, recommend intervention.
+            Patience at 3/15 gives us 12 more epochs before early stopping triggers.
           </p>
           <details style="margin-top: 8px;">
             <summary style="cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
@@ -1570,7 +1595,7 @@
           </details>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 20:18 UTC
+          Last updated: 2026-03-09 20:50 UTC
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
