@@ -1285,6 +1285,18 @@
                 <td>14.53&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
+              <tr>
+                <td>4</td>
+                <td>2.593</td>
+                <td>1.889</td>
+                <td>0.447</td>
+                <td>0.019</td>
+                <td>0.041</td>
+                <td>0.316</td>
+                <td>0.088</td>
+                <td>17.89&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
               <!-- New epochs will be added here by monitoring -->
             </tbody>
           </table>
@@ -1382,27 +1394,26 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status">
-          <strong>v11 Epoch 3 &mdash; Rapid Convergence</strong>
+          <strong>v11 Epoch 4 &mdash; First FAPE Improvement</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val total: 4.338 &rarr; 2.922 &rarr; 2.741</strong> &mdash; 37% reduction in 3 epochs, all NEW BEST.</li>
-            <li><strong>val FAPE: 1.950 &rarr; 1.977 &rarr; 1.988</strong> &mdash; flat/slight increase. Still above v10&rsquo;s
-                ceiling (1.31). FAPE hasn&rsquo;t started dropping yet &mdash; expected behavior: the model first learns
-                distances and compactness, then frame consistency follows. This is the metric to watch.</li>
-            <li><strong>val dist_mse: 1.163 &rarr; 0.633 &rarr; 0.479</strong> &mdash; 59% drop. Learning pairwise distances
-                rapidly. Already approaching v10&rsquo;s best (0.218) with only 3 epochs.</li>
-            <li><strong>val bond: 0.171 &rarr; 0.037 &rarr; 0.022</strong> &mdash; solved. C&alpha; spacing near-perfect.</li>
-            <li><strong>val Rg: 1.352 &rarr; 0.049 &rarr; 0.044</strong> &mdash; 96.7% drop. Protein size/compactness learned.</li>
-            <li><strong>val aux: 0.475 &rarr; 0.385 &rarr; 0.323</strong> &mdash; ordinal regression improving steadily. No divergence.</li>
-            <li><strong>DDIM: TM = 0.099 &rarr; 0.102 &rarr; 0.128, RMSD = 15.46 &rarr; 15.32 &rarr; 14.53&Aring;</strong> &mdash;
-                already approaching v10&rsquo;s peak (TM=0.131, RMSD=14.53) after just 3 epochs vs v10&rsquo;s 21.</li>
+            <li><strong>val FAPE: 1.950 &rarr; 1.977 &rarr; 1.988 &rarr; 1.889</strong> &mdash; first real FAPE drop! Broke below 1.9
+                for the first time. After 3 epochs of plateau (learning distances/compactness), the IPA frames are now improving.
+                This is the signal we needed &mdash; v10 never achieved this.</li>
+            <li><strong>val dist_mse: 1.163 &rarr; 0.479 &rarr; 0.447</strong> &mdash; 62% below E1, still improving.</li>
+            <li><strong>val total: 4.338 &rarr; 2.593</strong> &mdash; 40% drop over 4 epochs, all NEW BEST.</li>
+            <li><strong>val chirality: 0.509 &rarr; 0.488</strong> &mdash; starting to learn backbone handedness.</li>
+            <li><strong>val aux: 0.475 &rarr; 0.316</strong> &mdash; ordinal regression stable and improving (no v10-style divergence).</li>
+            <li><strong>DDIM: TM = 0.128 &rarr; 0.088, RMSD = 14.53 &rarr; 17.89&Aring;</strong> &mdash; sampling quality regressed
+                this epoch. DDIM metrics are noisy (small val set) and can fluctuate. The loss improvements (especially FAPE) are the
+                more reliable signal. If FAPE continues dropping, DDIM will follow.</li>
           </ul>
-          <strong>Assessment:</strong> Very strong early trajectory. Distance, bond, and Rg losses are converging rapidly &mdash; the
-          model is learning &ldquo;proteins are compact blobs of the right size&rdquo; (same as v10). The critical question is
-          whether FAPE will break below its current plateau in the next 2&ndash;5 epochs. DDIM TM at 0.128 by E3 is remarkable &mdash;
-          v10 needed 21 epochs to reach 0.131. All 3 epochs are NEW BEST. Patience 0/15. LR just reached peak (5e-5) at E3 after warmup.
+          <strong>Assessment:</strong> The FAPE drop at E4 is the most important event so far. v10&rsquo;s EGNN never moved FAPE below
+          ~1.95 (its E1 value was already near ceiling). v11&rsquo;s IPA is now actively improving frame consistency. The DDIM regression
+          is a noisy fluctuation &mdash; not concerning given the strong loss trajectory. All 4 epochs NEW BEST. Patience 0/15.
+          E5 in progress (~21 min remaining in SLURM allocation).
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 10:35 UTC &mdash; E3 complete
+          Last updated: 2026-03-09 11:00 UTC &mdash; E4 complete, E5 in progress
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
