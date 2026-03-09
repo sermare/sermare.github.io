@@ -1204,13 +1204,43 @@
 
         <h4 class="training-progress-heading">v10 &mdash; Training Progress (current)</h4>
         <div class="training-observations">
-          <h4>v10 changes</h4>
+          <h4>v10 changes (final)</h4>
           <ul>
-            <li>Clash loss removed entirely (was broken in normalized coordinate space, dominated gradients with noise)</li>
-            <li>FAPE now uses all residues as targets (was random 16, too noisy to drive learning)</li>
-            <li>DistanceHead pair input no longer detached &mdash; aux_dist_ce gradients now train the pair stack</li>
-            <li>All prior fixes retained: reversed bond annealing, dx_clamp=0.5, tighter clamping, 5-epoch warmup + cosine restarts</li>
+            <li>Clash loss removed entirely (was broken in Rg-normalized coordinate space: 3.0&Aring; threshold mapped to ~30&Aring; real space, penalizing nearly all atom pairs with noise)</li>
+            <li>FAPE now uses all residues as targets (was random 16 out of 125, causing high gradient variance epoch-to-epoch)</li>
+            <li><s>DistanceHead pair input undetached</s> &mdash; <strong>reverted at E5</strong> (see incident report below)</li>
+            <li>All prior fixes retained: reversed bond annealing (low&rarr;high over 15 epochs), dx_clamp=0.5, tighter loss clamping, 5-epoch linear warmup + cosine restarts</li>
           </ul>
+        </div>
+
+        <div class="training-observations" style="border-left: 3px solid #d62728; padding-left: 14px; margin: 16px 0;">
+          <h4>Incident Report: aux_dist_ce Divergence (E6&ndash;E12)</h4>
+          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
+            <strong>What happened:</strong> At E6, the auxiliary distance cross-entropy loss (aux_dist_ce) began diverging exponentially:
+            3.95 &rarr; 43.8 &rarr; 86.6 &rarr; 77.9, eventually reaching 79+ and saturating. By E12, the model was generating
+            random atom clouds (DDIM TM=0.015, RMSD=52.6&Aring;). All structural losses were corrupted.
+          </p>
+          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
+            <strong>Root cause:</strong> Removing <code>pair.detach()</code> from the DistanceHead input allowed aux_dist_ce gradients
+            to flow back through the ContactConditionedPairStack. This created a positive feedback loop: aux gradients destabilized the
+            pair representation &rarr; worse distance predictions &rarr; larger aux loss &rarr; even larger gradients. The pair representation
+            feeds both the aux head and the denoiser, so the corruption spread to all structural losses by E8.
+          </p>
+          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
+            <strong>Fix applied:</strong> Re-detached the pair stack (<code>pair.detach()</code>), deleted corrupted checkpoints (E10&ndash;E12),
+            and restarted from the E4 best checkpoint (val=2.247) with a fresh optimizer. Training immediately resumed smooth improvement,
+            setting new bests at E7 (2.129) and E8 (2.086).
+          </p>
+          <p style="margin: 6px 0; font-size: 0.92em; line-height: 1.55;">
+            <strong>Trade-off analysis:</strong> Detaching the pair stack means aux_dist_ce only trains the DistanceHead MLP, not the pair
+            representation itself. In principle, end-to-end training of the pair stack through aux loss could improve the learned pair
+            features. In practice, the aux loss magnitude (~4.0) is much larger than structural losses (~0.3&ndash;1.4), and the
+            cross-entropy gradients are poorly scaled relative to the MSE/FAPE gradients that the pair stack was designed for. The detach
+            acts as a gradient firewall &mdash; the pair stack learns from structural losses (which are well-calibrated), while aux_dist_ce
+            provides an independent distance prediction that regularizes the DistanceHead without interfering. This is the safer and
+            empirically superior design. A future approach could use a much smaller aux weight (w_aux=0.01&ndash;0.03) or gradient scaling
+            to enable partial end-to-end training without instability.
+          </p>
         </div>
         <div class="training-table-wrapper">
           <table class="training-table">
@@ -1272,86 +1302,138 @@
                 <td>&mdash;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
+              <tr style="background: rgba(214, 39, 40, 0.08);">
+                <td colspan="9" style="text-align: center; font-size: 0.85em; font-style: italic; color: var(--text-secondary); padding: 4px;">
+                  &darr; aux_dist_ce divergence detected (E5&ndash;E12) &mdash; pair.detach() restored, rolled back to E4 checkpoint &darr;
+                </td>
+              </tr>
               <tr>
                 <td>5</td>
-                <td>2.272</td>
-                <td>0.374</td>
-                <td>1.344</td>
-                <td>0.038</td>
-                <td>0.011</td>
+                <td>2.246</td>
+                <td>0.372</td>
+                <td>1.352</td>
+                <td>0.039</td>
+                <td>0.013</td>
                 <td>&mdash;</td>
                 <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 1</span></td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
               <tr>
                 <td>6</td>
-                <td>14.078</td>
-                <td>0.262</td>
-                <td>1.360</td>
-                <td>0.038</td>
-                <td>0.011</td>
-                <td>16.70&Aring;</td>
-                <td>0.103</td>
-                <td><span class="tag tag-pat">pat 2</span></td>
+                <td>2.248</td>
+                <td>0.380</td>
+                <td>1.366</td>
+                <td>0.039</td>
+                <td>0.010</td>
+                <td>15.91&Aring;</td>
+                <td>0.108</td>
+                <td><span class="tag tag-pat">pat 1</span></td>
               </tr>
               <tr>
                 <td>7</td>
-                <td>27.030</td>
-                <td>0.351</td>
-                <td>1.354</td>
+                <td>2.129</td>
+                <td>0.267</td>
+                <td>1.381</td>
                 <td>0.038</td>
-                <td>0.017</td>
+                <td>0.011</td>
                 <td>&mdash;</td>
                 <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 3</span></td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
               <tr>
                 <td>8</td>
-                <td>25.095</td>
-                <td>0.632</td>
-                <td>1.586</td>
-                <td>0.037</td>
-                <td>0.070</td>
+                <td>2.086</td>
+                <td>0.246</td>
+                <td>1.343</td>
+                <td>0.038</td>
+                <td>0.011</td>
                 <td>&mdash;</td>
                 <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 4</span></td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
               <tr>
                 <td>9</td>
-                <td>25.873</td>
-                <td>1.090</td>
-                <td>1.333</td>
+                <td>2.106</td>
+                <td>0.241</td>
+                <td>1.351</td>
                 <td>0.037</td>
-                <td>0.091</td>
-                <td>15.58&Aring;</td>
-                <td>0.100</td>
-                <td><span class="tag tag-pat">pat 5</span></td>
-              </tr>
-              <tr>
-                <td>10</td>
-                <td>27.226</td>
-                <td>0.894</td>
-                <td>1.448</td>
-                <td>0.037</td>
-                <td>0.449</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
-                <td><span class="tag tag-pat">pat 6</span></td>
+                <td>0.013</td>
+                <td>14.92&Aring;</td>
+                <td>0.125</td>
+                <td><span class="tag tag-pat">pat 1</span></td>
               </tr>
               </tbody>
           </table>
         </div>
 
-        <h4 class="training-progress-heading">Loss Curves (through Epoch 10)</h4>
+        <div class="training-observations" style="margin: 16px 0; font-size: 0.88em;">
+          <h4>Loss Reference: Random Baseline &amp; Interpretation</h4>
+          <table class="training-table" style="font-size: 0.92em;">
+            <thead>
+              <tr>
+                <th>Loss Component</th>
+                <th>Random Init (E1)</th>
+                <th>Current Best</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Val Total</strong></td>
+                <td>~2.94</td>
+                <td>2.086 &darr;</td>
+                <td>Weighted sum of all structural losses. &darr; = model learning to denoise protein backbones.</td>
+              </tr>
+              <tr>
+                <td><strong>Dist MSE</strong></td>
+                <td>~0.54</td>
+                <td>0.241 &darr;</td>
+                <td>Mean squared error on pairwise C&alpha; distances. At random, ~0.5 (Gaussian noise). Below 0.1 indicates the model predicts inter-residue distances with sub-&Aring;ngstr&ouml;m accuracy.</td>
+              </tr>
+              <tr>
+                <td><strong>FAPE</strong></td>
+                <td>~1.31</td>
+                <td>1.343 &asymp;</td>
+                <td>Frame-Aligned Position Error (all residues). Measures local coordinate frame consistency. Plateau at ~1.3 is expected early &mdash; drops below 1.0 when the model learns correct fold topology (usually E15+).</td>
+              </tr>
+              <tr>
+                <td><strong>Rg Loss</strong></td>
+                <td>~0.23</td>
+                <td>0.037 &darr;</td>
+                <td>Radius of gyration prediction error. Below 0.05 means the model correctly predicts overall protein size/compactness.</td>
+              </tr>
+              <tr>
+                <td><strong>Bond Geom</strong></td>
+                <td>~0.17</td>
+                <td>0.011 &darr;</td>
+                <td>C&alpha;&ndash;C&alpha; pseudo-bond length error. Below 0.02 means bonds are within 0.1&Aring; of the ideal 3.8&Aring; spacing &mdash; physically valid backbone geometry.</td>
+              </tr>
+              <tr>
+                <td><strong>DDIM TM-score</strong></td>
+                <td>~0.10</td>
+                <td>0.125 &uarr;</td>
+                <td>Template Modeling score from 50-step DDIM sampling. Random structures score ~0.10. Scores above 0.17 indicate the model is generating recognizable protein-like folds. Target: &gt; 0.30 for useful structure generation.</td>
+              </tr>
+              <tr>
+                <td><strong>DDIM RMSD</strong></td>
+                <td>~15.5&Aring;</td>
+                <td>14.92&Aring; &darr;</td>
+                <td>Root-mean-square deviation from ground truth. Random placement gives ~15&ndash;16&Aring;. Below 10&Aring; indicates partial fold correctness. Below 5&Aring; is high-quality prediction.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 class="training-progress-heading">Loss Curves (through Epoch 9)</h4>
         <div style="text-align: center; margin: 16px 0;">
           <img src="data/training/v10_loss_curves.png" alt="V10 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
 
         <div class="training-pending-note" id="v9-run2-status">
-          v10: 10 epochs completed. Best val loss: 2.247 at epoch 4. Patience: 6/15. Best DDIM TM-score: 0.117 (E3). Running on single A40 GPU (savio3) with auto-resume.
+          v10: 9 epochs completed (post-fix). Best val loss: 2.086 at epoch 8. Patience: 1/15. Best DDIM TM-score: 0.125 (E9). aux_dist_ce divergence fixed at E5 by restoring pair.detach(). Model now training stably with clean structural gradients. Running on single A40 GPU (savio3) with auto-resume.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 00:01 UTC
+          Last updated: 2026-03-08 19:00 UTC
         </div>
       </div>
 
