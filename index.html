@@ -8,6 +8,11 @@
   <meta name="description" content="Sergio E. Mares - Computational Biology Ph.D. Candidate at UC Berkeley">
   <link rel="stylesheet" href="stylesheet.css">
   <link rel="icon" type="image/png" href="data/avatar.png">
+  <!-- KaTeX for math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
 </head>
 <body>
 
@@ -65,6 +70,7 @@
       <button class="tab-btn" onclick="switchTab('reading')">Reading</button>
       <button class="tab-btn" onclick="switchTab('hobbies')">Hobbies</button>
       <button class="tab-btn" onclick="switchTab('training')">Training</button>
+      <button class="tab-btn" onclick="switchTab('details')">Model Details</button>
     </div>
 
     <!-- ===== Publications Tab ===== -->
@@ -1494,11 +1500,11 @@
                 </tr>
                 <tr>
                   <td><strong>Aux Dist CE</strong></td>
-                  <td>0.3</td>
+                  <td>0.03</td>
                   <td>CE</td>
                   <td>ln(96) = 4.56</td>
                   <td>3.95 &darr;</td>
-                  <td>Cross-entropy over 96 distance bins (2&ndash;40&Aring;). Pair stack detached. Uniform predictor = ln(96).</td>
+                  <td>CE over 96 distance bins (2&ndash;40&Aring;). Pair detached. Reduced 0.3&rarr;0.03 after E14 spikes.</td>
                 </tr>
                 <tr style="color: var(--text-secondary);">
                   <td><strong>Clash</strong></td>
@@ -1529,17 +1535,243 @@
           </div>
         </div>
 
-        <h4 class="training-progress-heading">Loss Curves (through Epoch 14)</h4>
+        <h4 class="training-progress-heading">Loss Curves (through Epoch 13)</h4>
         <div style="text-align: center; margin: 16px 0;">
           <img src="data/training/v10_loss_curves.png" alt="V10 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
 
         <div class="training-pending-note" id="v9-run2-status">
-          v10: 14 epochs completed. Best val loss: 2.006 at epoch 13. Patience: 1/15. Best DDIM TM-score: 0.131 (E12). Running on single A40 GPU (savio3) with auto-resume.
+          v10: 13 epochs completed. Best val loss: 2.006 at epoch 13. Patience: 0/15. Best DDIM TM-score: 0.131 (E12). aux weight reduced 0.3&rarr;0.03 after E14&ndash;E15 spikes; restarting from E13 checkpoint. Running on single A40 GPU (savio3) with auto-resume.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 03:29 UTC
+          Last updated: 2026-03-08 20:45 UTC
         </div>
+      </div>
+
+    </div>
+
+    <!-- ===== Model Details Tab ===== -->
+    <div id="tab-details" class="tab-content">
+      <h3 class="section-heading">Diffusion v10 &mdash; Architecture &amp; Loss Function</h3>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>Overview</h4>
+        <p style="font-size: 0.93em;">
+          We train a denoising diffusion model for protein backbone (C&alpha;) structure generation,
+          conditioned on inter-residue contact maps predicted by a frozen ContactClassifier encoder.
+          The model operates in <em>Rg-normalized coordinate space</em>: all coordinates are divided by
+          the radius of gyration so the diffusion process is scale-invariant. The denoiser is an
+          8-layer SE(3)-equivariant graph neural network (EGNN) with 14.6M parameters (13.4M trainable,
+          1.2M frozen encoder). Training uses the CATH dataset (18,024 train / 608 val proteins,
+          max 125 residues).
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>Total Loss</h4>
+        <p style="font-size: 0.93em;">
+          The total loss is a weighted combination of eight components. At epoch \(e\):
+        </p>
+        <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
+          $$\mathcal{L}_{\text{total}} = w_{\text{dist}} \cdot \mathcal{L}_{\text{dist}} + \beta(e) \cdot \mathcal{L}_{\text{bond}} + w_{\text{aux}} \cdot \mathcal{L}_{\text{aux}} + w_{\chi} \cdot \mathcal{L}_{\chi} + w_{\theta} \cdot \mathcal{L}_{\theta} + w_{\text{fape}} \cdot \mathcal{L}_{\text{fape}} + w_{\text{rg}} \cdot \mathcal{L}_{\text{rg}}$$
+        </div>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          Clash loss is logged but excluded (\(w_{\text{clash}} = 0\)). See incident report for rationale.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>1. Distance MSE &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w_{\text{dist}} = 1.0\)</span></h4>
+        <p style="font-size: 0.93em;">
+          Mean squared error on all pairwise C&alpha; distances in Rg-normalized space:
+        </p>
+        <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
+          $$\mathcal{L}_{\text{dist}} = \frac{1}{|\mathcal{M}|} \sum_{(i,j) \in \mathcal{M}} \left( \| \hat{x}_i^{(0)} - \hat{x}_j^{(0)} \| - \| x_i^{(0)} - x_j^{(0)} \| \right)^2$$
+        </div>
+        <p style="font-size: 0.88em;">
+          where \(\hat{x}^{(0)}\) is the predicted clean structure, \(x^{(0)}\) is the ground truth, both in
+          Rg-normalized coordinates, and \(\mathcal{M}\) is the set of valid residue pairs. Clamped to max 10.0.
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> ~0.54 (MSE of Gaussian noise pairwise distances vs true).
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>2. Bond Geometry &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(\beta(e) = \min(5.0,\; 1.0 + 4.0 \cdot \min(e/15, 1))\)</span></h4>
+        <p style="font-size: 0.93em;">
+          MSE on consecutive C&alpha;&ndash;C&alpha; distances against the ideal 3.8&Aring; bond length (in Rg-normalized space):
+        </p>
+        <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
+          $$\mathcal{L}_{\text{bond}} = \frac{1}{L-1} \sum_{i=1}^{L-1} \left( \| \hat{x}_i^{(0)} - \hat{x}_{i+1}^{(0)} \| - \frac{3.8}{R_g} \right)^2$$
+        </div>
+        <p style="font-size: 0.88em;">
+          The weight is <em>annealed</em> from 1.0 to 5.0 over the first 15 epochs. Starting low prevents bond geometry
+          from dominating early training when the model hasn't learned global structure. As training matures, the
+          increasing weight enforces physically valid backbone geometry. Clamped to max 10.0.
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> ~0.17. Below 0.02 indicates bonds are within 0.1&Aring; of the ideal 3.8&Aring; spacing.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>3. FAPE (Frame-Aligned Point Error) &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w_{\text{fape}} = 0.3\)</span></h4>
+        <p style="font-size: 0.93em;">
+          Measures local structural consistency by constructing rigid frames from consecutive C&alpha; triplets
+          and computing the error in each frame's local coordinate system:
+        </p>
+        <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
+          $$\mathcal{L}_{\text{fape}} = \frac{1}{N_f \cdot L} \sum_{f=1}^{N_f} \sum_{j=1}^{L} \min\!\Big( \| R_f^{\top}(\hat{x}_j - o_f) - R_f^{*\top}(x_j - o_f^*) \|,\; d_{\text{clamp}} \Big)$$
+        </div>
+        <p style="font-size: 0.88em;">
+          Frames are built from every other triplet of C&alpha; atoms: the x-axis along \(c_2 - c_0\), z-axis from the
+          cross product, y-axis completing the right-handed system. Unlike AlphaFold's random 14-residue sampling,
+          v10 uses <strong>all residues as targets</strong> for stable gradients. Clamped at \(d_{\text{clamp}} = 10.0\).
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> ~1.31. Drops below 1.0 when the model learns correct fold topology.
+          This is the hardest loss to reduce because it requires global structural correctness, not just local geometry.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>4. Radius of Gyration &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w_{\text{rg}} = 0.5\)</span></h4>
+        <p style="font-size: 0.93em;">
+          MSE on log-transformed radius of gyration predictions for scale invariance:
+        </p>
+        <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
+          $$\mathcal{L}_{\text{rg}} = \left( \log \hat{R}_g - \log R_g \right)^2$$
+        </div>
+        <p style="font-size: 0.88em;">
+          Since the denoiser works in Rg-normalized space, a separate MLP (\(\texttt{RgPredictor}\))
+          predicts the absolute radius of gyration from sequence embeddings. This allows
+          recovering real-space coordinates at inference: \(x_{\text{real}} = \hat{R}_g \cdot \hat{x}_{\text{norm}}\).
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> ~0.23. Converges below 0.05 by E2.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>5. Chirality &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w_{\chi} = 0.1\)</span></h4>
+        <p style="font-size: 0.93em;">
+          MSE on normalized signed volumes (scalar triple products) of consecutive C&alpha; quartets,
+          ensuring correct backbone handedness:
+        </p>
+        <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
+          $$\mathcal{L}_{\chi} = \frac{1}{L-3} \sum_{i=1}^{L-3} \left( \frac{\mathbf{v}_1 \cdot (\mathbf{v}_2 \times \mathbf{v}_3)}{\|\mathbf{v}_1\| \|\mathbf{v}_2\| \|\mathbf{v}_3\|} \bigg|_{\hat{x}} - \frac{\mathbf{v}_1 \cdot (\mathbf{v}_2 \times \mathbf{v}_3)}{\|\mathbf{v}_1\| \|\mathbf{v}_2\| \|\mathbf{v}_3\|} \bigg|_{x} \right)^2$$
+        </div>
+        <p style="font-size: 0.88em;">
+          where \(\mathbf{v}_1 = x_{i+1} - x_i\), \(\mathbf{v}_2 = x_{i+2} - x_{i+1}\), \(\mathbf{v}_3 = x_{i+3} - x_{i+2}\).
+          The normalization maps volumes to \([-1, 1]\), making the loss scale-invariant.
+          Natural proteins are L-amino acids with consistent chirality; this loss prevents mirror-image structures.
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> ~0.54 (expected MSE for random values in [-1, 1]).
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>6. Bond Angle &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w_{\theta} = 0.5\)</span></h4>
+        <p style="font-size: 0.93em;">
+          MSE on cosines of C&alpha;&ndash;C&alpha;&ndash;C&alpha; bond angles for consecutive triplets:
+        </p>
+        <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
+          $$\mathcal{L}_{\theta} = \frac{1}{L-2} \sum_{i=1}^{L-2} \left( \cos\hat{\theta}_i - \cos\theta_i \right)^2, \quad \cos\theta_i = \frac{(\hat{x}_{i+1} - \hat{x}_i) \cdot (\hat{x}_{i+2} - \hat{x}_{i+1})}{\| \hat{x}_{i+1} - \hat{x}_i \| \| \hat{x}_{i+2} - \hat{x}_{i+1} \|}$$
+        </div>
+        <p style="font-size: 0.88em;">
+          The ideal C&alpha;&ndash;C&alpha;&ndash;C&alpha; angle in proteins is ~120&deg; (\(\cos\theta \approx -0.5\)).
+          Working in cosine space avoids discontinuities at 0&deg;/360&deg;.
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> ~0.70. Below 0.1 indicates correct backbone angles.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>7. Auxiliary Distance Cross-Entropy &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w_{\text{aux}} = 0.03\)</span></h4>
+        <p style="font-size: 0.93em;">
+          Cross-entropy loss on binned pairwise distances, predicted by a DistanceHead MLP from the
+          <strong>detached</strong> pair representation:
+        </p>
+        <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
+          $$\mathcal{L}_{\text{aux}} = -\frac{1}{|\mathcal{M}'|} \sum_{(i,j) \in \mathcal{M}'} \log p_{ij}\big[\text{bin}(d_{ij})\big], \quad \text{bin}(d) = \left\lfloor \frac{d - d_{\min}}{\Delta} \right\rfloor, \quad \Delta = \frac{d_{\max} - d_{\min}}{N_{\text{bins}}}$$
+        </div>
+        <p style="font-size: 0.88em;">
+          Parameters: \(N_{\text{bins}} = 96\), \(d_{\min} = 2\)&Aring;, \(d_{\max} = 40\)&Aring;, \(\Delta = 0.396\)&Aring;/bin.
+          Distances are computed in real space (\(d_{ij} = R_g \cdot \|x_i - x_j\|\)) then binned.
+          Only pairs within \(d_{\max}\) are included.
+        </p>
+        <p style="font-size: 0.88em;">
+          The pair representation is <strong>detached</strong> before entering the DistanceHead, meaning aux gradients
+          train only the MLP head, not the pair stack. This is critical &mdash; an earlier experiment without detach
+          caused exponential divergence (see incident report in Training tab).
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> \(\ln(96) = 4.56\). A uniform predictor assigns \(1/96\) to each bin,
+          giving \(-\ln(1/96) = \ln(96)\). Originally weighted at 0.3; reduced to 0.03 after aux spikes at E14&ndash;E15
+          inflated the total loss.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>8. Clash Loss &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w_{\text{clash}} = 0.0\) (disabled)</span></h4>
+        <p style="font-size: 0.93em;">
+          Contact-guided steric clash penalty on non-bonded atoms closer than 3.0&Aring;:
+        </p>
+        <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
+          $$\mathcal{L}_{\text{clash}} = \frac{1}{|\mathcal{N}|} \sum_{(i,j) \in \mathcal{N}} \left[ (1 + 2 \cdot c_{ij}) \cdot \text{ReLU}(3.0 - d_{ij}) \right]^2$$
+        </div>
+        <p style="font-size: 0.88em;">
+          where \(\mathcal{N}\) is the set of non-bonded pairs (\(|i - j| > 1\)), \(c_{ij}\) is the predicted
+          contact probability (detached), and \(d_{ij}\) is the Rg-normalized distance.
+        </p>
+        <p style="font-size: 0.88em;">
+          <strong>Why disabled:</strong> The 3.0&Aring; threshold is applied in Rg-normalized coordinates, but for a
+          typical protein with \(R_g \approx 10\)&Aring;, this maps to \(3.0 \times 10 = 30\)&Aring; in real space &mdash;
+          penalizing nearly all non-bonded pairs. This produced noisy gradients that dominated ~47% of the total
+          loss in v9, drowning the structural learning signal. Removing clash led to immediate training stability
+          and the structural losses handle steric quality implicitly (clash decreases organically as the model
+          generates better structures).
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>Training Configuration</h4>
+        <div class="training-table-wrapper">
+          <table class="training-table" style="font-size: 0.88em; white-space: normal;">
+            <tbody>
+              <tr><td style="font-weight: 600; width: 200px;">Optimizer</td><td>AdamW (\(\beta_1=0.9, \beta_2=0.999\))</td></tr>
+              <tr><td style="font-weight: 600;">Peak learning rate</td><td>\(10^{-4}\)</td></tr>
+              <tr><td style="font-weight: 600;">LR schedule</td><td>5-epoch linear warmup (\(0.01 \times \text{lr} \to \text{lr}\)), then CosineAnnealingWarmRestarts (\(T_0 = 15\) epochs, \(\eta_{\min} = 10^{-5}\))</td></tr>
+              <tr><td style="font-weight: 600;">Batch size</td><td>8 (grad accumulation = 2, effective = 16)</td></tr>
+              <tr><td style="font-weight: 600;">Mixed precision</td><td>AMP with GradScaler, \(\texttt{dx\_clamp} = 0.5\)</td></tr>
+              <tr><td style="font-weight: 600;">EMA</td><td>Decay = 0.999, used for DDIM evaluation</td></tr>
+              <tr><td style="font-weight: 600;">Self-conditioning</td><td>50% probability during training</td></tr>
+              <tr><td style="font-weight: 600;">Early stopping</td><td>Patience = 15 epochs on val total loss</td></tr>
+              <tr><td style="font-weight: 600;">DDIM evaluation</td><td>50 steps, every 3 epochs, using EMA weights</td></tr>
+              <tr><td style="font-weight: 600;">Hardware</td><td>Single NVIDIA A40 (48 GB), ~15 min/epoch</td></tr>
+              <tr><td style="font-weight: 600;">Dataset</td><td>CATH 4.3: 18,024 train / 608 val, max 125 residues</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>DDIM Evaluation Metrics</h4>
+        <p style="font-size: 0.93em;">
+          Every 3 epochs, we generate structures via 50-step DDIM sampling using EMA weights and evaluate against
+          ground truth:
+        </p>
+        <ul style="font-size: 0.88em; line-height: 1.8;">
+          <li><strong>TM-score</strong> (Template Modeling): Global fold similarity, range [0, 1]. Scores &gt; 0.17 indicate
+              the same fold; &gt; 0.5 is the same topology. Random structures score ~0.10.</li>
+          <li><strong>RMSD</strong> (Root Mean Square Deviation): Average atomic displacement after optimal superposition.
+              Random placement gives ~15&ndash;16&Aring;. Below 5&Aring; is high quality.</li>
+          <li><strong>GDT</strong> (Global Distance Test): Fraction of residues within 1&ndash;8&Aring; of the true position.
+              Random gives ~3&ndash;4%.</li>
+        </ul>
       </div>
 
     </div>
