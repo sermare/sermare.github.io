@@ -1640,10 +1640,21 @@
         </div>
 
         <div class="training-pending-note" id="v9-run2-status">
-          v10: 19 epochs completed. Best val loss: 0.805 at epoch 16. Patience: 3/15. Best DDIM TM-score: 0.131 (E12). Running on single A40 GPU (savio3) with auto-resume.
+          <strong>Status (E19) &mdash; Regression detected:</strong>
+          After stable improvement through E17 (val=0.810), E18&ndash;E19 show a sharp regression.
+          <strong>E18:</strong> val FAPE dropped to 1.256 (best ever, well below random 1.31), but dist_mse spiked to 0.267 (from 0.222)
+          and bond_geom doubled to 0.008. DDIM results collapsed: TM=0.066, RMSD=22.58&Aring; &mdash; worse than random noise.
+          <strong>E19:</strong> Further degradation &mdash; val_structural=0.918, dist_mse=0.265, bond=0.011. Patience 3/15.
+          <br><br>
+          <strong>Interpretation:</strong> The cosine LR is approaching its minimum before the T_0=15 restart at E20
+          (lr: 4.1e-05 &rarr; 3.2e-05). The anomalous FAPE improvement at E18 while everything else degraded suggests the model
+          may be entering a loss landscape region where FAPE and dist_mse trade off against each other. The catastrophic DDIM
+          (TM=0.066) despite low FAPE indicates the EMA weights are capturing a transient bad state.
+          The cosine restart at E20 will reset LR to ~1e-4, which may help recovery. Monitoring closely &mdash; if regression
+          continues post-restart, intervention may be needed. Best model checkpoint (E16, val=0.805) is safe.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 06:33 UTC
+          Last updated: 2026-03-09 07:00 UTC
         </div>
       </div>
 
