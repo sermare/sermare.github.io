@@ -1662,26 +1662,10 @@
         </div>
 
         <div class="training-pending-note" id="v9-run2-status">
-          <strong>Status (E21) &mdash; Training paused, awaiting cosine restart evaluation:</strong>
-          Best model remains at E16 (val_structural=0.805). All structural losses degraded E17&ndash;E21 during
-          the cosine LR minimum &mdash; train and val moved in lockstep (not overfitting), caused by near-zero LR
-          in a flat loss landscape where SGD noise dominated. Bond geometry hit hardest: 0.006&rarr;0.028 (4.7&times;).
-          <br><br>
-          <strong>Key metrics at E21:</strong> val dist_mse=0.424 (best 0.217 at E15, random ~0.54),
-          val FAPE=1.340 (random ~1.31 &mdash; never meaningfully broken below baseline),
-          val angle=0.401 (best 0.168 at E16). Rg loss remains stable at 0.036.
-          <br><br>
-          <strong>DDIM sampling:</strong> Best TM=0.131 (E12), best RMSD=14.53&Aring; (E15).
-          E21 DDIM: TM=0.103, RMSD=16.86&Aring; &mdash; partial recovery from E18&rsquo;s collapse (TM=0.066),
-          but still at random-level. The model learns pairwise distances well but not protein topology.
-          <br><br>
-          <strong>Next steps:</strong> Cosine restart triggered mid-E21. E22 will be the first full post-restart
-          epoch at LR~9.6e-05. Tripwires: bond&lt;0.015 by E22, dist_mse&lt;0.25 by E23, DDIM TM&gt;0.10 at E24.
-          If any fail &rarr; roll back to E16. Patience: 5/15 (10 epochs of runway).
-          FAPE at random baseline suggests EGNN architecture ceiling &mdash; v11 with IPA-like frame reasoning is planned.
+          v10: 21 epochs completed. Best val loss: 0.805 at epoch 16. Patience: 5/15. Best DDIM TM-score: 0.131 (E12). Running on single A40 GPU (savio3) with auto-resume.
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 07:33 UTC
+          Last updated: 2026-03-09 08:03 UTC
         </div>
       </div>
 
