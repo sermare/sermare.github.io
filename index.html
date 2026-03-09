@@ -1525,54 +1525,51 @@
         </div>
 
         <!-- Status / Live interpretation -->
-        <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #ff7f0e;">
-          <strong style="color: #ff7f0e;">v11b Training Started &mdash; Architectural Fix Applied, E1 in Progress</strong>
+        <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #2ca02c;">
+          <strong style="color: #2ca02c;">v11b Epoch 1 Complete &mdash; Frame Rotation Loss Active, First Signal</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>Job 32385495 RUNNING</strong> on savio3_gpu (A40). Loaded E10 best weights, fresh optimizer.</li>
-            <li><strong>Fixes applied:</strong> frame_rotation_loss (w=0.5), fape_loss_with_frames (using learned R),
-                LR=2e-5, SC_PROB=0.25.</li>
-            <li><strong>E1 in progress</strong> &mdash; first results expected ~20 min from now.</li>
+            <li><strong>val FAPE: 1.934</strong> &mdash; stable from E10 baseline (1.818). Fresh optimizer hasn&rsquo;t disrupted.</li>
+            <li><strong>frame_rot: 1.067</strong> (train and val identical) &mdash; first measurement of rotation error.
+                Near-random (~94&deg; mean angular deviation). If the fix works, this must decrease.</li>
+            <li><strong>DDIM: TM = 0.094, RMSD = 17.22&Aring;</strong> &mdash; already 2x better than v11 E15 (TM=0.046).
+                E10 weights provide a solid starting point.</li>
+            <li><strong>val dist_mse: 0.409</strong> &mdash; stable near v11 E10 best (0.382). Bond: 0.015.</li>
+            <li><strong>Patience: 0/15</strong> &mdash; new best (first epoch of fresh run).</li>
           </ul>
-          <strong>Gradient Diagnostic Results:</strong>
+          <strong>What to watch in E2&ndash;E5:</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            Ran comprehensive gradient audit on E10 best weights. Key findings:
+            The critical metric is <code>frame_rot</code>. If it drops from 1.067 toward 0.5&ndash;0.7 by E5,
+            rotations are being learned and the fix is working. FAPE should follow with a delay.
+            If frame_rot stays flat at ~1.0, the gradient path through the rotation is still blocked
+            and deeper investigation is needed.
           </p>
-          <table style="font-size: 0.88em; width: 100%; border-collapse: collapse; margin: 8px 0;">
-            <tr style="background: var(--bg-secondary);">
-              <th style="text-align: left; padding: 4px 8px;">Hypothesis</th>
-              <th style="text-align: center; padding: 4px 8px;">Result</th>
-            </tr>
-            <tr><td style="padding: 4px 8px;">Frame confidence starving updates</td>
-                <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">NO &mdash; 57.7% of timesteps have conf &gt; 0.5</td></tr>
-            <tr><td style="padding: 4px 8px;">Gradients dead at frame_update MLP</td>
-                <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">NO &mdash; frame_update has <strong>highest</strong> grad norm (4.017)</td></tr>
-            <tr><td style="padding: 4px 8px;">FAPE gradient reaches frame_update</td>
-                <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">YES &mdash; FAPE&rarr;frame_update: 13.03 (largest of all losses)</td></tr>
-            <tr><td style="padding: 4px 8px;">Learned rotations R used in output</td>
-                <td style="text-align: center; padding: 4px 8px; color: #d62728;"><strong>NO &mdash; R discarded at line 729</strong></td></tr>
-          </table>
-          <p style="font-size: 0.92em; line-height: 1.55; margin: 8px 0;">
-            <strong>Root cause:</strong> The denoiser outputs <code>x0_pred = t_vec</code> (translations only). The learned frame
-            rotations R from 6 IPA layers are <strong>discarded</strong>. FAPE loss rebuilds frames from output coordinates via
-            Gram-Schmidt, so all FAPE gradient flows through the <strong>translation</strong> path. The rotation quaternion outputs
-            in the last IPA layer receive <strong>zero gradient</strong> (R is never used after the last layer). Earlier layers get
-            weak, second-order rotation gradient through IPA point attention.
-            <br><br>
-            The model learns translations well (dist_mse &darr;60%) but rotations are unsupervised.
-            IPA runs as a fancy EGNN &mdash; exactly the same failure mode as v10.
-          </p>
-          <strong>v11b Fix (implemented, ready to submit):</strong>
-          <ol style="font-size: 0.92em; margin: 6px 0 6px 18px; line-height: 1.55;">
-            <li><strong>frame_rotation_loss</strong> (w=0.5): Direct angular distance between learned R and Gram-Schmidt
-                ground truth. Gives rotation path first-order gradient signal.</li>
-            <li><strong>fape_loss_with_frames</strong>: FAPE computed using learned R_pred instead of rebuilding from coords.
-                FAPE gradients now flow through both rotation AND translation paths.</li>
-            <li><strong>Denoiser returns (x0_pred, R)</strong>: Learned rotations are no longer discarded.</li>
-            <li>LR = 2e-5 (halved), SC = 0.25 (halved). Rollback to E10 best weights.</li>
-          </ol>
+          <details style="margin-top: 8px;">
+            <summary style="cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
+              Gradient diagnostic details (v11 post-mortem)
+            </summary>
+            <table style="font-size: 0.85em; width: 100%; border-collapse: collapse; margin: 8px 0;">
+              <tr style="background: var(--bg-secondary);">
+                <th style="text-align: left; padding: 4px 8px;">Hypothesis</th>
+                <th style="text-align: center; padding: 4px 8px;">Result</th>
+              </tr>
+              <tr><td style="padding: 4px 8px;">Frame confidence starving updates</td>
+                  <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">NO &mdash; 57.7% conf &gt; 0.5</td></tr>
+              <tr><td style="padding: 4px 8px;">Gradients dead at frame_update</td>
+                  <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">NO &mdash; highest grad norm (4.017)</td></tr>
+              <tr><td style="padding: 4px 8px;">FAPE gradient reaches frame_update</td>
+                  <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">YES &mdash; 13.03 (largest)</td></tr>
+              <tr><td style="padding: 4px 8px;">Learned R used in output</td>
+                  <td style="text-align: center; padding: 4px 8px; color: #d62728;"><strong>NO &mdash; R discarded</strong></td></tr>
+            </table>
+            <p style="font-size: 0.85em; line-height: 1.5;">
+              <strong>Root cause:</strong> <code>x0_pred = t_vec</code> discarded learned R. FAPE rebuilt frames from coords,
+              so rotation quaternions received no direct gradient. v11b fix: frame_rotation_loss (w=0.5) +
+              fape_loss_with_frames using learned R. LR=2e-5, SC=0.25.
+            </p>
+          </details>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 15:33 UTC
+          Last updated: 2026-03-09 16:20 UTC &mdash; v11b E1 complete, E2 in progress
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
