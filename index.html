@@ -1155,7 +1155,7 @@
       <div class="training-card">
         <div class="training-card-header">
           <h3 class="training-card-title">Protein Backbone Diffusion Model (Stage 2 &mdash; v11b)</h3>
-          <span class="training-status status-active">Training</span>
+          <span class="training-status" style="background: #d62728; color: white;">Stopped E14</span>
         </div>
 
         <div class="training-goal">
@@ -1389,6 +1389,42 @@
                 <td style="color: #d62728;">19.24&Aring;</td>
                 <td><span class="tag tag-pat">pat 3</span></td>
               </tr>
+              <tr style="background: rgba(214, 39, 40, 0.10);">
+                <td>12</td>
+                <td>2.777</td>
+                <td style="color: #d62728;">1.800</td>
+                <td style="color: #d62728;">0.880</td>
+                <td>0.360</td>
+                <td>0.009</td>
+                <td>0.038</td>
+                <td style="color: #d62728;">0.065</td>
+                <td>21.25&Aring;</td>
+                <td><span class="tag tag-pat">pat 4</span></td>
+              </tr>
+              <tr style="background: rgba(214, 39, 40, 0.12);">
+                <td>13</td>
+                <td>2.799</td>
+                <td style="color: #d62728;">1.817</td>
+                <td style="color: #d62728;">0.890</td>
+                <td>0.361</td>
+                <td>0.009</td>
+                <td>0.038</td>
+                <td style="color: #d62728;">0.061</td>
+                <td>21.60&Aring;</td>
+                <td><span class="tag tag-pat">pat 5</span></td>
+              </tr>
+              <tr style="background: rgba(214, 39, 40, 0.15);">
+                <td>14</td>
+                <td>2.973</td>
+                <td style="color: #d62728;">1.898</td>
+                <td style="color: #d62728;">0.926</td>
+                <td>0.423</td>
+                <td>0.011</td>
+                <td>0.038</td>
+                <td style="color: #d62728;">0.061</td>
+                <td>21.72&Aring;</td>
+                <td><span class="tag tag-pat">pat 6 (stopped)</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1540,34 +1576,21 @@
         </div>
 
         <!-- Status / Live interpretation -->
-        <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #ff8c00;">
-          <strong style="color: #ff8c00;">v11b Epoch 11 &mdash; Regression Warning: FAPE 1.813, DDIM TM 0.079</strong>
+        <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #d62728;">
+          <strong style="color: #d62728;">v11b Stopped at E14 &mdash; Gradient Competition Collapse (E8 best preserved)</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>val FAPE: 1.655 (E8 best) &rarr; 1.691 (E10) &rarr; 1.813 (E11)</strong> &mdash;
-                <span style="color: #d62728;">E11 regressed to near v11 E10 level (1.818).</span>
-                3 consecutive non-best epochs. However, train FAPE (1.725) is still reasonable &mdash;
-                the train-val gap widened (0.088), suggesting val noise rather than true degradation.</li>
-            <li><strong>frame_rot: 0.830 (E8 best) &rarr; 0.852 (E10) &rarr; 0.880 (E11)</strong> &mdash;
-                drifting up from E8 best. Train frame_rot (0.885) roughly matches val (0.880).
-                Not yet alarming but direction is wrong.</li>
-            <li><strong>DDIM: TM = 0.079, RMSD = 19.24&Aring; (E11)</strong> &mdash;
-                <span style="color: #d62728;">worst DDIM yet.</span> Dropped from stable 0.093&ndash;0.095 band.
-                E11 ran on a 2080 Ti (11.5 GB) instead of A40 &mdash; possible GPU-related variation.</li>
-            <li><strong>val bond: 0.008 (E10, record!)</strong> | dist_mse: 0.370 (E10) &rarr; 0.374 (E11)</li>
-            <li><strong>Patience: 3/15</strong> &mdash; E8 best (val_total=2.566) hasn&rsquo;t been matched in 3 epochs.</li>
+            <li><strong>Best epoch: E8</strong> &mdash; val FAPE 1.655, frame_rot 0.830, DDIM TM 0.093. Best weights saved in <code>nastya_v11b.pt</code>.</li>
+            <li><strong>Collapse pattern (E9&ndash;E14):</strong> Train FAPE increased 1.709&rarr;1.857. Train frame_rot reverted 0.886&rarr;0.941. DDIM TM collapsed 0.093&rarr;0.061. All frame-related metrics monotonically worsened.</li>
+            <li><strong>Root cause:</strong> dist_mse gradient overwrites rotation parameters through shared single representation (128-dim) and frame update MLP. The model lacks capacity to maintain separate subspaces for distance and rotation objectives. After easy rotation gains (E1&ndash;E8), continued training pushes shared parameters toward the stronger distance loss landscape.</li>
+            <li><strong>Telling signal:</strong> dist_mse kept improving (0.374&rarr;0.361&rarr;0.423) while frame_rot regressed (0.830&rarr;0.926). The model reverted to v10&rsquo;s failure mode &mdash; predicting correct pairwise distances while ignoring frame geometry.</li>
           </ul>
-          <strong>Deeper analysis (E1&ndash;E11):</strong>
+          <strong>v11b Validated, v12 Next:</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            E11 is concerning but not yet a failure signal. The regression pattern (E8 exceptional &rarr;
-            E9&ndash;E11 declining) mirrors v11&rsquo;s E10&rarr;E11 collapse, but there are key differences:
-            (1) train losses are still improving (FAPE 1.725 at E11 vs 1.709 at E8 &mdash; small gap),
-            (2) frame_rot is oscillating (0.830&ndash;0.880) rather than stagnating,
-            (3) bond geometry continues improving (0.008 record at E10).
-            The DDIM collapse to 0.079 at E11 is the most worrying signal &mdash; but E11 ran on a
-            2080 Ti instead of A40, which could affect mixed-precision behavior.
-            <strong>Assessment: not yet a failure. Monitor E12&ndash;E14 closely.</strong>
-            If FAPE stays above 1.75 and DDIM stays below 0.085 for 3+ more epochs, recommend intervention.
-            Patience at 3/15 gives us 12 more epochs before early stopping triggers.
+            The architecture and loss design are validated: IPA over EGNN (FAPE moves), frame rotation loss
+            (rotations receive gradient), FAPE through learned R (gradient loop closed), fixed-scale coordinates,
+            decoupled aux head. The capacity is the bottleneck. v12 will scale to ~25&ndash;30M params: single
+            representation 128&rarr;256, frame update MLP 1&rarr;2 hidden layers, 8 IPA layers. Same loss design,
+            same diffusion schedule. Success criterion: TM-score &gt; 0.15, frame_rot consistently &lt; 0.7.
           </p>
           <details style="margin-top: 8px;">
             <summary style="cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
@@ -1595,7 +1618,7 @@
           </details>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-09 20:50 UTC
+          Last updated: 2026-03-09 23:30 UTC
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
