@@ -12,9 +12,11 @@ TMPPENDING=$(mktemp)
 
 timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-sinfo -p savio3_gpu,savio4_gpu -o "%P|%G|%D|%T|%N" --noheader 2>/dev/null > "$TMPNODES"
-squeue -p savio3_gpu,savio4_gpu -t RUNNING --format="%i|%j|%u|%P|%N|%T|%b|%M|%l" --noheader 2>/dev/null > "$TMPJOBS"
-squeue -p savio3_gpu,savio4_gpu -t PENDING --format="%i|%j|%u|%P|%T|%b|%V" --noheader 2>/dev/null > "$TMPPENDING"
+PARTITIONS="savio3_gpu,savio4_gpu,savio2_1080ti"
+
+sinfo -p "$PARTITIONS" -o "%P|%G|%D|%T|%N" --noheader 2>/dev/null > "$TMPNODES"
+squeue -p "$PARTITIONS" -t RUNNING --format="%i|%j|%u|%P|%N|%T|%b|%M|%l" --noheader 2>/dev/null > "$TMPJOBS"
+squeue -p "$PARTITIONS" -t PENDING --format="%i|%j|%u|%P|%T|%b|%V" --noheader 2>/dev/null > "$TMPPENDING"
 
 python3 - "$timestamp" "$TMPNODES" "$TMPJOBS" "$TMPPENDING" "$OUTFILE" "$HISTFILE" << 'PYEOF'
 import json, sys, os
