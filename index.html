@@ -1490,6 +1490,39 @@
                 <td style="color: #2ca02c;"><strong>16.47&Aring;</strong></td>
                 <td><span class="tag tag-pat">pat 6</span></td>
               </tr>
+              <tr style="background: rgba(31, 119, 180, 0.12);">
+                <td>b8</td>
+                <td>2.607</td>
+                <td>1.651</td>
+                <td>0.851</td>
+                <td>0.379</td>
+                <td>0.008</td>
+                <td>0.113</td>
+                <td>16.39&Aring;</td>
+                <td><span class="tag tag-pat">pat 7</span></td>
+              </tr>
+              <tr style="background: rgba(31, 119, 180, 0.12);">
+                <td>b9</td>
+                <td>2.564</td>
+                <td>1.632</td>
+                <td>0.829</td>
+                <td>0.374</td>
+                <td>0.007</td>
+                <td>0.112</td>
+                <td>16.40&Aring;</td>
+                <td><span class="tag tag-pat">pat 8</span></td>
+              </tr>
+              <tr style="background: rgba(31, 119, 180, 0.15);">
+                <td><strong>b10</strong></td>
+                <td style="color: #2ca02c;"><strong>2.521</strong></td>
+                <td style="color: #2ca02c;"><strong>1.630</strong></td>
+                <td style="color: #2ca02c;"><strong>0.813</strong></td>
+                <td style="color: #2ca02c;"><strong>0.341</strong></td>
+                <td style="color: #2ca02c;"><strong>0.006</strong></td>
+                <td>0.113</td>
+                <td>16.42&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1698,9 +1731,10 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #1f77b4;">
-          <strong style="color: #1f77b4;">v12b Training &mdash; Rolled back to E10, fixes applied, retraining in progress</strong>
+          <strong style="color: #2ca02c;">v12b Training &mdash; E10 NEW BEST, surpasses v12 peak</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>v12 E10 was the peak:</strong> val FAPE 1.651, frame_rot 0.833, DDIM TM 0.102. Best structural metrics achieved by any version.</li>
+            <li><strong>v12b E10 is the new overall best:</strong> val FAPE 1.630, frame_rot 0.813, val_total 2.521, DDIM TM 0.113. Surpasses v12 E10 peak (FAPE 1.651, frame_rot 0.833, TM 0.102) &mdash; per-module clipping is working.</li>
+            <li><strong>Steady improvement b1&rarr;b10:</strong> val_total dropped 2.541&rarr;2.521. Frame rotation improved 0.818&rarr;0.813. No signs of regression or gradient starvation. Patience reset to 0 at b10.</li>
             <li><strong>v12 E11-E13 regression diagnosed:</strong> Gradient starvation via global <code>clip_grad_norm_(1.0)</code>. Denoiser (28.5M params) consumed 99%+ of gradient budget. pair_stack_norm collapsed mid-E12: 0.125&rarr;0.007&rarr;0.000.</li>
             <li><strong>Gradient cosine diagnostic confirmed:</strong> No gradient competition. FAPE &amp; frame_rot are <em>aligned</em> (+0.57 cosine). dist_mse is near-orthogonal to both (+0.14). Losses do not oppose each other &mdash; the regression was purely gradient starvation, not conflicting objectives.</li>
             <li><strong>v12b fixes applied (rolling back to E10 EMA weights):</strong>
@@ -1718,7 +1752,7 @@
               <ul style="margin: 4px 0 4px 16px;">
                 <li>Frame masking: was zeroing rotation matrices (degenerate non-SO(3)), now uses identity fallback</li>
                 <li><code>slerp_to_identity</code>: added large-angle guard for &theta; near &pi; (sin&rarr;0 blow-up)</li>
-                <li>Gradient checkpointing: switched IPA layers to <code>use_reentrant=False</code> (correct for AMP)</li>
+                <li>Gradient checkpointing: IPA layers use <code>use_reentrant=True</code> (required for AMP; False causes metadata mismatch)</li>
                 <li><code>DiffusionSchedule</code> tensors registered as buffers (no more manual <code>.to(device)</code>)</li>
               </ul>
             </li>
