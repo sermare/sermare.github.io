@@ -1156,7 +1156,7 @@
       <div class="training-card">
         <div class="training-card-header">
           <h3 class="training-card-title">Protein Backbone Diffusion Model (Stage 2 &mdash; v12)</h3>
-          <span class="training-status" style="background: #2ca02c; color: white;">Training</span>
+          <span class="training-status" style="background: #1f77b4; color: white;">v12b Retraining</span>
         </div>
 
         <div class="training-goal">
@@ -1615,21 +1615,77 @@
         </div>
 
         <!-- Status / Live interpretation -->
-        <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #d62728;">
-          <strong style="color: #ff8c00;">v12 Training &mdash; E10 best, E11-E13 regression (gradient starvation diagnosed)</strong>
+        <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #1f77b4;">
+          <strong style="color: #1f77b4;">v12b Training &mdash; Rolled back to E10, fixes applied, retraining in progress</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>E10 was the peak:</strong> val FAPE 1.651, frame_rot 0.833, DDIM TM 0.102. Best structural metrics achieved by any version. No gradient competition collapse &mdash; the wider bottleneck worked.</li>
-            <li><strong>E11-E13 regression:</strong> val FAPE 1.684&rarr;1.804&rarr;1.814, frame_rot 0.864&rarr;0.905&rarr;0.913, DDIM TM 0.098&rarr;0.087&rarr;0.078, RMSD 17.4&rarr;18.5&rarr;19.5&Aring;. Pattern differs from v11b &mdash; losses plateau then worsen, not sudden collapse.</li>
-            <li><strong>Root cause: gradient starvation via clip_grad_norm.</strong> Grad norm logs show total_norm=1.0 every batch (clipping saturated). Denoiser (28.5M params) consumes 99%+ of gradient budget. pair_stack_norm collapsed mid-E12: 0.125&rarr;0.007&rarr;0.000. By E13, pair_stack gradients are completely dead. aux_pair died even earlier (E5).</li>
-            <li><strong>Mechanism:</strong> With max_norm=1.0, the 28.5M-param denoiser dominates the clipped gradient. As denoiser grads grew (E5+), pair_stack (1.3M params) got progressively starved. The pair representation froze, starving IPA of evolving pair context &mdash; explaining why DDIM degraded while single-step val losses initially held.</li>
+            <li><strong>v12 E10 was the peak:</strong> val FAPE 1.651, frame_rot 0.833, DDIM TM 0.102. Best structural metrics achieved by any version.</li>
+            <li><strong>v12 E11-E13 regression diagnosed:</strong> Gradient starvation via global <code>clip_grad_norm_(1.0)</code>. Denoiser (28.5M params) consumed 99%+ of gradient budget. pair_stack_norm collapsed mid-E12: 0.125&rarr;0.007&rarr;0.000.</li>
+            <li><strong>Gradient cosine diagnostic confirmed:</strong> No gradient competition. FAPE &amp; frame_rot are <em>aligned</em> (+0.57 cosine). dist_mse is near-orthogonal to both (+0.14). Losses do not oppose each other &mdash; the regression was purely gradient starvation, not conflicting objectives.</li>
+            <li><strong>v12b fixes applied (rolling back to E10 EMA weights):</strong>
+              <ul style="margin: 4px 0 4px 16px;">
+                <li>Per-module gradient clipping: denoiser max_norm=1.0, pair_stack=0.5, aux_pair=0.5</li>
+                <li>Per-module LR groups: pair_stack gets 3x base LR (6e-5) to compensate gradient attenuation</li>
+                <li>Pair stack tripwire: if grad norm &lt; 0.01 for 50 consecutive steps, inject gradient noise (scale=0.01)</li>
+                <li>Hard halt: if grad norm &lt; 0.001 for 500 total steps, stop training</li>
+                <li>Atomic checkpoint saves (write to tmp file, then rename) to survive SLURM preemption</li>
+                <li>EMA step counter preserved across checkpoint resumes</li>
+                <li>NaN loss batches skipped entirely instead of poisoning gradient accumulator</li>
+              </ul>
+            </li>
+            <li><strong>Architecture bugs fixed by code review:</strong>
+              <ul style="margin: 4px 0 4px 16px;">
+                <li>Frame masking: was zeroing rotation matrices (degenerate non-SO(3)), now uses identity fallback</li>
+                <li><code>slerp_to_identity</code>: added large-angle guard for &theta; near &pi; (sin&rarr;0 blow-up)</li>
+                <li>Gradient checkpointing: switched IPA layers to <code>use_reentrant=False</code> (correct for AMP)</li>
+                <li><code>DiffusionSchedule</code> tensors registered as buffers (no more manual <code>.to(device)</code>)</li>
+              </ul>
+            </li>
           </ul>
-          <strong>Fix options under consideration:</strong>
-          <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            (1) Per-module gradient clipping &mdash; clip denoiser and pair_stack independently. (2) Increase max_norm from 1.0 to 5.0-10.0. (3) Separate optimizers. Best model weights (E10) preserved in nastya_v12.pt.
-          </p>
+
           <details style="margin-top: 8px;">
             <summary style="cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
-              Gradient diagnostic details (v11 post-mortem)
+              Gradient cosine similarity diagnostic (E10 vs E12 vs E13)
+            </summary>
+            <p style="font-size: 0.85em; line-height: 1.5; margin: 8px 0;">
+              Per-loss gradient directions on shared parameters (denoiser + pair_stack). Negative cosine = direct competition. Positive = aligned.
+            </p>
+            <table style="font-size: 0.82em; width: 100%; border-collapse: collapse; margin: 8px 0;">
+              <tr style="background: var(--bg-secondary);">
+                <th style="text-align: left; padding: 4px 8px;">Loss Pair</th>
+                <th style="text-align: center; padding: 4px 8px;">E10 (best)</th>
+                <th style="text-align: center; padding: 4px 8px;">E12</th>
+                <th style="text-align: center; padding: 4px 8px;">E13</th>
+                <th style="text-align: center; padding: 4px 8px;">Verdict</th>
+              </tr>
+              <tr><td style="padding: 4px 8px;">FAPE vs frame_rot</td>
+                  <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">+0.59</td>
+                  <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">+0.57</td>
+                  <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">+0.50</td>
+                  <td style="text-align: center; padding: 4px 8px; color: #2ca02c;">Aligned</td></tr>
+              <tr><td style="padding: 4px 8px;">dist_mse vs FAPE</td>
+                  <td style="text-align: center; padding: 4px 8px;">+0.16</td>
+                  <td style="text-align: center; padding: 4px 8px;">+0.14</td>
+                  <td style="text-align: center; padding: 4px 8px;">+0.41</td>
+                  <td style="text-align: center; padding: 4px 8px;">Near-orthogonal</td></tr>
+              <tr><td style="padding: 4px 8px;">dist_mse vs frame_rot</td>
+                  <td style="text-align: center; padding: 4px 8px;">+0.24</td>
+                  <td style="text-align: center; padding: 4px 8px;">+0.00</td>
+                  <td style="text-align: center; padding: 4px 8px;">-0.02</td>
+                  <td style="text-align: center; padding: 4px 8px;">Near-orthogonal</td></tr>
+              <tr><td style="padding: 4px 8px;">FAPE vs bond_geom</td>
+                  <td style="text-align: center; padding: 4px 8px;">-0.04</td>
+                  <td style="text-align: center; padding: 4px 8px;">-0.23</td>
+                  <td style="text-align: center; padding: 4px 8px;">+0.02</td>
+                  <td style="text-align: center; padding: 4px 8px;">Near-orthogonal</td></tr>
+            </table>
+            <p style="font-size: 0.85em; line-height: 1.5;">
+              <strong>Key finding:</strong> No gradient competition between any loss pair. FAPE and frame_rot are strongly aligned (+0.5 to +0.6), confirming they learn consistent frame representations. The regression was caused entirely by gradient starvation of the pair_stack module &mdash; not conflicting loss objectives.
+            </p>
+          </details>
+
+          <details style="margin-top: 8px;">
+            <summary style="cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
+              v11 post-mortem (different failure mode)
             </summary>
             <table style="font-size: 0.85em; width: 100%; border-collapse: collapse; margin: 8px 0;">
               <tr style="background: var(--bg-secondary);">
@@ -1646,14 +1702,12 @@
                   <td style="text-align: center; padding: 4px 8px; color: #d62728;"><strong>NO &mdash; R discarded</strong></td></tr>
             </table>
             <p style="font-size: 0.85em; line-height: 1.5;">
-              <strong>Root cause:</strong> <code>x0_pred = t_vec</code> discarded learned R. FAPE rebuilt frames from coords,
-              so rotation quaternions received no direct gradient. v11b fix: frame_rotation_loss (w=0.5) +
-              fape_loss_with_frames using learned R. LR=2e-5, SC=0.25.
+              <strong>Root cause (v11):</strong> <code>x0_pred = t_vec</code> discarded learned R. v11b fix: frame_rotation_loss + fape_loss_with_frames using learned R.
             </p>
           </details>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-10 06:35 UTC
+          Last updated: 2026-03-10 18:00 UTC
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
