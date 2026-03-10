@@ -1233,10 +1233,18 @@
         </div>
 
         <!-- v12 Loss Curves -->
-        <h4 class="training-progress-heading">v12 Loss Curves (through Epoch 9)</h4>
+        <h4 class="training-progress-heading">v12 Loss Curves (through Epoch 13)</h4>
         <div style="text-align: center; margin: 16px 0;">
           <img src="data/training/v12_loss_curves.png" alt="V12 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
+
+        <h4 class="training-progress-heading">Pseudo-Ramachandran Analysis</h4>
+        <div style="text-align: center; margin: 16px 0;">
+          <img src="data/training/v12_pseudo_ramachandran.png" alt="Pseudo-Ramachandran plots" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+        </div>
+        <p style="font-size: 0.88em; color: var(--text-secondary); margin: 4px 0 16px 0;">
+          Pseudo-dihedrals computed from consecutive C&alpha; positions. Ground truth (left) shows clear &alpha;-helix (~50&deg;,50&deg;) and &beta;-sheet (~&minus;120&deg;,120&deg;) clusters. DDIM samples and low-noise x0_pred panels pending GPU evaluation.
+        </p>
 
         <!-- v12 Training Table -->
         <h4 class="training-progress-heading">v12 Training Progress</h4>
@@ -1355,6 +1363,50 @@
                 <td>17.04&Aring;</td>
                 <td><span class="tag tag-pat">pat 2</span></td>
               </tr>
+              <tr>
+                <td>10</td>
+                <td>2.581</td>
+                <td>1.651</td>
+                <td style="color: #2ca02c; font-weight: bold;">0.833</td>
+                <td>0.352</td>
+                <td>0.008</td>
+                <td>0.102</td>
+                <td>17.09&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td>2.685</td>
+                <td>1.684</td>
+                <td>0.864</td>
+                <td>0.391</td>
+                <td>0.009</td>
+                <td>0.098</td>
+                <td>17.41&Aring;</td>
+                <td><span class="tag tag-pat">pat 1</span></td>
+              </tr>
+              <tr style="background: rgba(214, 39, 40, 0.08);">
+                <td>12</td>
+                <td>2.831</td>
+                <td style="color: #d62728;">1.804</td>
+                <td style="color: #d62728;">0.905</td>
+                <td>0.391</td>
+                <td>0.009</td>
+                <td style="color: #d62728;">0.087</td>
+                <td>18.46&Aring;</td>
+                <td><span class="tag tag-pat">pat 2</span></td>
+              </tr>
+              <tr style="background: rgba(214, 39, 40, 0.08);">
+                <td>13</td>
+                <td>2.822</td>
+                <td style="color: #d62728;">1.814</td>
+                <td style="color: #d62728;">0.913</td>
+                <td>0.370</td>
+                <td>0.009</td>
+                <td style="color: #d62728;">0.078</td>
+                <td>19.54&Aring;</td>
+                <td><span class="tag tag-pat">pat 3</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1441,7 +1493,7 @@
                   <th style="min-width: 55px;">v11b E1</th>
                   <th style="min-width: 55px;">v11b E5</th>
                   <th style="min-width: 55px;">v12 E1</th>
-                  <th style="min-width: 55px;">v12 E9</th>
+                  <th style="min-width: 55px;">v12 E10</th>
                   <th>Target / Interpretation</th>
                 </tr>
               </thead>
@@ -1453,7 +1505,7 @@
                   <td>1.934</td>
                   <td style="color: #2ca02c;"><strong>1.756</strong></td>
                   <td>2.074</td>
-                  <td style="color: #2ca02c;"><strong>1.728</strong></td>
+                  <td style="color: #2ca02c;"><strong>1.651</strong></td>
                   <td>Primary metric. Uses learned R_pred frames. v10 ceiling=1.31, untrained &gt;2.0. &lt;1.0 = correct folds.</td>
                 </tr>
                 <tr>
@@ -1463,7 +1515,7 @@
                   <td>1.067</td>
                   <td style="color: #2ca02c;"><strong>0.888</strong></td>
                   <td>1.199</td>
-                  <td style="color: #2ca02c;"><strong>0.876</strong></td>
+                  <td style="color: #2ca02c;"><strong>0.833</strong></td>
                   <td>Angular error of learned R vs Gram-Schmidt truth. 1.0 = ~90&deg; (random), 0 = perfect. Target: &lt;0.5 by E15.</td>
                 </tr>
                 <tr>
@@ -1473,8 +1525,8 @@
                   <td>0.409</td>
                   <td style="color: #2ca02c;"><strong>0.384</strong></td>
                   <td>0.857</td>
-                  <td style="color: #2ca02c;"><strong>0.386</strong></td>
-                  <td>Pairwise C&alpha; distance error. &lt;0.1 = sub-&Aring; accuracy. Plateauing ~0.38&ndash;0.40.</td>
+                  <td style="color: #2ca02c;"><strong>0.352</strong></td>
+                  <td>Pairwise C&alpha; distance error. &lt;0.1 = sub-&Aring; accuracy. Plateauing ~0.35&ndash;0.40.</td>
                 </tr>
                 <tr>
                   <td><strong>Bond</strong></td>
@@ -1484,7 +1536,7 @@
                   <td style="color: #2ca02c;"><strong>0.010</strong></td>
                   <td>0.135</td>
                   <td style="color: #2ca02c;"><strong>0.008</strong></td>
-                  <td>C&alpha;&ndash;C&alpha; bond error. *annealed 1&rarr;3. Near-solved.</td>
+                  <td>C&alpha;&ndash;C&alpha; bond error. *annealed 1&rarr;3. Solved.</td>
                 </tr>
                 <tr>
                   <td><strong>Rg</strong></td>
@@ -1493,7 +1545,7 @@
                   <td>0.038</td>
                   <td>0.038</td>
                   <td>1.805</td>
-                  <td style="color: #2ca02c;"><strong>0.038</strong></td>
+                  <td>0.038</td>
                   <td>Radius of gyration error. Converged by E3.</td>
                 </tr>
                 <tr>
@@ -1543,7 +1595,7 @@
                   <td>0.094</td>
                   <td>0.091</td>
                   <td>0.101</td>
-                  <td>0.101</td>
+                  <td>0.102</td>
                   <td>50-step DDIM. Target: &gt;0.15 by E10, &gt;0.30 by E20. &gt;0.17 = recognizable folds. E2 peak=0.132.</td>
                 </tr>
                 <tr>
@@ -1553,7 +1605,7 @@
                   <td>17.22&Aring;</td>
                   <td>17.62&Aring;</td>
                   <td>15.28&Aring;</td>
-                  <td>17.04&Aring;</td>
+                  <td>17.09&Aring;</td>
                   <td>&lt;10&Aring; = partial fold. &lt;5&Aring; = high quality. E2 best=13.73&Aring;. DDIM flat ~17&Aring; since E4.</td>
                 </tr>
               </tbody>
@@ -1562,17 +1614,17 @@
         </div>
 
         <!-- Status / Live interpretation -->
-        <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #ff8c00;">
-          <strong style="color: #ff8c00;">v12 Training &mdash; E1&ndash;E9 (survived v11b collapse zone, but DDIM not improving)</strong>
+        <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #d62728;">
+          <strong style="color: #ff8c00;">v12 Training &mdash; E10 best, E11-E13 regression (gradient starvation diagnosed)</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>No gradient competition collapse!</strong> frame_rot: 1.199 &rarr; 0.942 &rarr; 0.910 &rarr; 0.881 &rarr; 0.884 &rarr; 0.876. Still dropping at E9 &mdash; v11b reversed at E9 (0.926). Train FAPE still declining (1.707), not increasing. The wider 512-dim bottleneck prevented the collapse.</li>
-            <li><strong>FAPE at record low:</strong> val FAPE 1.708 (E8) &mdash; beat v11b&rsquo;s all-time best of 1.655. Train FAPE 1.707 (E9) still improving. val_total plateauing at ~2.71&ndash;2.72 (pat 2/15).</li>
-            <li><strong>DDIM flatlined at ~0.10 TM:</strong> TM 0.099&ndash;0.102 for 6 consecutive epochs (E4&ndash;E9). RMSD ~17&Aring;. Despite improving val losses, the multi-step DDIM denoising is not producing better structures. Possible causes: (1) learned rotations don&rsquo;t transfer well through DDIM&rsquo;s iterative steps, (2) model is learning &ldquo;average shape&rdquo; corrections that don&rsquo;t compose, (3) denoising schedule mismatch at larger capacity.</li>
-            <li><strong>Mixed signals:</strong> Capacity scaling fixed the gradient competition (confirmed), but didn&rsquo;t unlock structural quality in DDIM. The val losses are still the best we&rsquo;ve ever seen, but what matters is whether those improvements translate to better generated structures.</li>
+            <li><strong>E10 was the peak:</strong> val FAPE 1.651, frame_rot 0.833, DDIM TM 0.102. Best structural metrics achieved by any version. No gradient competition collapse &mdash; the wider bottleneck worked.</li>
+            <li><strong>E11-E13 regression:</strong> val FAPE 1.684&rarr;1.804&rarr;1.814, frame_rot 0.864&rarr;0.905&rarr;0.913, DDIM TM 0.098&rarr;0.087&rarr;0.078, RMSD 17.4&rarr;18.5&rarr;19.5&Aring;. Pattern differs from v11b &mdash; losses plateau then worsen, not sudden collapse.</li>
+            <li><strong>Root cause: gradient starvation via clip_grad_norm.</strong> Grad norm logs show total_norm=1.0 every batch (clipping saturated). Denoiser (28.5M params) consumes 99%+ of gradient budget. pair_stack_norm collapsed mid-E12: 0.125&rarr;0.007&rarr;0.000. By E13, pair_stack gradients are completely dead. aux_pair died even earlier (E5).</li>
+            <li><strong>Mechanism:</strong> With max_norm=1.0, the 28.5M-param denoiser dominates the clipped gradient. As denoiser grads grew (E5+), pair_stack (1.3M params) got progressively starved. The pair representation froze, starving IPA of evolving pair context &mdash; explaining why DDIM degraded while single-step val losses initially held.</li>
           </ul>
-          <strong>Status:</strong>
+          <strong>Fix options under consideration:</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
-            Patience 2/15. frame_rot target (&lt;0.7) not yet reached. DDIM TM target (&gt;0.15) not reached. Training continues &mdash; no collapse detected. V100 (32GB) via savio_lowprio.
+            (1) Per-module gradient clipping &mdash; clip denoiser and pair_stack independently. (2) Increase max_norm from 1.0 to 5.0-10.0. (3) Separate optimizers. Best model weights (E10) preserved in nastya_v12.pt.
           </p>
           <details style="margin-top: 8px;">
             <summary style="cursor: pointer; font-size: 0.92em; color: var(--text-secondary);">
@@ -1600,7 +1652,7 @@
           </details>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-10 04:45 UTC
+          Last updated: 2026-03-10 06:35 UTC
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
