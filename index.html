@@ -1677,6 +1677,83 @@
                 <td>17.80&Aring;</td>
                 <td><span class="tag tag-pat">pat 4</span></td>
               </tr>
+              <tr style="background: rgba(31, 119, 180, 0.12);">
+                <td>b25</td>
+                <td>2.456</td>
+                <td>1.604</td>
+                <td>0.807</td>
+                <td>0.320</td>
+                <td>0.005</td>
+                <td>0.101</td>
+                <td>18.02&Aring;</td>
+                <td><span class="tag tag-pat">pat 5</span></td>
+              </tr>
+              <tr style="background: rgba(31, 119, 180, 0.12);">
+                <td>b26</td>
+                <td>2.460</td>
+                <td>1.597</td>
+                <td>0.796</td>
+                <td>0.335</td>
+                <td>0.005</td>
+                <td>0.101</td>
+                <td>18.02&Aring;</td>
+                <td><span class="tag tag-pat">pat 6</span></td>
+              </tr>
+              <tr style="background: rgba(31, 119, 180, 0.12);">
+                <td>b27</td>
+                <td>2.548</td>
+                <td>1.635</td>
+                <td>0.839</td>
+                <td>0.364</td>
+                <td>0.005</td>
+                <td>0.105</td>
+                <td>17.69&Aring;</td>
+                <td><span class="tag tag-pat">pat 7</span></td>
+              </tr>
+              <tr style="background: rgba(31, 119, 180, 0.12);">
+                <td>b28</td>
+                <td>2.501</td>
+                <td>1.626</td>
+                <td>0.813</td>
+                <td>0.342</td>
+                <td>0.005</td>
+                <td>0.107</td>
+                <td>17.53&Aring;</td>
+                <td><span class="tag tag-pat">pat 8</span></td>
+              </tr>
+              <tr style="background: rgba(46, 204, 113, 0.18);">
+                <td><strong>b29</strong></td>
+                <td><strong>2.443</strong></td>
+                <td><strong>1.578</strong></td>
+                <td><strong>0.791</strong></td>
+                <td>0.340</td>
+                <td>0.005</td>
+                <td>0.110</td>
+                <td>17.02&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr style="background: rgba(46, 204, 113, 0.18);">
+                <td><strong>b30</strong></td>
+                <td><strong>2.413</strong></td>
+                <td><strong>1.584</strong></td>
+                <td><strong>0.790</strong></td>
+                <td>0.312</td>
+                <td>0.005</td>
+                <td>0.107</td>
+                <td>17.38&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr style="background: rgba(31, 119, 180, 0.12);">
+                <td>b31</td>
+                <td>2.462</td>
+                <td>1.587</td>
+                <td>0.808</td>
+                <td>0.342</td>
+                <td>0.005</td>
+                <td>0.108</td>
+                <td>17.43&Aring;</td>
+                <td><span class="tag tag-pat">pat 1</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1885,10 +1962,10 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #1f77b4;">
-          <strong style="color: #2ca02c;">v12b Training &mdash; b20 best, b24 nearly matches (pat 4/15)</strong>
+          <strong style="color: #2ca02c;">v12b Training &mdash; b30 NEW BEST, val_total 2.413 (all-time record)</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>b20 remains best:</strong> val_total <strong>2.446</strong>, val FAPE <strong>1.578</strong>, frame_rot <strong>0.802</strong>. b23 had a noisy val spike (2.609) but b24 recovered to 2.450 &mdash; within 0.004 of best. Pat 4/15, no real regression.</li>
-            <li><strong>Train loss still declining:</strong> 2.520&rarr;2.517&rarr;2.518&rarr;2.510. The model continues learning; val noise is from small val set (608 proteins). LR at 1.39e-5 (cosine decay), still well above eta_min=1e-6. Expecting another breakthrough soon.</li>
+            <li><strong>b30 is the new overall best:</strong> val_total <strong>2.413</strong>, val FAPE <strong>1.584</strong>, frame_rot <strong>0.790</strong>, dist_mse <strong>0.312</strong> (record low). Two consecutive NEW BESTs (b29&rarr;b30) after a long consolidation plateau (b21-b28, pat 8). The breakthrough pattern repeats: consolidate &rarr; break through.</li>
+            <li><strong>frame_rot below 0.80:</strong> b29=0.791, b30=0.790. Average rotation error ~69&deg;, down from ~75&deg; at b16. Train loss still declining (2.49&rarr;2.48). LR at 1.02e-5, entering late training phase. v13 with deeper pair stack + triangle updates is being prepared to push further.</li>
             <li><strong>v12 E11-E13 regression diagnosed:</strong> Gradient starvation via global <code>clip_grad_norm_(1.0)</code>. Denoiser (28.5M params) consumed 99%+ of gradient budget. pair_stack_norm collapsed mid-E12: 0.125&rarr;0.007&rarr;0.000.</li>
             <li><strong>Gradient cosine diagnostic confirmed:</strong> No gradient competition. FAPE &amp; frame_rot are <em>aligned</em> (+0.57 cosine). dist_mse is near-orthogonal to both (+0.14). Losses do not oppose each other &mdash; the regression was purely gradient starvation, not conflicting objectives.</li>
             <li><strong>v12b fixes applied (rolling back to E10 EMA weights):</strong>
