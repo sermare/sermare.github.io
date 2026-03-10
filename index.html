@@ -1233,7 +1233,7 @@
         </div>
 
         <!-- v12 Loss Curves -->
-        <h4 class="training-progress-heading">v12 Loss Curves (through Epoch 4)</h4>
+        <h4 class="training-progress-heading">v12 Loss Curves (through Epoch 6)</h4>
         <div style="text-align: center; margin: 16px 0;">
           <img src="data/training/v12_loss_curves.png" alt="V12 diffusion training loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
         </div>
@@ -1298,6 +1298,28 @@
                 <td>0.013</td>
                 <td>0.103</td>
                 <td>16.56&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>2.852</td>
+                <td>1.763</td>
+                <td style="color: #2ca02c; font-weight: bold;">0.929</td>
+                <td>0.428</td>
+                <td>0.013</td>
+                <td>0.101</td>
+                <td>16.88&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>2.771</td>
+                <td>1.732</td>
+                <td style="color: #2ca02c; font-weight: bold;">0.910</td>
+                <td>0.403</td>
+                <td>0.010</td>
+                <td>0.102</td>
+                <td>16.99&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
             </tbody>
@@ -1386,7 +1408,7 @@
                   <th style="min-width: 55px;">v11b E1</th>
                   <th style="min-width: 55px;">v11b E5</th>
                   <th style="min-width: 55px;">v12 E1</th>
-                  <th style="min-width: 55px;">v12 E4</th>
+                  <th style="min-width: 55px;">v12 E6</th>
                   <th>Target / Interpretation</th>
                 </tr>
               </thead>
@@ -1398,7 +1420,7 @@
                   <td>1.934</td>
                   <td style="color: #2ca02c;"><strong>1.756</strong></td>
                   <td>2.074</td>
-                  <td style="color: #2ca02c;"><strong>1.790</strong></td>
+                  <td style="color: #2ca02c;"><strong>1.732</strong></td>
                   <td>Primary metric. Uses learned R_pred frames. v10 ceiling=1.31, untrained &gt;2.0. &lt;1.0 = correct folds.</td>
                 </tr>
                 <tr>
@@ -1408,7 +1430,7 @@
                   <td>1.067</td>
                   <td style="color: #2ca02c;"><strong>0.888</strong></td>
                   <td>1.199</td>
-                  <td style="color: #2ca02c;"><strong>0.942</strong></td>
+                  <td style="color: #2ca02c;"><strong>0.910</strong></td>
                   <td>Angular error of learned R vs Gram-Schmidt truth. 1.0 = ~90&deg; (random), 0 = perfect. Target: &lt;0.5 by E15.</td>
                 </tr>
                 <tr>
@@ -1418,8 +1440,8 @@
                   <td>0.409</td>
                   <td style="color: #2ca02c;"><strong>0.384</strong></td>
                   <td>0.857</td>
-                  <td style="color: #2ca02c;"><strong>0.399</strong></td>
-                  <td>Pairwise C&alpha; distance error. &lt;0.1 = sub-&Aring; accuracy. Rapidly converging.</td>
+                  <td style="color: #2ca02c;"><strong>0.403</strong></td>
+                  <td>Pairwise C&alpha; distance error. &lt;0.1 = sub-&Aring; accuracy. Plateauing ~0.40.</td>
                 </tr>
                 <tr>
                   <td><strong>Bond</strong></td>
@@ -1428,7 +1450,7 @@
                   <td>0.015</td>
                   <td style="color: #2ca02c;"><strong>0.010</strong></td>
                   <td>0.135</td>
-                  <td style="color: #2ca02c;"><strong>0.013</strong></td>
+                  <td style="color: #2ca02c;"><strong>0.010</strong></td>
                   <td>C&alpha;&ndash;C&alpha; bond error. *annealed 1&rarr;3. Near-solved.</td>
                 </tr>
                 <tr>
@@ -1438,7 +1460,7 @@
                   <td>0.038</td>
                   <td>0.038</td>
                   <td>1.805</td>
-                  <td style="color: #2ca02c;"><strong>0.040</strong></td>
+                  <td style="color: #2ca02c;"><strong>0.039</strong></td>
                   <td>Radius of gyration error. Converged by E3.</td>
                 </tr>
                 <tr>
@@ -1488,7 +1510,7 @@
                   <td>0.094</td>
                   <td>0.091</td>
                   <td>0.101</td>
-                  <td>0.103</td>
+                  <td>0.102</td>
                   <td>50-step DDIM. Target: &gt;0.15 by E10, &gt;0.30 by E20. &gt;0.17 = recognizable folds. E2 peak=0.132.</td>
                 </tr>
                 <tr>
@@ -1498,7 +1520,7 @@
                   <td>17.22&Aring;</td>
                   <td>17.62&Aring;</td>
                   <td>15.28&Aring;</td>
-                  <td>16.56&Aring;</td>
+                  <td>16.99&Aring;</td>
                   <td>&lt;10&Aring; = partial fold. &lt;5&Aring; = high quality. E2 best=13.73&Aring;. DDIM noisy early on.</td>
                 </tr>
               </tbody>
@@ -1508,12 +1530,12 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #2ca02c;">
-          <strong style="color: #2ca02c;">v12 Training &mdash; E1&ndash;E4 (all metrics improving, frame_rot broke below 1.0)</strong>
+          <strong style="color: #2ca02c;">v12 Training &mdash; E1&ndash;E6 (entering v11b collapse zone &mdash; no collapse so far)</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>frame_rot broke below 1.0 at E4</strong> (0.942) &mdash; v11b didn&rsquo;t reach this until E5 (0.888), and v12 is training from scratch with no weight inheritance. The wider 512-dim representation is giving rotations room to learn.</li>
-            <li><strong>All losses monotonically improving:</strong> val_total 4.928&rarr;2.856, FAPE 2.074&rarr;1.790, dist 0.857&rarr;0.399, frame_rot 1.199&rarr;0.942. No sign of gradient competition yet.</li>
-            <li><strong>DDIM noisy but promising:</strong> TM peaked at 0.132 (E2), then dropped to 0.118 (E3), 0.103 (E4). This is normal &mdash; DDIM quality is unstable in early epochs while the model is still rapidly changing. The underlying val losses keep improving, which is what matters.</li>
-            <li><strong>Critical window ahead (E6&ndash;E10):</strong> This is where v11b collapsed. If frame_rot keeps dropping and FAPE keeps improving through E8, the capacity hypothesis is confirmed.</li>
+            <li><strong>frame_rot steadily dropping:</strong> 1.199 &rarr; 1.138 &rarr; 1.022 &rarr; 0.942 &rarr; 0.929 &rarr; 0.910. Monotonic decline every epoch. v11b was at 0.888 at E5 but then reversed at E9. v12 is training from scratch and maintaining the same trajectory.</li>
+            <li><strong>FAPE improving every epoch:</strong> 2.074 &rarr; 2.002 &rarr; 1.859 &rarr; 1.790 &rarr; 1.763 &rarr; 1.732. No reversal. At E6, already matching v11b&rsquo;s best FAPE (1.655 at E8). On track to beat it.</li>
+            <li><strong>DDIM stuck at ~0.10 TM:</strong> After the E2 spike (0.132), DDIM TM has settled at 0.101&ndash;0.103 while RMSD drifts up (16.6&ndash;17.0&Aring;). The model&rsquo;s denoising trajectory hasn&rsquo;t caught up with the improving single-step predictions yet. This divergence between val loss improvement and DDIM quality is a known pattern &mdash; DDIM should snap up once frame_rot drops further.</li>
+            <li><strong>Now in the critical window:</strong> v11b collapsed E8&ndash;E14. If E7&ndash;E10 show continued frame_rot decline and FAPE improvement, the capacity hypothesis is confirmed. Watching for any train FAPE increase (the first sign of competition in v11b).</li>
           </ul>
           <strong>Success criteria:</strong>
           <p style="font-size: 0.92em; line-height: 1.55; margin: 6px 0;">
@@ -1545,7 +1567,7 @@
           </details>
         </div>
         <div style="color: var(--text-secondary); font-size: 0.85em; margin-top: 8px;" id="v9-last-updated">
-          Last updated: 2026-03-10 02:35 UTC
+          Last updated: 2026-03-10 03:25 UTC
         </div>
 
         <!-- v10 Historical Results (collapsed) -->
