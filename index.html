@@ -1633,6 +1633,28 @@
                 <td>17.53&Aring;</td>
                 <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
+              <tr style="background: rgba(31, 119, 180, 0.12);">
+                <td>b21</td>
+                <td>2.482</td>
+                <td>1.589</td>
+                <td>0.797</td>
+                <td>0.362</td>
+                <td>0.006</td>
+                <td>0.104</td>
+                <td>17.54&Aring;</td>
+                <td><span class="tag tag-pat">pat 1</span></td>
+              </tr>
+              <tr style="background: rgba(31, 119, 180, 0.12);">
+                <td>b22</td>
+                <td>2.488</td>
+                <td>1.607</td>
+                <td>0.801</td>
+                <td>0.347</td>
+                <td>0.005</td>
+                <td>0.107</td>
+                <td>17.42&Aring;</td>
+                <td><span class="tag tag-pat">pat 2</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1841,10 +1863,10 @@
 
         <!-- Status / Live interpretation -->
         <div class="training-pending-note" id="v9-run2-status" style="border-left: 3px solid #1f77b4;">
-          <strong style="color: #2ca02c;">v12b Training &mdash; b20 NEW BEST, 4th record since b14</strong>
+          <strong style="color: #2ca02c;">v12b Training &mdash; b20 NEW BEST, consolidating at b21-b22</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
-            <li><strong>b20 is the new overall best:</strong> val_total <strong>2.446</strong>, val FAPE <strong>1.578</strong>, frame_rot <strong>0.802</strong>, DDIM TM 0.103. After a 3-epoch consolidation plateau (b17-b19, pat 3/15), the model broke through with a new record &mdash; the 4th NEW BEST since b14.</li>
-            <li><strong>Steady improvement trajectory:</strong> b14 (2.500) &rarr; b15 (2.480) &rarr; b16 (2.469) &rarr; plateau &rarr; b20 (2.446). FAPE: 1.606 &rarr; 1.586 &rarr; 1.564 &rarr; 1.578. frame_rot: 0.814 &rarr; 0.807 &rarr; 0.780 &rarr; 0.802. Train loss still declining (2.54), suggesting more room for improvement.</li>
+            <li><strong>b20 remains best:</strong> val_total <strong>2.446</strong>, val FAPE <strong>1.578</strong>, frame_rot <strong>0.802</strong>. b21-b22 show mild patience (pat 2/15) with val_total 2.48-2.49, close to best. Train loss still declining (2.52&rarr;2.52), no signs of overfitting.</li>
+            <li><strong>Pattern: consolidate then breakthrough.</strong> b14&rarr;b16 gave 3 consecutive bests, b17-b19 consolidated (pat 3), b20 broke through. Now b21-b22 consolidating again (pat 2). Expecting another push soon. LR at 1.49e-5 (cosine decay), plenty of schedule remaining.</li>
             <li><strong>v12 E11-E13 regression diagnosed:</strong> Gradient starvation via global <code>clip_grad_norm_(1.0)</code>. Denoiser (28.5M params) consumed 99%+ of gradient budget. pair_stack_norm collapsed mid-E12: 0.125&rarr;0.007&rarr;0.000.</li>
             <li><strong>Gradient cosine diagnostic confirmed:</strong> No gradient competition. FAPE &amp; frame_rot are <em>aligned</em> (+0.57 cosine). dist_mse is near-orthogonal to both (+0.14). Losses do not oppose each other &mdash; the regression was purely gradient starvation, not conflicting objectives.</li>
             <li><strong>v12b fixes applied (rolling back to E10 EMA weights):</strong>
