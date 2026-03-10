@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Berkeley Savio GPU Monitor</title>
+  <link rel="stylesheet" href="stylesheet.css">
+  <link rel="icon" type="image/png" href="data/avatar.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <style>
+    /* GPU Monitor specific styles */
+    .back-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+    .monitor-header {
+      margin-bottom: 8px;
+    }
+    .monitor-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--name-color);
+      margin-bottom: 4px;
+    }
+    .monitor-subtitle {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .monitor-timestamp {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-bottom: 24px;
+    }
+    .monitor-timestamp .live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Summary cards grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .summary-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      background: var(--bg-alt);
+      text-align: center;
+    }
+    .summary-card-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--heading-color);
+      line-height: 1.2;
+    }
+    .summary-card-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+    .val-green { color: #22c55e; }
+    .val-orange { color: #f59e0b; }
+    .val-red { color: #ef4444; }
+    .val-blue { color: var(--link); }
+
+    /* GPU type breakdown */
+    .gpu-section {
+      margin-bottom: 28px;
+    }
+    .gpu-section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--heading-color);
+      margin-bottom: 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Bar chart */
+    .bar-chart {
+      margin-bottom: 24px;
+    }
+    .bar-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 12px;
+    }
+    .bar-label {
+      flex-shrink: 0;
+      width: 140px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--heading-color);
+      text-align: right;
+    }
+    .bar-track {
+      flex: 1;
+      height: 28px;
+      background: var(--bg);
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: flex;
+    }
+    .bar-seg {
+      height: 100%;
+      transition: width 0.5s ease;
+      position: relative;
+    }
+    .bar-seg-allocated { background: #3b82f6; }
+    .bar-seg-mixed { background: #f59e0b; }
+    .bar-seg-down { background: #ef4444; }
+    .bar-seg-drained { background: #6b7280; }
+    .bar-seg-draining { background: #a855f7; }
+    .bar-seg-idle { background: #22c55e; }
+    .bar-count {
+      flex-shrink: 0;
+      width: 60px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Legend */
+    .bar-legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-secondary);
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    /* Partition cards */
+    .partition-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .partition-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      background: var(--bg-alt);
+    }
+    .partition-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--heading-color);
+      margin-bottom: 4px;
+    }
+    .partition-card-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .donut-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .donut-svg {
+      width: 100px;
+      height: 100px;
+      flex-shrink: 0;
+    }
+    .donut-stats {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text);
+    }
+    .donut-stats strong {
+      color: var(--heading-color);
+    }
+
+    /* Jobs table */
+    .jobs-section {
+      margin-bottom: 28px;
+    }
+    .jobs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .jobs-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--heading-color);
+    }
+    .jobs-count {
+      font-size: 14px;
+      color: var(--text-secondary);
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      padding: 3px 12px;
+      border-radius: 12px;
+    }
+    .jobs-filter {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .jobs-filter input {
+      padding: 6px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      flex: 1;
+      min-width: 200px;
+    }
+    .jobs-filter input::placeholder {
+      color: var(--text-secondary);
+    }
+    .jobs-table-wrapper {
+      overflow-x: auto;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .jobs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .jobs-table thead {
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .jobs-table th {
+      padding: 9px 10px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--heading-color);
+      border-bottom: 2px solid var(--border);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .jobs-table th:hover {
+      color: var(--link);
+    }
+    .jobs-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .jobs-table tbody tr:hover {
+      background: var(--bg);
+    }
+    .jobs-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .state-running {
+      color: #22c55e;
+      font-weight: 600;
+    }
+    .state-pending {
+      color: #f59e0b;
+      font-weight: 600;
+    }
+
+    /* Node details */
+    .node-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .node-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--bg-alt);
+    }
+    .node-state-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-allocated { background: #3b82f6; }
+    .dot-mixed { background: #f59e0b; }
+    .dot-idle { background: #22c55e; }
+    .dot-down, .dot-completing { background: #ef4444; }
+    .dot-drained { background: #6b7280; }
+    .dot-draining { background: #a855f7; }
+    .node-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .node-name {
+      font-weight: 600;
+      color: var(--heading-color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .node-meta {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    /* Collapsible sections */
+    .collapsible-header {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+    .collapsible-header:hover .gpu-section-title {
+      color: var(--link);
+    }
+    .collapse-arrow {
+      font-size: 14px;
+      color: var(--text-secondary);
+      transition: transform 0.2s;
+    }
+    .collapse-arrow.open {
+      transform: rotate(90deg);
+    }
+    .collapsible-body {
+      display: none;
+    }
+    .collapsible-body.open {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    /* Tabs for running/pending */
+    .job-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    .job-tab {
+      background: none;
+      border: 1px solid var(--border);
+      padding: 5px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      cursor: pointer;
+      color: var(--text-secondary);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .job-tab:hover {
+      color: var(--text);
+      background: var(--bg-alt);
+    }
+    .job-tab.active {
+      color: var(--heading-color);
+      background: var(--bg-alt);
+      border-color: var(--heading-color);
+      font-weight: 600;
+    }
+
+    /* Charts */
+    .chart-container {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      background: var(--bg-alt);
+      margin-bottom: 16px;
+    }
+    .chart-container canvas {
+      width: 100% !important;
+      max-height: 280px;
+    }
+    .chart-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--heading-color);
+      margin-bottom: 10px;
+    }
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .chart-row {
+        grid-template-columns: 1fr;
+      }
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .bar-label {
+        width: 80px;
+        font-size: 12px;
+      }
+      .partition-grid {
+        grid-template-columns: 1fr;
+      }
+      .donut-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .monitor-title {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn">&#x1F319;</button>
+
+  <div class="container" style="max-width: 960px;">
+
+    <a href="index.html" class="back-link">&larr; Back to main site</a>
+
+    <div class="monitor-header">
+      <div class="monitor-title">Berkeley Savio GPU Monitor</div>
+      <div class="monitor-subtitle">Real-time GPU cluster status for savio3_gpu and savio4_gpu partitions</div>
+    </div>
+    <div class="monitor-timestamp" id="timestamp">
+      <span class="live-dot"></span> Loading...
+    </div>
+
+    <!-- Summary cards -->
+    <div class="summary-grid" id="summary-cards"></div>
+
+    <!-- GPU utilization bars -->
+    <div class="gpu-section">
+      <div class="gpu-section-title">GPU Allocation by Type</div>
+      <div class="bar-legend">
+        <div class="legend-item"><div class="legend-dot bar-seg-allocated"></div> Allocated</div>
+        <div class="legend-item"><div class="legend-dot bar-seg-mixed"></div> Mixed</div>
+        <div class="legend-item"><div class="legend-dot bar-seg-idle"></div> Idle</div>
+        <div class="legend-item"><div class="legend-dot bar-seg-draining"></div> Draining</div>
+        <div class="legend-item"><div class="legend-dot bar-seg-drained"></div> Drained</div>
+        <div class="legend-item"><div class="legend-dot bar-seg-down"></div> Down</div>
+      </div>
+      <div class="bar-chart" id="bar-chart"></div>
+    </div>
+
+    <!-- Partition donut cards -->
+    <div class="gpu-section">
+      <div class="gpu-section-title">Partition Breakdown</div>
+      <div class="partition-grid" id="partition-grid"></div>
+    </div>
+
+    <!-- Historical Charts -->
+    <div class="gpu-section">
+      <div class="gpu-section-title">Usage Over Time</div>
+      <div class="chart-container">
+        <div class="chart-title">GPU Allocation History</div>
+        <canvas id="chart-allocation"></canvas>
+      </div>
+      <div class="chart-row">
+        <div class="chart-container">
+          <div class="chart-title">Utilization % (Healthy GPUs)</div>
+          <canvas id="chart-utilization"></canvas>
+        </div>
+        <div class="chart-container">
+          <div class="chart-title">Job Queue</div>
+          <canvas id="chart-jobs"></canvas>
+        </div>
+      </div>
+      <div class="chart-row">
+        <div class="chart-container">
+          <div class="chart-title">savio3_gpu Allocation</div>
+          <canvas id="chart-savio3"></canvas>
+        </div>
+        <div class="chart-container">
+          <div class="chart-title">savio4_gpu Allocation</div>
+          <canvas id="chart-savio4"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Running Jobs -->
+    <div class="jobs-section">
+      <div class="jobs-header">
+        <div class="jobs-title">GPU Jobs</div>
+        <div class="job-tabs">
+          <button class="job-tab active" onclick="switchJobTab('running')">Running <span id="running-badge"></span></button>
+          <button class="job-tab" onclick="switchJobTab('pending')">Pending <span id="pending-badge"></span></button>
+        </div>
+      </div>
+      <div class="jobs-filter">
+        <input type="text" id="job-search" placeholder="Filter by job name, user, or node..." oninput="filterJobs()">
+      </div>
+      <div id="jobs-running" class="jobs-table-wrapper"></div>
+      <div id="jobs-pending" class="jobs-table-wrapper" style="display:none;"></div>
+    </div>
+
+    <!-- Node details (collapsible) -->
+    <div class="gpu-section">
+      <div class="collapsible-header" onclick="toggleCollapse('nodes')">
+        <span class="collapse-arrow" id="arrow-nodes">&#9654;</span>
+        <div class="gpu-section-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">Node Details</div>
+      </div>
+      <div class="collapsible-body" id="collapse-nodes">
+        <div style="margin-top: 14px;">
+          <div class="node-grid" id="node-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Data collected from SLURM via <code>sinfo</code> / <code>squeue</code> &middot;
+      <a href="index.html">Back to main site</a>
+    </div>
+
+  </div>
+
+  <script>
+    let gpuData = null;
+    let historyData = null;
+    let currentJobTab = 'running';
+    let charts = {};
+
+    async function loadData() {
+      try {
+        const [resp, histResp] = await Promise.all([
+          fetch('data/gpu_status.json?' + Date.now()),
+          fetch('data/gpu_history.json?' + Date.now()).catch(() => null)
+        ]);
+        gpuData = await resp.json();
+        if (histResp && histResp.ok) {
+          historyData = await histResp.json();
+        }
+        render();
+      } catch (e) {
+        document.getElementById('timestamp').innerHTML = '<span style="color:#ef4444;">Failed to load GPU data. Run collect_gpu_data.sh first.</span>';
+      }
+    }
+
+    function render() {
+      renderTimestamp();
+      renderSummaryCards();
+      renderBarChart();
+      renderPartitionCards();
+      renderCharts();
+      renderJobs();
+      renderNodes();
+    }
+
+    function renderTimestamp() {
+      const d = new Date(gpuData.timestamp);
+      const fmt = d.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/Los_Angeles' });
+      document.getElementById('timestamp').innerHTML =
+        '<span class="live-dot"></span> Last updated: ' + fmt + ' (Pacific)';
+    }
+
+    function renderSummaryCards() {
+      const s = gpuData.summary;
+      let totalGPUs = 0, inUse = 0, free = 0, unavail = 0, mixed = 0;
+      s.forEach(r => {
+        totalGPUs += r.total;
+        inUse += r.in_use;
+        free += r.free;
+        unavail += r.unavailable;
+        mixed += r.mixed;
+      });
+      const utilPct = totalGPUs > 0 ? Math.round((inUse / totalGPUs) * 100) : 0;
+      const healthyTotal = totalGPUs - unavail;
+      const healthyPct = healthyTotal > 0 ? Math.round((inUse / healthyTotal) * 100) : 0;
+
+      document.getElementById('summary-cards').innerHTML =
+        card(totalGPUs, 'Total GPUs', '') +
+        card(inUse, 'Allocated', 'val-blue') +
+        card(mixed, 'Mixed', 'val-orange') +
+        card(free, 'Available', 'val-green') +
+        card(unavail, 'Unavailable', 'val-red') +
+        card(healthyPct + '%', 'Utilization (Healthy)', healthyPct > 80 ? 'val-red' : healthyPct > 50 ? 'val-orange' : 'val-green') +
+        card(gpuData.total_running, 'Running Jobs', 'val-blue') +
+        card(gpuData.total_pending, 'Pending Jobs', 'val-orange');
+    }
+
+    function card(value, label, cls) {
+      return '<div class="summary-card"><div class="summary-card-value ' + cls + '">' + value + '</div><div class="summary-card-label">' + label + '</div></div>';
+    }
+
+    function renderBarChart() {
+      const s = gpuData.summary;
+      let html = '';
+      s.forEach(r => {
+        const t = r.total;
+        if (t === 0) return;
+        const pAlloc = (r.in_use / t * 100).toFixed(1);
+        const pMixed = (r.mixed / t * 100).toFixed(1);
+        const pIdle = ((r.free - r.mixed) / t * 100).toFixed(1);
+        const pDraining = (r.draining / t * 100).toFixed(1);
+        const pDrained = (r.drained / t * 100).toFixed(1);
+        const pDown = (r.down / t * 100).toFixed(1);
+
+        html += '<div class="bar-row">' +
+          '<div class="bar-label">' + r.gpu_type + '<br><span style="font-weight:400;font-size:11px;color:var(--text-secondary)">' + r.partition + '</span></div>' +
+          '<div class="bar-track">' +
+            seg('allocated', pAlloc, r.in_use) +
+            seg('mixed', pMixed, r.mixed) +
+            seg('idle', Math.max(0, pIdle), Math.max(0, r.free - r.mixed)) +
+            seg('draining', pDraining, r.draining) +
+            seg('drained', pDrained, r.drained) +
+            seg('down', pDown, r.down) +
+          '</div>' +
+          '<div class="bar-count">' + r.in_use + '/' + t + '</div>' +
+          '</div>';
+      });
+      document.getElementById('bar-chart').innerHTML = html;
+    }
+
+    function seg(cls, pct, count) {
+      if (parseFloat(pct) <= 0) return '';
+      return '<div class="bar-seg bar-seg-' + cls + '" style="width:' + pct + '%" title="' + cls + ': ' + count + ' GPUs"></div>';
+    }
+
+    function renderPartitionCards() {
+      // Group by partition
+      const partitions = {};
+      gpuData.summary.forEach(r => {
+        if (!partitions[r.partition]) partitions[r.partition] = [];
+        partitions[r.partition].push(r);
+      });
+
+      let html = '';
+      Object.entries(partitions).forEach(([part, rows]) => {
+        let total = 0, inUse = 0, free = 0, unavail = 0;
+        const types = [];
+        rows.forEach(r => {
+          total += r.total;
+          inUse += r.in_use;
+          free += r.free;
+          unavail += r.unavailable;
+          types.push(r.gpu_type + ' (' + r.total + ')');
+        });
+
+        const pctUsed = total > 0 ? (inUse / total * 100) : 0;
+        const pctFree = total > 0 ? (free / total * 100) : 0;
+        const pctDown = total > 0 ? (unavail / total * 100) : 0;
+
+        html += '<div class="partition-card">' +
+          '<div class="partition-card-title">' + part + '</div>' +
+          '<div class="partition-card-sub">' + types.join(', ') + '</div>' +
+          '<div class="donut-container">' +
+            donutSVG(pctUsed, pctFree, pctDown) +
+            '<div class="donut-stats">' +
+              '<div><strong>' + inUse + '</strong> allocated</div>' +
+              '<div><strong>' + free + '</strong> available</div>' +
+              '<div><strong>' + unavail + '</strong> unavailable</div>' +
+              '<div style="margin-top:4px;color:var(--text-secondary);font-size:13px;">' + total + ' total GPUs</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      });
+      document.getElementById('partition-grid').innerHTML = html;
+    }
+
+    function donutSVG(pctUsed, pctFree, pctDown) {
+      const r = 38, cx = 50, cy = 50, sw = 10;
+      const circ = 2 * Math.PI * r;
+      // Segments: used (blue), free (green), down (gray)
+      const s1 = pctUsed / 100 * circ;
+      const s2 = pctFree / 100 * circ;
+      const s3 = pctDown / 100 * circ;
+      const gap = circ - s1 - s2 - s3;
+
+      return '<svg class="donut-svg" viewBox="0 0 100 100">' +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="var(--border)" stroke-width="' + sw + '"/>' +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#3b82f6" stroke-width="' + sw + '" ' +
+          'stroke-dasharray="' + s1 + ' ' + (circ - s1) + '" stroke-dashoffset="0" ' +
+          'transform="rotate(-90 ' + cx + ' ' + cy + ')"/>' +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#22c55e" stroke-width="' + sw + '" ' +
+          'stroke-dasharray="' + s2 + ' ' + (circ - s2) + '" stroke-dashoffset="' + (-s1) + '" ' +
+          'transform="rotate(-90 ' + cx + ' ' + cy + ')"/>' +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#6b7280" stroke-width="' + sw + '" ' +
+          'stroke-dasharray="' + s3 + ' ' + (circ - s3) + '" stroke-dashoffset="' + (-(s1 + s2)) + '" ' +
+          'transform="rotate(-90 ' + cx + ' ' + cy + ')"/>' +
+        '<text x="' + cx + '" y="' + (cy + 1) + '" text-anchor="middle" dominant-baseline="central" ' +
+          'font-size="16" font-weight="700" fill="var(--heading-color)">' +
+          Math.round(pctUsed) + '%</text>' +
+        '</svg>';
+    }
+
+    function renderJobs() {
+      // Running
+      let rhtml = '<table class="jobs-table"><thead><tr>' +
+        '<th onclick="sortJobs(\'running\',0)">Job ID</th>' +
+        '<th onclick="sortJobs(\'running\',1)">Name</th>' +
+        '<th onclick="sortJobs(\'running\',2)">User</th>' +
+        '<th onclick="sortJobs(\'running\',3)">Partition</th>' +
+        '<th onclick="sortJobs(\'running\',4)">Node(s)</th>' +
+        '<th onclick="sortJobs(\'running\',5)">GPUs</th>' +
+        '<th onclick="sortJobs(\'running\',6)">Elapsed</th>' +
+        '<th onclick="sortJobs(\'running\',7)">Limit</th>' +
+        '</tr></thead><tbody>';
+      gpuData.running_jobs.forEach(j => {
+        rhtml += '<tr class="job-row" data-search="' + (j.name + ' ' + j.user + ' ' + j.nodelist).toLowerCase() + '">' +
+          '<td>' + j.job_id + '</td>' +
+          '<td>' + esc(j.name) + '</td>' +
+          '<td>' + esc(j.user) + '</td>' +
+          '<td>' + j.partition + '</td>' +
+          '<td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;" title="' + esc(j.nodelist) + '">' + esc(j.nodelist) + '</td>' +
+          '<td>' + parseGPUs(j.tres) + '</td>' +
+          '<td>' + j.elapsed + '</td>' +
+          '<td>' + j.time_limit + '</td>' +
+          '</tr>';
+      });
+      rhtml += '</tbody></table>';
+      document.getElementById('jobs-running').innerHTML = rhtml;
+
+      // Pending
+      let phtml = '<table class="jobs-table"><thead><tr>' +
+        '<th>Job ID</th><th>Name</th><th>User</th><th>Partition</th><th>GPUs</th><th>Submitted</th>' +
+        '</tr></thead><tbody>';
+      const showPending = gpuData.pending_jobs.slice(0, 200); // cap at 200 for performance
+      showPending.forEach(j => {
+        phtml += '<tr class="job-row-pending" data-search="' + (j.name + ' ' + j.user).toLowerCase() + '">' +
+          '<td>' + j.job_id + '</td>' +
+          '<td>' + esc(j.name) + '</td>' +
+          '<td>' + esc(j.user) + '</td>' +
+          '<td>' + j.partition + '</td>' +
+          '<td>' + parseGPUs(j.tres) + '</td>' +
+          '<td>' + j.submit_time + '</td>' +
+          '</tr>';
+      });
+      if (gpuData.pending_jobs.length > 200) {
+        phtml += '<tr><td colspan="6" style="text-align:center;color:var(--text-secondary);font-style:italic;">Showing 200 of ' + gpuData.pending_jobs.length + ' pending jobs</td></tr>';
+      }
+      phtml += '</tbody></table>';
+      document.getElementById('jobs-pending').innerHTML = phtml;
+
+      document.getElementById('running-badge').textContent = '(' + gpuData.total_running + ')';
+      document.getElementById('pending-badge').textContent = '(' + gpuData.total_pending + ')';
+    }
+
+    function parseGPUs(tres) {
+      if (!tres) return '-';
+      const m = tres.match(/gpu[:\s]*(\d+)/i);
+      return m ? m[1] : tres;
+    }
+
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function switchJobTab(tab) {
+      currentJobTab = tab;
+      document.querySelectorAll('.job-tab').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      document.getElementById('jobs-running').style.display = tab === 'running' ? '' : 'none';
+      document.getElementById('jobs-pending').style.display = tab === 'pending' ? '' : 'none';
+      filterJobs();
+    }
+
+    function filterJobs() {
+      const q = document.getElementById('job-search').value.toLowerCase();
+      const cls = currentJobTab === 'running' ? 'job-row' : 'job-row-pending';
+      document.querySelectorAll('.' + cls).forEach(row => {
+        const match = !q || row.getAttribute('data-search').includes(q);
+        row.style.display = match ? '' : 'none';
+      });
+    }
+
+    function renderNodes() {
+      let html = '';
+      gpuData.nodes.forEach(n => {
+        const nodes = n.nodelist.split(',');
+        nodes.forEach(nodeName => {
+          html += '<div class="node-item">' +
+            '<div class="node-state-dot dot-' + n.state + '"></div>' +
+            '<div class="node-info">' +
+              '<div class="node-name">' + nodeName + '</div>' +
+              '<div class="node-meta">' + n.gpu_type + ' x' + n.gpus_per_node + ' &middot; ' + n.state + '</div>' +
+            '</div>' +
+          '</div>';
+        });
+      });
+      document.getElementById('node-grid').innerHTML = html;
+    }
+
+    function renderCharts() {
+      if (!historyData || historyData.length === 0) return;
+
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+      const textColor = isDark ? '#8b949e' : '#777';
+
+      const commonOpts = {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { labels: { color: textColor, boxWidth: 12, padding: 10, font: { size: 11 } } },
+          tooltip: { backgroundColor: isDark ? '#21262d' : '#fff', titleColor: isDark ? '#c9d1d9' : '#333',
+            bodyColor: isDark ? '#8b949e' : '#666', borderColor: isDark ? '#30363d' : '#e4e4e4', borderWidth: 1 }
+        },
+        scales: {
+          x: {
+            type: 'time',
+            time: { unit: 'hour', displayFormats: { hour: 'MMM d HH:mm' }, tooltipFormat: 'MMM d, HH:mm' },
+            ticks: { color: textColor, font: { size: 10 }, maxTicksLimit: 8 },
+            grid: { color: gridColor }
+          },
+          y: {
+            ticks: { color: textColor, font: { size: 11 } },
+            grid: { color: gridColor },
+            beginAtZero: true
+          }
+        }
+      };
+
+      const times = historyData.map(h => new Date(h.t));
+
+      // 1. Stacked area: GPU allocation
+      createChart('chart-allocation', {
+        type: 'line',
+        data: {
+          labels: times,
+          datasets: [
+            { label: 'Allocated', data: historyData.map(h => h.in_use), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.15)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 },
+            { label: 'Mixed', data: historyData.map(h => h.mixed), borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.15)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 },
+            { label: 'Unavailable', data: historyData.map(h => h.unavail), borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 },
+            { label: 'Total', data: historyData.map(h => h.total), borderColor: isDark ? '#555' : '#ccc', backgroundColor: 'transparent', borderDash: [5,3], fill: false, tension: 0.3, pointRadius: 0, borderWidth: 1.5 }
+          ]
+        },
+        options: { ...commonOpts, plugins: { ...commonOpts.plugins, legend: { ...commonOpts.plugins.legend, position: 'top' } } }
+      });
+
+      // 2. Utilization % line
+      createChart('chart-utilization', {
+        type: 'line',
+        data: {
+          labels: times,
+          datasets: [{
+            label: 'Utilization %',
+            data: historyData.map(h => {
+              const healthy = h.total - h.unavail;
+              return healthy > 0 ? Math.round(h.in_use / healthy * 100) : 0;
+            }),
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139,92,246,0.1)',
+            fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2
+          }]
+        },
+        options: { ...commonOpts, scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, max: 100, ticks: { ...commonOpts.scales.y.ticks, callback: function(v) { return v + '%'; } } } } }
+      });
+
+      // 3. Job queue
+      createChart('chart-jobs', {
+        type: 'line',
+        data: {
+          labels: times,
+          datasets: [
+            { label: 'Running', data: historyData.map(h => h.running), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 },
+            { label: 'Pending', data: historyData.map(h => h.pending), borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2, yAxisID: 'y1' }
+          ]
+        },
+        options: {
+          ...commonOpts,
+          scales: {
+            ...commonOpts.scales,
+            y: { ...commonOpts.scales.y, position: 'left', title: { display: true, text: 'Running', color: textColor } },
+            y1: { position: 'right', beginAtZero: true, grid: { drawOnChartArea: false },
+              ticks: { color: textColor, font: { size: 11 } },
+              title: { display: true, text: 'Pending', color: textColor } }
+          }
+        }
+      });
+
+      // 4 & 5. Per-partition charts
+      ['savio3_gpu', 'savio4_gpu'].forEach(part => {
+        const chartId = 'chart-' + part.replace('_gpu', '');
+        const partData = historyData.map(h => h.partitions && h.partitions[part] ? h.partitions[part] : null).filter(Boolean);
+        const partTimes = historyData.filter(h => h.partitions && h.partitions[part]).map(h => new Date(h.t));
+
+        if (partData.length === 0) return;
+
+        createChart(chartId, {
+          type: 'line',
+          data: {
+            labels: partTimes,
+            datasets: [
+              { label: 'In Use', data: partData.map(p => p.in_use), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.15)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 },
+              { label: 'Available', data: partData.map(p => p.free), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 },
+              { label: 'Unavailable', data: partData.map(p => p.unavailable), borderColor: '#6b7280', backgroundColor: 'rgba(107,114,128,0.1)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 1.5 }
+            ]
+          },
+          options: commonOpts
+        });
+      });
+    }
+
+    function createChart(canvasId, config) {
+      if (charts[canvasId]) {
+        charts[canvasId].destroy();
+      }
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      // Set canvas height
+      canvas.style.height = '250px';
+      charts[canvasId] = new Chart(ctx, config);
+    }
+
+    function toggleCollapse(id) {
+      const body = document.getElementById('collapse-' + id);
+      const arrow = document.getElementById('arrow-' + id);
+      body.classList.toggle('open');
+      arrow.classList.toggle('open');
+    }
+
+    // Dark/Light mode (same as main site)
+    function toggleTheme() {
+      const html = document.documentElement;
+      const btn = document.getElementById('themeBtn');
+      if (html.getAttribute('data-theme') === 'dark') {
+        html.removeAttribute('data-theme');
+        btn.textContent = '\u{1F319}';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        btn.textContent = '\u2600\uFE0F';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('themeBtn').textContent = '\u2600\uFE0F';
+      }
+    })();
+
+    // Load on page load
+    loadData();
+  </script>
+
+</body>
+</html>
