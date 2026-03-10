@@ -1541,9 +1541,31 @@
                 <td>0.835</td>
                 <td>0.370</td>
                 <td>0.007</td>
-                <td>&mdash;</td>
-                <td>&mdash;</td>
+                <td>0.111</td>
+                <td>16.56&Aring;</td>
                 <td><span class="tag tag-pat">pat 2</span></td>
+              </tr>
+              <tr style="background: rgba(31, 119, 180, 0.12);">
+                <td>b13</td>
+                <td>2.534</td>
+                <td>1.635</td>
+                <td>0.826</td>
+                <td>0.343</td>
+                <td>0.007</td>
+                <td>0.110</td>
+                <td>16.64&Aring;</td>
+                <td><span class="tag tag-pat">pat 3</span></td>
+              </tr>
+              <tr style="background: rgba(31, 119, 180, 0.15);">
+                <td><strong>b14</strong></td>
+                <td style="color: #2ca02c;"><strong>2.500</strong></td>
+                <td style="color: #2ca02c;"><strong>1.606</strong></td>
+                <td style="color: #2ca02c;"><strong>0.814</strong></td>
+                <td style="color: #2ca02c;"><strong>0.349</strong></td>
+                <td style="color: #2ca02c;"><strong>0.006</strong></td>
+                <td>0.107</td>
+                <td>17.13&Aring;</td>
+                <td><span class="tag tag-best">NEW BEST</span></td>
               </tr>
             </tbody>
           </table>
@@ -1756,7 +1778,7 @@
           <strong style="color: #2ca02c;">v12b Training &mdash; E10 NEW BEST, surpasses v12 peak</strong>
           <ul style="margin: 6px 0 6px 18px; font-size: 0.95em;">
             <li><strong>v12b E10 is the new overall best:</strong> val FAPE 1.630, frame_rot 0.813, val_total 2.521, DDIM TM 0.113. Surpasses v12 E10 peak (FAPE 1.651, frame_rot 0.833, TM 0.102) &mdash; per-module clipping is working.</li>
-            <li><strong>Stable through b12:</strong> val_total 2.521 (b10 best) &rarr; 2.553 (b11) &rarr; 2.558 (b12). No regression. b12 val FAPE 1.628 is a new FAPE record (beating b10's 1.630), though total loss slightly higher. Patience at 2/15 &mdash; training healthy.</li>
+            <li><strong>b14 NEW BEST:</strong> val_total 2.500, val FAPE <strong>1.606</strong>, frame_rot 0.814. Continued improvement &mdash; FAPE dropped from 1.630 (b10) to 1.606 (b14), a 1.5% improvement. Training losses also declining (train_total 2.56). No regression through 14 v12b epochs. Patience reset to 0.</li>
             <li><strong>v12 E11-E13 regression diagnosed:</strong> Gradient starvation via global <code>clip_grad_norm_(1.0)</code>. Denoiser (28.5M params) consumed 99%+ of gradient budget. pair_stack_norm collapsed mid-E12: 0.125&rarr;0.007&rarr;0.000.</li>
             <li><strong>Gradient cosine diagnostic confirmed:</strong> No gradient competition. FAPE &amp; frame_rot are <em>aligned</em> (+0.57 cosine). dist_mse is near-orthogonal to both (+0.14). Losses do not oppose each other &mdash; the regression was purely gradient starvation, not conflicting objectives.</li>
             <li><strong>v12b fixes applied (rolling back to E10 EMA weights):</strong>
