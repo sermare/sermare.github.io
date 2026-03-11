@@ -1378,8 +1378,118 @@
 
     <h2 class="section-heading">Architecture &amp; Loss Function Details</h2>
 
+      <!-- ── v13 Architecture ── -->
+      <h3 class="section-heading">Diffusion v13 &mdash; Triangle Pair Stack + CFG (Current)</h3>
+
+      <div class="training-observations" style="line-height: 1.7; border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
+        <h4>Why v13: The Beta-Sheet Problem</h4>
+        <p style="font-size: 0.93em;">
+          v12b achieved record structural metrics (FAPE 1.584, frame_rot 0.790) but visual inspection of generated
+          structures revealed a systematic failure: the model learns alpha-helices well but cannot form beta-sheets.
+          The root cause is the pair stack&rsquo;s limited receptive field &mdash; with <code>max_rel_pos=32</code>,
+          residue pairs separated by more than 32 positions in sequence have zero relative position signal. Beta-sheet
+          hydrogen bonds typically connect residues 20&ndash;100+ positions apart, making them invisible to v12b&rsquo;s
+          pair representation.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>v13 Overview (~35&ndash;38M params)</h4>
+        <p style="font-size: 0.93em;">
+          v13 makes three high-impact changes to solve the beta-sheet problem while preserving v12b&rsquo;s
+          proven IPA denoiser. The denoiser, aux pair stack, Rg predictor, and distance head are initialized
+          from v12b b30 EMA weights (exact match via <code>strict=False</code>). The pair stack is entirely
+          new architecture and trains from scratch.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>1. Deeper Pair Stack with Triangle Multiplicative Updates (8 blocks)</h4>
+        <p style="font-size: 0.93em;">
+          The pair stack doubles from 4 to 8 <code>EnhancedPairBlock</code> blocks. Each block now applies
+          Evoformer-style triangle multiplicative updates (outgoing + incoming) before the existing row/column
+          axial attention + FFN. The triangle updates implement transitivity: &ldquo;if residue <em>i</em>
+          contacts residue <em>k</em>, and residue <em>j</em> contacts residue <em>k</em>, then <em>i</em>
+          and <em>j</em> are structurally related.&rdquo; This is exactly how beta-sheet topology is encoded
+          &mdash; two strands share contacts through loop residues.
+        </p>
+        <p style="font-size: 0.93em;">
+          Implementation: each triangle update projects the pair representation to gate/value tensors
+          (<code>tri_mul_dim=64</code>), computes <code>einsum('bikd,bjkd-&gt;bijd')</code> (outgoing) or
+          <code>'bkid,bkjd-&gt;bijd'</code> (incoming), then projects back to <code>d_pair=128</code>.
+          The einsum is forced to fp32 to prevent fp16 overflow from the L-dimensional accumulation.
+          Output is clamped to [-1e4, 1e4] and returned as a residual delta to avoid catastrophic cancellation.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>2. Log-Scaled Relative Position Encoding (128 bins, max_sep=512)</h4>
+        <p style="font-size: 0.93em;">
+          Replaces the linear-clipped RPE (<code>max_rel_pos=32</code>, 65 bins) with 128 log-spaced bins
+          covering separations from 0 to 512 residues. The encoding is sign-aware (separate embeddings for
+          upstream and downstream). Bin spacing:
+        </p>
+        <ul style="font-size: 0.93em;">
+          <li><strong>Bins 0&ndash;8:</strong> Linear spacing (1-residue resolution) for helix contacts (i+3, i+4)</li>
+          <li><strong>Bins 8&ndash;128:</strong> Log-spaced for long-range sheet contacts (i+20 to i+512)</li>
+        </ul>
+        <p style="font-size: 0.93em;">
+          Additionally, 32-dimensional sinusoidal continuous RPE features (sin/cos encoding projected to
+          <code>d_pair</code>) provide smooth interpolation between discrete bins.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>3. Classifier-Free Guidance Training</h4>
+        <p style="font-size: 0.93em;">
+          10% of training batches (<code>p_uncond=0.1</code>) replace residue tokens with MASK tokens
+          (token ID 1), preserving CLS/EOS/PAD structure so attention masks remain valid. This trains the
+          model for both conditional and unconditional generation. At sampling time, CFG enables guided
+          generation: <code>&epsilon; = &epsilon;<sub>uncond</sub> + w &middot; (&epsilon;<sub>cond</sub> &minus; &epsilon;<sub>uncond</sub>)</code>.
+        </p>
+        <p style="font-size: 0.93em;">
+          <strong>Critical bug found and fixed:</strong> Initially used PAD (token 0) as the null token.
+          Since the attention mask is computed as <code>ids.ne(PAD)</code>, this produced an all-False mask,
+          creating degenerate pair representations that caused NaN. Using MASK (token 1) instead preserves
+          valid masks.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>v13 LR Schedule: Warmup &rarr; Constant &rarr; Cosine Decay</h4>
+        <p style="font-size: 0.93em;">
+          Three-phase schedule motivated by v12b&rsquo;s finding that breakthroughs happen in narrow LR windows:
+        </p>
+        <ol style="font-size: 0.93em;">
+          <li><strong>Warmup (3 epochs):</strong> Linear 0.01x &rarr; 1x base LR</li>
+          <li><strong>Constant (20 epochs):</strong> Hold at peak LR=2e-5 (pair_stack at 3x = 6e-5)</li>
+          <li><strong>Cosine decay (~37 epochs):</strong> Slow decay to eta_min=1e-6</li>
+        </ol>
+        <p style="font-size: 0.93em;">
+          Per-module gradient clipping carried from v12b: denoiser max_norm=1.0, pair_stack=0.5.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>v13 Numerical Stability Fixes</h4>
+        <p style="font-size: 0.93em;">
+          v13 development uncovered three classes of fp16 instability present since v12 (see NaN Debugging Story
+          in the Structure Folding tab). All fixes are applied in both v12 and v13 codebases:
+        </p>
+        <ul style="font-size: 0.93em;">
+          <li><strong>fp16 epsilon underflow:</strong> <code>clamp(min=1e-6)</code> underflows to 0 in fp16
+            (min positive ~6e-5). Fixed by forcing fp32 in Gram-Schmidt, slerp, IPA point attention, and all loss functions.</li>
+          <li><strong>Triangle einsum overflow:</strong> L-dimensional accumulation exceeds fp16 max (65504).
+            Forced fp32 with <code>torch.amp.autocast("cuda", enabled=False)</code>.</li>
+          <li><strong>Unsafe torch.cdist backward:</strong> Produces NaN when distance is exactly 0.
+            Replaced with manual <code>(diff.pow(2).sum(-1) + 1e-10).sqrt()</code>.</li>
+        </ul>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid var(--border); margin: 24px 0;">
+
       <!-- ── v11 Architecture ── -->
-      <h3 class="section-heading">Diffusion v11 &mdash; IPA-Based Frame Denoising (Current)</h3>
+      <h3 class="section-heading" style="color: var(--text-secondary);">Diffusion v11/v12 &mdash; IPA-Based Frame Denoising (Previous)</h3>
 
       <div class="training-observations" style="line-height: 1.7; border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
         <h4>Why the Pivot from v10</h4>
