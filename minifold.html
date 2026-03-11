@@ -196,6 +196,8 @@
 
     <div class="mf-tabs">
       <button class="mf-tab active" onclick="switchTab('folding')">Structure Folding</button>
+      <button class="mf-tab" onclick="switchTab('backbone')">Full Backbone</button>
+      <button class="mf-tab" onclick="switchTab('sidechain')">Side Chain</button>
       <button class="mf-tab" onclick="switchTab('classifier')">Classifier</button>
       <button class="mf-tab" onclick="switchTab('details')">More Details</button>
       <button class="mf-tab" onclick="switchTab('archive')">Archive</button>
@@ -387,6 +389,186 @@
     </div>
 
     </div> <!-- /tab-folding -->
+
+    <!-- ============================================================== -->
+    <!--  TAB: FULL BACKBONE                                             -->
+    <!-- ============================================================== -->
+    <div id="tab-backbone" class="mf-panel">
+
+    <h2 class="section-heading">v14 &mdash; Full Backbone Diffusion Model</h2>
+
+    <div class="training-card">
+      <div class="training-card-header">
+        <h3 class="training-card-title">Full Backbone Diffusion Model v14</h3>
+        <span class="training-status status-pending">Initializing</span>
+      </div>
+
+      <!-- Motivation -->
+      <div class="training-observations" style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
+        <h4>Why Full Backbone?</h4>
+        <ul style="font-size: 0.92em; line-height: 1.8; padding-left: 20px;">
+          <li><strong>C&alpha;-only is lossy:</strong> v13 predicts a single point per residue &mdash; backbone geometry (N-C&alpha;-C-O) must be reconstructed post-hoc using tools like pNeRF or idealization heuristics.</li>
+          <li><strong>Post-hoc reconstruction introduces errors:</strong> Peptide bond planarity, bond angles, and omega dihedrals are approximated, not learned. Small errors compound over the chain, especially for longer proteins.</li>
+          <li><strong>Learnable peptide geometry:</strong> Full backbone prediction lets the model learn actual peptide plane geometry, enforcing physically valid backbone structures during training rather than hoping reconstruction recovers them.</li>
+          <li><strong>More natural frame representation:</strong> Frames are built from actual N-C&alpha;-C planes instead of Gram&ndash;Schmidt on C&alpha; triplets. This is more numerically stable, especially at high noise levels where consecutive C&alpha; atoms can become nearly collinear.</li>
+          <li><strong>Direct angle supervision:</strong> Enables direct &phi;/&psi; angle supervision and omega planarity loss &mdash; the model is penalized for non-planar peptide bonds, not just C&alpha; position errors.</li>
+        </ul>
+      </div>
+
+      <!-- Architecture Overview -->
+      <h4 class="training-progress-heading" style="margin-top: 20px;">Architecture Overview</h4>
+
+      <div class="arch-feature">
+        <div class="af-label">Model Size</div>
+        <div class="af-value">
+          ~35&ndash;40M params. Same IPA denoiser as v13 (8 layers, 8 heads, 8 query points, 512-dim), with a new backbone reconstruction head that maps per-residue single representations to full backbone atom positions.
+        </div>
+      </div>
+
+      <div class="arch-feature">
+        <div class="af-label">Key Change</div>
+        <div class="af-value">
+          Model predicts per-residue rigid frames (rotation + translation) &rarr; places N, C&alpha;, C, O using ideal geometry + learned offsets. The frame defines the local coordinate system; backbone atoms are positioned relative to it using idealized bond lengths as initialization.
+        </div>
+      </div>
+
+      <div class="arch-feature">
+        <div class="af-label">Ideal Bond Lengths</div>
+        <div class="af-value">
+          N&ndash;C&alpha; &asymp; 1.458&Aring;, C&alpha;&ndash;C &asymp; 1.523&Aring;, C&ndash;N(next) &asymp; 1.329&Aring;, C=O &asymp; 1.231&Aring;. These serve as initialization for the backbone head; the model learns residual offsets from these idealized values.
+        </div>
+      </div>
+
+      <div class="arch-feature">
+        <div class="af-label">Noise Strategy</div>
+        <div class="af-value">
+          Noise is added to C&alpha; positions (frame translations) &mdash; backbone atoms (N, C, O) are <em>derived</em> from the denoised frames, not independently noised. This ensures backbone geometry stays consistent throughout the diffusion process.
+        </div>
+      </div>
+
+      <div class="arch-feature">
+        <div class="af-label">Initialization</div>
+        <div class="af-value">
+          Initialized from v13/v12b weights via <code>strict=False</code>. All existing modules (denoiser, pair stack, aux heads) load exact weights; the backbone reconstruction head trains from scratch.
+        </div>
+      </div>
+
+      <!-- New Loss Functions -->
+      <h4 class="training-progress-heading" style="margin-top: 24px;">New Loss Functions</h4>
+
+      <div class="arch-feature">
+        <div class="af-label">Backbone FAPE</div>
+        <div class="af-value">
+          Frame-aligned point error computed over all 4 backbone atoms (N, C&alpha;, C, O), not just C&alpha;. Measures how well the predicted backbone superimposes onto the ground truth in each residue&rsquo;s local frame.
+        </div>
+      </div>
+
+      <div class="arch-feature">
+        <div class="af-label">Backbone Bond Loss</div>
+        <div class="af-value">
+          MSE on predicted N&ndash;C&alpha;, C&alpha;&ndash;C, C&ndash;N(next), and C=O bond lengths vs ideal values. Ensures the model produces chemically valid bond distances.
+        </div>
+      </div>
+
+      <div class="arch-feature">
+        <div class="af-label">Backbone Angle Loss</div>
+        <div class="af-value">
+          MSE on predicted N&ndash;C&alpha;&ndash;C, C&alpha;&ndash;C&ndash;N(next), and C&ndash;N&ndash;C&alpha; bond angles vs ideal values. Penalizes deviations from expected tetrahedral/planar geometry.
+        </div>
+      </div>
+
+      <div class="arch-feature">
+        <div class="af-label">Omega Dihedral Loss</div>
+        <div class="af-value">
+          Peptide bond planarity &mdash; cosine loss enforcing &omega; &asymp; 180&deg;. The peptide bond is planar due to partial double-bond character; this loss directly penalizes non-planar (cis-like) peptide bonds.
+        </div>
+      </div>
+
+      <!-- Training Table -->
+      <h4 class="training-progress-heading" style="margin-top: 24px;">v14 Training Progress</h4>
+      <div class="training-table-wrapper">
+        <table class="training-table">
+          <thead>
+            <tr>
+              <th>Epoch</th>
+              <th>Val Total</th>
+              <th>FAPE</th>
+              <th>Frame Rot</th>
+              <th>Dist MSE</th>
+              <th>BB FAPE</th>
+              <th>BB Bond</th>
+              <th>Omega</th>
+              <th>DDIM TM</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="v14-tbody">
+            <tr>
+              <td colspan="10" style="text-align: center; color: var(--text-secondary); font-style: italic; padding: 16px;">
+                Training not yet started &mdash; initialized from v13/v12b best weights
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Comparison with v13 -->
+      <div class="training-observations" style="border-left: 3px solid #1f77b4; padding-left: 14px; margin: 16px 0;">
+        <h4>Relationship to v13</h4>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          v14 runs <strong>in parallel</strong> with v13, not as a replacement. v13 explores pair stack improvements
+          for long-range contacts and beta-sheet topology (deeper triangle updates, log-scaled RPE). v14 explores
+          a richer output representation &mdash; predicting full backbone atom positions instead of C&alpha;-only.
+          These are orthogonal improvements: v13 improves how the model <em>reasons</em> about structure
+          (pair representation), while v14 improves what the model <em>outputs</em> (backbone fidelity).
+          Insights from both lines will be combined in a future version.
+        </p>
+      </div>
+
+    </div>
+
+    </div> <!-- /tab-backbone -->
+
+    <!-- ============================================================== -->
+    <!--  TAB: SIDE CHAIN                                                -->
+    <!-- ============================================================== -->
+    <div id="tab-sidechain" class="mf-panel">
+
+    <h2 class="section-heading">Side Chain Prediction (Future)</h2>
+
+    <div class="training-card">
+      <div class="training-card-header">
+        <h3 class="training-card-title">Side Chain Reconstruction</h3>
+        <span class="training-status status-pending">Planned</span>
+      </div>
+
+      <div class="training-goal">
+        <strong>Goal:</strong> Extend v14&rsquo;s full backbone prediction to include C&beta; atoms and eventually full side chain reconstruction, enabling the model to produce all-atom protein structures directly from sequence.
+      </div>
+
+      <div class="training-observations" style="border-left: 3px solid #1f77b4; padding-left: 14px; margin: 16px 0;">
+        <h4>Planned Approach</h4>
+        <ul style="font-size: 0.92em; line-height: 1.8; padding-left: 20px;">
+          <li><strong>Chi angle prediction:</strong> Predict side chain dihedral angles (&chi;<sub>1</sub>&ndash;&chi;<sub>4</sub>) conditioned on backbone frames, residue type, and pair representation.</li>
+          <li><strong>Hierarchical placement:</strong> Backbone atoms are placed first (from v14 frames), then side chain atoms are built outward using predicted chi angles and ideal bond geometry.</li>
+          <li><strong>Rotamer-aware loss:</strong> Side chain loss will account for rotamer distributions &mdash; penalizing chi angles that fall outside known rotamer basins for each residue type.</li>
+          <li><strong>Clash penalty:</strong> Steric clash loss between predicted side chain atoms to enforce physically valid packing.</li>
+        </ul>
+      </div>
+
+      <div class="training-observations" style="border-left: 3px solid var(--border); padding-left: 14px; margin: 16px 0;">
+        <h4>Prerequisites</h4>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          This module depends on v14&rsquo;s full backbone prediction being stable and well-converged first.
+          Accurate backbone frames are essential &mdash; side chain atoms are placed relative to the backbone frame,
+          so errors in backbone geometry propagate directly to side chain positions. Work will begin once v14
+          demonstrates consistent bond/angle geometry and competitive FAPE scores.
+        </p>
+      </div>
+
+    </div>
+
+    </div> <!-- /tab-sidechain -->
 
     <!-- ============================================================== -->
     <!--  TAB: ARCHIVE                                                   -->
