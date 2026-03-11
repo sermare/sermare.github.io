@@ -653,97 +653,35 @@
           </thead>
           <tbody id="v14-tbody">
             <tr>
-              <td><strong>2</strong></td>
-              <td style="color: #2ca02c;"><strong>3.200</strong></td>
-              <td>1.596</td>
-              <td>0.814</td>
-              <td>0.394</td>
-              <td>1.590</td>
-              <td>0.004</td>
-              <td>0.094</td>
-              <td>&mdash;</td>
-              <td><span class="tag tag-best">NEW BEST</span></td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>3.549</td>
-              <td>1.608</td>
-              <td>0.830</td>
-              <td>0.382</td>
-              <td>1.600</td>
-              <td>0.004</td>
-              <td>0.077</td>
-              <td>&mdash;</td>
-              <td><span class="tag tag-pat">pat 2</span></td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>3.886</td>
-              <td>1.584</td>
-              <td>0.816</td>
-              <td>0.434</td>
-              <td>1.577</td>
-              <td>0.005</td>
-              <td>0.073</td>
-              <td>&mdash;</td>
-              <td><span class="tag tag-pat">pat 3</span></td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>4.200</td>
-              <td>1.587</td>
-              <td>0.821</td>
-              <td>0.413</td>
-              <td>1.579</td>
-              <td>0.005</td>
-              <td>0.074</td>
-              <td>&mdash;</td>
-              <td><span class="tag tag-pat">pat 4</span></td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td>4.234</td>
-              <td>1.586</td>
-              <td>0.824</td>
-              <td>0.439</td>
-              <td>1.579</td>
-              <td>0.005</td>
-              <td>0.061</td>
-              <td>&mdash;</td>
-              <td><span class="tag tag-pat">pat 5</span></td>
-            </tr>
-            <tr>
-              <td>7</td>
-              <td>4.228</td>
-              <td>1.608</td>
-              <td>0.834</td>
-              <td>0.391</td>
-              <td>1.600</td>
-              <td>0.005</td>
-              <td>0.043</td>
-              <td>&mdash;</td>
-              <td><span class="tag tag-pat">pat 6</span></td>
+              <td colspan="10" style="text-align: center; color: #888; font-style: italic; padding: 12px;">
+                Restarted &mdash; awaiting first epoch. Previous run (E2&ndash;E7) discarded due to bug fixes.
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <!-- v14 Pseudo-Ramachandran -->
-      <h4 class="training-progress-heading">v14 Pseudo-Ramachandran (E5)</h4>
-      <div style="text-align: center; margin: 16px 0;">
-        <img src="data/training/v14_pseudo_ramachandran.png" alt="v14 pseudo-Ramachandran plots at E5" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-      </div>
-      <div class="training-observations" style="border-left: 3px solid #ff7f0e; padding-left: 14px; margin: 16px 0;">
-        <h4>Interpretation</h4>
+      <h4 class="training-progress-heading">v14 Pseudo-Ramachandran</h4>
+      <div class="training-observations" style="border-left: 3px solid #e74c3c; padding-left: 14px; margin: 16px 0;">
+        <h4>v14 Restarted (Mar 11, 2026)</h4>
         <p style="font-size: 0.92em; line-height: 1.6;">
-          v14 DDIM samples at E5 show early structural signal comparable to v13 at the same stage.
-          The &alpha;-helix cluster at ~(50&deg;, 50&deg;) is beginning to emerge, and the
-          x<sub>0</sub>-prediction panel shows a clear concentrated hotspot &mdash; indicating the
-          backbone head is learning to produce physically plausible local geometry even at this
-          early stage. The backbone-specific losses (bond lengths, omega dihedral) are steadily
-          improving across epochs, suggesting the model is converging toward correct peptide
-          geometry. Note that v14&rsquo;s total loss is higher than v13 because it includes the
-          additional backbone FAPE, bond, and omega terms.
+          The previous v14 run (E2&ndash;E7) was stopped after an audit revealed three bugs causing
+          diverging total loss despite improving backbone sub-losses:
+        </p>
+        <ol style="font-size: 0.90em; line-height: 1.6; margin: 8px 0;">
+          <li><strong>Ideal offsets 10&times; too large:</strong> BackboneAtomHead registered ideal N/C/O
+            offsets in &Aring;ngstroms (~1.5&Aring;) but the model operates in normalized space (&div;10).
+            Atoms were placed ~15&Aring; away instead of ~1.5&Aring;, producing huge FAPE losses.</li>
+          <li><strong>Backbone head LR group misrouted:</strong> <code>hasattr(model, "backbone_head")</code>
+            was always False (head lives at <code>model.denoiser.backbone_head</code>), so it got 1&times; LR
+            instead of the intended 5&times;. The new head trained too slowly to compensate.</li>
+          <li><strong>bb_angle loss invisible:</strong> Missing from <code>loss_keys</code>, so it was never
+            logged or tracked &mdash; contributing to total loss but invisible in CSV/logs.</li>
+        </ol>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          All three bugs are now fixed. New Ramachandran plots will be generated after the restarted
+          training produces enough epochs.
         </p>
       </div>
 
