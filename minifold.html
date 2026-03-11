@@ -325,14 +325,39 @@
               <td>2.571</td>
               <td>1.657</td>
               <td>0.846</td>
-              <td>&mdash;</td>
-              <td>&mdash;</td>
+              <td>0.353</td>
+              <td>0.009</td>
               <td>0.114</td>
+              <td>&mdash;</td>
+              <td><span class="tag tag-best">NEW BEST</span></td>
+            </tr>
+            <tr>
+              <td><strong>2</strong></td>
+              <td style="color: #2ca02c;"><strong>2.494</strong></td>
+              <td style="color: #2ca02c;"><strong>1.610</strong></td>
+              <td style="color: #2ca02c;"><strong>0.792</strong></td>
+              <td>0.359</td>
+              <td>0.007</td>
+              <td>&mdash;</td>
               <td>&mdash;</td>
               <td><span class="tag tag-best">NEW BEST</span></td>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="training-observations" style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
+        <h4>Early Comparison with Previous Architectures</h4>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          After just 2 epochs, v13 already surpasses v12b&rsquo;s first epoch (b1) on all structural metrics:
+          FAPE <strong>1.610</strong> vs 1.627, frame_rot <strong>0.792</strong> vs 0.818, val_total <strong>2.494</strong> vs 2.541.
+          For context, v12b required 16 epochs of continued training (with per-module gradient clipping) to reach
+          frame_rot 0.780 &mdash; v13 is nearly there at E2. The deeper pair stack with triangle multiplicative
+          updates appears to provide much stronger structural signal from the start, likely because the 8-block
+          pair stack with log-scaled RPE can propagate long-range contact information that the v12b 4-block
+          stack (max_rel=32) could not represent at all. Note: DDIM sampling runs every 5 epochs in v13, so
+          TM-score will next be reported at E5.
+        </p>
       </div>
 
       <!-- v13 Loss Curves (placeholder) -->
