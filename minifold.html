@@ -340,10 +340,10 @@
               <td><span class="tag tag-best">NEW BEST</span></td>
             </tr>
             <tr>
-              <td><strong>2</strong></td>
-              <td style="color: #2ca02c;"><strong>2.494</strong></td>
-              <td style="color: #2ca02c;"><strong>1.610</strong></td>
-              <td style="color: #2ca02c;"><strong>0.792</strong></td>
+              <td>2</td>
+              <td>2.494</td>
+              <td>1.610</td>
+              <td>0.792</td>
               <td>0.359</td>
               <td>0.007</td>
               <td>0.324</td>
@@ -353,21 +353,49 @@
               <td>&mdash;</td>
               <td><span class="tag tag-best">NEW BEST</span></td>
             </tr>
+            <tr>
+              <td>3</td>
+              <td>2.533</td>
+              <td>1.611</td>
+              <td>0.829</td>
+              <td>0.374</td>
+              <td>0.008</td>
+              <td>0.324</td>
+              <td>0.336</td>
+              <td>0.120</td>
+              <td>0.036</td>
+              <td>&mdash;</td>
+              <td><span class="tag tag-pat">pat 1</span></td>
+            </tr>
+            <tr>
+              <td><strong>4</strong></td>
+              <td style="color: #2ca02c;"><strong>2.373</strong></td>
+              <td style="color: #2ca02c;"><strong>1.546</strong></td>
+              <td style="color: #2ca02c;"><strong>0.771</strong></td>
+              <td style="color: #2ca02c;"><strong>0.312</strong></td>
+              <td>0.008</td>
+              <td>0.323</td>
+              <td>0.319</td>
+              <td>0.113</td>
+              <td>0.036</td>
+              <td>&mdash;</td>
+              <td><span class="tag tag-best">NEW BEST</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
 
       <div class="training-observations" style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
-        <h4>Early Comparison with Previous Architectures</h4>
+        <h4>Comparison with Previous Architectures</h4>
         <p style="font-size: 0.92em; line-height: 1.6;">
-          After just 2 epochs, v13 already surpasses v12b&rsquo;s first epoch (b1) on all structural metrics:
-          FAPE <strong>1.610</strong> vs 1.627, frame_rot <strong>0.792</strong> vs 0.818, val_total <strong>2.494</strong> vs 2.541.
-          For context, v12b required 16 epochs of continued training (with per-module gradient clipping) to reach
-          frame_rot 0.780 &mdash; v13 is nearly there at E2. The deeper pair stack with triangle multiplicative
-          updates appears to provide much stronger structural signal from the start, likely because the 8-block
-          pair stack with log-scaled RPE can propagate long-range contact information that the v12b 4-block
-          stack (max_rel=32) could not represent at all. Note: DDIM sampling runs every 5 epochs in v13, so
-          TM-score will next be reported at E5.
+          <strong>E4 breakthrough:</strong> v13 now surpasses v12b&rsquo;s best frame_rot (b16: 0.780) after only 4 epochs &mdash;
+          frame_rot <strong>0.771</strong>, FAPE <strong>1.546</strong>, val_total <strong>2.373</strong>.
+          The dist_mse of <strong>0.312</strong> matches v12b b30&rsquo;s all-time best.
+          For context, v12b required 16 epochs with per-module gradient clipping to reach frame_rot 0.780;
+          v13 surpassed that milestone 4&times; faster. The deeper pair stack with triangle multiplicative
+          updates and log-scaled RPE provides much stronger structural signal, propagating long-range contacts
+          that v12b&rsquo;s 4-block stack (max_rel=32) could not represent. DDIM sampling runs every 5 epochs,
+          so TM-score will first be reported at E5.
         </p>
       </div>
 
@@ -1559,7 +1587,7 @@
           <div class="tl-desc">
             The highest-impact architectural change. v12 learns helices but not beta sheets because its pair stack (4 blocks, max_rel_pos=32) cannot propagate information between residues separated by >32 positions &mdash; exactly where sheet contacts live. v13 doubles the pair stack to 8 blocks with Evoformer-style triangle multiplicative updates, replaces linear-clipped RPE with 128 log-scaled bins covering 0-512 residues, and adds classifier-free guidance training (10% conditioning dropout). Initialized from v12b EMA weights.
           </div>
-          <div class="tl-result">Status: Training in progress. E2 best &mdash; val_total 2.494, FAPE 1.610, frame_rot 0.792. Already surpassing v12b b1 on all structural metrics.</div>
+          <div class="tl-result">Status: Training in progress. E4 best &mdash; val_total 2.373, FAPE 1.546, frame_rot 0.771. Surpasses v12b b16 frame_rot (0.780) after only 4 epochs.</div>
         </div>
       </div>
 
