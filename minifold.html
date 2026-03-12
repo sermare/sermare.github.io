@@ -2068,122 +2068,224 @@
 
       <!-- ── Loss Functions ── -->
       <h3 class="section-heading">Loss Functions</h3>
-      <p style="font-size: 0.93em; color: var(--text-secondary); margin-bottom: 16px;">
-        The total loss is a weighted combination of eight components. All losses are shared across v11&ndash;v13;
-        only the weights and frame handling differ between versions.
+      <p style="font-size: 0.93em; color: var(--text-secondary); margin-bottom: 8px;">
+        Mini-Fold trains with a composite loss that blends global fold accuracy, local backbone geometry, and
+        auxiliary supervision signals. Each term has a specific role motivated by failures in earlier model versions
+        and by lessons from the protein structure prediction literature. The total loss is:
       </p>
       <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
-        $$\mathcal{L}_{\text{total}} = w_{\text{fape}} \cdot \mathcal{L}_{\text{fape}} + w_{\text{rot}} \cdot \mathcal{L}_{\text{rot}} + w_{\text{dist}} \cdot \mathcal{L}_{\text{dist}} + \beta(e) \cdot \mathcal{L}_{\text{bond}} + w_{\chi} \cdot \mathcal{L}_{\chi} + w_{\theta} \cdot \mathcal{L}_{\theta} + w_{\text{rg}} \cdot \mathcal{L}_{\text{rg}} + w_{\text{aux}} \cdot \mathcal{L}_{\text{aux}}$$
+        $$\mathcal{L}_{\text{total}} = \underbrace{w_{\text{fape}} \cdot \mathcal{L}_{\text{fape}} + w_{\text{rot}} \cdot \mathcal{L}_{\text{rot}} + w_{\text{dist}} \cdot \mathcal{L}_{\text{dist}}}_{\text{global structure}} + \underbrace{\beta(e) \cdot \mathcal{L}_{\text{bond}} + w_{\chi} \cdot \mathcal{L}_{\chi} + w_{\theta} \cdot \mathcal{L}_{\theta}}_{\text{local geometry}} + \underbrace{w_{\text{rg}} \cdot \mathcal{L}_{\text{rg}} + w_{\text{aux}} \cdot \mathcal{L}_{\text{aux}}}_{\text{auxiliary}}$$
       </div>
+      <p style="font-size: 0.88em; color: var(--text-secondary); margin: 4px 0 20px 0;">
+        The grouping reflects a key design principle: <strong>global structure losses are hard and slow</strong> (they encode
+        topology), while <strong>local geometry losses are easy and fast</strong> (they converge within a few epochs).
+        Getting this balance wrong was the source of most training failures in v8&ndash;v10.
+      </p>
+
+      <!-- ── Global Structure Losses ── -->
+      <h4 style="margin: 20px 0 12px 0; padding-bottom: 6px; border-bottom: 1px solid var(--border);">Global Structure Losses</h4>
+      <p style="font-size: 0.88em; color: var(--text-secondary); margin-bottom: 14px;">
+        These losses teach the model to produce correct protein folds &mdash; the right contacts, the right topology, the right orientations.
+        They are the hardest to optimize and the primary drivers of structural quality.
+      </p>
 
       <div class="training-observations" style="line-height: 1.7;">
-        <h4>1. FAPE (Frame-Aligned Point Error) &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 1.0\)</span></h4>
+        <h4>FAPE &mdash; Frame-Aligned Point Error &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 1.0\)</span></h4>
         <p style="font-size: 0.93em;">
-          The primary metric. Measures local structural consistency by computing point error in each residue&rsquo;s
-          local coordinate frame:
+          Introduced by Jumper et al. in <strong>AlphaFold2</strong> (Nature, 2021), FAPE is the gold standard loss for
+          protein structure models. It measures how well predicted coordinates match ground truth <em>in each residue&rsquo;s
+          local reference frame</em>:
         </p>
         <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
           $$\mathcal{L}_{\text{fape}} = \frac{1}{N_f \cdot L} \sum_{f=1}^{N_f} \sum_{j=1}^{L} \min\!\Big( \| R_f^{\top}(\hat{x}_j - o_f) - R_f^{*\top}(x_j - o_f^*) \|,\; d_{\text{clamp}} \Big)$$
         </div>
-        <p style="font-size: 0.88em;">
-          <em>Why it&rsquo;s the hardest loss:</em> Requires global structural correctness, not just local geometry.
-          Random baseline ~1.31; drops below 1.0 only when the model learns correct fold topology.
-          v11b&rsquo;s key fix: use learned R\(_{\text{pred}}\) from IPA layers instead of Gram-Schmidt rebuilt frames,
-          giving rotations direct gradient for the first time.
+        <p style="font-size: 0.93em;">
+          Unlike RMSD, which is a single global average, FAPE evaluates structure from every residue&rsquo;s perspective.
+          A model can have low RMSD by getting the overall shape roughly right, but FAPE requires getting the <em>local
+          neighborhoods</em> correct &mdash; which helix packs against which sheet, which loop connects where.
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> ~1.31. Drops below 1.0 only when the model learns correct fold topology.
+          This is the loss that distinguishes a blob from a protein.
         </p>
       </div>
 
       <div class="training-observations" style="line-height: 1.7;">
-        <h4>2. Frame Rotation Loss &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 0.5\) (introduced v11b)</span></h4>
+        <h4>Frame Rotation Loss &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 0.5\)</span></h4>
         <p style="font-size: 0.93em;">
-          Direct angular distance between learned rotation matrices and Gram-Schmidt ground truth:
-          \(\mathcal{L}_{\text{rot}} = 1 - \cos\theta\), where \(\theta\) is the rotation angle between
-          R\(_{\text{pred}}\) and R\(_{\text{GT}}\). Random baseline ~1.0 (~90\(^\circ\)), target &lt;0.5.
+          Direct supervision on per-residue backbone orientations, measuring the angular distance between predicted and
+          ground-truth rotation matrices: \(\mathcal{L}_{\text{rot}} = 1 - \cos\theta\). This is conceptually similar
+          to the auxiliary heads in AlphaFold2&rsquo;s structure module, but applied directly to the IPA-predicted frames.
         </p>
-        <p style="font-size: 0.88em;">
-          <em>Why it was added:</em> v11 had a critical bug where <code>x0_pred = t_vec</code> discarded learned R.
-          FAPE rebuilt frames via Gram-Schmidt, so rotations got no direct gradient. Adding this loss was the
-          single change that enabled topology learning.
+        <p style="font-size: 0.93em;">
+          <strong>Why this loss exists (the v11 rotation bug):</strong> In v11, a code error (<code>x0_pred = t_vec</code>)
+          silently discarded the learned rotations from IPA. FAPE was computed using Gram-Schmidt-rebuilt frames, so
+          rotations received zero gradient. The model could reduce distance-based losses but never learned orientations.
+          Adding frame_rot was the single fix that unlocked topology learning &mdash; the most important architectural
+          insight in Mini-Fold&rsquo;s development.
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> ~1.0 (frames pointing ~90&deg; off). <strong>Target:</strong> &lt;0.5.
+          Currently at 0.86&ndash;0.88 &mdash; the model is learning orientations but still has significant room to improve.
         </p>
       </div>
 
       <div class="training-observations" style="line-height: 1.7;">
-        <h4>3. Distance MSE &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 1.0\)</span></h4>
+        <h4>Distance MSE &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 1.0\)</span></h4>
         <p style="font-size: 0.93em;">
-          MSE on all pairwise C\(\alpha\) distances. Random baseline ~0.54. The easiest structural loss &mdash;
-          even v8&rsquo;s EGNN could reduce this 60% below random. But distance alone cannot encode topology
-          (many different folds have similar distance distributions).
+          MSE on all pairwise C\(\alpha\) distances. Pairwise distance matrices (also called <em>contact maps</em> when
+          thresholded) were the original representation used in early structure prediction methods
+          (e.g., <strong>trRosetta</strong>, Yang et al., PNAS 2020). They&rsquo;re easy to predict but fundamentally
+          limited &mdash; many different 3D folds can produce similar distance distributions.
         </p>
         <div style="overflow-x: auto; margin: 12px 0; font-size: 0.93em;">
           $$\mathcal{L}_{\text{dist}} = \frac{1}{|\mathcal{M}|} \sum_{(i,j) \in \mathcal{M}} \left( \| \hat{x}_i - \hat{x}_j \| - \| x_i - x_j \| \right)^2$$
         </div>
-      </div>
-
-      <div class="training-observations" style="line-height: 1.7;">
-        <h4>4. Bond Geometry &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(\beta(e) = \min(3.0,\; 1.0 + 2.0 \cdot \min(e/10, 1))\)</span></h4>
-        <p style="font-size: 0.93em;">
-          MSE on consecutive C\(\alpha\)&ndash;C\(\alpha\) distances vs ideal 3.8\(\text{\AA}\). Weight is
-          <em>annealed</em> from 1.0 to 3.0 over 10 epochs. Random baseline ~0.17; below 0.02 = bonds within
-          0.1\(\text{\AA}\) of ideal.
-        </p>
-        <p style="font-size: 0.88em;">
-          <em>Why annealed:</em> Starting high prevents the model from learning global structure (it just chains
-          beads at 3.8\(\text{\AA}\) apart). Starting low lets the model explore, then gradually enforces
-          physical backbone geometry.
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> ~0.54. The easiest structural loss &mdash; even the EGNN models (v8&ndash;v10) could
+          reduce this 60% below random. Useful as a stable gradient signal early in training before FAPE gradients become informative.
         </p>
       </div>
 
-      <div class="training-observations" style="line-height: 1.7;">
-        <h4>5. Chirality &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 0.1\)</span></h4>
-        <p style="font-size: 0.93em;">
-          MSE on normalized signed volumes (scalar triple products) of C\(\alpha\) quartets.
-          Ensures correct backbone handedness &mdash; natural proteins are L-amino acids with consistent chirality.
-          Without this loss the model can generate mirror-image structures that score well on all other metrics.
-        </p>
-      </div>
+      <!-- ── Local Geometry Losses ── -->
+      <h4 style="margin: 24px 0 12px 0; padding-bottom: 6px; border-bottom: 1px solid var(--border);">Local Geometry Losses</h4>
+      <p style="font-size: 0.88em; color: var(--text-secondary); margin-bottom: 14px;">
+        These losses enforce physical constraints on the backbone chain &mdash; correct bond lengths, angles, and handedness.
+        They converge quickly (typically within 2&ndash;3 epochs) because they only require learning local patterns, not global topology.
+        The key challenge is preventing them from dominating early training and blocking global structure learning.
+      </p>
 
       <div class="training-observations" style="line-height: 1.7;">
-        <h4>6. Bond Angle &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 0.5\)</span></h4>
+        <h4>Bond Geometry &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(\beta(e) = \min(3.0,\; 1.0 + 2.0 \cdot \min(e/10, 1))\)</span></h4>
         <p style="font-size: 0.93em;">
-          MSE on cosines of C\(\alpha\)&ndash;C\(\alpha\)&ndash;C\(\alpha\) bond angles. Ideal angle ~120\(^\circ\)
-          (\(\cos\theta \approx -0.5\)). Working in cosine space avoids discontinuities at 0\(^\circ\)/360\(^\circ\).
-          Random baseline ~0.70; below 0.1 = correct backbone geometry.
+          MSE between consecutive C\(\alpha\)&ndash;C\(\alpha\) distances and the ideal value of 3.8&Aring;
+          (the standard peptide bond length from crystallography). The weight is <em>annealed</em> from 1.0 to 3.0
+          over 10 epochs.
+        </p>
+        <p style="font-size: 0.93em;">
+          <strong>Why anneal?</strong> This was learned the hard way in v9. Starting with high bond weight causes
+          the model to produce &ldquo;bead-on-a-string&rdquo; chains &mdash; perfectly spaced at 3.8&Aring; but with
+          no tertiary structure. The model satisfies the easy loss and ignores the hard one (FAPE). Annealing lets
+          the model first explore topology, then gradually tightens the physical constraints.
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> ~0.17. <strong>Converged:</strong> &lt;0.02 (bonds within 0.1&Aring; of ideal). Currently at 0.009 &mdash; essentially solved.
         </p>
       </div>
 
       <div class="training-observations" style="line-height: 1.7;">
-        <h4>7. Radius of Gyration &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 0.5\)</span></h4>
+        <h4>Chirality &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 0.1\)</span></h4>
         <p style="font-size: 0.93em;">
-          MSE on log-transformed R\(_g\) predictions. A separate MLP predicts absolute R\(_g\) from sequence embeddings
-          to recover real-space coordinates at inference. Converges below 0.05 by E2 and stays solved.
+          MSE on signed volumes (scalar triple products) of C\(\alpha\) quartets. Natural proteins are built
+          exclusively from L-amino acids, which produces a consistent backbone handedness. Without explicit chirality
+          supervision, diffusion models can generate mirror-image (D-amino acid) structures that score well on
+          <em>all other metrics</em> &mdash; FAPE, RMSD, and distance MSE are all chirality-agnostic.
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          This is a known issue in the protein generation literature. <strong>FrameDiff</strong> (Yim et al., ICLR 2024)
+          addresses it through SE(3) equivariance; we use an explicit loss term instead, which is simpler and
+          equally effective for our architecture.
         </p>
       </div>
 
       <div class="training-observations" style="line-height: 1.7;">
-        <h4>8. Auxiliary Distance CE &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 0.03\)</span></h4>
+        <h4>Bond Angle &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 0.5\)</span></h4>
         <p style="font-size: 0.93em;">
-          Ordinal regression on binned pairwise distances (32 bins, 2&ndash;40\(\text{\AA}\)) from an independent
-          lightweight pair stack (64-dim, ~500K params). The pair representation is <strong>detached</strong>
-          &mdash; aux gradients train only the distance head, not the main pair stack.
+          MSE on cosines of C\(\alpha\)&ndash;C\(\alpha\)&ndash;C\(\alpha\) bond angles. The ideal angle is ~120&deg;
+          (\(\cos\theta \approx -0.5\)), reflecting the planar geometry of the peptide bond. Working in cosine space
+          avoids the discontinuity at 0&deg;/360&deg; that plagues angular losses.
         </p>
-        <p style="font-size: 0.88em;">
-          <em>Lesson learned:</em> In v10 the distance head read from the main pair stack through <code>detach()</code>,
-          causing feature drift divergence (aux_dist_ce: 3.95&rarr;38.8 over 3 epochs). v11+ uses a completely
-          independent pair stack to avoid this.
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          <strong>Random baseline:</strong> ~0.70. <strong>Converged:</strong> &lt;0.1. Currently at 0.038 &mdash; solved.
         </p>
       </div>
 
+      <!-- ── Auxiliary Losses ── -->
+      <h4 style="margin: 24px 0 12px 0; padding-bottom: 6px; border-bottom: 1px solid var(--border);">Auxiliary Losses</h4>
+      <p style="font-size: 0.88em; color: var(--text-secondary); margin-bottom: 14px;">
+        These losses provide indirect training signals that stabilize learning without directly measuring structural quality.
+        They have low weights and primarily serve as regularizers.
+      </p>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>Radius of Gyration &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 0.5\)</span></h4>
+        <p style="font-size: 0.93em;">
+          A separate MLP predicts the protein&rsquo;s absolute radius of gyration (R\(_g\)) from sequence embeddings,
+          trained with MSE on log-transformed values. At inference, this recovers the correct physical scale when
+          converting from normalized coordinates back to Angstroms.
+        </p>
+        <p style="font-size: 0.88em; color: var(--text-secondary);">
+          Converges below 0.05 by epoch 2 and stays solved. The simplest loss &mdash; included for practical utility, not structural learning.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>Auxiliary Distance Cross-Entropy &nbsp;<span style="font-size: 0.8em; color: var(--text-secondary);">\(w = 0.03\)</span></h4>
+        <p style="font-size: 0.93em;">
+          Ordinal regression on binned pairwise distances (32 bins, 2&ndash;40&Aring;) from an independent lightweight
+          pair stack (64-dim, ~500K params). Inspired by the distogram head in AlphaFold2, which predicts distance
+          distributions as a byproduct of the pair representation.
+        </p>
+        <p style="font-size: 0.93em;">
+          <strong>Key design choice:</strong> The auxiliary pair stack is <strong>completely independent</strong> from
+          the main pair stack &mdash; no shared parameters, no gradient flow between them. This was a hard-won lesson
+          from v10, where the distance head read from the main pair stack via <code>detach()</code>. As the main
+          stack&rsquo;s representations evolved during training, the distance head&rsquo;s features drifted out of
+          distribution, causing aux_dist_ce to explode (3.95 &rarr; 38.8 over 3 epochs). A fully independent stack
+          avoids this coupling entirely.
+        </p>
+      </div>
+
+      <hr style="border: none; border-top: 1px dashed var(--border); margin: 24px 0;">
+
+      <!-- ── DDIM Evaluation ── -->
       <div class="training-observations" style="line-height: 1.7;">
         <h4>DDIM Evaluation Metrics</h4>
         <p style="font-size: 0.93em;">
-          Every 5 epochs (v13) or every epoch (v12b), we generate structures via 50-step DDIM sampling
-          using EMA weights and evaluate against ground truth:
+          Every 5 epochs, we generate structures via 50-step DDIM sampling (Song et al., ICLR 2021) using EMA weights
+          and evaluate against ground truth. These metrics measure <em>generative quality</em> &mdash; how good the
+          model&rsquo;s samples are &mdash; as opposed to the training losses which measure denoising accuracy.
         </p>
-        <ul style="font-size: 0.88em; line-height: 1.8;">
-          <li><strong>TM-score</strong>: Global fold similarity [0, 1]. &gt;0.17 = same fold, &gt;0.5 = same topology. Random ~0.10.</li>
-          <li><strong>RMSD</strong>: Average atomic displacement after superposition. Random ~15&ndash;16\(\text{\AA}\). &lt;5\(\text{\AA}\) = high quality.</li>
-          <li><strong>GDT</strong>: Fraction of residues within 1&ndash;8\(\text{\AA}\) of truth. Random ~3&ndash;4%.</li>
-        </ul>
+        <table style="font-size: 0.88em; width: 100%; border-collapse: collapse; margin: 12px 0;">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--border);">
+              <th style="text-align: left; padding: 6px 10px;">Metric</th>
+              <th style="text-align: left; padding: 6px 10px;">What it measures</th>
+              <th style="text-align: center; padding: 6px 10px;">Random</th>
+              <th style="text-align: center; padding: 6px 10px;">Good</th>
+              <th style="text-align: left; padding: 6px 10px;">Reference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 6px 10px;"><strong>TM-score</strong></td>
+              <td style="padding: 6px 10px;">Global fold similarity [0, 1]. Topology-sensitive, length-independent.</td>
+              <td style="text-align: center; padding: 6px 10px;">~0.10</td>
+              <td style="text-align: center; padding: 6px 10px;">&gt;0.5</td>
+              <td style="padding: 6px 10px;">Zhang &amp; Skolnick, Proteins 2004</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 6px 10px;"><strong>CA-RMSD</strong></td>
+              <td style="padding: 6px 10px;">Average atomic displacement after optimal superposition.</td>
+              <td style="text-align: center; padding: 6px 10px;">~15&ndash;16&Aring;</td>
+              <td style="text-align: center; padding: 6px 10px;">&lt;5&Aring;</td>
+              <td style="padding: 6px 10px;">Kabsch, Acta Cryst 1976</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 10px;"><strong>GDT-TS</strong></td>
+              <td style="padding: 6px 10px;">Fraction of residues within 1/2/4/8&Aring; cutoffs, averaged.</td>
+              <td style="text-align: center; padding: 6px 10px;">~3&ndash;4%</td>
+              <td style="text-align: center; padding: 6px 10px;">&gt;50%</td>
+              <td style="padding: 6px 10px;">Zemla, Nucleic Acids Res 2003</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size: 0.88em; color: var(--text-secondary); margin-top: 8px;">
+          <strong>Current status:</strong> At E5, v14&rsquo;s DDIM samples give TM=0.111 (near random). Training losses
+          are improving steadily but generative quality typically lags &mdash; expect a nonlinear jump in DDIM metrics
+          around E10&ndash;15 once the denoiser learns enough of the score function for iterative refinement to work.
+          This &ldquo;phase transition&rdquo; is well-documented in score-based diffusion models (Song et al., ICLR 2021).
+        </p>
       </div>
 
       <hr class="section-divider">
