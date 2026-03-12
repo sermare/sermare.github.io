@@ -535,8 +535,85 @@
               <td>0.105</td>
               <td><span class="tag tag-pat">pat 11</span></td>
             </tr>
+            <tr>
+              <td>16</td>
+              <td>2.474</td>
+              <td>1.581</td>
+              <td>0.799</td>
+              <td>0.363</td>
+              <td>0.006</td>
+              <td>0.354</td>
+              <td>0.329</td>
+              <td>0.103</td>
+              <td>0.035</td>
+              <td>&mdash;</td>
+              <td><span class="tag tag-pat">pat 12</span></td>
+            </tr>
+            <tr>
+              <td>17</td>
+              <td>2.576</td>
+              <td>1.623</td>
+              <td>0.840</td>
+              <td>0.399</td>
+              <td>0.005</td>
+              <td>0.380</td>
+              <td>0.350</td>
+              <td>0.109</td>
+              <td>0.035</td>
+              <td>&mdash;</td>
+              <td><span class="tag tag-pat">pat 13</span></td>
+            </tr>
+            <tr>
+              <td>18</td>
+              <td>2.478</td>
+              <td>1.590</td>
+              <td>0.798</td>
+              <td>0.360</td>
+              <td>0.005</td>
+              <td>0.377</td>
+              <td>0.335</td>
+              <td>0.103</td>
+              <td>0.035</td>
+              <td>&mdash;</td>
+              <td><span class="tag tag-pat">pat 14</span></td>
+            </tr>
+            <tr>
+              <td>19</td>
+              <td>2.425</td>
+              <td>1.553</td>
+              <td>0.791</td>
+              <td>0.346</td>
+              <td>0.005</td>
+              <td>0.399</td>
+              <td>0.343</td>
+              <td>0.102</td>
+              <td>0.035</td>
+              <td>&mdash;</td>
+              <td><span class="tag tag-stop">EARLY STOP</span></td>
+            </tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="training-observations" style="border-left: 3px solid #e74c3c; padding-left: 14px; margin: 16px 0;">
+        <h4>v13 Post-Mortem &amp; v13b (Mar 11, 2026)</h4>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          v13 early stopped at E19 (pat 15/15). Best val remained E4 (2.373). Post-mortem audit revealed
+          <strong>two critical bugs</strong> preventing further improvement:
+        </p>
+        <ol style="font-size: 0.90em; line-height: 1.6; margin: 8px 0;">
+          <li><strong>Pair stack gradient clipping strangling learning:</strong> <code>CLIP_PAIR_STACK=0.5</code> but raw
+            gradient norms were ~1000&times; higher. The 3&times; LR multiplier was completely negated. The pair stack
+            (the entire architectural innovation of v13) was barely learning.</li>
+          <li><strong><code>dist_head</code> missing from optimizer:</strong> The ordinal distance head was never added to any
+            optimizer parameter group. It received gradients but they were never applied &mdash; frozen at random init
+            for all 19 epochs.</li>
+        </ol>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          <strong>v13b</strong> is now training from scratch (no pretrained weights) with <code>CLIP_PAIR_STACK=5.0</code>
+          and <code>dist_head</code> in the optimizer. Training from scratch avoids the gradient scale mismatch between
+          pretrained denoiser and randomly initialized pair stack.
+        </p>
       </div>
 
       <div class="training-observations" style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
@@ -709,28 +786,9 @@
           </thead>
           <tbody id="v14-tbody">
             <tr>
-              <td><strong>1</strong></td>
-              <td style="color: #2ca02c;"><strong>2.728</strong></td>
-              <td>1.550</td>
-              <td>0.769</td>
-              <td>0.347</td>
-              <td>1.542</td>
-              <td>0.004</td>
-              <td>0.076</td>
-              <td>0.103</td>
-              <td><span class="tag tag-best">NEW BEST</span></td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>3.049</td>
-              <td>1.559</td>
-              <td>0.787</td>
-              <td>0.327</td>
-              <td>1.550</td>
-              <td>0.004</td>
-              <td>0.047</td>
-              <td>&mdash;</td>
-              <td><span class="tag tag-pat">pat 1 (bb_ramp 0.4)</span></td>
+              <td colspan="10" style="text-align: center; color: #888; font-style: italic; padding: 12px;">
+                Restarted (2nd) &mdash; awaiting first epoch. Previous runs discarded due to additional bug fixes.
+              </td>
             </tr>
           </tbody>
         </table>
@@ -739,24 +797,27 @@
       <!-- v14 Pseudo-Ramachandran -->
       <h4 class="training-progress-heading">v14 Pseudo-Ramachandran</h4>
       <div class="training-observations" style="border-left: 3px solid #e74c3c; padding-left: 14px; margin: 16px 0;">
-        <h4>v14 Restarted (Mar 11, 2026)</h4>
+        <h4>v14 Restarted &times;2 (Mar 11, 2026)</h4>
         <p style="font-size: 0.92em; line-height: 1.6;">
-          The previous v14 run (E2&ndash;E7) was stopped after an audit revealed three bugs causing
-          diverging total loss despite improving backbone sub-losses:
+          v14 has been restarted twice after comprehensive code audits revealed multiple bugs:
         </p>
-        <ol style="font-size: 0.90em; line-height: 1.6; margin: 8px 0;">
-          <li><strong>Ideal offsets 10&times; too large:</strong> BackboneAtomHead registered ideal N/C/O
-            offsets in &Aring;ngstroms (~1.5&Aring;) but the model operates in normalized space (&div;10).
-            Atoms were placed ~15&Aring; away instead of ~1.5&Aring;, producing huge FAPE losses.</li>
-          <li><strong>Backbone head LR group misrouted:</strong> <code>hasattr(model, "backbone_head")</code>
-            was always False (head lives at <code>model.denoiser.backbone_head</code>), so it got 1&times; LR
-            instead of the intended 5&times;. The new head trained too slowly to compensate.</li>
-          <li><strong>bb_angle loss invisible:</strong> Missing from <code>loss_keys</code>, so it was never
-            logged or tracked &mdash; contributing to total loss but invisible in CSV/logs.</li>
+        <p style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;"><strong>Restart 1 (bugs in architecture/training):</strong></p>
+        <ol style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;">
+          <li>Ideal N/C/O offsets 10&times; too large (not in normalized space)</li>
+          <li>Backbone head LR group misrouted (<code>hasattr</code> wrong path)</li>
+          <li><code>bb_angle</code> loss missing from CSV logging</li>
+        </ol>
+        <p style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;"><strong>Restart 2 (bugs in training loop):</strong></p>
+        <ol style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;">
+          <li>Patience tracked total loss including bb_ramp &mdash; impossible to beat E1 best (bb_ramp=0.2 vs 1.0)</li>
+          <li><code>dist_head</code> missing from optimizer (frozen at random init)</li>
+          <li><code>opt_steps_per_epoch</code> off-by-one (scheduler finished early)</li>
+          <li>DDIM <code>sqrt</code> before <code>clamp</code> (NaN risk)</li>
+          <li>NaN skip zeroed good accumulated gradients</li>
         </ol>
         <p style="font-size: 0.92em; line-height: 1.6;">
-          All three bugs are now fixed. New Ramachandran plots will be generated after the restarted
-          training produces enough epochs.
+          All bugs now fixed. Patience now tracks CA-only structural loss. Training from v13 init weights.
+          New Ramachandran plots will be generated after enough epochs.
         </p>
       </div>
 
