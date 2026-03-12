@@ -488,32 +488,28 @@
         v13b (solid) vs v13 (faint). v13b starts from scratch so early losses are higher &mdash; expect crossover as pair stack and dist_head learn properly.
       </p>
 
-      <!-- v13 Pseudo-Ramachandran -->
-      <h4 class="training-progress-heading">v13 Pseudo-Ramachandran (E5)</h4>
+      <!-- v13b Pseudo-Ramachandran -->
+      <h4 class="training-progress-heading">v13b Pseudo-Ramachandran (E7)</h4>
       <div style="text-align: center; margin: 16px 0;">
-        <img src="data/training/v13_pseudo_ramachandran.png" alt="v13 pseudo-Ramachandran plots at E5" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+        <img src="data/training/v13b_pseudo_ramachandran.png" alt="v13b pseudo-Ramachandran plots" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
       </div>
       <div class="training-observations" style="border-left: 3px solid #1f77b4; padding-left: 14px; margin: 16px 0;">
         <h4>Interpretation</h4>
         <p style="font-size: 0.92em; line-height: 1.6;">
           <strong>Ground truth</strong> (left, 102K residues) shows the expected pseudo-Ramachandran landscape: a dominant
           &alpha;-helix cluster at ~(50&deg;, 50&deg;) and a &beta;-sheet ridge at ~(&minus;120&deg;, 120&deg;), with the
-          characteristic L-shaped density that reflects the strong preference for these secondary structure elements in
-          globular proteins.
+          characteristic L-shaped density of globular proteins.
         </p>
         <p style="font-size: 0.92em; line-height: 1.6;">
-          <strong>DDIM samples</strong> (center, 3.2K residues, 100 steps, &eta;=0.3, guidance=1.5) at E5 show early structural
-          signal: density is beginning to concentrate in the &alpha;-helix and &beta;-sheet regions rather than being
-          uniformly scattered. However, the distribution is still diffuse with substantial density in physically
-          disfavored regions, indicating the model has not yet fully learned the local geometry constraints that
-          produce sharp Ramachandran basins. This is expected at epoch 5 &mdash; v12b required ~15 epochs before
-          DDIM samples showed tight clustering.
+          <strong>DDIM samples</strong> (center, 7.9K residues, 50 steps) at E7 show early structural signal &mdash;
+          density is beginning to concentrate in the &alpha;-helix and &beta;-sheet regions rather than being uniformly scattered.
+          The distribution is still diffuse with density in physically disfavored regions, consistent with early training.
+          v13b trains from scratch with the fixed ContactConditionedPairStack and dist_head in the optimizer.
         </p>
         <p style="font-size: 0.92em; line-height: 1.6;">
           <strong>x<sub>0</sub>-prediction</strong> (right, single-step denoising from t=100) shows comparable quality to DDIM,
-          confirming the denoiser has learned meaningful structure. The similar density between DDIM and x<sub>0</sub>-pred
-          suggests the iterative refinement in DDIM is not yet adding much beyond single-step prediction &mdash; a gap
-          that should widen as training continues and the model learns to leverage the multi-step denoising process.
+          confirming the denoiser has learned meaningful structure. As training continues, we expect the iterative DDIM
+          refinement to increasingly outperform single-step prediction.
         </p>
       </div>
 
@@ -718,30 +714,32 @@
       </p>
 
       <!-- v14 Pseudo-Ramachandran -->
-      <h4 class="training-progress-heading">v14 Pseudo-Ramachandran</h4>
+      <h4 class="training-progress-heading">v14 run2 Pseudo-Ramachandran (E5)</h4>
+      <div style="text-align: center; margin: 16px 0;">
+        <img src="data/training/v14_run2_pseudo_ramachandran.png" alt="v14 run2 pseudo-Ramachandran plots" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+      </div>
+      <div class="training-observations" style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
+        <h4>Interpretation</h4>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          <strong>DDIM samples</strong> (center, 7.9K residues, 50 steps) from v14 run2 at E5 show a similar early-stage pattern
+          to v13b. The pseudo-Ramachandran is computed from C&alpha; trace only (even though v14 predicts full N/CA/C/O backbone).
+          Density is scattered but beginning to show preference for the &alpha; and &beta; basins.
+        </p>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          <strong>x<sub>0</sub>-prediction</strong> (right) at t=100 shows emerging structure comparable to DDIM.
+          v14 run2 trains from scratch with all bugs fixed: AuxPairStack uses contact_probs, bb_rmsd computed in DDIM eval,
+          NaN fallback rebuilds from finite components. Warmup just completed (LR at peak 2e-5).
+        </p>
+      </div>
       <div class="training-observations" style="border-left: 3px solid #e74c3c; padding-left: 14px; margin: 16px 0;">
-        <h4>v14 run2 &mdash; Fresh Start (Mar 12, 2026)</h4>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          v14 has been restarted twice after comprehensive code audits revealed multiple bugs:
-        </p>
-        <p style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;"><strong>Restart 1 (bugs in architecture/training):</strong></p>
-        <ol style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;">
-          <li>Ideal N/C/O offsets 10&times; too large (not in normalized space)</li>
-          <li>Backbone head LR group misrouted (<code>hasattr</code> wrong path)</li>
-          <li><code>bb_angle</code> loss missing from CSV logging</li>
-        </ol>
-        <p style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;"><strong>Restart 2 (bugs in training loop):</strong></p>
-        <ol style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;">
-          <li>Patience tracked total loss including bb_ramp &mdash; impossible to beat E1 best (bb_ramp=0.2 vs 1.0)</li>
-          <li><code>dist_head</code> missing from optimizer (frozen at random init)</li>
-          <li><code>opt_steps_per_epoch</code> off-by-one (scheduler finished early)</li>
-          <li>DDIM <code>sqrt</code> before <code>clamp</code> (NaN risk)</li>
-          <li>NaN skip zeroed good accumulated gradients</li>
-        </ol>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          All bugs now fixed. Patience now tracks CA-only structural loss. Training from scratch (no v13 init).
-          E5 DDIM: BB-RMSD=16.02&Aring; &mdash; early but improving. Warmup complete, LR at peak 2e-5.
-        </p>
+        <h4>v14 Bug History</h4>
+        <p style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;"><strong>Restart 1 (architecture/training):</strong>
+          ideal N/C/O offsets 10&times; too large, backbone head LR misrouted, <code>bb_angle</code> missing from CSV.</p>
+        <p style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;"><strong>Restart 2 (training loop):</strong>
+          patience tracked total loss (impossible to beat E1 with bb_ramp), <code>dist_head</code> frozen,
+          <code>opt_steps_per_epoch</code> off-by-one, DDIM <code>sqrt</code> before <code>clamp</code>, NaN skip zeroed accumulated gradients.</p>
+        <p style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;"><strong>Run2 fixes:</strong>
+          AuxPairStack contact_probs, bb_rmsd computation, NaN fallback. Training from scratch, no v13 init.</p>
       </div>
 
       <!-- Comparison with v13 -->
