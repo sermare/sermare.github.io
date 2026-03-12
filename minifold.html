@@ -433,6 +433,20 @@
               <td>&mdash;</td>
               <td><span class="tag tag-best">NEW BEST</span></td>
             </tr>
+            <tr>
+              <td><strong>5</strong></td>
+              <td style="color: #2ca02c;"><strong>2.804</strong></td>
+              <td>1.773</td>
+              <td>0.915</td>
+              <td>0.394</td>
+              <td>0.013</td>
+              <td>0.309</td>
+              <td>0.402</td>
+              <td>0.189</td>
+              <td>0.040</td>
+              <td>&mdash;</td>
+              <td><span class="tag tag-best">NEW BEST</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -538,7 +552,7 @@
       <div class="arch-feature">
         <div class="af-label">Initialization</div>
         <div class="af-value">
-          Initialized from v13/v12b weights via <code>strict=False</code>. All existing modules (denoiser, pair stack, aux heads) load exact weights; the backbone reconstruction head trains from scratch.
+          <strong>run2:</strong> Training from scratch (no weight init). run1 used v13 weights via <code>strict=False</code> but plateaued due to bugs. run2 fixes: AuxPairStack contact conditioning, bb_rmsd metric, improved NaN fallback.
         </div>
       </div>
 
@@ -574,7 +588,16 @@
       </div>
 
       <!-- Training Table -->
-      <h4 class="training-progress-heading" style="margin-top: 24px;">v14 Training Progress</h4>
+      <h4 class="training-progress-heading" style="margin-top: 24px;">v14 run2 Training Progress</h4>
+      <div class="training-observations" style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 12px 0 12px 0;">
+        <p style="font-size: 0.92em; line-height: 1.6; margin: 4px 0;">
+          <strong>run2 (Mar 12, 2026):</strong> Fresh from scratch &mdash; no v13 weight init. Three bugs fixed from run1:
+          (1) AuxPairStack now uses contact_probs (was accepted but ignored),
+          (2) bb_rmsd actually computed in DDIM eval,
+          (3) NaN fallback rebuilds from finite components only.
+          Run1 data archived as faint overlay in loss curves.
+        </p>
+      </div>
       <div class="training-table-wrapper">
         <table class="training-table">
           <thead>
@@ -592,66 +615,7 @@
             </tr>
           </thead>
           <tbody id="v14-tbody">
-            <tr>
-              <td>1</td>
-              <td>2.496</td>
-              <td>1.607</td>
-              <td>0.818</td>
-              <td>0.367</td>
-              <td>1.598</td>
-              <td>0.005</td>
-              <td>0.073</td>
-              <td>0.101</td>
-              <td><span class="tag tag-best">NEW BEST</span></td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>2.449</td>
-              <td>1.561</td>
-              <td>0.785</td>
-              <td>0.382</td>
-              <td>1.553</td>
-              <td>0.004</td>
-              <td>0.051</td>
-              <td>&mdash;</td>
-              <td><span class="tag tag-best">NEW BEST</span></td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>2.502</td>
-              <td>1.595</td>
-              <td>0.819</td>
-              <td>0.380</td>
-              <td>1.586</td>
-              <td>0.004</td>
-              <td>0.055</td>
-              <td>&mdash;</td>
-              <td><span class="tag tag-pat">pat 1</span></td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>2.510</td>
-              <td>1.592</td>
-              <td>0.818</td>
-              <td>0.389</td>
-              <td>1.582</td>
-              <td>0.004</td>
-              <td>0.040</td>
-              <td>&mdash;</td>
-              <td><span class="tag tag-pat">pat 2</span></td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>2.504</td>
-              <td>1.572</td>
-              <td>0.816</td>
-              <td>0.401</td>
-              <td>1.564</td>
-              <td>0.004</td>
-              <td>0.042</td>
-              <td>&mdash;</td>
-              <td><span class="tag tag-pat">pat 3</span></td>
-            </tr>
+            <tr><td colspan="10" style="text-align: center; color: #888; font-style: italic; padding: 16px;">Epoch 1 in progress (started 01:25 UTC, ~65 min/epoch)&hellip;</td></tr>
           </tbody>
         </table>
       </div>
@@ -659,17 +623,17 @@
       <!-- v14 Loss Curves -->
       <h4 class="training-progress-heading">v14 Loss Curves</h4>
       <div style="text-align: center; margin: 16px 0;">
-        <img src="data/training/v14_loss_curves.png" alt="v14 loss curves (v13 faint overlay)" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+        <img src="data/training/v14_loss_curves.png" alt="v14 run2 loss curves (run1 faint overlay)" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
       </div>
       <p style="font-size: 0.85em; color: var(--text-secondary); margin: 4px 0 16px 0;">
-        v14 (solid) vs v13 (faint). Includes backbone-specific losses (BB FAPE, BB Bond, Omega, BB Angle) with bb_ramp annotations.
-        Note: val_total increases early on because bb_ramp scales up backbone loss weights (0.2&rarr;1.0 over 5 epochs). Patience tracks CA-only structural loss instead.
+        v14 run2 (solid) vs run1 (faint). From scratch, all bugs fixed. Backbone losses (BB FAPE, BB Bond, Omega, BB Angle) with bb_ramp.
+        Patience tracks CA-only structural loss (excludes aux + backbone contributions).
       </p>
 
       <!-- v14 Pseudo-Ramachandran -->
       <h4 class="training-progress-heading">v14 Pseudo-Ramachandran</h4>
       <div class="training-observations" style="border-left: 3px solid #e74c3c; padding-left: 14px; margin: 16px 0;">
-        <h4>v14 Restarted &times;2 (Mar 11, 2026)</h4>
+        <h4>v14 run2 &mdash; Fresh Start (Mar 12, 2026)</h4>
         <p style="font-size: 0.92em; line-height: 1.6;">
           v14 has been restarted twice after comprehensive code audits revealed multiple bugs:
         </p>
