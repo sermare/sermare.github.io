@@ -1883,40 +1883,132 @@
 
     <h2 class="section-heading">Architecture &amp; Loss Function Details</h2>
 
-      <!-- ── v13 Architecture ── -->
-      <h3 class="section-heading">Diffusion v13 &mdash; Triangle Pair Stack + CFG (Current)</h3>
+      <!-- ── Architecture Story ── -->
+      <h3 class="section-heading">How the Architecture Evolved</h3>
+      <p style="font-size: 0.93em; color: var(--text-secondary); margin-bottom: 16px;">
+        Mini-Fold&rsquo;s current architecture (~35&ndash;38M parameters) is the result of fourteen iterations,
+        each driven by a specific failure mode we needed to understand and fix. What follows is the story of
+        those decisions &mdash; not a changelog, but the reasoning that shaped the model.
+      </p>
+
+      <!-- ── From EGNN to IPA ── -->
+      <div class="training-observations" style="line-height: 1.7; border-left: 3px solid #4a90d9; padding-left: 14px; margin: 16px 0;">
+        <h4>The Topology Ceiling: Why We Abandoned Equivariant Graph Networks</h4>
+        <p style="font-size: 0.93em;">
+          We started with an 8-layer SE(3)-equivariant graph neural network (EGNN) as the denoiser. The appeal
+          was obvious: EGNN is equivariant by construction, meaning it respects physical symmetries without
+          needing data augmentation. After months of training across several iterations, we hit a hard wall.
+          The model learned that &ldquo;proteins are compact blobs of the right size&rdquo; &mdash; distance MSE
+          dropped 60% below random baseline, bond lengths converged &mdash; but FAPE stayed stuck at ~1.31
+          (the random baseline) and TM-scores never exceeded 0.131.
+        </p>
+        <p style="font-size: 0.93em;">
+          The root cause was architectural: EGNN passes messages based on pairwise distances and updates
+          coordinates through distance-weighted vectors. It has <em>no concept of local reference frames</em>.
+          FAPE measures frame-aligned point error &mdash; how well the structure looks from each residue&rsquo;s
+          perspective &mdash; and EGNN has no inductive bias to optimize this. The model could get global shape
+          roughly right but could never learn which helix packs against which sheet, which loop connects where.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>The IPA Pivot: Learning to Think in Local Frames</h4>
+        <p style="font-size: 0.93em;">
+          The breakthrough came when we replaced EGNN with Invariant Point Attention (IPA), the structure module
+          from AlphaFold2 (Jumper et al., Nature 2021). Each of the 8 IPA layers performs three operations:
+        </p>
+        <ol style="font-size: 0.93em; margin-left: 18px;">
+          <li><strong>Invariant Point Attention</strong> &mdash; multi-head attention on the single
+              representation, augmented with pair bias and 3D point attention. Each head generates query/key/value
+              points in \(\mathbb{R}^3\) transformed into each residue&rsquo;s local frame. Attention weights
+              depend on geometric distances between learned points &mdash; invariant to global rotation/translation.</li>
+          <li><strong>Transition MLP</strong> &mdash; 2-layer feedforward on the single representation.</li>
+          <li><strong>Frame update</strong> &mdash; predicts a small quaternion + translation update per residue,
+              composed in the local frame (right-multiplication for SE(3) equivariance). Initialized near-zero
+              so frames are approximately preserved in early training.</li>
+        </ol>
+        <p style="font-size: 0.93em;">
+          This was the single most important architectural decision in Mini-Fold&rsquo;s development. IPA gave
+          the model the ability to reason about local geometry &mdash; the exact thing FAPE demands. Within a
+          few epochs, FAPE began dropping below the random baseline for the first time.
+        </p>
+      </div>
+
+      <!-- ── The Rotation Bug ── -->
+      <div class="training-observations" style="line-height: 1.7; border-left: 3px solid #d94a4a; padding-left: 14px; margin: 16px 0;">
+        <h4>The Hidden Bug That Blocked Topology Learning</h4>
+        <p style="font-size: 0.93em;">
+          But IPA alone was not enough. Our first IPA-based model improved distances and bonds, then collapsed
+          around epoch 14. After extensive debugging, we found a single-line code error: <code>x0_pred = t_vec</code>
+          was silently discarding the learned rotation matrices from IPA. The FAPE loss was being computed using
+          Gram-Schmidt-rebuilt frames from predicted coordinates, so the rotation parameters received
+          <em>zero gradient</em>. The model could learn where atoms should be, but never learned how residues
+          should be oriented.
+        </p>
+        <p style="font-size: 0.93em;">
+          The fix was twofold: use the IPA-predicted rotations directly in FAPE computation, and add an explicit
+          <strong>frame rotation loss</strong> (\(\mathcal{L}_{\text{rot}} = 1 - \cos\theta\)) that provides
+          direct angular supervision. This single change &mdash; adding rotation loss &mdash; was the most
+          important insight in Mini-Fold&rsquo;s development. It unlocked real topology learning: FAPE dropped
+          to 1.655 and frame_rot to 0.830 within 8 epochs.
+        </p>
+      </div>
+
+      <!-- ── Scaling up ── -->
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>Scaling Up: From 8M to 31M Parameters</h4>
+        <p style="font-size: 0.93em;">
+          With the rotation bug fixed, the next bottleneck was capacity. The model showed gradient competition
+          in the shared 128-dimensional single representation &mdash; the denoiser, pair stack, and auxiliary
+          heads were all fighting for the same limited bandwidth. We scaled the model roughly 4x
+          (8.4M to 31.1M parameters): <code>d_ipa_hidden</code> from 256 to 512, 8 attention heads, 8 query
+          points, and a 2-layer FrameUpdate MLP. This resolved the gradient competition and set a new record:
+          validation total loss of 2.413, FAPE 1.584, frame_rot 0.790.
+        </p>
+        <p style="font-size: 0.93em;">
+          Getting there required two training innovations. First, <strong>per-module gradient clipping</strong>:
+          the denoiser clips at max_norm=1.0, the pair stack at 0.5. Without this, the pair stack&rsquo;s gradients
+          starved as the larger denoiser dominated updates. Second, a <strong>3x learning rate multiplier</strong>
+          for the pair stack, ensuring this smaller module could keep pace with the denoiser.
+        </p>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- ── The Beta-Sheet Problem ── -->
+      <h3 class="section-heading">The Beta-Sheet Problem and the Current Architecture</h3>
 
       <div class="training-observations" style="line-height: 1.7; border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
-        <h4>Why v13: The Beta-Sheet Problem</h4>
+        <h4>Why Alpha-Helices Were Easy and Beta-Sheets Were Impossible</h4>
         <p style="font-size: 0.93em;">
-          v12b achieved record structural metrics (FAPE 1.584, frame_rot 0.790) but visual inspection of generated
-          structures revealed a systematic failure: the model learns alpha-helices well but cannot form beta-sheets.
-          The root cause is the pair stack&rsquo;s limited receptive field &mdash; with <code>max_rel_pos=32</code>,
-          residue pairs separated by more than 32 positions in sequence have zero relative position signal. Beta-sheet
-          hydrogen bonds typically connect residues 20&ndash;100+ positions apart, making them invisible to v12b&rsquo;s
-          pair representation.
+          After the scaling breakthrough, we had record structural metrics &mdash; but visual inspection of
+          generated structures revealed a systematic failure. The model produced beautiful alpha-helices but
+          could not form beta-sheets. The diagnosis pointed to one number: <code>max_rel_pos=32</code>.
+        </p>
+        <p style="font-size: 0.93em;">
+          Our pair stack encoded relative position as a linear-clipped embedding with 65 bins covering
+          separations from -32 to +32 residues. Alpha-helix hydrogen bonds connect residues i and i+4 &mdash;
+          well within this window. But beta-sheet hydrogen bonds typically connect residues 20 to 100+
+          positions apart in sequence. Any pair separated by more than 32 positions had <em>zero</em>
+          relative position signal. The model was literally blind to the long-range contacts that define
+          sheet topology.
         </p>
       </div>
 
       <div class="training-observations" style="line-height: 1.7;">
-        <h4>v13 Overview (~35&ndash;38M params)</h4>
+        <h4>Triangle Multiplicative Updates: Teaching the Model Transitivity</h4>
         <p style="font-size: 0.93em;">
-          v13 makes three high-impact changes to solve the beta-sheet problem while preserving v12b&rsquo;s
-          proven IPA denoiser. The denoiser, aux pair stack, Rg predictor, and distance head are initialized
-          from v12b b30 EMA weights (exact match via <code>strict=False</code>). The pair stack is entirely
-          new architecture and trains from scratch.
+          The current architecture (~35&ndash;38M params) makes three targeted changes to solve the beta-sheet
+          problem. The proven IPA denoiser, auxiliary pair stack, R\(_g\) predictor, and distance head are all
+          warm-started from the previous best checkpoint. The main pair stack is entirely new and trains from scratch.
         </p>
-      </div>
-
-      <div class="training-observations" style="line-height: 1.7;">
-        <h4>1. Deeper Pair Stack with Triangle Multiplicative Updates (8 blocks)</h4>
         <p style="font-size: 0.93em;">
-          The pair stack doubles from 4 to 8 <code>EnhancedPairBlock</code> blocks. Each block now applies
-          Evoformer-style triangle multiplicative updates (outgoing + incoming) before the existing row/column
-          axial attention + FFN. The triangle updates implement transitivity: &ldquo;if residue <em>i</em>
-          contacts residue <em>k</em>, and residue <em>j</em> contacts residue <em>k</em>, then <em>i</em>
-          and <em>j</em> are structurally related.&rdquo; This is exactly how beta-sheet topology is encoded
-          &mdash; two strands share contacts through loop residues.
+          The first change doubles the pair stack from 4 to 8 <code>EnhancedPairBlock</code> blocks, each now
+          equipped with Evoformer-style triangle multiplicative updates (outgoing + incoming) before the existing
+          row/column axial attention + FFN. The intuition behind triangle updates is transitivity: &ldquo;if
+          residue <em>i</em> contacts residue <em>k</em>, and residue <em>j</em> contacts residue <em>k</em>,
+          then <em>i</em> and <em>j</em> are structurally related.&rdquo; This is exactly how beta-sheet
+          topology works &mdash; two strands share contacts through connecting loop residues.
         </p>
         <p style="font-size: 0.93em;">
           Implementation: each triangle update projects the pair representation to gate/value tensors
@@ -1928,58 +2020,111 @@
       </div>
 
       <div class="training-observations" style="line-height: 1.7;">
-        <h4>2. Log-Scaled Relative Position Encoding (128 bins, max_sep=512)</h4>
+        <h4>Log-Scaled Position Encoding: Seeing the Whole Protein</h4>
         <p style="font-size: 0.93em;">
-          Replaces the linear-clipped RPE (<code>max_rel_pos=32</code>, 65 bins) with 128 log-spaced bins
-          covering separations from 0 to 512 residues. The encoding is sign-aware (separate embeddings for
-          upstream and downstream). Bin spacing:
+          The second change replaces the linear-clipped relative position encoding (65 bins, max separation 32)
+          with 128 log-spaced bins covering separations from 0 to 512 residues. The encoding is sign-aware
+          (separate embeddings for upstream and downstream). The bin spacing reflects a simple biological insight:
         </p>
         <ul style="font-size: 0.93em;">
           <li><strong>Bins 0&ndash;8:</strong> Linear spacing (1-residue resolution) for helix contacts (i+3, i+4)</li>
           <li><strong>Bins 8&ndash;128:</strong> Log-spaced for long-range sheet contacts (i+20 to i+512)</li>
         </ul>
         <p style="font-size: 0.93em;">
-          Additionally, 32-dimensional sinusoidal continuous RPE features (sin/cos encoding projected to
-          <code>d_pair</code>) provide smooth interpolation between discrete bins.
+          Local structure needs fine-grained resolution; long-range contacts just need to be distinguishable
+          from each other. Additionally, 32-dimensional sinusoidal continuous RPE features (sin/cos encoding
+          projected to <code>d_pair</code>) provide smooth interpolation between discrete bins.
         </p>
       </div>
 
       <div class="training-observations" style="line-height: 1.7;">
-        <h4>3. Classifier-Free Guidance Training</h4>
+        <h4>Classifier-Free Guidance: Conditional and Unconditional Generation</h4>
         <p style="font-size: 0.93em;">
-          10% of training batches (<code>p_uncond=0.1</code>) replace residue tokens with MASK tokens
-          (token ID 1), preserving CLS/EOS/PAD structure so attention masks remain valid. This trains the
-          model for both conditional and unconditional generation. At sampling time, CFG enables guided
-          generation: <code>&epsilon; = &epsilon;<sub>uncond</sub> + w &middot; (&epsilon;<sub>cond</sub> &minus; &epsilon;<sub>uncond</sub>)</code>.
+          The third change adds classifier-free guidance (CFG) training. 10% of training batches
+          (<code>p_uncond=0.1</code>) replace residue tokens with MASK tokens (token ID 1), preserving
+          CLS/EOS/PAD structure so attention masks remain valid. This trains the model for both conditional
+          and unconditional generation. At sampling time, CFG enables guided generation:
+          <code>&epsilon; = &epsilon;<sub>uncond</sub> + w &middot; (&epsilon;<sub>cond</sub> &minus; &epsilon;<sub>uncond</sub>)</code>.
         </p>
         <p style="font-size: 0.93em;">
-          <strong>Critical bug found and fixed:</strong> Initially used PAD (token 0) as the null token.
-          Since the attention mask is computed as <code>ids.ne(PAD)</code>, this produced an all-False mask,
-          creating degenerate pair representations that caused NaN. Using MASK (token 1) instead preserves
-          valid masks.
+          <strong>A subtle bug we caught early:</strong> our first implementation used PAD (token 0) as the
+          null token. Since the attention mask is computed as <code>ids.ne(PAD)</code>, this produced an
+          all-False mask, creating degenerate pair representations that caused NaN. Using MASK (token 1)
+          instead preserves valid masks.
+        </p>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- ── Key Design Patterns ── -->
+      <h3 class="section-heading">Key Design Patterns</h3>
+      <p style="font-size: 0.93em; color: var(--text-secondary); margin-bottom: 16px;">
+        Several design choices emerged through hard-won lessons across multiple iterations. They now form
+        the foundation that all architecture variants build on.
+      </p>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>SNR-Gated Frame Initialization</h4>
+        <p style="font-size: 0.93em;">
+          Per-residue rigid frames are built from noised C\(\alpha\) coordinates via Gram-Schmidt
+          orthogonalization on consecutive backbone triplets. We discovered early on that at high noise
+          (SNR &lt; 1.0, roughly t &gt; 700), the noised coordinates are near-isotropic and Gram-Schmidt
+          is numerically unstable. Without intervention, the first IPA layer receives garbage frames,
+          producing cascading errors through all 8 layers. Our solution smoothly blends toward identity frames
+          as noise increases:
+        </p>
+        <div style="overflow-x: auto; margin: 8px 0; font-size: 0.93em;">
+          $$\text{conf}(t) = \text{clamp}\!\left(\frac{\text{SNR}(t) - 0.2}{1.0 - 0.2},\, 0,\, 1\right), \qquad
+          R_{\text{init}} = \text{slerp}(I,\, R_{\text{GS}},\, \text{conf})$$
+        </div>
+        <p style="font-size: 0.93em;">
+          This was a major source of training instability before we identified and fixed it.
         </p>
       </div>
 
       <div class="training-observations" style="line-height: 1.7;">
-        <h4>v13 LR Schedule: Warmup &rarr; Constant &rarr; Cosine Decay</h4>
+        <h4>Frame-Aware Self-Conditioning</h4>
         <p style="font-size: 0.93em;">
-          Three-phase schedule motivated by v12b&rsquo;s finding that breakthroughs happen in narrow LR windows:
+          25% of training steps (reduced from 50% in earlier iterations): run a no-grad forward pass to get
+          x\(_{0}^{\text{prev}}\), build clean frames from it (treated as t=0), and use those as the initial
+          frames for the second pass. At high noise where x\(_t\) frames are identity, self-conditioning
+          provides the model&rsquo;s best guess at clean local geometry &mdash; the IPA layers refine good
+          frames instead of building them from scratch.
+        </p>
+        <p style="font-size: 0.93em;">
+          We reduced SC probability from 50% to 25% after observing that higher rates meant fewer
+          &ldquo;cold start&rdquo; training steps. The model needs enough cold-start experience to generalize
+          at inference when no previous prediction exists.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>Fixed-Scale Coordinates</h4>
+        <p style="font-size: 0.93em;">
+          All coordinates are divided by a fixed constant (10\(\text{\AA}\)) instead of per-protein R\(_g\).
+          This seems like a minor choice, but it was one of the most impactful changes. R\(_g\) normalization
+          made the noise schedule protein-size-dependent: a protein with R\(_g\)=5\(\text{\AA}\) had coordinate
+          values ~1.0 while R\(_g\)=25\(\text{\AA}\) gave ~0.2&ndash;0.5, meaning the same noise level destroyed
+          more signal for larger proteins. This silently capped TM-scores and looked like a &ldquo;plateau&rdquo;
+          rather than a systematic bias. All successful protein diffusion models (FrameDiff, RFDiffusion, Genie)
+          use fixed-scale coordinates &mdash; once we switched, the plateau disappeared.
+        </p>
+      </div>
+
+      <div class="training-observations" style="line-height: 1.7;">
+        <h4>Learning Rate Schedule and Numerical Stability</h4>
+        <p style="font-size: 0.93em;">
+          The current learning rate schedule uses three phases, motivated by the observation that breakthroughs
+          happen in narrow LR windows:
         </p>
         <ol style="font-size: 0.93em;">
-          <li><strong>Warmup (3 epochs):</strong> Linear 0.01x &rarr; 1x base LR</li>
+          <li><strong>Warmup (3 epochs):</strong> Linear 0.01x to 1x base LR</li>
           <li><strong>Constant (20 epochs):</strong> Hold at peak LR=2e-5 (pair_stack at 3x = 6e-5)</li>
           <li><strong>Cosine decay (~37 epochs):</strong> Slow decay to eta_min=1e-6</li>
         </ol>
         <p style="font-size: 0.93em;">
-          Per-module gradient clipping carried from v12b: denoiser max_norm=1.0, pair_stack=0.5.
-        </p>
-      </div>
-
-      <div class="training-observations" style="line-height: 1.7;">
-        <h4>v13 Numerical Stability Fixes</h4>
-        <p style="font-size: 0.93em;">
-          v13 development uncovered three classes of fp16 instability present since v12 (see NaN Debugging Story
-          in the Structure Folding tab). All fixes are applied in both v12 and v13 codebases:
+          During development we also uncovered three classes of fp16 instability (detailed in the NaN Debugging
+          Story under the Structure Folding tab):
         </p>
         <ul style="font-size: 0.93em;">
           <li><strong>fp16 epsilon underflow:</strong> <code>clamp(min=1e-6)</code> underflows to 0 in fp16
@@ -1989,79 +2134,6 @@
           <li><strong>Unsafe torch.cdist backward:</strong> Produces NaN when distance is exactly 0.
             Replaced with manual <code>(diff.pow(2).sum(-1) + 1e-10).sqrt()</code>.</li>
         </ul>
-      </div>
-
-      <hr class="section-divider">
-
-      <!-- ── Shared Components (used across v11-v13) ── -->
-      <h3 class="section-heading">Shared Components (v11&ndash;v13)</h3>
-      <p style="font-size: 0.93em; color: var(--text-secondary); margin-bottom: 16px;">
-        These components were introduced in earlier versions and carried forward into v13. Understanding them
-        is essential context for the v13 design decisions above.
-      </p>
-
-      <div class="training-observations" style="line-height: 1.7;">
-        <h4>IPA Denoiser (8 layers in v12/v13, 6 in v11)</h4>
-        <p style="font-size: 0.93em;">
-          The core structure module, adapted from AlphaFold2. Each IPA block performs three operations:
-        </p>
-        <ol style="font-size: 0.93em; margin-left: 18px;">
-          <li><strong>Invariant Point Attention</strong> &mdash; multi-head attention on the single
-              representation, augmented with pair bias and 3D point attention. Each head generates query/key/value
-              points in \(\mathbb{R}^3\) transformed into each residue&rsquo;s local frame. Attention weights
-              depend on geometric distances between learned points &mdash; invariant to global rotation/translation.
-              <em>Why it matters:</em> EGNN (v8&ndash;v10) had no concept of local frames and could not optimize
-              frame-aligned metrics like FAPE. IPA was the architectural pivot that broke through the topology ceiling.</li>
-          <li><strong>Transition MLP</strong> &mdash; 2-layer feedforward on the single representation.</li>
-          <li><strong>Frame update</strong> &mdash; predicts a small quaternion + translation update per residue,
-              composed in the local frame (right-multiplication for SE(3) equivariance). Initialized near-zero
-              so frames are approximately preserved in early training.</li>
-        </ol>
-      </div>
-
-      <div class="training-observations" style="line-height: 1.7;">
-        <h4>SNR-Gated Frame Initialization</h4>
-        <p style="font-size: 0.93em;">
-          Per-residue rigid frames are built from noised C\(\alpha\) coordinates via Gram-Schmidt
-          orthogonalization on consecutive backbone triplets. At high noise (SNR &lt; 1.0, roughly t &gt; 700),
-          the noised coordinates are near-isotropic and Gram-Schmidt is numerically unstable. The frame
-          confidence mechanism smoothly blends toward identity frames:
-        </p>
-        <div style="overflow-x: auto; margin: 8px 0; font-size: 0.93em;">
-          $$\text{conf}(t) = \text{clamp}\!\left(\frac{\text{SNR}(t) - 0.2}{1.0 - 0.2},\, 0,\, 1\right), \qquad
-          R_{\text{init}} = \text{slerp}(I,\, R_{\text{GS}},\, \text{conf})$$
-        </div>
-        <p style="font-size: 0.93em;">
-          <em>Why it matters:</em> Without this, the first IPA layer receives garbage frames at high noise levels,
-          producing cascading errors through all 8 layers. This was a major source of training instability in early v11.
-        </p>
-      </div>
-
-      <div class="training-observations" style="line-height: 1.7;">
-        <h4>Frame-Aware Self-Conditioning (SC=0.25 in v13)</h4>
-        <p style="font-size: 0.93em;">
-          25% of training steps (50% in v11): run a no-grad forward pass to get x\(_{0}^{\text{prev}}\), build clean
-          frames from it (treated as t=0), and use those as the initial frames for the second pass. At high
-          noise where x\(_t\) frames are identity, self-conditioning provides the model&rsquo;s best
-          guess at clean local geometry &mdash; the IPA layers refine good frames instead of building them
-          from scratch.
-        </p>
-        <p style="font-size: 0.93em;">
-          <em>Why reduced to 0.25 in v13:</em> Higher SC probability means fewer &ldquo;cold start&rdquo; training steps.
-          The model needs enough cold-start experience to generalize at inference when no previous prediction exists.
-        </p>
-      </div>
-
-      <div class="training-observations" style="line-height: 1.7;">
-        <h4>Fixed-Scale Coordinates (introduced v11)</h4>
-        <p style="font-size: 0.93em;">
-          All coordinates divided by a fixed constant (10\(\text{\AA}\)) instead of per-protein R\(_g\).
-          <em>Why:</em> R\(_g\) normalization made the noise schedule protein-size-dependent &mdash; a protein
-          with R\(_g\)=5\(\text{\AA}\) had coordinate values ~1.0 while R\(_g\)=25\(\text{\AA}\) gave ~0.2&ndash;0.5,
-          meaning the same noise level destroyed more signal for larger proteins. This silently capped TM-scores
-          and looked like a &ldquo;plateau&rdquo; rather than a systematic bias. All successful protein diffusion
-          models (FrameDiff, RFDiffusion, Genie) use fixed-scale coordinates.
-        </p>
       </div>
 
       <hr class="section-divider">
