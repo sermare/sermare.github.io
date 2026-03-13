@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v14 Full Backbone Diffusion Model Architecture</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:#1a1a2e;
+    color:#e0e0e0;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .page-header{
+    text-align:center;
+    padding:36px 20px 20px;
+    background:linear-gradient(180deg,#16213e 0%,#1a1a2e 100%);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .page-header h1{
+    font-size:1.9rem;
+    font-weight:700;
+    background:linear-gradient(135deg,#e2b340,#f0d070,#e2b340);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    letter-spacing:0.5px;
+  }
+  .page-header .subtitle{
+    color:#8888aa;font-size:0.92rem;margin-top:6px;
+  }
+  /* Legend */
+  .legend{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
+    padding:14px 20px;max-width:1100px;margin:0 auto;
+  }
+  .legend-item{
+    display:flex;align-items:center;gap:6px;font-size:0.78rem;color:#aaa;
+  }
+  .legend-dot{
+    width:12px;height:12px;border-radius:3px;flex-shrink:0;
+  }
+  /* Container */
+  .diagram{
+    display:flex;flex-direction:column;align-items:center;
+    padding:10px 20px 60px;gap:0;max-width:1100px;margin:0 auto;
+  }
+  /* Arrow connector */
+  .arrow{
+    width:2px;height:28px;background:rgba(255,255,255,0.15);position:relative;
+  }
+  .arrow::after{
+    content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
+    border-left:6px solid transparent;border-right:6px solid transparent;
+    border-top:7px solid rgba(255,255,255,0.25);
+  }
+  .arrow.long{height:36px;}
+  /* Box base */
+  .box{
+    border-radius:10px;padding:16px 22px;width:100%;max-width:720px;
+    cursor:pointer;transition:all 0.3s ease;position:relative;
+    border:1.5px solid transparent;
+  }
+  .box:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+  .box h3{font-size:1.02rem;font-weight:600;margin-bottom:4px;}
+  .box .tag{
+    display:inline-block;font-size:0.68rem;font-weight:700;
+    padding:1px 7px;border-radius:4px;margin-left:6px;vertical-align:middle;
+  }
+  .box .summary{font-size:0.82rem;color:#bbb;line-height:1.45;}
+  .box .details{
+    max-height:0;overflow:hidden;transition:max-height 0.45s ease, opacity 0.35s ease;
+    opacity:0;font-size:0.8rem;line-height:1.55;color:#ccc;margin-top:0;
+  }
+  .box.open .details{max-height:800px;opacity:1;margin-top:10px;}
+  .box .details code{
+    background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:3px;
+    font-family:'Fira Code','Courier New',monospace;font-size:0.76rem;
+  }
+  .box .details ul{margin:6px 0 4px 18px;list-style:disc;}
+  .box .details li{margin:2px 0;}
+  .box .click-hint{
+    position:absolute;top:10px;right:14px;font-size:0.65rem;color:rgba(255,255,255,0.25);
+    transition:color 0.3s;
+  }
+  .box:hover .click-hint{color:rgba(255,255,255,0.45);}
+  .box .expand-icon{
+    position:absolute;top:14px;right:14px;font-size:0.75rem;
+    color:rgba(255,255,255,0.3);transition:transform 0.3s;
+  }
+  .box.open .expand-icon{transform:rotate(180deg);}
+
+  /* NEW badge */
+  .new-badge{
+    display:inline-block;font-size:0.6rem;font-weight:800;
+    padding:1px 6px;border-radius:3px;margin-left:6px;
+    background:linear-gradient(135deg,#e2b340,#f5c842);color:#1a1a2e;
+    vertical-align:middle;letter-spacing:0.5px;
+    animation:badgePulse 2.5s ease-in-out infinite;
+  }
+  @keyframes badgePulse{
+    0%,100%{box-shadow:0 0 4px rgba(226,179,64,0.3);}
+    50%{box-shadow:0 0 12px rgba(226,179,64,0.6);}
+  }
+
+  /* Color themes */
+  .box-input{background:rgba(100,100,140,0.15);border-color:rgba(100,100,140,0.35);}
+  .box-input h3{color:#9999cc;}
+
+  .box-encoder{background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);}
+  .box-encoder h3{color:#60a5fa;}
+  .box-encoder .tag{background:rgba(59,130,246,0.2);color:#93c5fd;}
+
+  .box-pair{background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.3);}
+  .box-pair h3{color:#4ade80;}
+  .box-pair .tag{background:rgba(34,197,94,0.2);color:#86efac;}
+
+  .box-diffusion{background:rgba(147,51,234,0.1);border-color:rgba(147,51,234,0.3);}
+  .box-diffusion h3{color:#c084fc;}
+  .box-diffusion .tag{background:rgba(147,51,234,0.2);color:#d8b4fe;}
+
+  .box-frame{background:rgba(147,51,234,0.08);border-color:rgba(168,85,247,0.25);}
+  .box-frame h3{color:#c084fc;}
+
+  .box-selfcond{background:rgba(100,116,139,0.12);border-color:rgba(100,116,139,0.3);}
+  .box-selfcond h3{color:#94a3b8;}
+
+  .box-ipa{background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.3);}
+  .box-ipa h3{color:#fb923c;}
+  .box-ipa .tag{background:rgba(249,115,22,0.2);color:#fdba74;}
+
+  .box-backbone{
+    background:rgba(234,179,8,0.1);
+    border:2px solid rgba(234,179,8,0.5);
+    box-shadow:0 0 20px rgba(234,179,8,0.08);
+  }
+  .box-backbone h3{color:#facc15;}
+  .box-backbone .tag{background:rgba(234,179,8,0.25);color:#fde68a;}
+
+  .box-aux{background:rgba(100,116,139,0.1);border-color:rgba(100,116,139,0.25);}
+  .box-aux h3{color:#94a3b8;}
+
+  .box-caloss{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);}
+  .box-caloss h3{color:#f87171;}
+  .box-caloss .tag{background:rgba(239,68,68,0.2);color:#fca5a5;}
+
+  .box-bbloss{
+    background:rgba(236,72,153,0.1);
+    border:2px solid rgba(236,72,153,0.45);
+    box-shadow:0 0 15px rgba(236,72,153,0.06);
+  }
+  .box-bbloss h3{color:#f472b6;}
+  .box-bbloss .tag{background:rgba(236,72,153,0.2);color:#f9a8d4;}
+
+  .box-metric{background:rgba(56,189,248,0.08);border-color:rgba(56,189,248,0.25);}
+  .box-metric h3{color:#38bdf8;}
+
+  .box-training{background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25);}
+  .box-training h3{color:#a78bfa;}
+
+  /* Side-by-side containers */
+  .row{
+    display:flex;gap:16px;width:100%;max-width:720px;
+  }
+  .row .box{flex:1;max-width:none;}
+
+  /* Loss table */
+  .loss-table{
+    width:100%;border-collapse:collapse;margin:8px 0 4px;font-size:0.76rem;
+  }
+  .loss-table th{
+    text-align:left;padding:4px 8px;border-bottom:1px solid rgba(255,255,255,0.1);
+    font-weight:600;color:#ddd;
+  }
+  .loss-table td{
+    padding:3px 8px;border-bottom:1px solid rgba(255,255,255,0.04);
+  }
+  .loss-table td:nth-child(2){text-align:center;font-family:'Fira Code',monospace;color:#facc15;}
+  .loss-table td:nth-child(3){color:#999;font-size:0.72rem;}
+
+  /* bb_ramp chart */
+  .ramp-chart{
+    margin:10px 0 4px;height:60px;position:relative;
+    background:rgba(0,0,0,0.2);border-radius:6px;overflow:hidden;
+  }
+  .ramp-line{
+    position:absolute;bottom:0;left:0;width:100%;height:100%;
+  }
+  .ramp-label{
+    position:absolute;font-size:0.62rem;color:#999;
+  }
+
+  /* Geometry diagram */
+  .geom-inline{
+    display:inline-block;padding:6px 10px;margin:6px 0;
+    background:rgba(0,0,0,0.2);border-radius:6px;font-family:monospace;
+    font-size:0.74rem;color:#facc15;letter-spacing:0.3px;
+  }
+
+  /* Responsive */
+  @media(max-width:600px){
+    .row{flex-direction:column;}
+    .box{padding:14px 16px;}
+    .page-header h1{font-size:1.4rem;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>v14 Full Backbone Diffusion Model Architecture</h1>
+  <p class="subtitle">Full-backbone prediction with peptide-plane frames &middot; Click any box to expand details</p>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#60a5fa;"></div>Encoder (frozen)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#4ade80;"></div>Pair Stack</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#c084fc;"></div>Diffusion / Frames</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#fb923c;"></div>IPA Denoiser</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#facc15;"></div>BackboneAtomHead (NEW)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f87171;"></div>CA Losses</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f472b6;"></div>Backbone Losses (NEW)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#94a3b8;"></div>Auxiliary</div>
+</div>
+
+<div class="diagram" id="diagram">
+
+  <!-- INPUT -->
+  <div class="box box-input" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Input Tensors</h3>
+    <div class="summary">ids, true_coords, true_backbone, masks</div>
+    <div class="details">
+      <ul>
+        <li><code>ids</code> &mdash; (B, L) token sequence</li>
+        <li><code>true_coords</code> &mdash; (B, L, 3) C&alpha; coordinates</li>
+        <li><code>true_backbone</code> &mdash; (B, L, 4, 3) [N, CA, C, O] atoms <span class="new-badge">NEW</span></li>
+        <li><code>coord_mask</code> &mdash; (B, L) per-residue mask</li>
+        <li><code>backbone_mask</code> &mdash; (B, L, 4) per-atom mask <span class="new-badge">NEW</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- STAGE 1: ENCODER -->
+  <div class="box box-encoder" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Stage 1: Encoder <span class="tag">FROZEN</span></h3>
+    <div class="summary">ContactClassifier &rarr; single embeddings + contact probabilities</div>
+    <div class="details">
+      <ul>
+        <li>Pre-trained <strong>ContactClassifier</strong> (weights frozen)</li>
+        <li>Output: <code>single</code> (B, L, 128) &mdash; per-residue embeddings</li>
+        <li>Output: <code>contact_probs</code> (B, L, L) &mdash; pairwise contact map</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- STAGE 2: PAIR STACK -->
+  <div class="box box-pair" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Stage 2: Pair Stack</h3>
+    <div class="summary">SingleToPairV13 + RPE + OPM + Contact Conditioning &rarr; 8&times; EnhancedPairBlock</div>
+    <div class="details">
+      <ul>
+        <li><strong>SingleToPairV13</strong> projects single &rarr; pair representation</li>
+        <li><strong>LogScaledRPE</strong> &mdash; 128 bins, max distance 512 residues</li>
+        <li><strong>OuterProductMean</strong> &mdash; d_opm=32</li>
+        <li><strong>Contact Map Conditioning</strong> &mdash; gated, d=128</li>
+        <li>8&times; <strong>EnhancedPairBlock</strong>: TriMul (out + in) + AxialBlock</li>
+        <li>Output: <code>pair</code> (B, L, L, 128)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- STAGE 3: DIFFUSION -->
+  <div class="box box-diffusion" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Stage 3: Diffusion Process</h3>
+    <div class="summary">Normalize &rarr; sample t &rarr; add noise to C&alpha; coords</div>
+    <div class="details">
+      <ul>
+        <li>Normalize C&alpha; coordinates (center + scale)</li>
+        <li>Sample diffusion timestep <code>t ~ U(0, T)</code></li>
+        <li>Add Gaussian noise to C&alpha; positions: <code>x_t = &alpha;_t x_0 + &sigma;_t &epsilon;</code></li>
+        <li><strong>Note:</strong> Noise applied only to C&alpha; &mdash; full backbone is derived from frames</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- STAGE 4: FRAME INIT -->
+  <div class="box box-frame" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Stage 4: Frame Initialization <span class="new-badge">NEW</span></h3>
+    <div class="summary">Peptide Plane Frames from N-CA-C (more stable than CA-triplet Gram-Schmidt)</div>
+    <div class="details">
+      <p style="margin-bottom:6px;"><strong>init_frames_backbone()</strong> &mdash; uses peptide plane geometry:</p>
+      <div class="geom-inline">
+        e1 = CA&rarr;C (normalized)<br>
+        e3 = (N&minus;CA) &times; e1 (normalized)<br>
+        e2 = e3 &times; e1
+      </div>
+      <ul style="margin-top:8px;">
+        <li>Peptide plane frame is more geometrically stable than CA-triplet Gram-Schmidt</li>
+        <li><strong>SNR-gated confidence</strong> blends noisy vs. ideal frames</li>
+        <li><strong>SLERP</strong> interpolation for smooth rotation blending</li>
+        <li>Output: rotation matrices <code>R</code> (B, L, 3, 3) + translations <code>t</code> (B, L, 3)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- STAGE 5: SELF-COND -->
+  <div class="box box-selfcond" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Stage 5: Self-Conditioning (50%)</h3>
+    <div class="summary">50% of training steps condition on previous x&#x302;&#x2080; prediction</div>
+    <div class="details">
+      <ul>
+        <li>With 50% probability, run denoiser once to get <code>x&#x302;&#x2080;</code></li>
+        <li>Feed <code>x&#x302;&#x2080;</code> as additional input for the real forward pass</li>
+        <li>At inference: always self-condition (run two passes per step)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- STAGE 6: IPA DENOISER -->
+  <div class="box box-ipa" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Stage 6: IPA Denoiser <span class="tag">FrameDenoiserV14</span></h3>
+    <div class="summary">8&times; IPABlock &rarr; x&#x302;&#x2080;, R&#x302;, then h passes to BackboneAtomHead</div>
+    <div class="details">
+      <ul>
+        <li>8&times; <strong>IPABlock</strong> (same architecture as v13b)</li>
+        <li>Invariant Point Attention over frames + pair representation</li>
+        <li>Predicts: <code>x0_pred</code> (B, L, 3), <code>R_pred</code> (B, L, 3, 3)</li>
+        <li><strong>After final IPA layer:</strong> hidden state <code>h</code> (B, L, 512) passes to BackboneAtomHead <span class="new-badge">NEW</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- STAGE 6b: BACKBONE ATOM HEAD -->
+  <div class="box box-backbone" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>BackboneAtomHead <span class="new-badge">NEW in v14</span></h3>
+    <div class="summary">MLP predicts learned offsets from ideal peptide geometry &rarr; full [N, CA, C, O] backbone</div>
+    <div class="details">
+      <p style="margin-bottom:6px;"><strong>Architecture:</strong></p>
+      <div class="geom-inline">MLP: 512 &rarr; 256 &rarr; 256 &rarr; 9 &nbsp;(3 atoms &times; 3 coords)</div>
+      <p style="margin:8px 0 4px;"><strong>Outputs:</strong> &delta;N, &delta;C, &delta;O (learned offsets from ideal geometry)</p>
+      <p style="margin-bottom:6px;"><strong>Ideal bond lengths:</strong></p>
+      <ul>
+        <li>N&ndash;CA = 1.458 &Aring;</li>
+        <li>CA&ndash;C = 1.523 &Aring;</li>
+        <li>C=O = 1.231 &Aring;</li>
+      </ul>
+      <p style="margin:8px 0 4px;"><strong>Reconstruction:</strong></p>
+      <div class="geom-inline">pos_atom = t + R @ (ideal_offset + &delta;)</div>
+      <ul style="margin-top:8px;">
+        <li>CA always sits at frame origin (no offset learned)</li>
+        <li><strong>Zero-initialized</strong> &mdash; starts predicting ideal geometry, learns corrections</li>
+        <li>Output: <code>backbone_pred</code> (B, L, 4, 3) &mdash; [N, CA, C, O]</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- AUXILIARY HEADS -->
+  <div class="box box-aux" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Stage 7: Auxiliary Heads</h3>
+    <div class="summary">AuxPairStack + OrdinalDistanceHead + RgPredictor</div>
+    <div class="details">
+      <ul>
+        <li><strong>AuxPairStack</strong> &mdash; lightweight pair refinement</li>
+        <li><strong>OrdinalDistanceHead</strong> &mdash; ordinal distance bins</li>
+        <li><strong>RgPredictor</strong> &mdash; radius of gyration prediction</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow long"></div>
+
+  <!-- LOSSES ROW -->
+  <div class="row">
+    <!-- CA LOSSES -->
+    <div class="box box-caloss" onclick="toggle(this)">
+      <span class="expand-icon">&#9660;</span>
+      <h3>C&alpha;-Level Losses <span class="tag">9 losses</span></h3>
+      <div class="summary">Inherited from v13b</div>
+      <div class="details">
+        <table class="loss-table">
+          <tr><th>Loss</th><th>Weight</th><th>Clamp</th></tr>
+          <tr><td>FAPE</td><td>1.0</td><td>max 10.0</td></tr>
+          <tr><td>Frame Rotation</td><td>0.5</td><td>max 2.0</td></tr>
+          <tr><td>Distance MSE</td><td>1.0</td><td>max 10.0</td></tr>
+          <tr><td>Bond Geometry</td><td>3.0</td><td>max 10.0 (annealed 1&rarr;3)</td></tr>
+          <tr><td>Chirality</td><td>0.1</td><td>&mdash;</td></tr>
+          <tr><td>Angle</td><td>0.5</td><td>&mdash;</td></tr>
+          <tr><td>Clash</td><td>0.1</td><td>max 25.0</td></tr>
+          <tr><td>Aux Distance</td><td>0.03</td><td>&mdash;</td></tr>
+          <tr><td>Rg Loss</td><td>0.5</td><td>&mdash;</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- BACKBONE LOSSES -->
+    <div class="box box-bbloss" onclick="toggle(this)">
+      <span class="expand-icon">&#9660;</span>
+      <h3>Backbone Losses <span class="new-badge">NEW</span> <span class="tag">4 losses</span></h3>
+      <div class="summary">All scaled by bb_ramp schedule</div>
+      <div class="details">
+        <table class="loss-table">
+          <tr><th>Loss</th><th>Weight</th><th>Clamp</th></tr>
+          <tr><td>BB FAPE</td><td>1.0</td><td>max 10.0</td></tr>
+          <tr><td>BB Bond</td><td>2.0</td><td>max 10.0</td></tr>
+          <tr><td>BB Angle</td><td>0.5</td><td>max 5.0</td></tr>
+          <tr><td>Omega</td><td>0.5</td><td>max 5.0</td></tr>
+        </table>
+        <p style="margin-top:8px;font-size:0.76rem;"><strong>BB FAPE:</strong> All 4 atoms [N, CA, C, O] in local frames</p>
+        <p style="font-size:0.76rem;"><strong>BB Bond:</strong> N-CA, CA-C, C=O, C-N(next) vs ideal lengths</p>
+        <p style="font-size:0.76rem;"><strong>BB Angle:</strong> N-CA-C, CA-C-N, C-N-CA angles</p>
+        <p style="font-size:0.76rem;"><strong>Omega:</strong> Peptide bond planarity, 1+cos(&omega;)</p>
+        <div style="margin-top:12px;">
+          <p style="font-size:0.76rem;font-weight:600;color:#f472b6;margin-bottom:4px;">bb_ramp Schedule:</p>
+          <div class="geom-inline" style="color:#f472b6;">bb_ramp = min(epoch / 5, 1.0)</div>
+          <canvas id="rampCanvas" width="280" height="70" style="display:block;margin-top:8px;border-radius:6px;background:rgba(0,0,0,0.25);"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- TRACKED METRIC -->
+  <div class="box box-metric" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Tracked Metric: val_structural</h3>
+    <div class="summary">total &minus; aux&times;0.03 &minus; bb_contribution</div>
+    <div class="details">
+      <div class="geom-inline" style="color:#38bdf8;">
+        val_structural = total &minus; aux &times; 0.03 &minus; bb_contribution
+      </div>
+      <p style="margin-top:6px;font-size:0.76rem;">where:</p>
+      <div class="geom-inline" style="color:#f472b6;font-size:0.7rem;">
+        bb_contribution = bb_ramp &times; (<br>
+        &nbsp;&nbsp;w_bb_fape &times; l_bb_fape +<br>
+        &nbsp;&nbsp;w_bb_bond &times; l_bb_bond +<br>
+        &nbsp;&nbsp;w_bb_angle &times; l_bb_angle +<br>
+        &nbsp;&nbsp;w_omega &times; l_omega<br>
+        )
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- TRAINING -->
+  <div class="box box-training" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Training Configuration</h3>
+    <div class="summary">AdamW, per-module LR, CFG 10%, EMA 0.999</div>
+    <div class="details">
+      <p style="margin-bottom:6px;font-weight:600;">Per-module Learning Rates (AdamW):</p>
+      <table class="loss-table">
+        <tr><th>Module</th><th>LR</th><th>Note</th></tr>
+        <tr><td>Denoiser (IPA)</td><td>2e-5</td><td>base</td></tr>
+        <tr><td>Pair Stack</td><td>6e-5</td><td>3&times;</td></tr>
+        <tr><td>BackboneAtomHead</td><td>10e-5</td><td>5&times; <span class="new-badge">NEW</span></td></tr>
+      </table>
+      <p style="margin-top:8px;font-size:0.76rem;"><strong>LR Schedule:</strong> Warmup 5 epochs &rarr; Constant 15 epochs &rarr; Cosine decay</p>
+      <p style="font-size:0.76rem;"><strong>CFG:</strong> 10% dropout (classifier-free guidance)</p>
+      <p style="font-size:0.76rem;"><strong>EMA:</strong> 0.999 exponential moving average</p>
+      <canvas id="lrCanvas" width="400" height="70" style="display:block;margin-top:10px;border-radius:6px;background:rgba(0,0,0,0.25);width:100%;max-width:400px;"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggle(el) {
+  el.classList.toggle('open');
+  // Draw canvases if they become visible
+  if (el.classList.contains('open')) {
+    requestAnimationFrame(drawCanvases);
+  }
+}
+
+function drawCanvases() {
+  drawRamp();
+  drawLR();
+}
+
+function drawRamp() {
+  const c = document.getElementById('rampCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  const w = c.width, h = c.height;
+  ctx.clearRect(0, 0, w, h);
+
+  // Axes labels
+  ctx.fillStyle = '#666';
+  ctx.font = '9px sans-serif';
+  ctx.fillText('0', 4, h - 2);
+  ctx.fillText('5', w * 0.38, h - 2);
+  ctx.fillText('10 epochs', w * 0.72, h - 2);
+  ctx.fillText('1.0', 2, 14);
+  ctx.fillText('0.0', 2, h - 10);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(24, h - 16); ctx.lineTo(w - 8, h - 16);
+  ctx.moveTo(24, 10); ctx.lineTo(w - 8, 10);
+  ctx.stroke();
+
+  // Ramp line
+  const pad = {l: 24, r: 8, t: 10, b: 16};
+  const pw = w - pad.l - pad.r;
+  const ph = h - pad.t - pad.b;
+  ctx.strokeStyle = '#f472b6';
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = '#f472b6';
+  ctx.shadowBlur = 6;
+  ctx.beginPath();
+  for (let i = 0; i <= 100; i++) {
+    const epoch = i / 10;
+    const ramp = Math.min(epoch / 5, 1.0);
+    const x = pad.l + (epoch / 10) * pw;
+    const y = pad.t + (1 - ramp) * ph;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+}
+
+function drawLR() {
+  const c = document.getElementById('lrCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  const w = c.width, h = c.height;
+  ctx.clearRect(0, 0, w, h);
+
+  const pad = {l: 8, r: 8, t: 8, b: 14};
+  const pw = w - pad.l - pad.r;
+  const ph = h - pad.t - pad.b;
+
+  ctx.fillStyle = '#666';
+  ctx.font = '9px sans-serif';
+  ctx.fillText('0', pad.l, h - 1);
+  ctx.fillText('5', pad.l + pw * 0.125, h - 1);
+  ctx.fillText('20', pad.l + pw * 0.5, h - 1);
+  ctx.fillText('40 epochs', pad.l + pw * 0.9, h - 1);
+
+  // LR curve (warmup 5, constant 15, cosine decay to 40)
+  const totalEpochs = 40;
+  ctx.strokeStyle = '#a78bfa';
+  ctx.lineWidth = 2;
+  ctx.shadowColor = '#a78bfa';
+  ctx.shadowBlur = 4;
+  ctx.beginPath();
+  for (let i = 0; i <= 200; i++) {
+    const epoch = (i / 200) * totalEpochs;
+    let lr;
+    if (epoch < 5) {
+      lr = epoch / 5;
+    } else if (epoch < 20) {
+      lr = 1.0;
+    } else {
+      lr = 0.5 * (1 + Math.cos(Math.PI * (epoch - 20) / 20));
+    }
+    const x = pad.l + (epoch / totalEpochs) * pw;
+    const y = pad.t + (1 - lr) * ph;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Phase labels
+  ctx.fillStyle = 'rgba(167,139,250,0.5)';
+  ctx.font = '8px sans-serif';
+  ctx.fillText('warmup', pad.l + pw * 0.03, pad.t + ph * 0.35);
+  ctx.fillText('constant', pad.l + pw * 0.25, pad.t + ph * 0.15);
+  ctx.fillText('cosine decay', pad.l + pw * 0.6, pad.t + ph * 0.35);
+}
+
+// Expand all on first load for a moment to draw canvases, then collapse
+// Actually, just draw on first expand via the toggle function.
+</script>
+
+</body>
+</html>

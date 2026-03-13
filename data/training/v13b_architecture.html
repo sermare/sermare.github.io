@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v13b CA-Only Diffusion Model Architecture</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#16213e;
+  --blue:#4a90d9;--blue-bg:rgba(74,144,217,0.12);--blue-border:rgba(74,144,217,0.4);
+  --green:#2ecc71;--green-bg:rgba(46,204,113,0.12);--green-border:rgba(46,204,113,0.4);
+  --purple:#9b59b6;--purple-bg:rgba(155,89,182,0.12);--purple-border:rgba(155,89,182,0.4);
+  --orange:#e67e22;--orange-bg:rgba(230,126,34,0.12);--orange-border:rgba(230,126,34,0.4);
+  --red:#e74c3c;--red-bg:rgba(231,76,60,0.10);--red-border:rgba(231,76,60,0.4);
+  --gray:#95a5a6;--gray-bg:rgba(149,165,166,0.10);--gray-border:rgba(149,165,166,0.4);
+  --text:#e0e0e0;--text2:#a0a0b0;--text3:#707080;
+  --radius:10px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.5;overflow-x:hidden}
+#container{max-width:920px;margin:0 auto;padding:30px 20px 60px}
+h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;background:linear-gradient(135deg,#4a90d9,#9b59b6,#e67e22);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{text-align:center;color:var(--text3);font-size:0.85rem;margin-bottom:30px;letter-spacing:0.5px}
+
+/* Flow arrow between stages */
+.flow-arrow{display:flex;justify-content:center;padding:6px 0}
+.flow-arrow svg{width:24px;height:28px;opacity:0.35}
+.flow-arrow svg path{fill:var(--text2)}
+
+/* Stage containers */
+.stage{position:relative;border-radius:var(--radius);padding:18px 20px;margin-bottom:4px;cursor:pointer;transition:all 0.3s ease;border:1px solid transparent}
+.stage:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,0,0,0.3)}
+.stage.expanded{padding-bottom:14px}
+
+.stage-header{display:flex;align-items:center;gap:10px;user-select:none}
+.stage-number{font-size:0.65rem;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;flex-shrink:0}
+.stage-title{font-size:1.05rem;font-weight:600;flex:1}
+.stage-dims{font-size:0.75rem;color:var(--text3);font-family:'SF Mono',Consolas,monospace;flex-shrink:0}
+.expand-icon{font-size:0.7rem;color:var(--text3);transition:transform 0.3s ease;flex-shrink:0}
+.stage.expanded .expand-icon{transform:rotate(90deg)}
+
+.stage-details{max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0}
+.stage.expanded .stage-details{max-height:2000px;opacity:1}
+.detail-content{padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);margin-top:12px;font-size:0.82rem;color:var(--text2);line-height:1.7}
+.detail-content code{background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;font-family:'SF Mono',Consolas,monospace;font-size:0.78rem;color:var(--text)}
+.detail-content .sub-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:10px 14px;margin:8px 0}
+.detail-content .sub-box-title{font-weight:600;color:var(--text);font-size:0.82rem;margin-bottom:4px}
+.detail-content ul{padding-left:18px;margin:4px 0}
+.detail-content li{margin:2px 0}
+.detail-content .repeat-badge{display:inline-block;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:1px 7px;font-size:0.72rem;font-weight:600;margin-left:4px;vertical-align:middle}
+
+/* Color themes */
+.stage.input{background:var(--bg2);border-color:rgba(255,255,255,0.08)}
+.stage.input:hover{border-color:rgba(255,255,255,0.2)}
+.stage.input .stage-number{background:rgba(255,255,255,0.1);color:var(--text2)}
+
+.stage.blue{background:var(--blue-bg);border-color:var(--blue-border)}
+.stage.blue:hover{border-color:var(--blue);box-shadow:0 6px 24px rgba(74,144,217,0.15)}
+.stage.blue .stage-number{background:rgba(74,144,217,0.25);color:var(--blue)}
+.stage.blue .stage-title{color:var(--blue)}
+
+.stage.green{background:var(--green-bg);border-color:var(--green-border)}
+.stage.green:hover{border-color:var(--green);box-shadow:0 6px 24px rgba(46,204,113,0.15)}
+.stage.green .stage-number{background:rgba(46,204,113,0.25);color:var(--green)}
+.stage.green .stage-title{color:var(--green)}
+
+.stage.purple{background:var(--purple-bg);border-color:var(--purple-border)}
+.stage.purple:hover{border-color:var(--purple);box-shadow:0 6px 24px rgba(155,89,182,0.15)}
+.stage.purple .stage-number{background:rgba(155,89,182,0.25);color:var(--purple)}
+.stage.purple .stage-title{color:var(--purple)}
+
+.stage.orange{background:var(--orange-bg);border-color:var(--orange-border)}
+.stage.orange:hover{border-color:var(--orange);box-shadow:0 6px 24px rgba(230,126,34,0.15)}
+.stage.orange .stage-number{background:rgba(230,126,34,0.25);color:var(--orange)}
+.stage.orange .stage-title{color:var(--orange)}
+
+.stage.gray{background:var(--gray-bg);border-color:var(--gray-border)}
+.stage.gray:hover{border-color:var(--gray);box-shadow:0 6px 24px rgba(149,165,166,0.15)}
+.stage.gray .stage-number{background:rgba(149,165,166,0.25);color:var(--gray)}
+.stage.gray .stage-title{color:var(--gray)}
+
+.stage.red{background:var(--red-bg);border-color:var(--red-border)}
+.stage.red:hover{border-color:var(--red);box-shadow:0 6px 24px rgba(231,76,60,0.15)}
+.stage.red .stage-number{background:rgba(231,76,60,0.25);color:var(--red)}
+.stage.red .stage-title{color:var(--red)}
+
+/* Loss grid */
+.loss-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.loss-item{background:rgba(255,255,255,0.03);border:1px solid rgba(231,76,60,0.15);border-radius:6px;padding:9px 12px;transition:all 0.2s ease}
+.loss-item:hover{border-color:rgba(231,76,60,0.4);background:rgba(231,76,60,0.06)}
+.loss-name{font-weight:600;font-size:0.82rem;color:var(--red)}
+.loss-weight{font-size:0.72rem;color:var(--text3);font-family:'SF Mono',Consolas,monospace}
+.loss-desc{font-size:0.75rem;color:var(--text2);margin-top:2px}
+
+/* Parallel branch indicator */
+.parallel-group{display:flex;gap:10px;margin-bottom:4px}
+.parallel-group .stage{flex:1;margin-bottom:0}
+.parallel-label{text-align:center;font-size:0.7rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin:8px 0 4px}
+
+/* Training config */
+.config-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.config-item{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:9px 12px;text-align:center}
+.config-label{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.config-val{font-size:0.85rem;font-weight:600;color:var(--text);margin-top:2px}
+
+/* Metric badge */
+.metric-box{background:linear-gradient(135deg,rgba(74,144,217,0.1),rgba(155,89,182,0.1));border:1px solid rgba(155,89,182,0.3);border-radius:var(--radius);padding:14px 20px;margin-top:4px;text-align:center}
+.metric-label{font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.metric-formula{font-family:'SF Mono',Consolas,monospace;font-size:0.9rem;color:var(--text);margin:6px 0 2px}
+.metric-note{font-size:0.75rem;color:var(--text3)}
+
+/* Tooltip */
+.tooltip{position:fixed;background:#1e1e32;border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:8px 12px;font-size:0.75rem;color:var(--text2);pointer-events:none;opacity:0;transition:opacity 0.2s;z-index:100;max-width:280px;box-shadow:0 4px 16px rgba(0,0,0,0.4)}
+.tooltip.visible{opacity:1}
+
+/* Scroll indicator */
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+.scroll-hint{text-align:center;color:var(--text3);font-size:0.75rem;margin-bottom:20px;animation:bounce 2s infinite}
+
+/* Connector lines for parallel branches */
+.branch-connector{display:flex;justify-content:center;position:relative;height:30px;margin-bottom:4px}
+.branch-connector::before{content:'';position:absolute;top:0;left:50%;width:1px;height:10px;background:rgba(255,255,255,0.1)}
+.branch-connector::after{content:'';position:absolute;top:10px;left:20%;width:60%;height:1px;background:rgba(255,255,255,0.1)}
+.branch-connector .left-drop,.branch-connector .right-drop{position:absolute;top:10px;width:1px;height:20px;background:rgba(255,255,255,0.1)}
+.branch-connector .left-drop{left:20%}
+.branch-connector .right-drop{right:20%}
+
+/* Section divider */
+.section-label{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;text-align:center;margin:16px 0 8px;position:relative}
+.section-label::before,.section-label::after{content:'';position:absolute;top:50%;width:calc(50% - 60px);height:1px;background:rgba(255,255,255,0.06)}
+.section-label::before{left:0}
+.section-label::after{right:0}
+</style>
+</head>
+<body>
+<div id="container">
+
+<h1>v13b CA-Only Diffusion Model Architecture</h1>
+<p class="subtitle">Full Training Pipeline &mdash; ContactConditionedPairStack + IPA Frame Denoiser</p>
+<div class="scroll-hint">&darr; Click any stage to expand details &darr;</div>
+
+<!-- INPUT -->
+<div class="stage input" onclick="toggle(this)">
+  <div class="stage-header">
+    <span class="stage-number">Input</span>
+    <span class="stage-title">Training Batch</span>
+    <span class="stage-dims">B &times; L</span>
+    <span class="expand-icon">&#9654;</span>
+  </div>
+  <div class="stage-details"><div class="detail-content">
+    <ul>
+      <li><code>ids</code> &mdash; (B, L) token sequence (integer AA indices)</li>
+      <li><code>true_coords</code> &mdash; (B, L, 3) C&alpha; xyz coordinates in &Aring;</li>
+      <li><code>coord_mask</code> &mdash; (B, L) boolean validity mask for resolved residues</li>
+    </ul>
+  </div></div>
+</div>
+
+<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+
+<!-- STAGE 1: Encoder -->
+<div class="stage blue" onclick="toggle(this)">
+  <div class="stage-header">
+    <span class="stage-number">Stage 1</span>
+    <span class="stage-title">Frozen Protein Encoder</span>
+    <span class="stage-dims">&rarr; (B,L,128) + (B,L,L)</span>
+    <span class="expand-icon">&#9654;</span>
+  </div>
+  <div class="stage-details"><div class="detail-content">
+    <div class="sub-box">
+      <div class="sub-box-title">ContactClassifier (frozen, no grad)</div>
+      <ul>
+        <li>Pre-trained sequence encoder producing per-residue embeddings</li>
+        <li>Output <code>single</code>: (B, L, 128) &mdash; per-residue feature vectors</li>
+        <li>Output <code>contact_probs</code>: (B, L, L) &mdash; predicted residue-residue contact probability map</li>
+        <li>All parameters frozen during v13b training &mdash; gradients do not flow back</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+
+<!-- STAGE 2: Pair Stack -->
+<div class="stage green" onclick="toggle(this)">
+  <div class="stage-header">
+    <span class="stage-number">Stage 2</span>
+    <span class="stage-title">ContactConditionedPairStackV13</span>
+    <span class="stage-dims">&rarr; (B,L,L,128)</span>
+    <span class="expand-icon">&#9654;</span>
+  </div>
+  <div class="stage-details"><div class="detail-content">
+    <div class="sub-box">
+      <div class="sub-box-title">SingleToPairV13</div>
+      <ul>
+        <li>Left &amp; right linear projections of single repr into pair space</li>
+        <li><code>LogScaledRPE</code>: 128 bins, max_sep=512 &mdash; log-scaled relative position encoding</li>
+        <li>Sinusoidal RPE added in parallel</li>
+        <li>Output: initial pair (B, L, L, 128)</li>
+      </ul>
+    </div>
+    <div class="sub-box">
+      <div class="sub-box-title">OuterProductMean</div>
+      <ul>
+        <li>d_opm = 32 &mdash; low-rank outer product of single features</li>
+        <li>Added to pair representation</li>
+      </ul>
+    </div>
+    <div class="sub-box">
+      <div class="sub-box-title">Contact Map Conditioning</div>
+      <ul>
+        <li>Gated injection of contact_probs from encoder</li>
+        <li>d_contact_proj = 128 &mdash; learned projection + sigmoid gate</li>
+      </ul>
+    </div>
+    <div class="sub-box">
+      <div class="sub-box-title">EnhancedPairBlock <span class="repeat-badge">&times;8</span></div>
+      <ul>
+        <li><strong>TriangleMultiplicativeUpdate</strong> (outgoing) &mdash; tri_mul_dim=64</li>
+        <li><strong>TriangleMultiplicativeUpdate</strong> (incoming) &mdash; tri_mul_dim=64</li>
+        <li><strong>AxialBlock</strong>: row + column attention, n_heads=4, d_ffn=512</li>
+        <li>Pre-LayerNorm, residual connections throughout</li>
+      </ul>
+    </div>
+    <p style="margin-top:8px">Final output: <code>pair</code> (B, L, L, 128)</p>
+  </div></div>
+</div>
+
+<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+
+<!-- STAGE 3: Diffusion -->
+<div class="stage purple" onclick="toggle(this)">
+  <div class="stage-header">
+    <span class="stage-number">Stage 3</span>
+    <span class="stage-title">Diffusion Process</span>
+    <span class="stage-dims">x<sub>0</sub> &rarr; x<sub>t</sub></span>
+    <span class="expand-icon">&#9654;</span>
+  </div>
+  <div class="stage-details"><div class="detail-content">
+    <div class="sub-box">
+      <div class="sub-box-title">Forward Diffusion (training only)</div>
+      <ul>
+        <li><strong>Normalize</strong>: x<sub>0</sub> = (coords &minus; centroid) / coord_scale, where coord_scale = 10.0</li>
+        <li><strong>Sample timestep</strong>: t ~ Uniform(0, 1000)</li>
+        <li><strong>Add noise</strong>: x<sub>t</sub> = &radic;&alpha;&#772;<sub>t</sub> &middot; x<sub>0</sub> + &radic;(1 &minus; &alpha;&#772;<sub>t</sub>) &middot; &epsilon;, &nbsp; &epsilon; ~ N(0, I)</li>
+        <li><strong>Schedule</strong>: Cosine noise schedule (smooth &alpha;&#772; decay)</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+
+<!-- STAGE 4: Frame Init -->
+<div class="stage purple" onclick="toggle(this)">
+  <div class="stage-header">
+    <span class="stage-number">Stage 4</span>
+    <span class="stage-title">Frame Initialization</span>
+    <span class="stage-dims">&rarr; Rigid Frames + Confidence</span>
+    <span class="expand-icon">&#9654;</span>
+  </div>
+  <div class="stage-details"><div class="detail-content">
+    <div class="sub-box">
+      <div class="sub-box-title">init_frames(x<sub>t</sub>, t)</div>
+      <ul>
+        <li><strong>Gram-Schmidt</strong> orthogonalization on consecutive C&alpha; triplets</li>
+        <li>Builds local coordinate frames: rotation R &isin; SO(3) + translation t &isin; R&sup3;</li>
+      </ul>
+    </div>
+    <div class="sub-box">
+      <div class="sub-box-title">SNR-Gated Confidence</div>
+      <ul>
+        <li>snr_high = 1.0 (high confidence threshold)</li>
+        <li>snr_low = 0.2 (low confidence threshold)</li>
+        <li><strong>SLERP</strong> toward identity quaternion at low SNR</li>
+        <li>Prevents unreliable frames from dominating at high noise levels</li>
+      </ul>
+    </div>
+    <p style="margin-top:6px">Output: <code>rigid_frames</code> (rotations + translations) + <code>confidence</code> per residue</p>
+  </div></div>
+</div>
+
+<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+
+<!-- STAGE 5: Self-Conditioning -->
+<div class="stage purple" onclick="toggle(this)">
+  <div class="stage-header">
+    <span class="stage-number">Stage 5</span>
+    <span class="stage-title">Self-Conditioning (50% prob)</span>
+    <span class="stage-dims">x<sub>0,prev</sub> &rarr; frames</span>
+    <span class="expand-icon">&#9654;</span>
+  </div>
+  <div class="stage-details"><div class="detail-content">
+    <div class="sub-box">
+      <div class="sub-box-title">Self-Conditioning Pass</div>
+      <ul>
+        <li>With 50% probability during training:</li>
+        <li>Run full denoiser forward pass <strong>without gradients</strong> &rarr; x<sub>0,prev</sub></li>
+        <li>Build frames from x<sub>0,prev</sub> &rarr; <code>self_cond_frames</code></li>
+        <li>These are fed into the main denoiser pass as additional conditioning</li>
+        <li>With 50% probability: self_cond_frames = None (unconditional)</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+
+<!-- STAGE 6: IPA Denoiser -->
+<div class="stage orange" onclick="toggle(this)">
+  <div class="stage-header">
+    <span class="stage-number">Stage 6</span>
+    <span class="stage-title">IPA Denoiser (FrameDenoiserV13)</span>
+    <span class="stage-dims">&rarr; x<sub>0,pred</sub> + R<sub>pred</sub></span>
+    <span class="expand-icon">&#9654;</span>
+  </div>
+  <div class="stage-details"><div class="detail-content">
+    <div class="sub-box">
+      <div class="sub-box-title">Input Preparation</div>
+      <ul>
+        <li><strong>Timestep embedding</strong> &rarr; d_ipa_hidden = 512</li>
+        <li><strong>Node projection</strong>: concat(single, t_emb) &rarr; Linear &rarr; 512</li>
+        <li><strong>Confidence injection</strong>: frame confidence modulates node features</li>
+        <li><strong>Pair enrichment</strong> + contact bias from Stage 2</li>
+      </ul>
+    </div>
+    <div class="sub-box">
+      <div class="sub-box-title">IPABlock <span class="repeat-badge">&times;8</span></div>
+      <div style="margin:6px 0">
+        <strong style="color:var(--orange)">InvariantPointAttention</strong>
+        <ul>
+          <li>n_heads = 8, n_query_points = 8, d_hidden = 512</li>
+          <li><strong>Scalar attention</strong>: q, k, v linear projections</li>
+          <li><strong>Point attention</strong>: 3D geometric queries/keys in local frames, <em>forced fp32</em></li>
+          <li><strong>Pair bias</strong>: pair features bias attention logits</li>
+          <li>Output: concat(scalar, point_norms, pair_out) &rarr; 1216 &rarr; Linear &rarr; 512</li>
+        </ul>
+      </div>
+      <div style="margin:6px 0">
+        <strong style="color:var(--orange)">Transition FFN</strong>
+        <ul><li>512 &rarr; 1024 &rarr; ReLU &rarr; 512 (residual)</li></ul>
+      </div>
+      <div style="margin:6px 0">
+        <strong style="color:var(--orange)">FrameUpdate</strong>
+        <ul>
+          <li>MLP &rarr; quaternion (4-dim, normalized) + translation (3-dim)</li>
+          <li>SE(3) compose with current frames</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:8px">Output: <code>x<sub>0,pred</sub></code> (B, L, 3), <code>R<sub>pred</sub></code> (B, L, 3, 3)</p>
+  </div></div>
+</div>
+
+<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+
+<!-- Parallel branches label -->
+<div class="section-label">Auxiliary Heads</div>
+
+<div class="branch-connector">
+  <div class="left-drop"></div>
+  <div class="right-drop"></div>
+</div>
+
+<div class="parallel-group">
+  <!-- STAGE 7: Aux Distance -->
+  <div class="stage gray" onclick="toggle(this)">
+    <div class="stage-header">
+      <span class="stage-number">Stage 7</span>
+      <span class="stage-title">Aux Distance Head</span>
+      <span class="expand-icon">&#9654;</span>
+    </div>
+    <div class="stage-details"><div class="detail-content">
+      <div class="sub-box">
+        <div class="sub-box-title">AuxPairStack</div>
+        <ul>
+          <li>SingleToPair projection (d_aux = 64)</li>
+          <li>OuterProductMean</li>
+          <li>contact_proj from encoder contact_probs</li>
+          <li>2&times; AxialBlock (lightweight)</li>
+        </ul>
+      </div>
+      <div class="sub-box">
+        <div class="sub-box-title">OrdinalDistanceHead</div>
+        <ul>
+          <li>32 ordinal bins spanning 2&ndash;40 &Aring;</li>
+          <li>Output: <code>dist_logits</code> (B, L, L, 32)</li>
+          <li>Output: <code>dist_pred</code> (B, L, L) expected distance</li>
+        </ul>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STAGE 8: Rg Predictor -->
+  <div class="stage gray" onclick="toggle(this)">
+    <div class="stage-header">
+      <span class="stage-number">Stage 8</span>
+      <span class="stage-title">R<sub>g</sub> Predictor</span>
+      <span class="expand-icon">&#9654;</span>
+    </div>
+    <div class="stage-details"><div class="detail-content">
+      <div class="sub-box">
+        <div class="sub-box-title">Attention Pooling + MLP</div>
+        <ul>
+          <li>Learned attention pooling over single features (B, L, 128) &rarr; (B, 128)</li>
+          <li>MLP &rarr; softplus activation + 3.0 bias</li>
+          <li>Output: <code>rg_pred</code> (B,) &mdash; predicted radius of gyration in &Aring;</li>
+        </ul>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+
+<!-- LOSSES -->
+<div class="stage red" onclick="toggle(this)">
+  <div class="stage-header">
+    <span class="stage-number">Losses</span>
+    <span class="stage-title">Multi-Task Loss Functions</span>
+    <span class="stage-dims">9 terms</span>
+    <span class="expand-icon">&#9654;</span>
+  </div>
+  <div class="stage-details"><div class="detail-content">
+    <div class="loss-grid">
+      <div class="loss-item">
+        <div class="loss-name">FAPE Loss</div>
+        <div class="loss-weight">w = 1.0</div>
+        <div class="loss-desc">Frame-aligned point error on x<sub>0,pred</sub> vs x<sub>0,true</sub> with R<sub>pred</sub>. Clamped max 10.0</div>
+      </div>
+      <div class="loss-item">
+        <div class="loss-name">Frame Rotation</div>
+        <div class="loss-weight">w = 0.5</div>
+        <div class="loss-desc">1 &minus; cos(angle) between R<sub>pred</sub> and frames from true_coords. Clamped max 2.0</div>
+      </div>
+      <div class="loss-item">
+        <div class="loss-name">Distance MSE</div>
+        <div class="loss-weight">w = 1.0</div>
+        <div class="loss-desc">MSE on predicted vs true pairwise C&alpha; distances. Clamped max 10.0</div>
+      </div>
+      <div class="loss-item">
+        <div class="loss-name">Bond Geometry</div>
+        <div class="loss-weight">w = 3.0 (annealed 1&rarr;3)</div>
+        <div class="loss-desc">Consecutive C&alpha; distance vs 3.8&Aring; target. Annealed E1&rarr;E10. Clamped max 10.0</div>
+      </div>
+      <div class="loss-item">
+        <div class="loss-name">Chirality</div>
+        <div class="loss-weight">w = 0.1</div>
+        <div class="loss-desc">Signed volume of C&alpha; quartets &mdash; preserves correct handedness</div>
+      </div>
+      <div class="loss-item">
+        <div class="loss-name">Angle Loss</div>
+        <div class="loss-weight">w = 0.5</div>
+        <div class="loss-desc">MSE on C&alpha;&ndash;C&alpha;&ndash;C&alpha; bond angles vs ground truth</div>
+      </div>
+      <div class="loss-item">
+        <div class="loss-name">Clash Loss</div>
+        <div class="loss-weight">w = 0.1</div>
+        <div class="loss-desc">ReLU&sup2;(3.8&Aring; &minus; d) for non-bonded pairs. Clamped max 25.0</div>
+      </div>
+      <div class="loss-item">
+        <div class="loss-name">Aux Distance</div>
+        <div class="loss-weight">w = 0.03</div>
+        <div class="loss-desc">Ordinal BCE on distance bin predictions from aux head</div>
+      </div>
+      <div class="loss-item" style="grid-column:1/3">
+        <div class="loss-name">R<sub>g</sub> Loss</div>
+        <div class="loss-weight">w = 0.5</div>
+        <div class="loss-desc">MSE on log(R<sub>g</sub>) predicted vs true radius of gyration</div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+
+<!-- Tracked Metric -->
+<div class="metric-box">
+  <div class="metric-label">Tracked Metric (Early Stopping)</div>
+  <div class="metric-formula">structural = total &minus; aux_dist &times; 0.03</div>
+  <div class="metric-note">Patience: 15 / 15 epochs</div>
+</div>
+
+<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+
+<!-- Training Config -->
+<div class="stage input" onclick="toggle(this)">
+  <div class="stage-header">
+    <span class="stage-number">Config</span>
+    <span class="stage-title">Training Configuration</span>
+    <span class="expand-icon">&#9654;</span>
+  </div>
+  <div class="stage-details"><div class="detail-content">
+    <div class="config-grid">
+      <div class="config-item">
+        <div class="config-label">Optimizer</div>
+        <div class="config-val">AdamW</div>
+      </div>
+      <div class="config-item">
+        <div class="config-label">Denoiser LR</div>
+        <div class="config-val">2e-5</div>
+      </div>
+      <div class="config-item">
+        <div class="config-label">Pair Stack LR</div>
+        <div class="config-val">6e-5</div>
+      </div>
+      <div class="config-item">
+        <div class="config-label">Aux Head LR</div>
+        <div class="config-val">4e-5</div>
+      </div>
+      <div class="config-item">
+        <div class="config-label">EMA Decay</div>
+        <div class="config-val">0.999</div>
+      </div>
+      <div class="config-item">
+        <div class="config-label">CFG Uncond</div>
+        <div class="config-val">10%</div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <div class="sub-box">
+        <div class="sub-box-title">LR Schedule</div>
+        <ul>
+          <li><strong>Warmup</strong>: 3 epochs (linear ramp)</li>
+          <li><strong>Constant</strong>: epochs 3&ndash;20</li>
+          <li><strong>Cosine decay</strong>: epochs 20+</li>
+        </ul>
+      </div>
+      <div class="sub-box">
+        <div class="sub-box-title">Regularization</div>
+        <ul>
+          <li>Per-module gradient clipping</li>
+          <li>CFG training: 10% of batches mask tokens for unconditional generation</li>
+          <li>EMA model tracked for evaluation</li>
+        </ul>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+</div><!-- /container -->
+
+<div id="tooltip" class="tooltip"></div>
+
+<script>
+function toggle(el){
+  el.classList.toggle('expanded');
+}
+
+// Animate stages on scroll
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.style.opacity='1';
+      e.target.style.transform='translateY(0)';
+    }
+  });
+},{threshold:0.1});
+
+document.querySelectorAll('.stage, .metric-box, .flow-arrow, .parallel-group').forEach(el=>{
+  el.style.opacity='0';
+  el.style.transform='translateY(16px)';
+  el.style.transition='opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+
+// Stagger the animation
+let delay=0;
+document.querySelectorAll('.stage, .metric-box, .flow-arrow, .parallel-group').forEach(el=>{
+  el.style.transitionDelay=delay+'ms';
+  delay+=60;
+});
+</script>
+</body>
+</html>
