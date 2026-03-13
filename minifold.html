@@ -194,7 +194,7 @@
       Full architecture history, training tables, loss functions, and analysis for the protein backbone diffusion model.
     </p>
     <p id="last-updated" style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px; font-style: italic;">
-      Last updated: Mar 12, 2026 at 4:00 PM PST
+      Last updated: Mar 12, 2026 at 4:56 PM PST
     </p>
 
     <div class="mf-tabs">
@@ -906,6 +906,40 @@
           the C&alpha; quality through implicit regularization.
         </p>
       </div>
+
+      <!-- v14 True Ramachandran -->
+      <h4 class="training-progress-heading">v14 True Ramachandran (E12) &mdash; from predicted N/CA/C</h4>
+      <div style="text-align: center; margin: 8px 0 16px 0;">
+        <img src="data/training/v14_run2_ramachandran_E12.png" alt="v14 true Ramachandran from N-CA-C at E12" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+      </div>
+      <div class="training-observations" style="border-left: 3px solid #9b59b6; padding-left: 14px; margin: 16px 0;">
+        <h4>True vs Pseudo Ramachandran</h4>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          Since v14 predicts full backbone atoms (N, CA, C, O), we can compute <strong>true &phi;/&psi; dihedral angles</strong>
+          instead of the C&alpha;-only pseudo-dihedrals used for v13b. True &phi; = dihedral(C<sub>i-1</sub>, N<sub>i</sub>,
+          CA<sub>i</sub>, C<sub>i</sub>) and &psi; = dihedral(N<sub>i</sub>, CA<sub>i</sub>, C<sub>i</sub>, N<sub>i+1</sub>).
+        </p>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          <strong>Ground truth</strong> (left, 105K angles) shows the textbook Ramachandran plot: a dense &alpha;<sub>R</sub>
+          basin at (&minus;60&deg;, &minus;45&deg;), the &beta;-sheet band at (&minus;120&deg;, 130&deg;), and the small
+          &alpha;<sub>L</sub> cluster at (60&deg;, 40&deg;). The forbidden regions (upper right, lower left quadrants) are
+          nearly empty, as expected for well-resolved crystal structures.
+        </p>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          <strong>DDIM true Ramachandran</strong> (center, 8K angles) from v14&rsquo;s predicted N/CA/C coordinates shows that
+          the model is learning correct backbone dihedral geometry. The &alpha;<sub>R</sub> and &beta; basins are emerging,
+          though still broader than ground truth. Compared to the <strong>pseudo-Ramachandran</strong> (right, CA-only), the
+          true Ramachandran provides a sharper diagnostic &mdash; it directly measures whether the predicted N and C atom
+          placements are physically reasonable, not just whether CA positions form protein-like chains.
+        </p>
+        <p style="font-size: 0.92em; line-height: 1.6;">
+          This is a key advantage of v14 over v13b: the full backbone output allows direct validation against
+          crystallographic quality metrics. As training progresses, we expect the true Ramachandran to tighten
+          toward the allowed regions, with the forbidden-region population serving as a sensitive indicator of
+          backbone quality.
+        </p>
+      </div>
+
       <div class="training-observations" style="border-left: 3px solid #e74c3c; padding-left: 14px; margin: 16px 0;">
         <h4>v14 Bug History</h4>
         <p style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;"><strong>Restart 1 (architecture/training):</strong>
