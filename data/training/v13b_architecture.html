@@ -3,152 +3,123 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v13b CA-Only Diffusion Model Architecture</title>
+<title>v13b — CA-Only Diffusion Model</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#16213e;
-  --blue:#4a90d9;--blue-bg:rgba(74,144,217,0.12);--blue-border:rgba(74,144,217,0.4);
-  --green:#2ecc71;--green-bg:rgba(46,204,113,0.12);--green-border:rgba(46,204,113,0.4);
-  --purple:#9b59b6;--purple-bg:rgba(155,89,182,0.12);--purple-border:rgba(155,89,182,0.4);
-  --orange:#e67e22;--orange-bg:rgba(230,126,34,0.12);--orange-border:rgba(230,126,34,0.4);
-  --red:#e74c3c;--red-bg:rgba(231,76,60,0.10);--red-border:rgba(231,76,60,0.4);
-  --gray:#95a5a6;--gray-bg:rgba(149,165,166,0.10);--gray-border:rgba(149,165,166,0.4);
-  --text:#e0e0e0;--text2:#a0a0b0;--text3:#707080;
-  --radius:10px;
+  --bg:#ffffff;--bg-box:#f5f5f5;
+  --text:#111111;--text2:#555555;--text3:#888888;
+  --accent:#2563eb;--border:#dddddd;
+  --radius:6px;--shadow:0 1px 3px rgba(0,0,0,0.1);
+  --font:-apple-system,system-ui,'Segoe UI',Helvetica,Arial,sans-serif;
+  --mono:'SF Mono',Consolas,'Liberation Mono',monospace;
+}
+.dark{
+  --bg:#1a1a2e;--bg-box:#2a2a3e;
+  --text:#e0e0e0;--text2:#aaaaaa;--text3:#777777;
+  --accent:#5b8def;--border:#3a3a4e;
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.5;overflow-x:hidden}
-#container{max-width:920px;margin:0 auto;padding:30px 20px 60px}
-h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;background:linear-gradient(135deg,#4a90d9,#9b59b6,#e67e22);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.subtitle{text-align:center;color:var(--text3);font-size:0.85rem;margin-bottom:30px;letter-spacing:0.5px}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;transition:background 0.3s,color 0.3s}
 
-/* Flow arrow between stages */
-.flow-arrow{display:flex;justify-content:center;padding:6px 0}
-.flow-arrow svg{width:24px;height:28px;opacity:0.35}
-.flow-arrow svg path{fill:var(--text2)}
+/* Dark mode toggle */
+#theme-toggle{position:fixed;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--bg-box);color:var(--text);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;z-index:100;transition:background 0.3s,border-color 0.3s}
+#theme-toggle:hover{border-color:var(--accent)}
 
-/* Stage containers */
-.stage{position:relative;border-radius:var(--radius);padding:18px 20px;margin-bottom:4px;cursor:pointer;transition:all 0.3s ease;border:1px solid transparent}
-.stage:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,0,0,0.3)}
-.stage.expanded{padding-bottom:14px}
+#container{max-width:800px;margin:0 auto;padding:40px 20px 80px}
+
+h1{text-align:center;font-size:1.6rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.subtitle{text-align:center;color:var(--text3);font-size:0.85rem;margin-bottom:32px}
+.hint{text-align:center;color:var(--text3);font-size:0.78rem;margin-bottom:24px}
+
+/* Connector line between stages */
+.connector{display:flex;justify-content:center;padding:0}
+.connector .line{width:1px;height:28px;background:var(--border)}
+
+/* Stage boxes */
+.stage{border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:0;cursor:pointer;background:var(--bg);transition:background 0.2s,border-color 0.2s}
+.stage:hover{border-color:var(--accent)}
 
 .stage-header{display:flex;align-items:center;gap:10px;user-select:none}
-.stage-number{font-size:0.65rem;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;flex-shrink:0}
-.stage-title{font-size:1.05rem;font-weight:600;flex:1}
-.stage-dims{font-size:0.75rem;color:var(--text3);font-family:'SF Mono',Consolas,monospace;flex-shrink:0}
-.expand-icon{font-size:0.7rem;color:var(--text3);transition:transform 0.3s ease;flex-shrink:0}
-.stage.expanded .expand-icon{transform:rotate(90deg)}
+.stage-num{font-size:0.7rem;font-weight:600;color:var(--accent);background:var(--bg-box);padding:2px 8px;border-radius:3px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.3px}
+.stage-title{font-size:0.95rem;font-weight:600;flex:1}
+.stage-dims{font-size:0.75rem;color:var(--text3);font-family:var(--mono);flex-shrink:0}
+.expand-arrow{font-size:0.65rem;color:var(--text3);transition:transform 0.2s;flex-shrink:0}
+.stage.expanded .expand-arrow{transform:rotate(90deg)}
 
-.stage-details{max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0}
-.stage.expanded .stage-details{max-height:2000px;opacity:1}
-.detail-content{padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);margin-top:12px;font-size:0.82rem;color:var(--text2);line-height:1.7}
-.detail-content code{background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;font-family:'SF Mono',Consolas,monospace;font-size:0.78rem;color:var(--text)}
-.detail-content .sub-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:10px 14px;margin:8px 0}
-.detail-content .sub-box-title{font-weight:600;color:var(--text);font-size:0.82rem;margin-bottom:4px}
-.detail-content ul{padding-left:18px;margin:4px 0}
-.detail-content li{margin:2px 0}
-.detail-content .repeat-badge{display:inline-block;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:1px 7px;font-size:0.72rem;font-weight:600;margin-left:4px;vertical-align:middle}
+.stage-details{max-height:0;overflow:hidden;transition:max-height 0.3s ease}
+.stage.expanded .stage-details{max-height:3000px}
 
-/* Color themes */
-.stage.input{background:var(--bg2);border-color:rgba(255,255,255,0.08)}
-.stage.input:hover{border-color:rgba(255,255,255,0.2)}
-.stage.input .stage-number{background:rgba(255,255,255,0.1);color:var(--text2)}
+.detail-body{padding-top:12px;margin-top:12px;border-top:1px solid var(--border);font-size:0.83rem;color:var(--text2);line-height:1.7}
+.detail-body code{background:var(--bg-box);padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:0.78rem;color:var(--text)}
+.detail-body ul{padding-left:18px;margin:4px 0}
+.detail-body li{margin:2px 0}
 
-.stage.blue{background:var(--blue-bg);border-color:var(--blue-border)}
-.stage.blue:hover{border-color:var(--blue);box-shadow:0 6px 24px rgba(74,144,217,0.15)}
-.stage.blue .stage-number{background:rgba(74,144,217,0.25);color:var(--blue)}
-.stage.blue .stage-title{color:var(--blue)}
-
-.stage.green{background:var(--green-bg);border-color:var(--green-border)}
-.stage.green:hover{border-color:var(--green);box-shadow:0 6px 24px rgba(46,204,113,0.15)}
-.stage.green .stage-number{background:rgba(46,204,113,0.25);color:var(--green)}
-.stage.green .stage-title{color:var(--green)}
-
-.stage.purple{background:var(--purple-bg);border-color:var(--purple-border)}
-.stage.purple:hover{border-color:var(--purple);box-shadow:0 6px 24px rgba(155,89,182,0.15)}
-.stage.purple .stage-number{background:rgba(155,89,182,0.25);color:var(--purple)}
-.stage.purple .stage-title{color:var(--purple)}
-
-.stage.orange{background:var(--orange-bg);border-color:var(--orange-border)}
-.stage.orange:hover{border-color:var(--orange);box-shadow:0 6px 24px rgba(230,126,34,0.15)}
-.stage.orange .stage-number{background:rgba(230,126,34,0.25);color:var(--orange)}
-.stage.orange .stage-title{color:var(--orange)}
-
-.stage.gray{background:var(--gray-bg);border-color:var(--gray-border)}
-.stage.gray:hover{border-color:var(--gray);box-shadow:0 6px 24px rgba(149,165,166,0.15)}
-.stage.gray .stage-number{background:rgba(149,165,166,0.25);color:var(--gray)}
-.stage.gray .stage-title{color:var(--gray)}
-
-.stage.red{background:var(--red-bg);border-color:var(--red-border)}
-.stage.red:hover{border-color:var(--red);box-shadow:0 6px 24px rgba(231,76,60,0.15)}
-.stage.red .stage-number{background:rgba(231,76,60,0.25);color:var(--red)}
-.stage.red .stage-title{color:var(--red)}
+.sub-box{background:var(--bg-box);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;margin:8px 0}
+.sub-box-title{font-weight:600;color:var(--text);font-size:0.83rem;margin-bottom:4px}
+.repeat-badge{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:0 6px;font-size:0.72rem;font-weight:600;margin-left:4px;vertical-align:middle;color:var(--accent)}
 
 /* Loss grid */
 .loss-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.loss-item{background:rgba(255,255,255,0.03);border:1px solid rgba(231,76,60,0.15);border-radius:6px;padding:9px 12px;transition:all 0.2s ease}
-.loss-item:hover{border-color:rgba(231,76,60,0.4);background:rgba(231,76,60,0.06)}
-.loss-name{font-weight:600;font-size:0.82rem;color:var(--red)}
-.loss-weight{font-size:0.72rem;color:var(--text3);font-family:'SF Mono',Consolas,monospace}
+.loss-item{background:var(--bg-box);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px}
+.loss-name{font-weight:600;font-size:0.83rem;color:var(--text)}
+.loss-weight{font-size:0.72rem;color:var(--text3);font-family:var(--mono)}
 .loss-desc{font-size:0.75rem;color:var(--text2);margin-top:2px}
 
-/* Parallel branch indicator */
-.parallel-group{display:flex;gap:10px;margin-bottom:4px}
-.parallel-group .stage{flex:1;margin-bottom:0}
-.parallel-label{text-align:center;font-size:0.7rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin:8px 0 4px}
-
-/* Training config */
+/* Config grid */
 .config-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
-.config-item{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:9px 12px;text-align:center}
+.config-item{background:var(--bg-box);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;text-align:center}
 .config-label{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
 .config-val{font-size:0.85rem;font-weight:600;color:var(--text);margin-top:2px}
 
-/* Metric badge */
-.metric-box{background:linear-gradient(135deg,rgba(74,144,217,0.1),rgba(155,89,182,0.1));border:1px solid rgba(155,89,182,0.3);border-radius:var(--radius);padding:14px 20px;margin-top:4px;text-align:center}
-.metric-label{font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
-.metric-formula{font-family:'SF Mono',Consolas,monospace;font-size:0.9rem;color:var(--text);margin:6px 0 2px}
+/* Metric box */
+.metric-box{border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px;text-align:center;background:var(--bg-box)}
+.metric-label{font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.metric-formula{font-family:var(--mono);font-size:0.88rem;color:var(--text);margin:6px 0 2px}
 .metric-note{font-size:0.75rem;color:var(--text3)}
 
-/* Tooltip */
-.tooltip{position:fixed;background:#1e1e32;border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:8px 12px;font-size:0.75rem;color:var(--text2);pointer-events:none;opacity:0;transition:opacity 0.2s;z-index:100;max-width:280px;box-shadow:0 4px 16px rgba(0,0,0,0.4)}
-.tooltip.visible{opacity:1}
+/* Parallel group */
+.parallel-label{text-align:center;font-size:0.7rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin:4px 0}
+.parallel-group{display:flex;gap:10px}
+.parallel-group .stage{flex:1;margin-bottom:0}
 
-/* Scroll indicator */
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
-.scroll-hint{text-align:center;color:var(--text3);font-size:0.75rem;margin-bottom:20px;animation:bounce 2s infinite}
+/* Branch connector */
+.branch-lines{display:flex;justify-content:center;position:relative;height:28px}
+.branch-lines .trunk{position:absolute;top:0;left:50%;width:1px;height:10px;background:var(--border)}
+.branch-lines .bar{position:absolute;top:10px;left:25%;width:50%;height:1px;background:var(--border)}
+.branch-lines .drop-l,.branch-lines .drop-r{position:absolute;top:10px;width:1px;height:18px;background:var(--border)}
+.branch-lines .drop-l{left:25%}
+.branch-lines .drop-r{right:25%}
 
-/* Connector lines for parallel branches */
-.branch-connector{display:flex;justify-content:center;position:relative;height:30px;margin-bottom:4px}
-.branch-connector::before{content:'';position:absolute;top:0;left:50%;width:1px;height:10px;background:rgba(255,255,255,0.1)}
-.branch-connector::after{content:'';position:absolute;top:10px;left:20%;width:60%;height:1px;background:rgba(255,255,255,0.1)}
-.branch-connector .left-drop,.branch-connector .right-drop{position:absolute;top:10px;width:1px;height:20px;background:rgba(255,255,255,0.1)}
-.branch-connector .left-drop{left:20%}
-.branch-connector .right-drop{right:20%}
+/* Section label */
+.section-label{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;text-align:center;margin:4px 0}
 
-/* Section divider */
-.section-label{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;text-align:center;margin:16px 0 8px;position:relative}
-.section-label::before,.section-label::after{content:'';position:absolute;top:50%;width:calc(50% - 60px);height:1px;background:rgba(255,255,255,0.06)}
-.section-label::before{left:0}
-.section-label::after{right:0}
+@media(max-width:600px){
+  .loss-grid{grid-template-columns:1fr}
+  .config-grid{grid-template-columns:1fr 1fr}
+  .parallel-group{flex-direction:column}
+}
 </style>
 </head>
 <body>
+
+<button id="theme-toggle" onclick="document.body.classList.toggle('dark');this.textContent=document.body.classList.contains('dark')?'\u2600':'\u263E'" aria-label="Toggle dark mode">&#9790;</button>
+
 <div id="container">
 
-<h1>v13b CA-Only Diffusion Model Architecture</h1>
-<p class="subtitle">Full Training Pipeline &mdash; ContactConditionedPairStack + IPA Frame Denoiser</p>
-<div class="scroll-hint">&darr; Click any stage to expand details &darr;</div>
+<h1>v13b &mdash; CA-Only Diffusion Model</h1>
+<p class="subtitle">ContactConditionedPairStack + IPA Frame Denoiser</p>
+<p class="hint">Click any stage to expand details</p>
 
-<!-- INPUT -->
-<div class="stage input" onclick="toggle(this)">
+<!-- 1. INPUT -->
+<div class="stage" onclick="toggle(this)">
   <div class="stage-header">
-    <span class="stage-number">Input</span>
+    <span class="stage-num">Input</span>
     <span class="stage-title">Training Batch</span>
     <span class="stage-dims">B &times; L</span>
-    <span class="expand-icon">&#9654;</span>
+    <span class="expand-arrow">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-content">
+  <div class="stage-details"><div class="detail-body">
     <ul>
       <li><code>ids</code> &mdash; (B, L) token sequence (integer AA indices)</li>
       <li><code>true_coords</code> &mdash; (B, L, 3) C&alpha; xyz coordinates in &Aring;</li>
@@ -157,17 +128,17 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
   </div></div>
 </div>
 
-<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+<div class="connector"><div class="line"></div></div>
 
-<!-- STAGE 1: Encoder -->
-<div class="stage blue" onclick="toggle(this)">
+<!-- 2. FROZEN ENCODER -->
+<div class="stage" onclick="toggle(this)">
   <div class="stage-header">
-    <span class="stage-number">Stage 1</span>
+    <span class="stage-num">Stage 1</span>
     <span class="stage-title">Frozen Protein Encoder</span>
     <span class="stage-dims">&rarr; (B,L,128) + (B,L,L)</span>
-    <span class="expand-icon">&#9654;</span>
+    <span class="expand-arrow">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-content">
+  <div class="stage-details"><div class="detail-body">
     <div class="sub-box">
       <div class="sub-box-title">ContactClassifier (frozen, no grad)</div>
       <ul>
@@ -180,17 +151,17 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
   </div></div>
 </div>
 
-<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+<div class="connector"><div class="line"></div></div>
 
-<!-- STAGE 2: Pair Stack -->
-<div class="stage green" onclick="toggle(this)">
+<!-- 3. PAIR STACK -->
+<div class="stage" onclick="toggle(this)">
   <div class="stage-header">
-    <span class="stage-number">Stage 2</span>
+    <span class="stage-num">Stage 2</span>
     <span class="stage-title">ContactConditionedPairStackV13</span>
     <span class="stage-dims">&rarr; (B,L,L,128)</span>
-    <span class="expand-icon">&#9654;</span>
+    <span class="expand-arrow">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-content">
+  <div class="stage-details"><div class="detail-body">
     <div class="sub-box">
       <div class="sub-box-title">SingleToPairV13</div>
       <ul>
@@ -227,17 +198,17 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
   </div></div>
 </div>
 
-<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+<div class="connector"><div class="line"></div></div>
 
-<!-- STAGE 3: Diffusion -->
-<div class="stage purple" onclick="toggle(this)">
+<!-- 4. DIFFUSION PROCESS -->
+<div class="stage" onclick="toggle(this)">
   <div class="stage-header">
-    <span class="stage-number">Stage 3</span>
+    <span class="stage-num">Stage 3</span>
     <span class="stage-title">Diffusion Process</span>
     <span class="stage-dims">x<sub>0</sub> &rarr; x<sub>t</sub></span>
-    <span class="expand-icon">&#9654;</span>
+    <span class="expand-arrow">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-content">
+  <div class="stage-details"><div class="detail-body">
     <div class="sub-box">
       <div class="sub-box-title">Forward Diffusion (training only)</div>
       <ul>
@@ -250,17 +221,17 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
   </div></div>
 </div>
 
-<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+<div class="connector"><div class="line"></div></div>
 
-<!-- STAGE 4: Frame Init -->
-<div class="stage purple" onclick="toggle(this)">
+<!-- 5. FRAME INIT + SELF-CONDITIONING -->
+<div class="stage" onclick="toggle(this)">
   <div class="stage-header">
-    <span class="stage-number">Stage 4</span>
-    <span class="stage-title">Frame Initialization</span>
+    <span class="stage-num">Stage 4</span>
+    <span class="stage-title">Frame Init + Self-Conditioning</span>
     <span class="stage-dims">&rarr; Rigid Frames + Confidence</span>
-    <span class="expand-icon">&#9654;</span>
+    <span class="expand-arrow">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-content">
+  <div class="stage-details"><div class="detail-body">
     <div class="sub-box">
       <div class="sub-box-title">init_frames(x<sub>t</sub>, t)</div>
       <ul>
@@ -277,23 +248,8 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
         <li>Prevents unreliable frames from dominating at high noise levels</li>
       </ul>
     </div>
-    <p style="margin-top:6px">Output: <code>rigid_frames</code> (rotations + translations) + <code>confidence</code> per residue</p>
-  </div></div>
-</div>
-
-<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
-
-<!-- STAGE 5: Self-Conditioning -->
-<div class="stage purple" onclick="toggle(this)">
-  <div class="stage-header">
-    <span class="stage-number">Stage 5</span>
-    <span class="stage-title">Self-Conditioning (50% prob)</span>
-    <span class="stage-dims">x<sub>0,prev</sub> &rarr; frames</span>
-    <span class="expand-icon">&#9654;</span>
-  </div>
-  <div class="stage-details"><div class="detail-content">
     <div class="sub-box">
-      <div class="sub-box-title">Self-Conditioning Pass</div>
+      <div class="sub-box-title">Self-Conditioning (50% prob)</div>
       <ul>
         <li>With 50% probability during training:</li>
         <li>Run full denoiser forward pass <strong>without gradients</strong> &rarr; x<sub>0,prev</sub></li>
@@ -302,20 +258,21 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
         <li>With 50% probability: self_cond_frames = None (unconditional)</li>
       </ul>
     </div>
+    <p style="margin-top:6px">Output: <code>rigid_frames</code> (rotations + translations) + <code>confidence</code> per residue</p>
   </div></div>
 </div>
 
-<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+<div class="connector"><div class="line"></div></div>
 
-<!-- STAGE 6: IPA Denoiser -->
-<div class="stage orange" onclick="toggle(this)">
+<!-- 6. IPA DENOISER -->
+<div class="stage" onclick="toggle(this)">
   <div class="stage-header">
-    <span class="stage-number">Stage 6</span>
-    <span class="stage-title">IPA Denoiser (FrameDenoiserV13)</span>
+    <span class="stage-num">Stage 5</span>
+    <span class="stage-title">IPA Denoiser (8 layers)</span>
     <span class="stage-dims">&rarr; x<sub>0,pred</sub> + R<sub>pred</sub></span>
-    <span class="expand-icon">&#9654;</span>
+    <span class="expand-arrow">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-content">
+  <div class="stage-details"><div class="detail-body">
     <div class="sub-box">
       <div class="sub-box-title">Input Preparation</div>
       <ul>
@@ -328,7 +285,7 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
     <div class="sub-box">
       <div class="sub-box-title">IPABlock <span class="repeat-badge">&times;8</span></div>
       <div style="margin:6px 0">
-        <strong style="color:var(--orange)">InvariantPointAttention</strong>
+        <strong>InvariantPointAttention</strong>
         <ul>
           <li>n_heads = 8, n_query_points = 8, d_hidden = 512</li>
           <li><strong>Scalar attention</strong>: q, k, v linear projections</li>
@@ -338,11 +295,11 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
         </ul>
       </div>
       <div style="margin:6px 0">
-        <strong style="color:var(--orange)">Transition FFN</strong>
+        <strong>Transition FFN</strong>
         <ul><li>512 &rarr; 1024 &rarr; ReLU &rarr; 512 (residual)</li></ul>
       </div>
       <div style="margin:6px 0">
-        <strong style="color:var(--orange)">FrameUpdate</strong>
+        <strong>FrameUpdate</strong>
         <ul>
           <li>MLP &rarr; quaternion (4-dim, normalized) + translation (3-dim)</li>
           <li>SE(3) compose with current frames</li>
@@ -353,25 +310,26 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
   </div></div>
 </div>
 
-<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+<div class="connector"><div class="line"></div></div>
 
-<!-- Parallel branches label -->
+<!-- 7. AUXILIARY HEADS -->
 <div class="section-label">Auxiliary Heads</div>
 
-<div class="branch-connector">
-  <div class="left-drop"></div>
-  <div class="right-drop"></div>
+<div class="branch-lines">
+  <div class="trunk"></div>
+  <div class="bar"></div>
+  <div class="drop-l"></div>
+  <div class="drop-r"></div>
 </div>
 
 <div class="parallel-group">
-  <!-- STAGE 7: Aux Distance -->
-  <div class="stage gray" onclick="toggle(this)">
+  <div class="stage" onclick="toggle(this)">
     <div class="stage-header">
-      <span class="stage-number">Stage 7</span>
-      <span class="stage-title">Aux Distance Head</span>
-      <span class="expand-icon">&#9654;</span>
+      <span class="stage-num">Aux A</span>
+      <span class="stage-title">Distance Head</span>
+      <span class="expand-arrow">&#9654;</span>
     </div>
-    <div class="stage-details"><div class="detail-content">
+    <div class="stage-details"><div class="detail-body">
       <div class="sub-box">
         <div class="sub-box-title">AuxPairStack</div>
         <ul>
@@ -392,14 +350,13 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
     </div></div>
   </div>
 
-  <!-- STAGE 8: Rg Predictor -->
-  <div class="stage gray" onclick="toggle(this)">
+  <div class="stage" onclick="toggle(this)">
     <div class="stage-header">
-      <span class="stage-number">Stage 8</span>
+      <span class="stage-num">Aux B</span>
       <span class="stage-title">R<sub>g</sub> Predictor</span>
-      <span class="expand-icon">&#9654;</span>
+      <span class="expand-arrow">&#9654;</span>
     </div>
-    <div class="stage-details"><div class="detail-content">
+    <div class="stage-details"><div class="detail-body">
       <div class="sub-box">
         <div class="sub-box-title">Attention Pooling + MLP</div>
         <ul>
@@ -412,17 +369,17 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
   </div>
 </div>
 
-<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+<div class="connector"><div class="line"></div></div>
 
-<!-- LOSSES -->
-<div class="stage red" onclick="toggle(this)">
+<!-- 8. LOSSES -->
+<div class="stage" onclick="toggle(this)">
   <div class="stage-header">
-    <span class="stage-number">Losses</span>
+    <span class="stage-num">Losses</span>
     <span class="stage-title">Multi-Task Loss Functions</span>
     <span class="stage-dims">9 terms</span>
-    <span class="expand-icon">&#9654;</span>
+    <span class="expand-arrow">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-content">
+  <div class="stage-details"><div class="detail-body">
     <div class="loss-grid">
       <div class="loss-item">
         <div class="loss-name">FAPE Loss</div>
@@ -473,7 +430,7 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
   </div></div>
 </div>
 
-<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+<div class="connector"><div class="line"></div></div>
 
 <!-- Tracked Metric -->
 <div class="metric-box">
@@ -482,16 +439,16 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
   <div class="metric-note">Patience: 15 / 15 epochs</div>
 </div>
 
-<div class="flow-arrow"><svg viewBox="0 0 24 28"><path d="M11 0v22M5 17l7 9 7-9"/></svg></div>
+<div class="connector"><div class="line"></div></div>
 
-<!-- Training Config -->
-<div class="stage input" onclick="toggle(this)">
+<!-- 9. TRAINING CONFIG -->
+<div class="stage" onclick="toggle(this)">
   <div class="stage-header">
-    <span class="stage-number">Config</span>
+    <span class="stage-num">Config</span>
     <span class="stage-title">Training Configuration</span>
-    <span class="expand-icon">&#9654;</span>
+    <span class="expand-arrow">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-content">
+  <div class="stage-details"><div class="detail-body">
     <div class="config-grid">
       <div class="config-item">
         <div class="config-label">Optimizer</div>
@@ -541,36 +498,8 @@ h1{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:6px;backgrou
 
 </div><!-- /container -->
 
-<div id="tooltip" class="tooltip"></div>
-
 <script>
-function toggle(el){
-  el.classList.toggle('expanded');
-}
-
-// Animate stages on scroll
-const observer=new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.style.opacity='1';
-      e.target.style.transform='translateY(0)';
-    }
-  });
-},{threshold:0.1});
-
-document.querySelectorAll('.stage, .metric-box, .flow-arrow, .parallel-group').forEach(el=>{
-  el.style.opacity='0';
-  el.style.transform='translateY(16px)';
-  el.style.transition='opacity 0.5s ease, transform 0.5s ease';
-  observer.observe(el);
-});
-
-// Stagger the animation
-let delay=0;
-document.querySelectorAll('.stage, .metric-box, .flow-arrow, .parallel-group').forEach(el=>{
-  el.style.transitionDelay=delay+'ms';
-  delay+=60;
-});
+function toggle(el){el.classList.toggle('expanded')}
 </script>
 </body>
 </html>

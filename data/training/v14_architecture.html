@@ -3,164 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>v14 Full Backbone Diffusion Model Architecture</title>
+<title>v14 — Full Backbone Diffusion Model</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{
-    background:#1a1a2e;
-    color:#e0e0e0;
-    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-    min-height:100vh;
-    overflow-x:hidden;
+
+  :root{
+    --bg:#ffffff;
+    --text:#111111;
+    --text-secondary:#666666;
+    --accent:#2563eb;
+    --box-bg:#f5f5f5;
+    --border:#dddddd;
+    --code-bg:#f0f0f0;
+    --connector:rgba(0,0,0,0.15);
+    --table-border:rgba(0,0,0,0.08);
   }
+
+  body.dark{
+    --bg:#1a1a2e;
+    --text:#e0e0e0;
+    --text-secondary:#999999;
+    --accent:#5b8def;
+    --box-bg:#2a2a3e;
+    --border:#3a3a4e;
+    --code-bg:rgba(255,255,255,0.08);
+    --connector:rgba(255,255,255,0.15);
+    --table-border:rgba(255,255,255,0.06);
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh;
+    line-height:1.5;
+  }
+
+  /* Dark mode toggle */
+  .theme-toggle{
+    position:fixed;top:14px;right:14px;z-index:100;
+    background:var(--box-bg);border:1px solid var(--border);
+    border-radius:4px;padding:4px 10px;cursor:pointer;
+    font-size:0.75rem;color:var(--text-secondary);
+    font-family:inherit;
+  }
+  .theme-toggle:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* Header */
   .page-header{
     text-align:center;
-    padding:36px 20px 20px;
-    background:linear-gradient(180deg,#16213e 0%,#1a1a2e 100%);
-    border-bottom:1px solid rgba(255,255,255,0.06);
+    padding:40px 20px 16px;
+    max-width:800px;margin:0 auto;
   }
   .page-header h1{
-    font-size:1.9rem;
-    font-weight:700;
-    background:linear-gradient(135deg,#e2b340,#f0d070,#e2b340);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    letter-spacing:0.5px;
+    font-size:1.6rem;font-weight:700;color:var(--text);
   }
   .page-header .subtitle{
-    color:#8888aa;font-size:0.92rem;margin-top:6px;
+    color:var(--text-secondary);font-size:0.85rem;margin-top:6px;
   }
-  /* Legend */
-  .legend{
-    display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
-    padding:14px 20px;max-width:1100px;margin:0 auto;
-  }
-  .legend-item{
-    display:flex;align-items:center;gap:6px;font-size:0.78rem;color:#aaa;
-  }
-  .legend-dot{
-    width:12px;height:12px;border-radius:3px;flex-shrink:0;
-  }
-  /* Container */
+
+  /* Flowchart */
   .diagram{
     display:flex;flex-direction:column;align-items:center;
-    padding:10px 20px 60px;gap:0;max-width:1100px;margin:0 auto;
+    padding:10px 20px 60px;gap:0;max-width:800px;margin:0 auto;
   }
-  /* Arrow connector */
+
+  /* Connector lines */
   .arrow{
-    width:2px;height:28px;background:rgba(255,255,255,0.15);position:relative;
+    width:1px;height:24px;background:var(--connector);position:relative;
   }
   .arrow::after{
-    content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
-    border-left:6px solid transparent;border-right:6px solid transparent;
-    border-top:7px solid rgba(255,255,255,0.25);
+    content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+    border-left:4px solid transparent;border-right:4px solid transparent;
+    border-top:5px solid var(--connector);
   }
-  .arrow.long{height:36px;}
-  /* Box base */
+
+  /* Boxes */
   .box{
-    border-radius:10px;padding:16px 22px;width:100%;max-width:720px;
-    cursor:pointer;transition:all 0.3s ease;position:relative;
-    border:1.5px solid transparent;
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:14px 18px;
+    width:100%;max-width:700px;
+    cursor:pointer;
+    background:var(--box-bg);
+    position:relative;
+    transition:background 0.2s;
   }
-  .box:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.4);}
-  .box h3{font-size:1.02rem;font-weight:600;margin-bottom:4px;}
-  .box .tag{
-    display:inline-block;font-size:0.68rem;font-weight:700;
-    padding:1px 7px;border-radius:4px;margin-left:6px;vertical-align:middle;
+  .box h3{
+    font-size:0.95rem;font-weight:600;color:var(--text);
+    display:flex;align-items:center;gap:6px;
   }
-  .box .summary{font-size:0.82rem;color:#bbb;line-height:1.45;}
-  .box .details{
-    max-height:0;overflow:hidden;transition:max-height 0.45s ease, opacity 0.35s ease;
-    opacity:0;font-size:0.8rem;line-height:1.55;color:#ccc;margin-top:0;
+  .box .summary{
+    font-size:0.82rem;color:var(--text-secondary);margin-top:2px;
   }
-  .box.open .details{max-height:800px;opacity:1;margin-top:10px;}
-  .box .details code{
-    background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:3px;
-    font-family:'Fira Code','Courier New',monospace;font-size:0.76rem;
-  }
-  .box .details ul{margin:6px 0 4px 18px;list-style:disc;}
-  .box .details li{margin:2px 0;}
-  .box .click-hint{
-    position:absolute;top:10px;right:14px;font-size:0.65rem;color:rgba(255,255,255,0.25);
-    transition:color 0.3s;
-  }
-  .box:hover .click-hint{color:rgba(255,255,255,0.45);}
+
+  /* Expand indicator */
   .box .expand-icon{
-    position:absolute;top:14px;right:14px;font-size:0.75rem;
-    color:rgba(255,255,255,0.3);transition:transform 0.3s;
+    position:absolute;top:14px;right:14px;
+    font-size:0.65rem;color:var(--text-secondary);
+    transition:transform 0.2s;
   }
   .box.open .expand-icon{transform:rotate(180deg);}
 
+  /* Details */
+  .box .details{
+    max-height:0;overflow:hidden;
+    transition:max-height 0.35s ease,opacity 0.25s ease;
+    opacity:0;font-size:0.8rem;line-height:1.6;
+    color:var(--text);margin-top:0;
+  }
+  .box.open .details{max-height:1000px;opacity:1;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;}
+  .box .details code{
+    background:var(--code-bg);padding:1px 5px;border-radius:3px;
+    font-family:'SF Mono','Fira Code','Courier New',monospace;font-size:0.76rem;
+  }
+  .box .details ul{margin:6px 0 4px 18px;list-style:disc;}
+  .box .details li{margin:2px 0;}
+
   /* NEW badge */
   .new-badge{
-    display:inline-block;font-size:0.6rem;font-weight:800;
-    padding:1px 6px;border-radius:3px;margin-left:6px;
-    background:linear-gradient(135deg,#e2b340,#f5c842);color:#1a1a2e;
-    vertical-align:middle;letter-spacing:0.5px;
-    animation:badgePulse 2.5s ease-in-out infinite;
-  }
-  @keyframes badgePulse{
-    0%,100%{box-shadow:0 0 4px rgba(226,179,64,0.3);}
-    50%{box-shadow:0 0 12px rgba(226,179,64,0.6);}
+    font-size:0.6rem;font-weight:700;color:var(--accent);
+    border:1px solid var(--accent);border-radius:3px;
+    padding:0px 4px;letter-spacing:0.5px;
+    display:inline-block;vertical-align:middle;
+    line-height:1.4;
   }
 
-  /* Color themes */
-  .box-input{background:rgba(100,100,140,0.15);border-color:rgba(100,100,140,0.35);}
-  .box-input h3{color:#9999cc;}
-
-  .box-encoder{background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);}
-  .box-encoder h3{color:#60a5fa;}
-  .box-encoder .tag{background:rgba(59,130,246,0.2);color:#93c5fd;}
-
-  .box-pair{background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.3);}
-  .box-pair h3{color:#4ade80;}
-  .box-pair .tag{background:rgba(34,197,94,0.2);color:#86efac;}
-
-  .box-diffusion{background:rgba(147,51,234,0.1);border-color:rgba(147,51,234,0.3);}
-  .box-diffusion h3{color:#c084fc;}
-  .box-diffusion .tag{background:rgba(147,51,234,0.2);color:#d8b4fe;}
-
-  .box-frame{background:rgba(147,51,234,0.08);border-color:rgba(168,85,247,0.25);}
-  .box-frame h3{color:#c084fc;}
-
-  .box-selfcond{background:rgba(100,116,139,0.12);border-color:rgba(100,116,139,0.3);}
-  .box-selfcond h3{color:#94a3b8;}
-
-  .box-ipa{background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.3);}
-  .box-ipa h3{color:#fb923c;}
-  .box-ipa .tag{background:rgba(249,115,22,0.2);color:#fdba74;}
-
-  .box-backbone{
-    background:rgba(234,179,8,0.1);
-    border:2px solid rgba(234,179,8,0.5);
-    box-shadow:0 0 20px rgba(234,179,8,0.08);
+  /* Tag */
+  .tag{
+    display:inline-block;font-size:0.68rem;font-weight:600;
+    padding:1px 7px;border-radius:3px;
+    color:var(--text-secondary);border:1px solid var(--border);
+    vertical-align:middle;
   }
-  .box-backbone h3{color:#facc15;}
-  .box-backbone .tag{background:rgba(234,179,8,0.25);color:#fde68a;}
 
-  .box-aux{background:rgba(100,116,139,0.1);border-color:rgba(100,116,139,0.25);}
-  .box-aux h3{color:#94a3b8;}
-
-  .box-caloss{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);}
-  .box-caloss h3{color:#f87171;}
-  .box-caloss .tag{background:rgba(239,68,68,0.2);color:#fca5a5;}
-
-  .box-bbloss{
-    background:rgba(236,72,153,0.1);
-    border:2px solid rgba(236,72,153,0.45);
-    box-shadow:0 0 15px rgba(236,72,153,0.06);
-  }
-  .box-bbloss h3{color:#f472b6;}
-  .box-bbloss .tag{background:rgba(236,72,153,0.2);color:#f9a8d4;}
-
-  .box-metric{background:rgba(56,189,248,0.08);border-color:rgba(56,189,248,0.25);}
-  .box-metric h3{color:#38bdf8;}
-
-  .box-training{background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25);}
-  .box-training h3{color:#a78bfa;}
-
-  /* Side-by-side containers */
+  /* Side-by-side row */
   .row{
-    display:flex;gap:16px;width:100%;max-width:720px;
+    display:flex;gap:12px;width:100%;max-width:700px;
   }
   .row .box{flex:1;max-width:none;}
 
@@ -169,66 +148,54 @@
     width:100%;border-collapse:collapse;margin:8px 0 4px;font-size:0.76rem;
   }
   .loss-table th{
-    text-align:left;padding:4px 8px;border-bottom:1px solid rgba(255,255,255,0.1);
-    font-weight:600;color:#ddd;
+    text-align:left;padding:4px 8px;
+    border-bottom:1px solid var(--border);
+    font-weight:600;color:var(--text);
   }
   .loss-table td{
-    padding:3px 8px;border-bottom:1px solid rgba(255,255,255,0.04);
+    padding:3px 8px;border-bottom:1px solid var(--table-border);
+    color:var(--text);
   }
-  .loss-table td:nth-child(2){text-align:center;font-family:'Fira Code',monospace;color:#facc15;}
-  .loss-table td:nth-child(3){color:#999;font-size:0.72rem;}
+  .loss-table td:nth-child(2){text-align:center;font-family:'SF Mono',monospace;color:var(--accent);}
+  .loss-table td:nth-child(3){color:var(--text-secondary);font-size:0.72rem;}
 
-  /* bb_ramp chart */
-  .ramp-chart{
-    margin:10px 0 4px;height:60px;position:relative;
-    background:rgba(0,0,0,0.2);border-radius:6px;overflow:hidden;
-  }
-  .ramp-line{
-    position:absolute;bottom:0;left:0;width:100%;height:100%;
-  }
-  .ramp-label{
-    position:absolute;font-size:0.62rem;color:#999;
-  }
-
-  /* Geometry diagram */
-  .geom-inline{
+  /* Inline code/formula blocks */
+  .formula{
     display:inline-block;padding:6px 10px;margin:6px 0;
-    background:rgba(0,0,0,0.2);border-radius:6px;font-family:monospace;
-    font-size:0.74rem;color:#facc15;letter-spacing:0.3px;
+    background:var(--code-bg);border-radius:4px;
+    font-family:'SF Mono','Fira Code',monospace;
+    font-size:0.76rem;color:var(--accent);letter-spacing:0.3px;
+    border:1px solid var(--border);
   }
 
-  /* Responsive */
+  /* Canvas styling */
+  canvas{
+    border-radius:4px;
+    border:1px solid var(--border);
+  }
+
   @media(max-width:600px){
     .row{flex-direction:column;}
-    .box{padding:14px 16px;}
-    .page-header h1{font-size:1.4rem;}
+    .box{padding:12px 14px;}
+    .page-header h1{font-size:1.3rem;}
   }
 </style>
 </head>
 <body>
 
-<div class="page-header">
-  <h1>v14 Full Backbone Diffusion Model Architecture</h1>
-  <p class="subtitle">Full-backbone prediction with peptide-plane frames &middot; Click any box to expand details</p>
-</div>
+<button class="theme-toggle" onclick="toggleTheme()">dark mode</button>
 
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:#60a5fa;"></div>Encoder (frozen)</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#4ade80;"></div>Pair Stack</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#c084fc;"></div>Diffusion / Frames</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#fb923c;"></div>IPA Denoiser</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#facc15;"></div>BackboneAtomHead (NEW)</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#f87171;"></div>CA Losses</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#f472b6;"></div>Backbone Losses (NEW)</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#94a3b8;"></div>Auxiliary</div>
+<div class="page-header">
+  <h1>v14 &mdash; Full Backbone Diffusion Model</h1>
+  <p class="subtitle">Full-backbone prediction with peptide-plane frames &middot; Click any box to expand</p>
 </div>
 
 <div class="diagram" id="diagram">
 
-  <!-- INPUT -->
-  <div class="box box-input" onclick="toggle(this)">
+  <!-- 1. INPUT -->
+  <div class="box" onclick="toggle(this)">
     <span class="expand-icon">&#9660;</span>
-    <h3>Input Tensors</h3>
+    <h3>1. Input Tensors <span class="new-badge">NEW</span></h3>
     <div class="summary">ids, true_coords, true_backbone, masks</div>
     <div class="details">
       <ul>
@@ -243,10 +210,10 @@
 
   <div class="arrow"></div>
 
-  <!-- STAGE 1: ENCODER -->
-  <div class="box box-encoder" onclick="toggle(this)">
+  <!-- 2. FROZEN ENCODER -->
+  <div class="box" onclick="toggle(this)">
     <span class="expand-icon">&#9660;</span>
-    <h3>Stage 1: Encoder <span class="tag">FROZEN</span></h3>
+    <h3>2. Frozen Encoder <span class="tag">FROZEN</span></h3>
     <div class="summary">ContactClassifier &rarr; single embeddings + contact probabilities</div>
     <div class="details">
       <ul>
@@ -259,10 +226,10 @@
 
   <div class="arrow"></div>
 
-  <!-- STAGE 2: PAIR STACK -->
-  <div class="box box-pair" onclick="toggle(this)">
+  <!-- 3. PAIR STACK -->
+  <div class="box" onclick="toggle(this)">
     <span class="expand-icon">&#9660;</span>
-    <h3>Stage 2: Pair Stack</h3>
+    <h3>3. Pair Stack</h3>
     <div class="summary">SingleToPairV13 + RPE + OPM + Contact Conditioning &rarr; 8&times; EnhancedPairBlock</div>
     <div class="details">
       <ul>
@@ -278,10 +245,10 @@
 
   <div class="arrow"></div>
 
-  <!-- STAGE 3: DIFFUSION -->
-  <div class="box box-diffusion" onclick="toggle(this)">
+  <!-- 4. DIFFUSION -->
+  <div class="box" onclick="toggle(this)">
     <span class="expand-icon">&#9660;</span>
-    <h3>Stage 3: Diffusion Process</h3>
+    <h3>4. Diffusion Process</h3>
     <div class="summary">Normalize &rarr; sample t &rarr; add noise to C&alpha; coords</div>
     <div class="details">
       <ul>
@@ -295,14 +262,14 @@
 
   <div class="arrow"></div>
 
-  <!-- STAGE 4: FRAME INIT -->
-  <div class="box box-frame" onclick="toggle(this)">
+  <!-- 5. FRAME INIT -->
+  <div class="box" onclick="toggle(this)">
     <span class="expand-icon">&#9660;</span>
-    <h3>Stage 4: Frame Initialization <span class="new-badge">NEW</span></h3>
+    <h3>5. Frame Init &mdash; Peptide Plane <span class="new-badge">NEW</span></h3>
     <div class="summary">Peptide Plane Frames from N-CA-C (more stable than CA-triplet Gram-Schmidt)</div>
     <div class="details">
       <p style="margin-bottom:6px;"><strong>init_frames_backbone()</strong> &mdash; uses peptide plane geometry:</p>
-      <div class="geom-inline">
+      <div class="formula">
         e1 = CA&rarr;C (normalized)<br>
         e3 = (N&minus;CA) &times; e1 (normalized)<br>
         e2 = e3 &times; e1
@@ -313,53 +280,29 @@
         <li><strong>SLERP</strong> interpolation for smooth rotation blending</li>
         <li>Output: rotation matrices <code>R</code> (B, L, 3, 3) + translations <code>t</code> (B, L, 3)</li>
       </ul>
+      <p style="margin-top:8px;font-size:0.78rem;"><strong>Self-Conditioning (50%):</strong> With 50% probability, run denoiser once to get x&#x302;&#x2080;, then feed as additional input for the real forward pass. At inference: always self-condition (two passes per step).</p>
     </div>
   </div>
 
   <div class="arrow"></div>
 
-  <!-- STAGE 5: SELF-COND -->
-  <div class="box box-selfcond" onclick="toggle(this)">
+  <!-- 6. IPA DENOISER + BACKBONE HEAD -->
+  <div class="box" onclick="toggle(this)">
     <span class="expand-icon">&#9660;</span>
-    <h3>Stage 5: Self-Conditioning (50%)</h3>
-    <div class="summary">50% of training steps condition on previous x&#x302;&#x2080; prediction</div>
+    <h3>6. IPA Denoiser + BackboneAtomHead <span class="new-badge">NEW</span></h3>
+    <div class="summary">8&times; IPABlock &rarr; x&#x302;&#x2080;, R&#x302; &rarr; BackboneAtomHead &rarr; full [N, CA, C, O]</div>
     <div class="details">
-      <ul>
-        <li>With 50% probability, run denoiser once to get <code>x&#x302;&#x2080;</code></li>
-        <li>Feed <code>x&#x302;&#x2080;</code> as additional input for the real forward pass</li>
-        <li>At inference: always self-condition (run two passes per step)</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="arrow"></div>
-
-  <!-- STAGE 6: IPA DENOISER -->
-  <div class="box box-ipa" onclick="toggle(this)">
-    <span class="expand-icon">&#9660;</span>
-    <h3>Stage 6: IPA Denoiser <span class="tag">FrameDenoiserV14</span></h3>
-    <div class="summary">8&times; IPABlock &rarr; x&#x302;&#x2080;, R&#x302;, then h passes to BackboneAtomHead</div>
-    <div class="details">
+      <p style="margin-bottom:6px;font-weight:600;">IPA Denoiser (FrameDenoiserV14):</p>
       <ul>
         <li>8&times; <strong>IPABlock</strong> (same architecture as v13b)</li>
         <li>Invariant Point Attention over frames + pair representation</li>
         <li>Predicts: <code>x0_pred</code> (B, L, 3), <code>R_pred</code> (B, L, 3, 3)</li>
-        <li><strong>After final IPA layer:</strong> hidden state <code>h</code> (B, L, 512) passes to BackboneAtomHead <span class="new-badge">NEW</span></li>
+        <li>Hidden state <code>h</code> (B, L, 512) passes to BackboneAtomHead</li>
       </ul>
-    </div>
-  </div>
 
-  <div class="arrow"></div>
-
-  <!-- STAGE 6b: BACKBONE ATOM HEAD -->
-  <div class="box box-backbone" onclick="toggle(this)">
-    <span class="expand-icon">&#9660;</span>
-    <h3>BackboneAtomHead <span class="new-badge">NEW in v14</span></h3>
-    <div class="summary">MLP predicts learned offsets from ideal peptide geometry &rarr; full [N, CA, C, O] backbone</div>
-    <div class="details">
-      <p style="margin-bottom:6px;"><strong>Architecture:</strong></p>
-      <div class="geom-inline">MLP: 512 &rarr; 256 &rarr; 256 &rarr; 9 &nbsp;(3 atoms &times; 3 coords)</div>
-      <p style="margin:8px 0 4px;"><strong>Outputs:</strong> &delta;N, &delta;C, &delta;O (learned offsets from ideal geometry)</p>
+      <p style="margin:12px 0 6px;font-weight:600;">BackboneAtomHead <span class="new-badge">NEW</span>:</p>
+      <div class="formula">MLP: 512 &rarr; 256 &rarr; 256 &rarr; 9 &nbsp;(3 atoms &times; 3 coords)</div>
+      <p style="margin:8px 0 4px;">Outputs: &delta;N, &delta;C, &delta;O (learned offsets from ideal geometry)</p>
       <p style="margin-bottom:6px;"><strong>Ideal bond lengths:</strong></p>
       <ul>
         <li>N&ndash;CA = 1.458 &Aring;</li>
@@ -367,7 +310,7 @@
         <li>C=O = 1.231 &Aring;</li>
       </ul>
       <p style="margin:8px 0 4px;"><strong>Reconstruction:</strong></p>
-      <div class="geom-inline">pos_atom = t + R @ (ideal_offset + &delta;)</div>
+      <div class="formula">pos_atom = t + R @ (ideal_offset + &delta;)</div>
       <ul style="margin-top:8px;">
         <li>CA always sits at frame origin (no offset learned)</li>
         <li><strong>Zero-initialized</strong> &mdash; starts predicting ideal geometry, learns corrections</li>
@@ -378,10 +321,10 @@
 
   <div class="arrow"></div>
 
-  <!-- AUXILIARY HEADS -->
-  <div class="box box-aux" onclick="toggle(this)">
+  <!-- 7. AUXILIARY HEADS -->
+  <div class="box" onclick="toggle(this)">
     <span class="expand-icon">&#9660;</span>
-    <h3>Stage 7: Auxiliary Heads</h3>
+    <h3>7. Auxiliary Heads</h3>
     <div class="summary">AuxPairStack + OrdinalDistanceHead + RgPredictor</div>
     <div class="details">
       <ul>
@@ -392,14 +335,14 @@
     </div>
   </div>
 
-  <div class="arrow long"></div>
+  <div class="arrow"></div>
 
-  <!-- LOSSES ROW -->
+  <!-- 8. LOSSES -->
   <div class="row">
     <!-- CA LOSSES -->
-    <div class="box box-caloss" onclick="toggle(this)">
+    <div class="box" onclick="toggle(this)">
       <span class="expand-icon">&#9660;</span>
-      <h3>C&alpha;-Level Losses <span class="tag">9 losses</span></h3>
+      <h3>C&alpha; Losses <span class="tag">9 terms</span></h3>
       <div class="summary">Inherited from v13b</div>
       <div class="details">
         <table class="loss-table">
@@ -418,10 +361,10 @@
     </div>
 
     <!-- BACKBONE LOSSES -->
-    <div class="box box-bbloss" onclick="toggle(this)">
+    <div class="box" onclick="toggle(this)">
       <span class="expand-icon">&#9660;</span>
-      <h3>Backbone Losses <span class="new-badge">NEW</span> <span class="tag">4 losses</span></h3>
-      <div class="summary">All scaled by bb_ramp schedule</div>
+      <h3>BB Losses <span class="new-badge">NEW</span> <span class="tag">4 terms</span></h3>
+      <div class="summary">Scaled by bb_ramp schedule</div>
       <div class="details">
         <table class="loss-table">
           <tr><th>Loss</th><th>Weight</th><th>Clamp</th></tr>
@@ -435,9 +378,9 @@
         <p style="font-size:0.76rem;"><strong>BB Angle:</strong> N-CA-C, CA-C-N, C-N-CA angles</p>
         <p style="font-size:0.76rem;"><strong>Omega:</strong> Peptide bond planarity, 1+cos(&omega;)</p>
         <div style="margin-top:12px;">
-          <p style="font-size:0.76rem;font-weight:600;color:#f472b6;margin-bottom:4px;">bb_ramp Schedule:</p>
-          <div class="geom-inline" style="color:#f472b6;">bb_ramp = min(epoch / 5, 1.0)</div>
-          <canvas id="rampCanvas" width="280" height="70" style="display:block;margin-top:8px;border-radius:6px;background:rgba(0,0,0,0.25);"></canvas>
+          <p style="font-size:0.76rem;font-weight:600;margin-bottom:4px;">bb_ramp schedule:</p>
+          <div class="formula">bb_ramp = min(epoch / 5, 1.0)</div>
+          <canvas id="rampCanvas" width="260" height="60" style="display:block;margin-top:8px;background:var(--bg);"></canvas>
         </div>
       </div>
     </div>
@@ -445,17 +388,17 @@
 
   <div class="arrow"></div>
 
-  <!-- TRACKED METRIC -->
-  <div class="box box-metric" onclick="toggle(this)">
+  <!-- 9. TRACKED METRIC -->
+  <div class="box" onclick="toggle(this)">
     <span class="expand-icon">&#9660;</span>
-    <h3>Tracked Metric: val_structural</h3>
+    <h3>9. Tracked Metric: val_structural</h3>
     <div class="summary">total &minus; aux&times;0.03 &minus; bb_contribution</div>
     <div class="details">
-      <div class="geom-inline" style="color:#38bdf8;">
+      <div class="formula">
         val_structural = total &minus; aux &times; 0.03 &minus; bb_contribution
       </div>
       <p style="margin-top:6px;font-size:0.76rem;">where:</p>
-      <div class="geom-inline" style="color:#f472b6;font-size:0.7rem;">
+      <div class="formula" style="font-size:0.72rem;">
         bb_contribution = bb_ramp &times; (<br>
         &nbsp;&nbsp;w_bb_fape &times; l_bb_fape +<br>
         &nbsp;&nbsp;w_bb_bond &times; l_bb_bond +<br>
@@ -468,10 +411,10 @@
 
   <div class="arrow"></div>
 
-  <!-- TRAINING -->
-  <div class="box box-training" onclick="toggle(this)">
+  <!-- 10. TRAINING CONFIG -->
+  <div class="box" onclick="toggle(this)">
     <span class="expand-icon">&#9660;</span>
-    <h3>Training Configuration</h3>
+    <h3>10. Training Configuration</h3>
     <div class="summary">AdamW, per-module LR, CFG 10%, EMA 0.999</div>
     <div class="details">
       <p style="margin-bottom:6px;font-weight:600;">Per-module Learning Rates (AdamW):</p>
@@ -484,7 +427,7 @@
       <p style="margin-top:8px;font-size:0.76rem;"><strong>LR Schedule:</strong> Warmup 5 epochs &rarr; Constant 15 epochs &rarr; Cosine decay</p>
       <p style="font-size:0.76rem;"><strong>CFG:</strong> 10% dropout (classifier-free guidance)</p>
       <p style="font-size:0.76rem;"><strong>EMA:</strong> 0.999 exponential moving average</p>
-      <canvas id="lrCanvas" width="400" height="70" style="display:block;margin-top:10px;border-radius:6px;background:rgba(0,0,0,0.25);width:100%;max-width:400px;"></canvas>
+      <canvas id="lrCanvas" width="380" height="60" style="display:block;margin-top:10px;background:var(--bg);width:100%;max-width:380px;"></canvas>
     </div>
   </div>
 
@@ -493,10 +436,26 @@
 <script>
 function toggle(el) {
   el.classList.toggle('open');
-  // Draw canvases if they become visible
   if (el.classList.contains('open')) {
     requestAnimationFrame(drawCanvases);
   }
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  var btn = document.querySelector('.theme-toggle');
+  btn.textContent = document.body.classList.contains('dark') ? 'light mode' : 'dark mode';
+  // Redraw canvases with new colors
+  requestAnimationFrame(drawCanvases);
+}
+
+function getColor() {
+  var isDark = document.body.classList.contains('dark');
+  return {
+    line: isDark ? '#5b8def' : '#2563eb',
+    axis: isDark ? '#666' : '#999',
+    bg: isDark ? '#1a1a2e' : '#ffffff'
+  };
 }
 
 function drawCanvases() {
@@ -505,77 +464,70 @@ function drawCanvases() {
 }
 
 function drawRamp() {
-  const c = document.getElementById('rampCanvas');
+  var c = document.getElementById('rampCanvas');
   if (!c) return;
-  const ctx = c.getContext('2d');
-  const w = c.width, h = c.height;
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height;
+  var col = getColor();
   ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = col.bg;
+  ctx.fillRect(0, 0, w, h);
 
-  // Axes labels
-  ctx.fillStyle = '#666';
-  ctx.font = '9px sans-serif';
-  ctx.fillText('0', 4, h - 2);
-  ctx.fillText('5', w * 0.38, h - 2);
-  ctx.fillText('10 epochs', w * 0.72, h - 2);
+  var pad = {l: 28, r: 8, t: 8, b: 16};
+  var pw = w - pad.l - pad.r;
+  var ph = h - pad.t - pad.b;
+
+  // Axis labels
+  ctx.fillStyle = col.axis;
+  ctx.font = '9px -apple-system, sans-serif';
+  ctx.fillText('0', pad.l - 2, h - 2);
+  ctx.fillText('5', pad.l + pw * 0.5 - 4, h - 2);
+  ctx.fillText('10 ep', pw + pad.l - 28, h - 2);
   ctx.fillText('1.0', 2, 14);
-  ctx.fillText('0.0', 2, h - 10);
-
-  // Grid
-  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-  ctx.lineWidth = 0.5;
-  ctx.beginPath();
-  ctx.moveTo(24, h - 16); ctx.lineTo(w - 8, h - 16);
-  ctx.moveTo(24, 10); ctx.lineTo(w - 8, 10);
-  ctx.stroke();
+  ctx.fillText('0', 10, h - pad.b + 2);
 
   // Ramp line
-  const pad = {l: 24, r: 8, t: 10, b: 16};
-  const pw = w - pad.l - pad.r;
-  const ph = h - pad.t - pad.b;
-  ctx.strokeStyle = '#f472b6';
-  ctx.lineWidth = 2.5;
-  ctx.shadowColor = '#f472b6';
-  ctx.shadowBlur = 6;
+  ctx.strokeStyle = col.line;
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  for (let i = 0; i <= 100; i++) {
-    const epoch = i / 10;
-    const ramp = Math.min(epoch / 5, 1.0);
-    const x = pad.l + (epoch / 10) * pw;
-    const y = pad.t + (1 - ramp) * ph;
+  for (var i = 0; i <= 100; i++) {
+    var epoch = i / 10;
+    var ramp = Math.min(epoch / 5, 1.0);
+    var x = pad.l + (epoch / 10) * pw;
+    var y = pad.t + (1 - ramp) * ph;
     if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
   }
   ctx.stroke();
-  ctx.shadowBlur = 0;
 }
 
 function drawLR() {
-  const c = document.getElementById('lrCanvas');
+  var c = document.getElementById('lrCanvas');
   if (!c) return;
-  const ctx = c.getContext('2d');
-  const w = c.width, h = c.height;
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height;
+  var col = getColor();
   ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = col.bg;
+  ctx.fillRect(0, 0, w, h);
 
-  const pad = {l: 8, r: 8, t: 8, b: 14};
-  const pw = w - pad.l - pad.r;
-  const ph = h - pad.t - pad.b;
+  var pad = {l: 8, r: 8, t: 8, b: 14};
+  var pw = w - pad.l - pad.r;
+  var ph = h - pad.t - pad.b;
 
-  ctx.fillStyle = '#666';
-  ctx.font = '9px sans-serif';
+  ctx.fillStyle = col.axis;
+  ctx.font = '9px -apple-system, sans-serif';
   ctx.fillText('0', pad.l, h - 1);
   ctx.fillText('5', pad.l + pw * 0.125, h - 1);
   ctx.fillText('20', pad.l + pw * 0.5, h - 1);
-  ctx.fillText('40 epochs', pad.l + pw * 0.9, h - 1);
+  ctx.fillText('40 epochs', pad.l + pw * 0.88, h - 1);
 
-  // LR curve (warmup 5, constant 15, cosine decay to 40)
-  const totalEpochs = 40;
-  ctx.strokeStyle = '#a78bfa';
+  var totalEpochs = 40;
+  ctx.strokeStyle = col.line;
   ctx.lineWidth = 2;
-  ctx.shadowColor = '#a78bfa';
-  ctx.shadowBlur = 4;
   ctx.beginPath();
-  for (let i = 0; i <= 200; i++) {
-    const epoch = (i / 200) * totalEpochs;
-    let lr;
+  for (var i = 0; i <= 200; i++) {
+    var epoch = (i / 200) * totalEpochs;
+    var lr;
     if (epoch < 5) {
       lr = epoch / 5;
     } else if (epoch < 20) {
@@ -583,23 +535,19 @@ function drawLR() {
     } else {
       lr = 0.5 * (1 + Math.cos(Math.PI * (epoch - 20) / 20));
     }
-    const x = pad.l + (epoch / totalEpochs) * pw;
-    const y = pad.t + (1 - lr) * ph;
+    var x = pad.l + (epoch / totalEpochs) * pw;
+    var y = pad.t + (1 - lr) * ph;
     if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
   }
   ctx.stroke();
-  ctx.shadowBlur = 0;
 
   // Phase labels
-  ctx.fillStyle = 'rgba(167,139,250,0.5)';
-  ctx.font = '8px sans-serif';
+  ctx.fillStyle = col.axis;
+  ctx.font = '8px -apple-system, sans-serif';
   ctx.fillText('warmup', pad.l + pw * 0.03, pad.t + ph * 0.35);
-  ctx.fillText('constant', pad.l + pw * 0.25, pad.t + ph * 0.15);
-  ctx.fillText('cosine decay', pad.l + pw * 0.6, pad.t + ph * 0.35);
+  ctx.fillText('constant', pad.l + pw * 0.27, pad.t + ph * 0.15);
+  ctx.fillText('cosine decay', pad.l + pw * 0.6, pad.t + ph * 0.4);
 }
-
-// Expand all on first load for a moment to draw canvases, then collapse
-// Actually, just draw on first expand via the toggle function.
 </script>
 
 </body>
