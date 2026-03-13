@@ -5,555 +5,684 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>v14 — Full Backbone Diffusion Model</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;}
-
-  :root{
-    --bg:#ffffff;
-    --text:#333333;
-    --text-secondary:#777777;
-    --accent:#1772d0;
-    --box-bg:#f7f7f7;
-    --border:#e4e4e4;
-    --code-bg:#f0f0f0;
-    --connector:rgba(0,0,0,0.15);
-    --table-border:rgba(0,0,0,0.08);
-    --toggle-bg:#e4e4e4;
-    --toggle-fg:#333;
-  }
-
-  [data-theme="dark"]{
-    --bg:#0d1117;
-    --text:#c9d1d9;
-    --text-secondary:#8b949e;
-    --accent:#58a6ff;
-    --box-bg:#161b22;
-    --border:#30363d;
-    --code-bg:rgba(255,255,255,0.08);
-    --connector:rgba(255,255,255,0.15);
-    --table-border:rgba(255,255,255,0.06);
-    --toggle-bg:#30363d;
-    --toggle-fg:#c9d1d9;
-  }
-
-  body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
-    min-height:100vh;
-    line-height:1.5;
-  }
-
-  /* Dark mode toggle — matches main site */
-  .theme-toggle{
-    position:fixed;top:18px;right:18px;z-index:100;
-    background:var(--toggle-bg);border:1px solid var(--border);
-    border-radius:50%;width:38px;height:38px;cursor:pointer;
-    font-size:18px;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 1px 3px rgba(0,0,0,0.08);color:var(--toggle-fg);
-  }
-  .theme-toggle:hover{opacity:0.8;}
-
-  /* Header */
-  .page-header{
-    text-align:center;
-    padding:40px 20px 16px;
-    max-width:800px;margin:0 auto;
-  }
-  .page-header h1{
-    font-size:1.6rem;font-weight:700;color:var(--text);
-  }
-  .page-header .subtitle{
-    color:var(--text-secondary);font-size:0.85rem;margin-top:6px;
-  }
-
-  /* Flowchart */
-  .diagram{
-    display:flex;flex-direction:column;align-items:center;
-    padding:10px 20px 60px;gap:0;max-width:800px;margin:0 auto;
-  }
-
-  /* Connector lines */
-  .arrow{
-    width:1px;height:24px;background:var(--connector);position:relative;
-  }
-  .arrow::after{
-    content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
-    border-left:4px solid transparent;border-right:4px solid transparent;
-    border-top:5px solid var(--connector);
-  }
-
-  /* Boxes */
-  .box{
-    border:1px solid var(--border);
-    border-radius:6px;
-    padding:14px 18px;
-    width:100%;max-width:700px;
-    cursor:pointer;
-    background:var(--box-bg);
-    position:relative;
-    transition:background 0.2s;
-  }
-  .box h3{
-    font-size:0.95rem;font-weight:600;color:var(--text);
-    display:flex;align-items:center;gap:6px;
-  }
-  .box .summary{
-    font-size:0.82rem;color:var(--text-secondary);margin-top:2px;
-  }
-
-  /* Expand indicator */
-  .box .expand-icon{
-    position:absolute;top:14px;right:14px;
-    font-size:0.65rem;color:var(--text-secondary);
-    transition:transform 0.2s;
-  }
-  .box.open .expand-icon{transform:rotate(180deg);}
-
-  /* Details */
-  .box .details{
-    max-height:0;overflow:hidden;
-    transition:max-height 0.35s ease,opacity 0.25s ease;
-    opacity:0;font-size:0.8rem;line-height:1.6;
-    color:var(--text);margin-top:0;
-  }
-  .box.open .details{max-height:1000px;opacity:1;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;}
-  .box .details code{
-    background:var(--code-bg);padding:1px 5px;border-radius:3px;
-    font-family:'SF Mono','Fira Code','Courier New',monospace;font-size:0.76rem;
-  }
-  .box .details ul{margin:6px 0 4px 18px;list-style:disc;}
-  .box .details li{margin:2px 0;}
-
-  /* NEW badge */
-  .new-badge{
-    font-size:0.6rem;font-weight:700;color:var(--accent);
-    border:1px solid var(--accent);border-radius:3px;
-    padding:0px 4px;letter-spacing:0.5px;
-    display:inline-block;vertical-align:middle;
-    line-height:1.4;
-  }
-
-  /* Tag */
-  .tag{
-    display:inline-block;font-size:0.68rem;font-weight:600;
-    padding:1px 7px;border-radius:3px;
-    color:var(--text-secondary);border:1px solid var(--border);
-    vertical-align:middle;
-  }
-
-  /* Side-by-side row */
-  .row{
-    display:flex;gap:12px;width:100%;max-width:700px;
-  }
-  .row .box{flex:1;max-width:none;}
-
-  /* Loss table */
-  .loss-table{
-    width:100%;border-collapse:collapse;margin:8px 0 4px;font-size:0.76rem;
-  }
-  .loss-table th{
-    text-align:left;padding:4px 8px;
-    border-bottom:1px solid var(--border);
-    font-weight:600;color:var(--text);
-  }
-  .loss-table td{
-    padding:3px 8px;border-bottom:1px solid var(--table-border);
-    color:var(--text);
-  }
-  .loss-table td:nth-child(2){text-align:center;font-family:'SF Mono',monospace;color:var(--accent);}
-  .loss-table td:nth-child(3){color:var(--text-secondary);font-size:0.72rem;}
-
-  /* Inline code/formula blocks */
-  .formula{
-    display:inline-block;padding:6px 10px;margin:6px 0;
-    background:var(--code-bg);border-radius:4px;
-    font-family:'SF Mono','Fira Code',monospace;
-    font-size:0.76rem;color:var(--accent);letter-spacing:0.3px;
-    border:1px solid var(--border);
-  }
-
-  /* Canvas styling */
-  canvas{
-    border-radius:4px;
-    border:1px solid var(--border);
-  }
-
-  @media(max-width:600px){
-    .row{flex-direction:column;}
-    .box{padding:12px 14px;}
-    .page-header h1{font-size:1.3rem;}
-  }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#ffffff;--bg2:#f7f7f7;--text:#333;--text2:#666;--text3:#999;
+  --accent:#1772d0;--border:#e4e4e4;--toggle-bg:#e4e4e4;
+  --svg-fg:#333;--svg-fg2:#888;--svg-accent:#1772d0;--svg-green:#2d9d2d;--svg-red:#d04040;--svg-orange:#e67e22;
+}
+[data-theme="dark"]{
+  --bg:#0d1117;--bg2:#161b22;--text:#c9d1d9;--text2:#8b949e;--text3:#8b949e;
+  --accent:#58a6ff;--border:#30363d;--toggle-bg:#30363d;
+  --svg-fg:#c9d1d9;--svg-fg2:#555;--svg-accent:#58a6ff;--svg-green:#4ec94e;--svg-red:#f06060;--svg-orange:#f0983a;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,system-ui,'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.6}
+.theme-toggle{position:fixed;top:18px;right:18px;z-index:100;background:var(--toggle-bg);border:1px solid var(--border);border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+.theme-toggle:hover{opacity:.8}
+.wrap{max-width:820px;margin:0 auto;padding:40px 20px 80px}
+h1{text-align:center;font-size:1.5rem;font-weight:700;margin-bottom:4px}
+.sub{text-align:center;color:var(--text3);font-size:.85rem;margin-bottom:32px}
+.conn{display:flex;justify-content:center}.conn .l{width:1px;height:24px;background:var(--border)}
+.block{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:0;background:var(--bg)}
+.block-head{display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;user-select:none}
+.block-head:hover{background:var(--bg2)}
+.tag{font-size:.65rem;font-weight:700;color:#fff;background:var(--accent);padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
+.tag-new{background:var(--svg-orange)}
+.block-title{font-size:.95rem;font-weight:600;flex:1}
+.arr{color:var(--text3);font-size:.6rem;transition:transform .2s;flex-shrink:0}
+.block.open .arr{transform:rotate(90deg)}
+.block-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.block.open .block-body{max-height:8000px}
+.body-inner{padding:0 18px 18px}
+.vis{text-align:center;margin:12px 0;padding:16px;background:var(--bg2);border-radius:6px;border:1px solid var(--border)}
+.vis svg{max-width:100%;height:auto}
+.explain{font-size:.85rem;color:var(--text2);line-height:1.7;margin-top:10px}
+.explain strong{color:var(--text)}
+.explain code{background:var(--bg2);padding:1px 5px;border-radius:3px;font-size:.8rem;font-family:'SF Mono',Consolas,monospace}
+.explain ul{padding-left:18px;margin:4px 0}
+.explain li{margin:3px 0}
+.sub-block{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin:8px 0}
+.sub-block-title{font-weight:600;font-size:.85rem;margin-bottom:4px}
+.loss-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.loss-item{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.loss-item svg{flex-shrink:0;margin-top:2px}
+.loss-info{flex:1}
+.loss-name{font-weight:600;font-size:.83rem}
+.loss-w{font-size:.72rem;color:var(--text3);font-family:monospace}
+.loss-desc{font-size:.75rem;color:var(--text2);margin-top:1px}
+.metric-box{border:1px solid var(--border);border-radius:8px;padding:16px 20px;text-align:center;background:var(--bg2);margin-bottom:0}
+.metric-label{font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.metric-formula{font-family:monospace;font-size:.9rem;margin:6px 0}
+.metric-note{font-size:.75rem;color:var(--text3)}
+.config-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.config-item{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:8px;text-align:center}
+.config-label{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.config-val{font-size:.85rem;font-weight:600;margin-top:2px}
+.section-label{text-align:center;font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin:4px 0}
+@media(max-width:600px){.loss-grid{grid-template-columns:1fr}.config-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
+<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">&#127769;</button>
+<div class="wrap">
+<h1>v14 &mdash; Full Backbone Diffusion Model</h1>
+<p class="sub">Click any block to expand. Every block has a diagram showing what it does.</p>
 
-<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn">&#127769;</button>
+<!-- ===== 1. INPUT ===== -->
+<div class="block open" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">Input</span>
+    <span class="block-title">Protein Backbone Data</span>
+    <span class="tag tag-new">NEW: full backbone</span>
+    <span class="arr">&#9654;</span>
+  </div>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 140" width="700" height="140">
+        <!-- Chain of residues -->
+        <g font-size="11" text-anchor="middle" font-family="inherit">
+          <!-- Residue 1 -->
+          <circle cx="80" cy="40" r="6" fill="var(--svg-accent)" opacity=".3" stroke="var(--svg-accent)" stroke-width="1.5"/>
+          <circle cx="120" cy="40" r="8" fill="var(--svg-accent)" stroke="var(--svg-accent)" stroke-width="2"/>
+          <circle cx="160" cy="40" r="6" fill="var(--svg-accent)" opacity=".3" stroke="var(--svg-accent)" stroke-width="1.5"/>
+          <circle cx="185" cy="55" r="5" fill="var(--svg-red)" opacity=".4" stroke="var(--svg-red)" stroke-width="1"/>
+          <line x1="80" y1="40" x2="120" y2="40" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <line x1="120" y1="40" x2="160" y2="40" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <line x1="160" y1="40" x2="185" y2="55" stroke="var(--svg-fg)" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="80" y="70" fill="var(--svg-fg2)" font-size="10">N</text>
+          <text x="120" y="70" fill="var(--svg-accent)" font-weight="bold" font-size="10">CA</text>
+          <text x="160" y="70" fill="var(--svg-fg2)" font-size="10">C</text>
+          <text x="185" y="78" fill="var(--svg-red)" font-size="9">O</text>
+          <text x="80" y="85" fill="var(--text3)" font-size="9">1.458&#197;</text>
+          <text x="160" y="85" fill="var(--text3)" font-size="9">1.523&#197;</text>
 
-<div class="page-header">
-  <h1>v14 &mdash; Full Backbone Diffusion Model</h1>
-  <p class="subtitle">Full-backbone prediction with peptide-plane frames &middot; Click any box to expand</p>
+          <!-- Peptide bond to next -->
+          <line x1="160" y1="40" x2="240" y2="40" stroke="var(--svg-fg)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="200" y="30" fill="var(--text3)" font-size="9">peptide bond</text>
+          <text x="200" y="55" fill="var(--text3)" font-size="9">1.329&#197;</text>
+
+          <!-- Residue 2 -->
+          <circle cx="240" cy="40" r="6" fill="var(--svg-accent)" opacity=".3" stroke="var(--svg-accent)" stroke-width="1.5"/>
+          <circle cx="280" cy="40" r="8" fill="var(--svg-accent)" stroke="var(--svg-accent)" stroke-width="2"/>
+          <circle cx="320" cy="40" r="6" fill="var(--svg-accent)" opacity=".3" stroke="var(--svg-accent)" stroke-width="1.5"/>
+          <circle cx="345" cy="55" r="5" fill="var(--svg-red)" opacity=".4" stroke="var(--svg-red)" stroke-width="1"/>
+          <line x1="240" y1="40" x2="280" y2="40" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <line x1="280" y1="40" x2="320" y2="40" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <line x1="320" y1="40" x2="345" y2="55" stroke="var(--svg-fg)" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="240" y="70" fill="var(--svg-fg2)" font-size="10">N</text>
+          <text x="280" y="70" fill="var(--svg-accent)" font-weight="bold" font-size="10">CA</text>
+          <text x="320" y="70" fill="var(--svg-fg2)" font-size="10">C</text>
+          <text x="345" y="78" fill="var(--svg-red)" font-size="9">O</text>
+
+          <!-- Dots for more -->
+          <line x1="320" y1="40" x2="400" y2="40" stroke="var(--svg-fg)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <circle cx="420" cy="40" r="6" fill="var(--svg-accent)" opacity=".3" stroke="var(--svg-accent)" stroke-width="1.5"/>
+          <circle cx="460" cy="40" r="8" fill="var(--svg-accent)" stroke="var(--svg-accent)" stroke-width="2"/>
+          <circle cx="500" cy="40" r="6" fill="var(--svg-accent)" opacity=".3" stroke="var(--svg-accent)" stroke-width="1.5"/>
+          <circle cx="525" cy="55" r="5" fill="var(--svg-red)" opacity=".4" stroke="var(--svg-red)" stroke-width="1"/>
+          <line x1="420" y1="40" x2="460" y2="40" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <line x1="460" y1="40" x2="500" y2="40" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <line x1="500" y1="40" x2="525" y2="55" stroke="var(--svg-fg)" stroke-width="1" stroke-dasharray="3,2"/>
+
+          <!-- Brace for one residue -->
+          <path d="M 65 95 Q 120 110 175 95" stroke="var(--svg-accent)" fill="none" stroke-width="1"/>
+          <text x="120" y="125" fill="var(--svg-accent)" font-size="11" font-weight="600">one residue: (4 atoms, 3 coords each)</text>
+
+          <!-- Tensor shape -->
+          <rect x="540" y="20" width="150" height="45" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+          <text x="615" y="37" fill="var(--text3)" font-size="9">tensor shape:</text>
+          <text x="615" y="52" fill="var(--svg-accent)" font-weight="bold" font-size="11">(B, L, 4, 3)</text>
+        </g>
+      </svg>
+    </div>
+    <div class="explain">
+      <strong>v14 predicts all 4 backbone atoms</strong> per residue, not just C&alpha;. Each residue is represented as [N, CA, C, O] &mdash; the minimal backbone that defines the protein chain geometry.
+    </div>
+  </div></div>
 </div>
 
-<div class="diagram" id="diagram">
+<div class="conn"><div class="l"></div></div>
 
-  <!-- 1. INPUT -->
-  <div class="box" onclick="toggle(this)">
-    <span class="expand-icon">&#9660;</span>
-    <h3>1. Input Tensors <span class="new-badge">NEW</span></h3>
-    <div class="summary">ids, true_coords, true_backbone, masks</div>
-    <div class="details">
-      <ul>
-        <li><code>ids</code> &mdash; (B, L) token sequence</li>
-        <li><code>true_coords</code> &mdash; (B, L, 3) C&alpha; coordinates</li>
-        <li><code>true_backbone</code> &mdash; (B, L, 4, 3) [N, CA, C, O] atoms <span class="new-badge">NEW</span></li>
-        <li><code>coord_mask</code> &mdash; (B, L) per-residue mask</li>
-        <li><code>backbone_mask</code> &mdash; (B, L, 4) per-atom mask <span class="new-badge">NEW</span></li>
-      </ul>
-    </div>
+<!-- ===== 2. ENCODER ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">1</span>
+    <span class="block-title">Frozen Protein Encoder</span>
+    <span class="arr">&#9654;</span>
   </div>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 130" width="700" height="130">
+        <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--svg-fg)"/></marker></defs>
+        <!-- Sequence input -->
+        <rect x="20" y="35" width="120" height="40" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+        <text x="80" y="50" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="inherit">amino acid sequence</text>
+        <text x="80" y="64" text-anchor="middle" font-size="12" fill="var(--svg-fg)" font-family="monospace">M E T H I K ...</text>
 
-  <div class="arrow"></div>
+        <!-- Arrow -->
+        <line x1="145" y1="55" x2="195" y2="55" stroke="var(--svg-fg)" stroke-width="1.5" marker-end="url(#ah)"/>
 
-  <!-- 2. FROZEN ENCODER -->
-  <div class="box" onclick="toggle(this)">
-    <span class="expand-icon">&#9660;</span>
-    <h3>2. Frozen Encoder <span class="tag">FROZEN</span></h3>
-    <div class="summary">ContactClassifier &rarr; single embeddings + contact probabilities</div>
-    <div class="details">
-      <ul>
-        <li>Pre-trained <strong>ContactClassifier</strong> (weights frozen)</li>
-        <li>Output: <code>single</code> (B, L, 128) &mdash; per-residue embeddings</li>
-        <li>Output: <code>contact_probs</code> (B, L, L) &mdash; pairwise contact map</li>
-      </ul>
+        <!-- Encoder box -->
+        <rect x="200" y="25" width="130" height="60" rx="6" fill="var(--bg2)" stroke="var(--svg-accent)" stroke-width="2"/>
+        <text x="265" y="48" text-anchor="middle" font-size="11" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">Contact</text>
+        <text x="265" y="62" text-anchor="middle" font-size="11" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">Classifier</text>
+        <text x="265" y="78" text-anchor="middle" font-size="8" fill="var(--text3)" font-family="inherit">&#x1F512; frozen</text>
+
+        <!-- Two outputs -->
+        <line x1="335" y1="42" x2="400" y2="30" stroke="var(--svg-fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+        <line x1="335" y1="65" x2="400" y2="80" stroke="var(--svg-fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+
+        <!-- Single repr -->
+        <rect x="405" y="12" width="130" height="35" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+        <text x="470" y="27" text-anchor="middle" font-size="10" fill="var(--svg-fg)" font-weight="600" font-family="inherit">single</text>
+        <text x="470" y="40" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="monospace">(B, L, 128)</text>
+
+        <!-- Contact map - small heatmap -->
+        <rect x="405" y="60" width="130" height="55" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+        <text x="435" y="75" font-size="10" fill="var(--svg-fg)" font-weight="600" font-family="inherit">contacts</text>
+        <!-- Mini heatmap grid -->
+        <g transform="translate(500,65)">
+          <rect x="0" y="0" width="8" height="8" fill="var(--svg-accent)" opacity=".8"/>
+          <rect x="8" y="0" width="8" height="8" fill="var(--svg-accent)" opacity=".1"/>
+          <rect x="16" y="0" width="8" height="8" fill="var(--svg-accent)" opacity=".3"/>
+          <rect x="0" y="8" width="8" height="8" fill="var(--svg-accent)" opacity=".1"/>
+          <rect x="8" y="8" width="8" height="8" fill="var(--svg-accent)" opacity=".8"/>
+          <rect x="16" y="8" width="8" height="8" fill="var(--svg-accent)" opacity=".6"/>
+          <rect x="0" y="16" width="8" height="8" fill="var(--svg-accent)" opacity=".3"/>
+          <rect x="8" y="16" width="8" height="8" fill="var(--svg-accent)" opacity=".6"/>
+          <rect x="16" y="16" width="8" height="8" fill="var(--svg-accent)" opacity=".8"/>
+          <rect x="0" y="24" width="24" height="0" stroke="var(--border)" fill="none"/>
+        </g>
+        <text x="512" y="108" text-anchor="middle" font-size="8" fill="var(--text3)" font-family="monospace">(B, L, L)</text>
+      </svg>
     </div>
-  </div>
-
-  <div class="arrow"></div>
-
-  <!-- 3. PAIR STACK -->
-  <div class="box" onclick="toggle(this)">
-    <span class="expand-icon">&#9660;</span>
-    <h3>3. Pair Stack</h3>
-    <div class="summary">SingleToPairV13 + RPE + OPM + Contact Conditioning &rarr; 8&times; EnhancedPairBlock</div>
-    <div class="details">
-      <ul>
-        <li><strong>SingleToPairV13</strong> projects single &rarr; pair representation</li>
-        <li><strong>LogScaledRPE</strong> &mdash; 128 bins, max distance 512 residues</li>
-        <li><strong>OuterProductMean</strong> &mdash; d_opm=32</li>
-        <li><strong>Contact Map Conditioning</strong> &mdash; gated, d=128</li>
-        <li>8&times; <strong>EnhancedPairBlock</strong>: TriMul (out + in) + AxialBlock</li>
-        <li>Output: <code>pair</code> (B, L, L, 128)</li>
-      </ul>
+    <div class="explain">
+      Pre-trained encoder converts amino acid sequence into <strong>per-residue features</strong> (128-dim) and a <strong>contact probability map</strong> (which residues are physically close). All weights frozen &mdash; no gradients flow back.
     </div>
-  </div>
-
-  <div class="arrow"></div>
-
-  <!-- 4. DIFFUSION -->
-  <div class="box" onclick="toggle(this)">
-    <span class="expand-icon">&#9660;</span>
-    <h3>4. Diffusion Process</h3>
-    <div class="summary">Normalize &rarr; sample t &rarr; add noise to C&alpha; coords</div>
-    <div class="details">
-      <ul>
-        <li>Normalize C&alpha; coordinates (center + scale)</li>
-        <li>Sample diffusion timestep <code>t ~ U(0, T)</code></li>
-        <li>Add Gaussian noise to C&alpha; positions: <code>x_t = &alpha;_t x_0 + &sigma;_t &epsilon;</code></li>
-        <li><strong>Note:</strong> Noise applied only to C&alpha; &mdash; full backbone is derived from frames</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="arrow"></div>
-
-  <!-- 5. FRAME INIT -->
-  <div class="box" onclick="toggle(this)">
-    <span class="expand-icon">&#9660;</span>
-    <h3>5. Frame Init &mdash; Peptide Plane <span class="new-badge">NEW</span></h3>
-    <div class="summary">Peptide Plane Frames from N-CA-C (more stable than CA-triplet Gram-Schmidt)</div>
-    <div class="details">
-      <p style="margin-bottom:6px;"><strong>init_frames_backbone()</strong> &mdash; uses peptide plane geometry:</p>
-      <div class="formula">
-        e1 = CA&rarr;C (normalized)<br>
-        e3 = (N&minus;CA) &times; e1 (normalized)<br>
-        e2 = e3 &times; e1
-      </div>
-      <ul style="margin-top:8px;">
-        <li>Peptide plane frame is more geometrically stable than CA-triplet Gram-Schmidt</li>
-        <li><strong>SNR-gated confidence</strong> blends noisy vs. ideal frames</li>
-        <li><strong>SLERP</strong> interpolation for smooth rotation blending</li>
-        <li>Output: rotation matrices <code>R</code> (B, L, 3, 3) + translations <code>t</code> (B, L, 3)</li>
-      </ul>
-      <p style="margin-top:8px;font-size:0.78rem;"><strong>Self-Conditioning (50%):</strong> With 50% probability, run denoiser once to get x&#x302;&#x2080;, then feed as additional input for the real forward pass. At inference: always self-condition (two passes per step).</p>
-    </div>
-  </div>
-
-  <div class="arrow"></div>
-
-  <!-- 6. IPA DENOISER + BACKBONE HEAD -->
-  <div class="box" onclick="toggle(this)">
-    <span class="expand-icon">&#9660;</span>
-    <h3>6. IPA Denoiser + BackboneAtomHead <span class="new-badge">NEW</span></h3>
-    <div class="summary">8&times; IPABlock &rarr; x&#x302;&#x2080;, R&#x302; &rarr; BackboneAtomHead &rarr; full [N, CA, C, O]</div>
-    <div class="details">
-      <p style="margin-bottom:6px;font-weight:600;">IPA Denoiser (FrameDenoiserV14):</p>
-      <ul>
-        <li>8&times; <strong>IPABlock</strong> (same architecture as v13b)</li>
-        <li>Invariant Point Attention over frames + pair representation</li>
-        <li>Predicts: <code>x0_pred</code> (B, L, 3), <code>R_pred</code> (B, L, 3, 3)</li>
-        <li>Hidden state <code>h</code> (B, L, 512) passes to BackboneAtomHead</li>
-      </ul>
-
-      <p style="margin:12px 0 6px;font-weight:600;">BackboneAtomHead <span class="new-badge">NEW</span>:</p>
-      <div class="formula">MLP: 512 &rarr; 256 &rarr; 256 &rarr; 9 &nbsp;(3 atoms &times; 3 coords)</div>
-      <p style="margin:8px 0 4px;">Outputs: &delta;N, &delta;C, &delta;O (learned offsets from ideal geometry)</p>
-      <p style="margin-bottom:6px;"><strong>Ideal bond lengths:</strong></p>
-      <ul>
-        <li>N&ndash;CA = 1.458 &Aring;</li>
-        <li>CA&ndash;C = 1.523 &Aring;</li>
-        <li>C=O = 1.231 &Aring;</li>
-      </ul>
-      <p style="margin:8px 0 4px;"><strong>Reconstruction:</strong></p>
-      <div class="formula">pos_atom = t + R @ (ideal_offset + &delta;)</div>
-      <ul style="margin-top:8px;">
-        <li>CA always sits at frame origin (no offset learned)</li>
-        <li><strong>Zero-initialized</strong> &mdash; starts predicting ideal geometry, learns corrections</li>
-        <li>Output: <code>backbone_pred</code> (B, L, 4, 3) &mdash; [N, CA, C, O]</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="arrow"></div>
-
-  <!-- 7. AUXILIARY HEADS -->
-  <div class="box" onclick="toggle(this)">
-    <span class="expand-icon">&#9660;</span>
-    <h3>7. Auxiliary Heads</h3>
-    <div class="summary">AuxPairStack + OrdinalDistanceHead + RgPredictor</div>
-    <div class="details">
-      <ul>
-        <li><strong>AuxPairStack</strong> &mdash; lightweight pair refinement</li>
-        <li><strong>OrdinalDistanceHead</strong> &mdash; ordinal distance bins</li>
-        <li><strong>RgPredictor</strong> &mdash; radius of gyration prediction</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="arrow"></div>
-
-  <!-- 8. LOSSES -->
-  <div class="row">
-    <!-- CA LOSSES -->
-    <div class="box" onclick="toggle(this)">
-      <span class="expand-icon">&#9660;</span>
-      <h3>C&alpha; Losses <span class="tag">9 terms</span></h3>
-      <div class="summary">Inherited from v13b</div>
-      <div class="details">
-        <table class="loss-table">
-          <tr><th>Loss</th><th>Weight</th><th>Clamp</th></tr>
-          <tr><td>FAPE</td><td>1.0</td><td>max 10.0</td></tr>
-          <tr><td>Frame Rotation</td><td>0.5</td><td>max 2.0</td></tr>
-          <tr><td>Distance MSE</td><td>1.0</td><td>max 10.0</td></tr>
-          <tr><td>Bond Geometry</td><td>3.0</td><td>max 10.0 (annealed 1&rarr;3)</td></tr>
-          <tr><td>Chirality</td><td>0.1</td><td>&mdash;</td></tr>
-          <tr><td>Angle</td><td>0.5</td><td>&mdash;</td></tr>
-          <tr><td>Clash</td><td>0.1</td><td>max 25.0</td></tr>
-          <tr><td>Aux Distance</td><td>0.03</td><td>&mdash;</td></tr>
-          <tr><td>Rg Loss</td><td>0.5</td><td>&mdash;</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- BACKBONE LOSSES -->
-    <div class="box" onclick="toggle(this)">
-      <span class="expand-icon">&#9660;</span>
-      <h3>BB Losses <span class="new-badge">NEW</span> <span class="tag">4 terms</span></h3>
-      <div class="summary">Scaled by bb_ramp schedule</div>
-      <div class="details">
-        <table class="loss-table">
-          <tr><th>Loss</th><th>Weight</th><th>Clamp</th></tr>
-          <tr><td>BB FAPE</td><td>1.0</td><td>max 10.0</td></tr>
-          <tr><td>BB Bond</td><td>2.0</td><td>max 10.0</td></tr>
-          <tr><td>BB Angle</td><td>0.5</td><td>max 5.0</td></tr>
-          <tr><td>Omega</td><td>0.5</td><td>max 5.0</td></tr>
-        </table>
-        <p style="margin-top:8px;font-size:0.76rem;"><strong>BB FAPE:</strong> All 4 atoms [N, CA, C, O] in local frames</p>
-        <p style="font-size:0.76rem;"><strong>BB Bond:</strong> N-CA, CA-C, C=O, C-N(next) vs ideal lengths</p>
-        <p style="font-size:0.76rem;"><strong>BB Angle:</strong> N-CA-C, CA-C-N, C-N-CA angles</p>
-        <p style="font-size:0.76rem;"><strong>Omega:</strong> Peptide bond planarity, 1+cos(&omega;)</p>
-        <div style="margin-top:12px;">
-          <p style="font-size:0.76rem;font-weight:600;margin-bottom:4px;">bb_ramp schedule:</p>
-          <div class="formula">bb_ramp = min(epoch / 5, 1.0)</div>
-          <canvas id="rampCanvas" width="260" height="60" style="display:block;margin-top:8px;background:var(--bg);"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="arrow"></div>
-
-  <!-- 9. TRACKED METRIC -->
-  <div class="box" onclick="toggle(this)">
-    <span class="expand-icon">&#9660;</span>
-    <h3>9. Tracked Metric: val_structural</h3>
-    <div class="summary">total &minus; aux&times;0.03 &minus; bb_contribution</div>
-    <div class="details">
-      <div class="formula">
-        val_structural = total &minus; aux &times; 0.03 &minus; bb_contribution
-      </div>
-      <p style="margin-top:6px;font-size:0.76rem;">where:</p>
-      <div class="formula" style="font-size:0.72rem;">
-        bb_contribution = bb_ramp &times; (<br>
-        &nbsp;&nbsp;w_bb_fape &times; l_bb_fape +<br>
-        &nbsp;&nbsp;w_bb_bond &times; l_bb_bond +<br>
-        &nbsp;&nbsp;w_bb_angle &times; l_bb_angle +<br>
-        &nbsp;&nbsp;w_omega &times; l_omega<br>
-        )
-      </div>
-    </div>
-  </div>
-
-  <div class="arrow"></div>
-
-  <!-- 10. TRAINING CONFIG -->
-  <div class="box" onclick="toggle(this)">
-    <span class="expand-icon">&#9660;</span>
-    <h3>10. Training Configuration</h3>
-    <div class="summary">AdamW, per-module LR, CFG 10%, EMA 0.999</div>
-    <div class="details">
-      <p style="margin-bottom:6px;font-weight:600;">Per-module Learning Rates (AdamW):</p>
-      <table class="loss-table">
-        <tr><th>Module</th><th>LR</th><th>Note</th></tr>
-        <tr><td>Denoiser (IPA)</td><td>2e-5</td><td>base</td></tr>
-        <tr><td>Pair Stack</td><td>6e-5</td><td>3&times;</td></tr>
-        <tr><td>BackboneAtomHead</td><td>10e-5</td><td>5&times; <span class="new-badge">NEW</span></td></tr>
-      </table>
-      <p style="margin-top:8px;font-size:0.76rem;"><strong>LR Schedule:</strong> Warmup 5 epochs &rarr; Constant 15 epochs &rarr; Cosine decay</p>
-      <p style="font-size:0.76rem;"><strong>CFG:</strong> 10% dropout (classifier-free guidance)</p>
-      <p style="font-size:0.76rem;"><strong>EMA:</strong> 0.999 exponential moving average</p>
-      <canvas id="lrCanvas" width="380" height="60" style="display:block;margin-top:10px;background:var(--bg);width:100%;max-width:380px;"></canvas>
-    </div>
-  </div>
-
+  </div></div>
 </div>
+
+<div class="conn"><div class="l"></div></div>
+
+<!-- ===== 3. PAIR STACK ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">2</span>
+    <span class="block-title">Pair Stack &mdash; Triangle Updates &times;8</span>
+    <span class="arr">&#9654;</span>
+  </div>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 200" width="700" height="200">
+        <defs><marker id="ah2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--svg-accent)"/></marker></defs>
+        <text x="350" y="18" text-anchor="middle" font-size="12" fill="var(--svg-fg)" font-weight="bold" font-family="inherit">Triangle Multiplicative Update</text>
+        <text x="350" y="32" text-anchor="middle" font-size="10" fill="var(--text3)" font-family="inherit">How edge (i,j) learns about the structure</text>
+
+        <!-- Triangle: i, j, k -->
+        <g transform="translate(100, 50)">
+          <!-- Triangle -->
+          <circle cx="0" cy="120" r="16" fill="var(--svg-accent)" opacity=".15" stroke="var(--svg-accent)" stroke-width="2"/>
+          <circle cx="200" cy="120" r="16" fill="var(--svg-accent)" opacity=".15" stroke="var(--svg-accent)" stroke-width="2"/>
+          <circle cx="100" cy="10" r="16" fill="var(--svg-green)" opacity=".15" stroke="var(--svg-green)" stroke-width="2"/>
+          <text x="0" y="125" text-anchor="middle" font-size="16" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">i</text>
+          <text x="200" y="125" text-anchor="middle" font-size="16" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">j</text>
+          <text x="100" y="15" text-anchor="middle" font-size="16" fill="var(--svg-green)" font-weight="bold" font-family="inherit">k</text>
+
+          <!-- Edge i→k -->
+          <line x1="14" y1="108" x2="86" y2="24" stroke="var(--svg-green)" stroke-width="2" marker-end="url(#ah2)" opacity=".6"/>
+          <text x="35" y="58" font-size="10" fill="var(--svg-green)" font-family="inherit" transform="rotate(-55,35,58)">edge(i,k)</text>
+
+          <!-- Edge k→j -->
+          <line x1="114" y1="24" x2="186" y2="108" stroke="var(--svg-green)" stroke-width="2" marker-end="url(#ah2)" opacity=".6"/>
+          <text x="165" y="58" font-size="10" fill="var(--svg-green)" font-family="inherit" transform="rotate(55,165,58)">edge(k,j)</text>
+
+          <!-- Edge i→j (the one being updated) -->
+          <line x1="18" y1="124" x2="180" y2="124" stroke="var(--svg-red)" stroke-width="3"/>
+          <text x="100" y="148" text-anchor="middle" font-size="11" fill="var(--svg-red)" font-weight="bold" font-family="inherit">edge(i,j) gets updated</text>
+        </g>
+
+        <!-- Equation -->
+        <g transform="translate(420, 55)">
+          <text x="0" y="15" font-size="11" fill="var(--svg-fg)" font-family="inherit" font-weight="600">The idea:</text>
+          <text x="0" y="35" font-size="10" fill="var(--text2)" font-family="inherit">&bull; To understand how residue i</text>
+          <text x="0" y="50" font-size="10" fill="var(--text2)" font-family="inherit">&nbsp; relates to residue j...</text>
+          <text x="0" y="70" font-size="10" fill="var(--text2)" font-family="inherit">&bull; Look at ALL intermediate</text>
+          <text x="0" y="85" font-size="10" fill="var(--text2)" font-family="inherit">&nbsp; residues k that connect them</text>
+          <text x="0" y="105" font-size="10" fill="var(--text2)" font-family="inherit">&bull; Aggregate: edge(i,j) +=</text>
+          <text x="0" y="120" font-size="10" fill="var(--svg-accent)" font-family="monospace">&nbsp; &Sigma;<tspan font-size="8" dy="2">k</tspan><tspan dy="-2"> edge(i,k) &times; edge(k,j)</tspan></text>
+          <text x="0" y="140" font-size="10" fill="var(--text2)" font-family="inherit">&bull; Repeated 8&times; to propagate</text>
+          <text x="0" y="155" font-size="10" fill="var(--text2)" font-family="inherit">&nbsp; long-range structural info</text>
+        </g>
+      </svg>
+    </div>
+    <div class="explain">
+      The pair stack builds a <strong>pairwise relationship matrix</strong> (B, L, L, 128). Each entry describes how two residues relate structurally. The triangle update is inspired by AlphaFold2: if residue i is near k, and k is near j, then i is likely near j. Eight rounds of this propagate information across the whole chain. Also includes <strong>contact map conditioning</strong> (gated injection from encoder) and <strong>OuterProductMean</strong> (d=32).
+    </div>
+  </div></div>
+</div>
+
+<div class="conn"><div class="l"></div></div>
+
+<!-- ===== 4. DIFFUSION ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">3</span>
+    <span class="block-title">Diffusion &mdash; Add Noise, Learn to Denoise</span>
+    <span class="arr">&#9654;</span>
+  </div>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 140" width="700" height="140">
+        <!-- Clean structure (helix-like) -->
+        <g transform="translate(40,30)">
+          <text x="50" y="-5" text-anchor="middle" font-size="10" fill="var(--svg-green)" font-weight="600" font-family="inherit">clean structure</text>
+          <path d="M10,50 Q25,20 40,50 Q55,80 70,50 Q85,20 100,50" stroke="var(--svg-green)" stroke-width="2.5" fill="none"/>
+          <circle cx="10" cy="50" r="4" fill="var(--svg-green)"/>
+          <circle cx="40" cy="50" r="4" fill="var(--svg-green)"/>
+          <circle cx="70" cy="50" r="4" fill="var(--svg-green)"/>
+          <circle cx="100" cy="50" r="4" fill="var(--svg-green)"/>
+          <text x="50" y="85" text-anchor="middle" font-size="10" fill="var(--text3)" font-family="monospace">x&#x2080;</text>
+        </g>
+
+        <!-- Arrow with noise equation -->
+        <g transform="translate(165,55)">
+          <line x1="0" y1="25" x2="100" y2="25" stroke="var(--svg-fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+          <text x="50" y="15" text-anchor="middle" font-size="9" fill="var(--svg-fg)" font-family="inherit">+ noise (&epsilon;)</text>
+          <text x="50" y="55" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="monospace">x&#x209C; = &#x221A;&#x3B1;&#x305;&#x209C;&#x22C5;x&#x2080; + &#x221A;(1-&#x3B1;&#x305;&#x209C;)&#x22C5;&epsilon;</text>
+        </g>
+
+        <!-- Noisy structure (scattered dots) -->
+        <g transform="translate(290,30)">
+          <text x="50" y="-5" text-anchor="middle" font-size="10" fill="var(--svg-red)" font-weight="600" font-family="inherit">noisy structure</text>
+          <circle cx="15" cy="35" r="4" fill="var(--svg-red)" opacity=".6"/>
+          <circle cx="55" cy="60" r="4" fill="var(--svg-red)" opacity=".6"/>
+          <circle cx="85" cy="25" r="4" fill="var(--svg-red)" opacity=".6"/>
+          <circle cx="40" cy="55" r="4" fill="var(--svg-red)" opacity=".6"/>
+          <circle cx="70" cy="45" r="4" fill="var(--svg-red)" opacity=".6"/>
+          <circle cx="30" cy="30" r="4" fill="var(--svg-red)" opacity=".6"/>
+          <!-- Dashed connections to show it's scrambled -->
+          <line x1="15" y1="35" x2="30" y2="30" stroke="var(--svg-red)" stroke-width="1" stroke-dasharray="2,2" opacity=".4"/>
+          <line x1="30" y1="30" x2="55" y2="60" stroke="var(--svg-red)" stroke-width="1" stroke-dasharray="2,2" opacity=".4"/>
+          <text x="50" y="85" text-anchor="middle" font-size="10" fill="var(--text3)" font-family="monospace">x&#x209C;</text>
+        </g>
+
+        <!-- Arrow: model predicts clean -->
+        <g transform="translate(415,55)">
+          <line x1="0" y1="25" x2="100" y2="25" stroke="var(--svg-accent)" stroke-width="2" marker-end="url(#ah)"/>
+          <text x="50" y="15" text-anchor="middle" font-size="10" fill="var(--svg-accent)" font-weight="600" font-family="inherit">model predicts</text>
+          <text x="50" y="55" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="inherit">denoise x&#x209C; &rarr; x&#x302;&#x2080;</text>
+        </g>
+
+        <!-- Predicted structure -->
+        <g transform="translate(540,30)">
+          <text x="60" y="-5" text-anchor="middle" font-size="10" fill="var(--svg-accent)" font-weight="600" font-family="inherit">predicted structure</text>
+          <path d="M10,50 Q25,22 40,50 Q55,78 70,50 Q85,22 100,50" stroke="var(--svg-accent)" stroke-width="2.5" fill="none" stroke-dasharray="4,2"/>
+          <circle cx="10" cy="50" r="4" fill="var(--svg-accent)"/>
+          <circle cx="40" cy="50" r="4" fill="var(--svg-accent)"/>
+          <circle cx="70" cy="50" r="4" fill="var(--svg-accent)"/>
+          <circle cx="100" cy="50" r="4" fill="var(--svg-accent)"/>
+          <text x="60" y="85" text-anchor="middle" font-size="10" fill="var(--text3)" font-family="monospace">x&#x302;&#x2080;</text>
+        </g>
+      </svg>
+    </div>
+    <div class="explain">
+      <strong>Training:</strong> Take a known protein structure, add random Gaussian noise at a random timestep t (out of 1000), then train the model to predict the original clean structure from the noisy version. <strong>Generation:</strong> Start from pure noise, iteratively denoise using DDIM (50 steps) to generate new protein structures.
+    </div>
+  </div></div>
+</div>
+
+<div class="conn"><div class="l"></div></div>
+
+<!-- ===== 5. FRAME INIT ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">4</span>
+    <span class="block-title">Frame Initialization &mdash; Peptide Plane</span>
+    <span class="tag tag-new">NEW</span>
+    <span class="arr">&#9654;</span>
+  </div>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 220" width="700" height="220">
+        <!-- Local coordinate frame at one residue -->
+        <g transform="translate(100,120)">
+          <text x="100" y="-100" text-anchor="middle" font-size="12" fill="var(--svg-fg)" font-weight="bold" font-family="inherit">Local Frame from Peptide Plane</text>
+
+          <!-- Peptide plane (shaded triangle) -->
+          <polygon points="-60,30 0,0 80,0" fill="var(--svg-accent)" opacity=".07" stroke="var(--svg-accent)" stroke-width="1" stroke-dasharray="3,2"/>
+
+          <!-- Atoms -->
+          <circle cx="-60" cy="30" r="10" fill="var(--svg-green)" opacity=".2" stroke="var(--svg-green)" stroke-width="2"/>
+          <text x="-60" y="35" text-anchor="middle" font-size="12" fill="var(--svg-green)" font-weight="bold" font-family="inherit">N</text>
+
+          <circle cx="0" cy="0" r="12" fill="var(--svg-accent)" opacity=".2" stroke="var(--svg-accent)" stroke-width="2.5"/>
+          <text x="0" y="5" text-anchor="middle" font-size="13" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">CA</text>
+          <text x="0" y="20" font-size="8" text-anchor="middle" fill="var(--text3)" font-family="inherit">origin</text>
+
+          <circle cx="80" cy="0" r="10" fill="var(--svg-orange)" opacity=".2" stroke="var(--svg-orange)" stroke-width="2"/>
+          <text x="80" y="5" text-anchor="middle" font-size="12" fill="var(--svg-orange)" font-weight="bold" font-family="inherit">C</text>
+
+          <!-- Bonds -->
+          <line x1="-48" y1="25" x2="-12" y2="5" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <line x1="12" y1="0" x2="68" y2="0" stroke="var(--svg-fg)" stroke-width="1.5"/>
+
+          <!-- X axis: CA→C (red) -->
+          <line x1="5" y1="-5" x2="55" y2="-5" stroke="var(--svg-red)" stroke-width="2.5" marker-end="url(#ah)"/>
+          <text x="60" y="-10" font-size="11" fill="var(--svg-red)" font-weight="bold" font-family="inherit">x</text>
+          <text x="70" y="-10" font-size="9" fill="var(--text3)" font-family="inherit">(CA&rarr;C)</text>
+
+          <!-- Z axis: normal to plane (blue, pointing up) -->
+          <line x1="0" y1="-10" x2="0" y2="-70" stroke="var(--svg-accent)" stroke-width="2.5" marker-end="url(#ah)"/>
+          <text x="8" y="-72" font-size="11" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">z</text>
+          <text x="20" y="-72" font-size="9" fill="var(--text3)" font-family="inherit">(plane normal)</text>
+
+          <!-- Y axis (green, perpendicular in plane) -->
+          <line x1="-5" y1="-5" x2="-45" y2="-45" stroke="var(--svg-green)" stroke-width="2.5" marker-end="url(#ah)"/>
+          <text x="-55" y="-45" font-size="11" fill="var(--svg-green)" font-weight="bold" font-family="inherit">y</text>
+          <text x="-45" y="-55" font-size="9" fill="var(--text3)" font-family="inherit">(z &times; x)</text>
+        </g>
+
+        <!-- Comparison box -->
+        <g transform="translate(420, 40)">
+          <rect x="0" y="0" width="250" height="140" rx="6" fill="var(--bg2)" stroke="var(--border)"/>
+          <text x="125" y="22" text-anchor="middle" font-size="11" fill="var(--svg-fg)" font-weight="bold" font-family="inherit">Why peptide plane?</text>
+          <line x1="20" y1="30" x2="230" y2="30" stroke="var(--border)"/>
+          <text x="15" y="50" font-size="10" fill="var(--svg-red)" font-family="inherit">v13 (old): CA triplets</text>
+          <text x="15" y="65" font-size="9" fill="var(--text2)" font-family="inherit">&bull; 3 consecutive C&alpha; atoms</text>
+          <text x="15" y="78" font-size="9" fill="var(--text2)" font-family="inherit">&bull; Nearly collinear at high noise</text>
+          <text x="15" y="91" font-size="9" fill="var(--svg-red)" font-family="inherit">&bull; Gram-Schmidt fails &rarr; NaN</text>
+          <line x1="20" y1="100" x2="230" y2="100" stroke="var(--border)"/>
+          <text x="15" y="118" font-size="10" fill="var(--svg-green)" font-family="inherit">v14 (new): N-CA-C plane</text>
+          <text x="15" y="133" font-size="9" fill="var(--text2)" font-family="inherit">&bull; Intra-residue atoms, always valid</text>
+        </g>
+      </svg>
+    </div>
+    <div class="explain">
+      Each residue gets a <strong>local coordinate frame</strong> (3 axes + origin at CA). The frame is built from the peptide plane defined by N, CA, C within the same residue. This is more stable than v13's approach of using 3 consecutive CA atoms. At high noise levels, CA triplets become nearly collinear and crash. Also includes <strong>SNR-gated confidence</strong> (SLERP toward identity at low signal) and <strong>self-conditioning</strong> (50% of the time, use a previous prediction as extra input).
+    </div>
+  </div></div>
+</div>
+
+<div class="conn"><div class="l"></div></div>
+
+<!-- ===== 6. IPA DENOISER ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">5</span>
+    <span class="block-title">IPA Denoiser &mdash; 8 Layers</span>
+    <span class="arr">&#9654;</span>
+  </div>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 280" width="700" height="280">
+        <text x="350" y="18" text-anchor="middle" font-size="12" fill="var(--svg-fg)" font-weight="bold" font-family="inherit">One IPA Layer (Invariant Point Attention)</text>
+
+        <!-- Two attention branches -->
+        <!-- Input -->
+        <rect x="260" y="30" width="180" height="28" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+        <text x="350" y="49" text-anchor="middle" font-size="10" fill="var(--svg-fg)" font-family="inherit">node features h (B, L, 512)</text>
+
+        <!-- Split into two branches -->
+        <line x1="310" y1="58" x2="310" y2="80" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="390" y1="58" x2="390" y2="80" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="310" y1="80" x2="130" y2="80" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="390" y1="80" x2="570" y2="80" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="130" y1="80" x2="130" y2="95" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="570" y1="80" x2="570" y2="95" stroke="var(--svg-fg)" stroke-width="1"/>
+
+        <!-- Scalar attention branch -->
+        <rect x="50" y="95" width="160" height="80" rx="6" fill="var(--bg2)" stroke="var(--svg-accent)" stroke-width="1.5"/>
+        <text x="130" y="115" text-anchor="middle" font-size="10" fill="var(--svg-accent)" font-weight="600" font-family="inherit">Scalar Attention</text>
+        <text x="130" y="132" text-anchor="middle" font-size="9" fill="var(--text2)" font-family="inherit">Standard Q, K, V</text>
+        <text x="130" y="145" text-anchor="middle" font-size="9" fill="var(--text2)" font-family="inherit">8 heads, 512-dim</text>
+        <text x="130" y="160" text-anchor="middle" font-size="9" fill="var(--text2)" font-family="inherit">+ pair bias on logits</text>
+
+        <!-- Point attention branch -->
+        <rect x="490" y="95" width="160" height="80" rx="6" fill="var(--bg2)" stroke="var(--svg-green)" stroke-width="1.5"/>
+        <text x="570" y="115" text-anchor="middle" font-size="10" fill="var(--svg-green)" font-weight="600" font-family="inherit">Point Attention</text>
+        <!-- Mini 3D frame diagram -->
+        <g transform="translate(525,125)">
+          <line x1="0" y1="0" x2="25" y2="0" stroke="var(--svg-red)" stroke-width="1.5"/>
+          <line x1="0" y1="0" x2="0" y2="-20" stroke="var(--svg-accent)" stroke-width="1.5"/>
+          <line x1="0" y1="0" x2="-12" y2="10" stroke="var(--svg-green)" stroke-width="1.5"/>
+          <circle cx="18" cy="-8" r="3" fill="var(--svg-orange)" opacity=".6"/>
+          <circle cx="8" cy="5" r="3" fill="var(--svg-orange)" opacity=".6"/>
+          <text x="30" y="-5" font-size="8" fill="var(--text3)" font-family="inherit">query</text>
+          <text x="30" y="5" font-size="8" fill="var(--text3)" font-family="inherit">points</text>
+        </g>
+        <text x="570" y="160" text-anchor="middle" font-size="9" fill="var(--text2)" font-family="inherit">3D queries in local frames</text>
+
+        <!-- Merge -->
+        <line x1="130" y1="175" x2="130" y2="195" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="570" y1="175" x2="570" y2="195" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="130" y1="195" x2="570" y2="195" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="350" y1="195" x2="350" y2="210" stroke="var(--svg-fg)" stroke-width="1"/>
+        <text x="350" y="190" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="inherit">concat &rarr; 1216 &rarr; Linear &rarr; 512</text>
+
+        <!-- FFN -->
+        <rect x="260" y="210" width="180" height="25" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+        <text x="350" y="227" text-anchor="middle" font-size="10" fill="var(--svg-fg)" font-family="inherit">FFN: 512 &rarr; 1024 &rarr; 512</text>
+
+        <!-- Frame Update -->
+        <line x1="350" y1="235" x2="350" y2="248" stroke="var(--svg-fg)" stroke-width="1"/>
+        <rect x="240" y="248" width="220" height="25" rx="4" fill="var(--svg-orange)" opacity=".1" stroke="var(--svg-orange)" stroke-width="1.5"/>
+        <text x="350" y="265" text-anchor="middle" font-size="10" fill="var(--svg-orange)" font-weight="600" font-family="inherit">Frame Update: MLP &rarr; &Delta;R, &Delta;t &rarr; SE(3) compose</text>
+
+        <!-- ×8 badge -->
+        <rect x="620" y="248" width="55" height="25" rx="12" fill="var(--svg-accent)" opacity=".15" stroke="var(--svg-accent)"/>
+        <text x="647" y="265" text-anchor="middle" font-size="12" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">&times;8</text>
+      </svg>
+    </div>
+    <div class="explain">
+      The core denoiser. <strong>Invariant Point Attention (IPA)</strong> combines standard sequence attention with <strong>3D geometric attention</strong> &mdash; queries and keys are actual 3D points positioned in each residue's local coordinate frame. This makes the attention SE(3)-equivariant: the output doesn't change if you rotate the whole structure. After each layer, the <strong>frame update</strong> refines each residue's rotation and translation. 8 layers of refinement progressively sharpen the structure prediction.
+    </div>
+  </div></div>
+</div>
+
+<div class="conn"><div class="l"></div></div>
+
+<!-- ===== 7. BACKBONE HEAD ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">6</span>
+    <span class="block-title">BackboneAtomHead &mdash; Place N, C, O</span>
+    <span class="tag tag-new">NEW</span>
+    <span class="arr">&#9654;</span>
+  </div>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 200" width="700" height="200">
+        <text x="350" y="18" text-anchor="middle" font-size="12" fill="var(--svg-fg)" font-weight="bold" font-family="inherit">Placing Backbone Atoms in the Local Frame</text>
+
+        <!-- Local frame with ideal positions -->
+        <g transform="translate(170,120)">
+          <!-- Axes -->
+          <line x1="0" y1="0" x2="80" y2="0" stroke="var(--svg-red)" stroke-width="1.5" opacity=".4"/>
+          <line x1="0" y1="0" x2="0" y2="-70" stroke="var(--svg-accent)" stroke-width="1.5" opacity=".4"/>
+          <line x1="0" y1="0" x2="-40" y2="30" stroke="var(--svg-green)" stroke-width="1.5" opacity=".4"/>
+          <text x="85" y="4" font-size="8" fill="var(--svg-red)" font-family="inherit" opacity=".6">x</text>
+          <text x="4" y="-72" font-size="8" fill="var(--svg-accent)" font-family="inherit" opacity=".6">z</text>
+
+          <!-- CA at origin -->
+          <circle cx="0" cy="0" r="10" fill="var(--svg-accent)" opacity=".25" stroke="var(--svg-accent)" stroke-width="2"/>
+          <text x="0" y="4" text-anchor="middle" font-size="10" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">CA</text>
+          <text x="0" y="22" text-anchor="middle" font-size="8" fill="var(--text3)" font-family="inherit">origin</text>
+
+          <!-- N at ideal position + delta -->
+          <circle cx="-50" cy="-30" r="4" fill="none" stroke="var(--svg-green)" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <text x="-50" y="-40" text-anchor="middle" font-size="8" fill="var(--svg-green)" opacity=".6" font-family="inherit">ideal N</text>
+          <!-- Actual N (shifted by delta) -->
+          <line x1="-50" y1="-30" x2="-42" y2="-35" stroke="var(--svg-green)" stroke-width="1.5"/>
+          <circle cx="-42" cy="-35" r="7" fill="var(--svg-green)" opacity=".2" stroke="var(--svg-green)" stroke-width="2"/>
+          <text x="-42" y="-32" text-anchor="middle" font-size="10" fill="var(--svg-green)" font-weight="bold" font-family="inherit">N</text>
+          <text x="-28" y="-40" font-size="7" fill="var(--svg-green)" font-family="inherit">+&Delta;</text>
+
+          <!-- C at ideal position + delta -->
+          <circle cx="70" cy="0" r="4" fill="none" stroke="var(--svg-orange)" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <text x="70" y="-12" text-anchor="middle" font-size="8" fill="var(--svg-orange)" opacity=".6" font-family="inherit">ideal C</text>
+          <line x1="70" y1="0" x2="75" y2="5" stroke="var(--svg-orange)" stroke-width="1.5"/>
+          <circle cx="75" cy="5" r="7" fill="var(--svg-orange)" opacity=".2" stroke="var(--svg-orange)" stroke-width="2"/>
+          <text x="75" y="9" text-anchor="middle" font-size="10" fill="var(--svg-orange)" font-weight="bold" font-family="inherit">C</text>
+          <text x="90" y="0" font-size="7" fill="var(--svg-orange)" font-family="inherit">+&Delta;</text>
+
+          <!-- O from C -->
+          <circle cx="100" cy="30" r="4" fill="none" stroke="var(--svg-red)" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <line x1="100" y1="30" x2="105" y2="35" stroke="var(--svg-red)" stroke-width="1.5"/>
+          <circle cx="105" cy="35" r="6" fill="var(--svg-red)" opacity=".2" stroke="var(--svg-red)" stroke-width="2"/>
+          <text x="105" y="39" text-anchor="middle" font-size="10" fill="var(--svg-red)" font-weight="bold" font-family="inherit">O</text>
+          <text x="118" y="30" font-size="7" fill="var(--svg-red)" font-family="inherit">+&Delta;</text>
+
+          <!-- Bond lines -->
+          <line x1="-35" y1="-32" x2="-5" y2="-5" stroke="var(--svg-fg)" stroke-width="1" opacity=".4"/>
+          <line x1="8" y1="2" x2="68" y2="5" stroke="var(--svg-fg)" stroke-width="1" opacity=".4"/>
+          <line x1="80" y1="10" x2="100" y2="30" stroke="var(--svg-fg)" stroke-width="1" opacity=".4"/>
+        </g>
+
+        <!-- MLP diagram -->
+        <g transform="translate(420,45)">
+          <rect x="0" y="0" width="250" height="140" rx="6" fill="var(--bg2)" stroke="var(--border)"/>
+          <text x="125" y="20" text-anchor="middle" font-size="10" fill="var(--svg-fg)" font-weight="600" font-family="inherit">How it works</text>
+          <line x1="15" y1="27" x2="235" y2="27" stroke="var(--border)"/>
+
+          <!-- MLP flow -->
+          <text x="20" y="45" font-size="9" fill="var(--text2)" font-family="inherit">1. MLP predicts small offsets:</text>
+          <text x="30" y="60" font-size="10" fill="var(--svg-accent)" font-family="monospace">h(512)&rarr;256&rarr;256&rarr;9</text>
+          <text x="30" y="75" font-size="9" fill="var(--text3)" font-family="inherit">(3 atoms &times; 3 xyz = 9 deltas)</text>
+
+          <text x="20" y="95" font-size="9" fill="var(--text2)" font-family="inherit">2. Add to ideal bond geometry:</text>
+          <text x="30" y="110" font-size="10" fill="var(--svg-accent)" font-family="monospace">offset = ideal + &Delta;</text>
+
+          <text x="20" y="130" font-size="9" fill="var(--text2)" font-family="inherit">3. Rotate into global coords:</text>
+          <text x="30" y="145" font-size="10" fill="var(--svg-accent)" font-family="monospace">pos = CA + R &times; offset</text>
+        </g>
+      </svg>
+    </div>
+    <div class="explain">
+      <strong>The key innovation of v14.</strong> After the IPA denoiser predicts frames (R, t), the BackboneAtomHead places N, C, O atoms relative to CA using learned offsets from ideal bond geometry (N-CA = 1.458&Aring;, CA-C = 1.523&Aring;, C=O = 1.231&Aring;). The MLP is <strong>zero-initialized</strong>, so it starts by producing ideal geometry and learns residue-specific corrections (proline kinks, glycine flexibility). CA is always exactly at the frame origin.
+    </div>
+  </div></div>
+</div>
+
+<div class="conn"><div class="l"></div></div>
+
+<!-- ===== 8. LOSSES ===== -->
+<div class="block open" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">7</span>
+    <span class="block-title">Loss Functions &mdash; 13 Terms</span>
+    <span class="arr">&#9654;</span>
+  </div>
+  <div class="block-body"><div class="body-inner">
+    <p style="font-size:.85rem;color:var(--text2);margin-bottom:8px"><strong>CA-level losses</strong> (inherited from v13b) &mdash; supervise C&alpha; positions</p>
+    <div class="loss-grid">
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><rect x="2" y="8" width="12" height="12" rx="2" fill="none" stroke="var(--svg-accent)" stroke-width="1.5" transform="rotate(-10,8,14)"/><rect x="18" y="10" width="12" height="12" rx="2" fill="none" stroke="var(--svg-red)" stroke-width="1.5" transform="rotate(5,24,16)"/><line x1="14" y1="14" x2="18" y2="16" stroke="var(--svg-fg)" stroke-width="1" stroke-dasharray="2,1"/></svg>
+        <div class="loss-info"><div class="loss-name">FAPE</div><div class="loss-w">w = 1.0</div><div class="loss-desc">Frame-aligned point error &mdash; how well do predicted points match true points in each residue's local frame?</div></div>
+      </div>
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><line x1="8" y1="24" x2="24" y2="24" stroke="var(--svg-accent)" stroke-width="2"/><line x1="8" y1="24" x2="8" y2="8" stroke="var(--svg-accent)" stroke-width="2"/><line x1="10" y1="22" x2="22" y2="22" stroke="var(--svg-red)" stroke-width="1.5" transform="rotate(-20,16,22)"/><line x1="10" y1="22" x2="10" y2="10" stroke="var(--svg-red)" stroke-width="1.5" transform="rotate(-20,10,22)"/><path d="M12,20 A4,4 0 0,1 14,18" stroke="var(--svg-orange)" stroke-width="1.5" fill="none"/></svg>
+        <div class="loss-info"><div class="loss-name">Frame Rotation</div><div class="loss-w">w = 0.5</div><div class="loss-desc">Angular distance between predicted and true coordinate frames: 1 - cos(&theta;)</div></div>
+      </div>
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="8" cy="16" r="4" fill="var(--svg-accent)" opacity=".3" stroke="var(--svg-accent)" stroke-width="1.5"/><circle cx="24" cy="16" r="4" fill="var(--svg-accent)" opacity=".3" stroke="var(--svg-accent)" stroke-width="1.5"/><line x1="12" y1="16" x2="20" y2="16" stroke="var(--svg-fg)" stroke-width="1" stroke-dasharray="2,2"/><text x="16" y="10" text-anchor="middle" font-size="7" fill="var(--text3)">d</text></svg>
+        <div class="loss-info"><div class="loss-name">Distance MSE</div><div class="loss-w">w = 1.0</div><div class="loss-desc">MSE on all pairwise C&alpha; distances</div></div>
+      </div>
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="10" cy="16" r="4" fill="var(--svg-green)" opacity=".3" stroke="var(--svg-green)" stroke-width="1.5"/><circle cx="22" cy="16" r="4" fill="var(--svg-green)" opacity=".3" stroke="var(--svg-green)" stroke-width="1.5"/><line x1="14" y1="16" x2="18" y2="16" stroke="var(--svg-green)" stroke-width="2"/><text x="16" y="28" text-anchor="middle" font-size="7" fill="var(--text3)">3.8&#197;</text></svg>
+        <div class="loss-info"><div class="loss-name">Bond Geometry</div><div class="loss-w">w = 3.0 (annealed 1&rarr;3)</div><div class="loss-desc">Consecutive C&alpha; distance vs 3.8&Aring; target</div></div>
+      </div>
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="10" r="3" fill="var(--svg-fg)" opacity=".3"/><circle cx="8" cy="22" r="3" fill="var(--svg-fg)" opacity=".3"/><circle cx="24" cy="22" r="3" fill="var(--svg-fg)" opacity=".3"/><circle cx="16" cy="28" r="3" fill="var(--svg-fg)" opacity=".3"/><line x1="16" y1="13" x2="8" y2="19" stroke="var(--svg-fg)" stroke-width="1"/><line x1="16" y1="13" x2="24" y2="19" stroke="var(--svg-fg)" stroke-width="1"/><line x1="16" y1="13" x2="16" y2="25" stroke="var(--svg-fg)" stroke-width="1"/><text x="16" y="7" text-anchor="middle" font-size="6" fill="var(--text3)">L/D</text></svg>
+        <div class="loss-info"><div class="loss-name">Chirality</div><div class="loss-w">w = 0.1</div><div class="loss-desc">Signed volume of C&alpha; quartets &mdash; correct handedness</div></div>
+      </div>
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="6" cy="20" r="3" fill="var(--svg-fg)" opacity=".3"/><circle cx="16" cy="10" r="3" fill="var(--svg-fg)" opacity=".3"/><circle cx="26" cy="20" r="3" fill="var(--svg-fg)" opacity=".3"/><line x1="9" y1="18" x2="14" y2="12" stroke="var(--svg-fg)" stroke-width="1.5"/><line x1="18" y1="12" x2="23" y2="18" stroke="var(--svg-fg)" stroke-width="1.5"/><path d="M10,15 A8,8 0 0,1 22,15" stroke="var(--svg-orange)" stroke-width="1.5" fill="none"/><text x="16" y="28" text-anchor="middle" font-size="7" fill="var(--text3)">&theta;</text></svg>
+        <div class="loss-info"><div class="loss-name">Angle</div><div class="loss-w">w = 0.5</div><div class="loss-desc">MSE on C&alpha;-C&alpha;-C&alpha; bond angles</div></div>
+      </div>
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="12" cy="16" r="6" fill="var(--svg-red)" opacity=".15" stroke="var(--svg-red)" stroke-width="1.5"/><circle cx="20" cy="16" r="6" fill="var(--svg-red)" opacity=".15" stroke="var(--svg-red)" stroke-width="1.5"/><text x="16" y="28" text-anchor="middle" font-size="6" fill="var(--svg-red)">overlap!</text></svg>
+        <div class="loss-info"><div class="loss-name">Clash</div><div class="loss-w">w = 0.1</div><div class="loss-desc">Penalizes atoms closer than 3.8&Aring;</div></div>
+      </div>
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="2" fill="none" stroke="var(--svg-fg)" stroke-width="1" opacity=".3"/><rect x="6" y="8" width="5" height="4" fill="var(--svg-accent)" opacity=".6"/><rect x="13" y="8" width="5" height="4" fill="var(--svg-accent)" opacity=".2"/><rect x="20" y="8" width="5" height="4" fill="var(--svg-accent)" opacity=".4"/><rect x="6" y="14" width="5" height="4" fill="var(--svg-accent)" opacity=".2"/><rect x="13" y="14" width="5" height="4" fill="var(--svg-accent)" opacity=".7"/><rect x="20" y="14" width="5" height="4" fill="var(--svg-accent)" opacity=".3"/></svg>
+        <div class="loss-info"><div class="loss-name">Aux Distance</div><div class="loss-w">w = 0.03</div><div class="loss-desc">Ordinal BCE on 32-bin distance predictions</div></div>
+      </div>
+      <div class="loss-item" style="grid-column:1/3">
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="none" stroke="var(--svg-fg)" stroke-width="1" stroke-dasharray="3,2" opacity=".4"/><circle cx="16" cy="16" r="2" fill="var(--svg-accent)"/><text x="16" y="30" text-anchor="middle" font-size="7" fill="var(--text3)">Rg</text></svg>
+        <div class="loss-info"><div class="loss-name">Rg Loss</div><div class="loss-w">w = 0.5</div><div class="loss-desc">MSE on log(radius of gyration) &mdash; ensures correct overall compactness</div></div>
+      </div>
+    </div>
+
+    <p style="font-size:.85rem;color:var(--text2);margin:16px 0 8px"><strong>Backbone losses</strong> <span class="tag tag-new" style="font-size:.6rem;vertical-align:middle">NEW</span> &mdash; supervise N, C, O atom positions (scaled by bb_ramp: 0&rarr;1 over first 5 epochs)</p>
+    <div class="loss-grid">
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="6" cy="16" r="3" fill="var(--svg-green)" opacity=".4"/><circle cx="14" cy="16" r="4" fill="var(--svg-accent)" opacity=".4"/><circle cx="22" cy="16" r="3" fill="var(--svg-orange)" opacity=".4"/><circle cx="28" cy="22" r="2.5" fill="var(--svg-red)" opacity=".4"/><rect x="1" y="6" width="30" height="22" rx="2" fill="none" stroke="var(--svg-accent)" stroke-width="1" stroke-dasharray="2,2" opacity=".5"/></svg>
+        <div class="loss-info"><div class="loss-name">BB FAPE</div><div class="loss-w">w = 1.0</div><div class="loss-desc">FAPE over all 4 backbone atoms in local frames</div></div>
+      </div>
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="6" cy="16" r="3" fill="var(--svg-green)"/><line x1="9" y1="16" x2="15" y2="16" stroke="var(--svg-fg)" stroke-width="1.5"/><circle cx="18" cy="16" r="3" fill="var(--svg-accent)"/><line x1="21" y1="16" x2="27" y2="16" stroke="var(--svg-fg)" stroke-width="1.5"/><circle cx="30" cy="16" r="2.5" fill="var(--svg-orange)"/><text x="12" y="12" text-anchor="middle" font-size="6" fill="var(--text3)">1.46</text><text x="24" y="12" text-anchor="middle" font-size="6" fill="var(--text3)">1.52</text></svg>
+        <div class="loss-info"><div class="loss-name">BB Bond</div><div class="loss-w">w = 2.0</div><div class="loss-desc">MSE on N-CA, CA-C, C=O, C-N bond lengths vs ideal</div></div>
+      </div>
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="6" cy="22" r="3" fill="var(--svg-green)"/><circle cx="16" cy="10" r="3" fill="var(--svg-accent)"/><circle cx="26" cy="22" r="3" fill="var(--svg-orange)"/><line x1="8" y1="20" x2="14" y2="12" stroke="var(--svg-fg)" stroke-width="1.5"/><line x1="18" y1="12" x2="24" y2="20" stroke="var(--svg-fg)" stroke-width="1.5"/><path d="M10,17 A7,7 0 0,1 22,17" stroke="var(--svg-orange)" stroke-width="1.5" fill="none"/><text x="16" y="8" text-anchor="middle" font-size="6" fill="var(--text3)">111.2&deg;</text></svg>
+        <div class="loss-info"><div class="loss-name">BB Angle</div><div class="loss-w">w = 0.5</div><div class="loss-desc">MSE on N-CA-C, CA-C-N, C-N-CA angles</div></div>
+      </div>
+      <div class="loss-item">
+        <svg width="32" height="32" viewBox="0 0 32 32"><rect x="4" y="10" width="24" height="12" rx="1" fill="var(--svg-accent)" opacity=".08" stroke="var(--svg-accent)" stroke-width="1"/><line x1="4" y1="16" x2="28" y2="16" stroke="var(--svg-fg)" stroke-width="1" stroke-dasharray="2,2" opacity=".4"/><circle cx="10" cy="12" r="2.5" fill="var(--svg-green)"/><circle cx="16" cy="20" r="2.5" fill="var(--svg-orange)"/><circle cx="22" cy="12" r="2.5" fill="var(--svg-green)"/><path d="M12,13 Q16,22 20,13" stroke="var(--svg-red)" stroke-width="1.5" fill="none"/><text x="16" y="8" text-anchor="middle" font-size="6" fill="var(--text3)">&omega;=180&deg;</text></svg>
+        <div class="loss-info"><div class="loss-name">Omega</div><div class="loss-w">w = 0.5</div><div class="loss-desc">Peptide bond planarity: 1 + cos(&omega;). Trans (&omega;=180&deg;) &rarr; 0</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div class="conn"><div class="l"></div></div>
+
+<!-- ===== TRACKED METRIC ===== -->
+<div class="metric-box">
+  <div class="metric-label">Tracked Metric (Early Stopping)</div>
+  <div class="metric-formula">structural = total &minus; aux&times;0.03 &minus; bb_ramp&times;(1.0&times;bb_fape + 2.0&times;bb_bond + 0.5&times;bb_angle + 0.5&times;omega)</div>
+  <div class="metric-note">CA-only structural loss, excluding aux and backbone terms. Patience: 15 epochs.</div>
+</div>
+
+<div class="conn"><div class="l"></div></div>
+
+<!-- ===== 9. TRAINING CONFIG ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">Config</span>
+    <span class="block-title">Training Configuration</span>
+    <span class="arr">&#9654;</span>
+  </div>
+  <div class="block-body"><div class="body-inner">
+    <div class="config-grid">
+      <div class="config-item"><div class="config-label">Optimizer</div><div class="config-val">AdamW</div></div>
+      <div class="config-item"><div class="config-label">Denoiser LR</div><div class="config-val">2e-5</div></div>
+      <div class="config-item"><div class="config-label">Pair Stack LR</div><div class="config-val">6e-5 (3&times;)</div></div>
+      <div class="config-item"><div class="config-label">BB Head LR</div><div class="config-val" style="color:var(--svg-orange)">10e-5 (5&times;) <span class="tag tag-new" style="font-size:.55rem;vertical-align:middle">NEW</span></div></div>
+      <div class="config-item"><div class="config-label">EMA Decay</div><div class="config-val">0.999</div></div>
+      <div class="config-item"><div class="config-label">CFG Uncond</div><div class="config-val">10%</div></div>
+    </div>
+    <div class="sub-block" style="margin-top:10px">
+      <div class="sub-block-title">LR Schedule</div>
+      <div class="explain"><ul>
+        <li><strong>Warmup</strong>: 5 epochs (linear ramp 1%&rarr;100%)</li>
+        <li><strong>Constant</strong>: epochs 6&ndash;20 at full LR</li>
+        <li><strong>Cosine decay</strong>: epochs 21&ndash;60 down to 1e-6</li>
+      </ul></div>
+    </div>
+  </div></div>
+</div>
+
+</div><!-- /wrap -->
 
 <script>
-function toggle(el) {
-  el.classList.toggle('open');
-  if (el.classList.contains('open')) {
-    requestAnimationFrame(drawCanvases);
-  }
+function tog(el){el.classList.toggle('open')}
+function toggleTheme(){
+  var h=document.documentElement,b=document.getElementById('themeBtn');
+  if(h.getAttribute('data-theme')==='dark'){h.removeAttribute('data-theme');b.textContent='\u{1F319}';localStorage.setItem('theme','light')}
+  else{h.setAttribute('data-theme','dark');b.textContent='\u{2600}\u{FE0F}';localStorage.setItem('theme','dark')}
 }
-
-function toggleTheme() {
-  var html=document.documentElement,btn=document.getElementById('themeBtn');
-  if(html.getAttribute('data-theme')==='dark'){html.removeAttribute('data-theme');btn.textContent='\u{1F319}';localStorage.setItem('theme','light')}
-  else{html.setAttribute('data-theme','dark');btn.textContent='\u{2600}\u{FE0F}';localStorage.setItem('theme','dark')}
-  requestAnimationFrame(drawCanvases);
-}
-
-function getColor() {
-  var isDark = document.documentElement.getAttribute('data-theme')==='dark';
-  return {
-    line: isDark ? '#58a6ff' : '#1772d0',
-    axis: isDark ? '#8b949e' : '#777',
-    bg: isDark ? '#0d1117' : '#ffffff'
-  };
-}
-
 (function(){var s=localStorage.getItem('theme');if(s==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('themeBtn').textContent='\u{2600}\u{FE0F}'}})();
-
-function drawCanvases() {
-  drawRamp();
-  drawLR();
-}
-
-function drawRamp() {
-  var c = document.getElementById('rampCanvas');
-  if (!c) return;
-  var ctx = c.getContext('2d');
-  var w = c.width, h = c.height;
-  var col = getColor();
-  ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = col.bg;
-  ctx.fillRect(0, 0, w, h);
-
-  var pad = {l: 28, r: 8, t: 8, b: 16};
-  var pw = w - pad.l - pad.r;
-  var ph = h - pad.t - pad.b;
-
-  // Axis labels
-  ctx.fillStyle = col.axis;
-  ctx.font = '9px -apple-system, sans-serif';
-  ctx.fillText('0', pad.l - 2, h - 2);
-  ctx.fillText('5', pad.l + pw * 0.5 - 4, h - 2);
-  ctx.fillText('10 ep', pw + pad.l - 28, h - 2);
-  ctx.fillText('1.0', 2, 14);
-  ctx.fillText('0', 10, h - pad.b + 2);
-
-  // Ramp line
-  ctx.strokeStyle = col.line;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  for (var i = 0; i <= 100; i++) {
-    var epoch = i / 10;
-    var ramp = Math.min(epoch / 5, 1.0);
-    var x = pad.l + (epoch / 10) * pw;
-    var y = pad.t + (1 - ramp) * ph;
-    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  }
-  ctx.stroke();
-}
-
-function drawLR() {
-  var c = document.getElementById('lrCanvas');
-  if (!c) return;
-  var ctx = c.getContext('2d');
-  var w = c.width, h = c.height;
-  var col = getColor();
-  ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = col.bg;
-  ctx.fillRect(0, 0, w, h);
-
-  var pad = {l: 8, r: 8, t: 8, b: 14};
-  var pw = w - pad.l - pad.r;
-  var ph = h - pad.t - pad.b;
-
-  ctx.fillStyle = col.axis;
-  ctx.font = '9px -apple-system, sans-serif';
-  ctx.fillText('0', pad.l, h - 1);
-  ctx.fillText('5', pad.l + pw * 0.125, h - 1);
-  ctx.fillText('20', pad.l + pw * 0.5, h - 1);
-  ctx.fillText('40 epochs', pad.l + pw * 0.88, h - 1);
-
-  var totalEpochs = 40;
-  ctx.strokeStyle = col.line;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  for (var i = 0; i <= 200; i++) {
-    var epoch = (i / 200) * totalEpochs;
-    var lr;
-    if (epoch < 5) {
-      lr = epoch / 5;
-    } else if (epoch < 20) {
-      lr = 1.0;
-    } else {
-      lr = 0.5 * (1 + Math.cos(Math.PI * (epoch - 20) / 20));
-    }
-    var x = pad.l + (epoch / totalEpochs) * pw;
-    var y = pad.t + (1 - lr) * ph;
-    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  }
-  ctx.stroke();
-
-  // Phase labels
-  ctx.fillStyle = col.axis;
-  ctx.font = '8px -apple-system, sans-serif';
-  ctx.fillText('warmup', pad.l + pw * 0.03, pad.t + ph * 0.35);
-  ctx.fillText('constant', pad.l + pw * 0.27, pad.t + ph * 0.15);
-  ctx.fillText('cosine decay', pad.l + pw * 0.6, pad.t + ph * 0.4);
-}
 </script>
-
 </body>
 </html>

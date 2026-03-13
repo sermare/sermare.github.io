@@ -7,316 +7,458 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#ffffff;--bg-box:#f7f7f7;
-  --text:#333333;--text2:#555555;--text3:#777777;
-  --accent:#1772d0;--border:#e4e4e4;
-  --toggle-bg:#e4e4e4;--toggle-fg:#333;
-  --radius:6px;--shadow:0 1px 3px rgba(0,0,0,0.08);
-  --font:-apple-system,system-ui,'Segoe UI',Helvetica,Arial,sans-serif;
-  --mono:'SF Mono',Consolas,'Liberation Mono',monospace;
+  --bg:#ffffff;--bg2:#f7f7f7;--text:#333;--text2:#666;--text3:#999;
+  --accent:#1772d0;--border:#e4e4e4;--toggle-bg:#e4e4e4;
+  --svg-fg:#333;--svg-fg2:#888;--svg-accent:#1772d0;--svg-green:#2d9d2d;--svg-red:#d04040;--svg-orange:#e67e22;
 }
 [data-theme="dark"]{
-  --bg:#0d1117;--bg-box:#161b22;
-  --text:#c9d1d9;--text2:#8b949e;--text3:#8b949e;
-  --accent:#58a6ff;--border:#30363d;
-  --toggle-bg:#30363d;--toggle-fg:#c9d1d9;
+  --bg:#0d1117;--bg2:#161b22;--text:#c9d1d9;--text2:#8b949e;--text3:#8b949e;
+  --accent:#58a6ff;--border:#30363d;--toggle-bg:#30363d;
+  --svg-fg:#c9d1d9;--svg-fg2:#555;--svg-accent:#58a6ff;--svg-green:#4ec94e;--svg-red:#f06060;--svg-orange:#f0983a;
 }
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;transition:background 0.3s,color 0.3s}
-
-/* Dark mode toggle — matches main site */
-.theme-toggle{position:fixed;top:18px;right:18px;z-index:100;background:var(--toggle-bg);border:1px solid var(--border);border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);color:var(--toggle-fg);transition:background 0.3s,border-color 0.3s}
-.theme-toggle:hover{opacity:0.8}
-
-#container{max-width:800px;margin:0 auto;padding:40px 20px 80px}
-
-h1{text-align:center;font-size:1.6rem;font-weight:700;color:var(--text);margin-bottom:4px}
-.subtitle{text-align:center;color:var(--text3);font-size:0.85rem;margin-bottom:32px}
-.hint{text-align:center;color:var(--text3);font-size:0.78rem;margin-bottom:24px}
-
-/* Connector line between stages */
-.connector{display:flex;justify-content:center;padding:0}
-.connector .line{width:1px;height:28px;background:var(--border)}
-
-/* Stage boxes */
-.stage{border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:0;cursor:pointer;background:var(--bg);transition:background 0.2s,border-color 0.2s}
-.stage:hover{border-color:var(--accent)}
-
-.stage-header{display:flex;align-items:center;gap:10px;user-select:none}
-.stage-num{font-size:0.7rem;font-weight:600;color:var(--accent);background:var(--bg-box);padding:2px 8px;border-radius:3px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.3px}
-.stage-title{font-size:0.95rem;font-weight:600;flex:1}
-.stage-dims{font-size:0.75rem;color:var(--text3);font-family:var(--mono);flex-shrink:0}
-.expand-arrow{font-size:0.65rem;color:var(--text3);transition:transform 0.2s;flex-shrink:0}
-.stage.expanded .expand-arrow{transform:rotate(90deg)}
-
-.stage-details{max-height:0;overflow:hidden;transition:max-height 0.3s ease}
-.stage.expanded .stage-details{max-height:3000px}
-
-.detail-body{padding-top:12px;margin-top:12px;border-top:1px solid var(--border);font-size:0.83rem;color:var(--text2);line-height:1.7}
-.detail-body code{background:var(--bg-box);padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:0.78rem;color:var(--text)}
-.detail-body ul{padding-left:18px;margin:4px 0}
-.detail-body li{margin:2px 0}
-
-.sub-box{background:var(--bg-box);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;margin:8px 0}
-.sub-box-title{font-weight:600;color:var(--text);font-size:0.83rem;margin-bottom:4px}
-.repeat-badge{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:0 6px;font-size:0.72rem;font-weight:600;margin-left:4px;vertical-align:middle;color:var(--accent)}
-
-/* Loss grid */
+body{background:var(--bg);color:var(--text);font-family:-apple-system,system-ui,'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.6}
+.theme-toggle{position:fixed;top:18px;right:18px;z-index:100;background:var(--toggle-bg);border:1px solid var(--border);border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+.theme-toggle:hover{opacity:.8}
+.wrap{max-width:820px;margin:0 auto;padding:40px 20px 80px}
+h1{text-align:center;font-size:1.5rem;font-weight:700;margin-bottom:4px}
+.sub{text-align:center;color:var(--text3);font-size:.85rem;margin-bottom:32px}
+.conn{display:flex;justify-content:center}.conn .l{width:1px;height:24px;background:var(--border)}
+.block{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:0;background:var(--bg)}
+.block-head{display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;user-select:none}
+.block-head:hover{background:var(--bg2)}
+.tag{font-size:.65rem;font-weight:700;color:#fff;background:var(--accent);padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
+.block-title{font-size:.95rem;font-weight:600;flex:1}
+.arr{color:var(--text3);font-size:.6rem;transition:transform .2s;flex-shrink:0}
+.block.open .arr{transform:rotate(90deg)}
+.block-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.block.open .block-body{max-height:8000px}
+.body-inner{padding:0 18px 18px}
+.vis{text-align:center;margin:12px 0;padding:16px;background:var(--bg2);border-radius:6px;border:1px solid var(--border)}
+.vis svg{max-width:100%;height:auto}
+.explain{font-size:.85rem;color:var(--text2);line-height:1.7;margin-top:10px}
+.explain strong{color:var(--text)}
+.explain code{background:var(--bg2);padding:1px 5px;border-radius:3px;font-size:.8rem;font-family:'SF Mono',Consolas,monospace}
+.explain ul{padding-left:18px;margin:4px 0}
+.explain li{margin:3px 0}
+.sub-block{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin:8px 0}
+.sub-block-title{font-weight:600;font-size:.85rem;margin-bottom:4px}
 .loss-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.loss-item{background:var(--bg-box);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px}
-.loss-name{font-weight:600;font-size:0.83rem;color:var(--text)}
-.loss-weight{font-size:0.72rem;color:var(--text3);font-family:var(--mono)}
-.loss-desc{font-size:0.75rem;color:var(--text2);margin-top:2px}
-
-/* Config grid */
-.config-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
-.config-item{background:var(--bg-box);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;text-align:center}
-.config-label{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
-.config-val{font-size:0.85rem;font-weight:600;color:var(--text);margin-top:2px}
-
-/* Metric box */
-.metric-box{border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px;text-align:center;background:var(--bg-box)}
-.metric-label{font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
-.metric-formula{font-family:var(--mono);font-size:0.88rem;color:var(--text);margin:6px 0 2px}
-.metric-note{font-size:0.75rem;color:var(--text3)}
-
-/* Parallel group */
-.parallel-label{text-align:center;font-size:0.7rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin:4px 0}
-.parallel-group{display:flex;gap:10px}
-.parallel-group .stage{flex:1;margin-bottom:0}
-
-/* Branch connector */
+.loss-item{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.loss-item svg{flex-shrink:0;margin-top:2px}
+.loss-info{flex:1}
+.loss-name{font-weight:600;font-size:.83rem}
+.loss-w{font-size:.72rem;color:var(--text3);font-family:monospace}
+.loss-desc{font-size:.75rem;color:var(--text2);margin-top:1px}
+.metric-box{border:1px solid var(--border);border-radius:8px;padding:16px 20px;text-align:center;background:var(--bg2);margin-bottom:0}
+.metric-label{font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.metric-formula{font-family:monospace;font-size:.9rem;margin:6px 0}
+.metric-note{font-size:.75rem;color:var(--text3)}
+.config-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.config-item{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:8px;text-align:center}
+.config-label{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.config-val{font-size:.85rem;font-weight:600;margin-top:2px}
+.section-label{text-align:center;font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin:4px 0}
+.parallel-group{display:flex;gap:10px}.parallel-group .block{flex:1}
 .branch-lines{display:flex;justify-content:center;position:relative;height:28px}
 .branch-lines .trunk{position:absolute;top:0;left:50%;width:1px;height:10px;background:var(--border)}
 .branch-lines .bar{position:absolute;top:10px;left:25%;width:50%;height:1px;background:var(--border)}
 .branch-lines .drop-l,.branch-lines .drop-r{position:absolute;top:10px;width:1px;height:18px;background:var(--border)}
-.branch-lines .drop-l{left:25%}
-.branch-lines .drop-r{right:25%}
-
-/* Section label */
-.section-label{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;text-align:center;margin:4px 0}
-
-@media(max-width:600px){
-  .loss-grid{grid-template-columns:1fr}
-  .config-grid{grid-template-columns:1fr 1fr}
-  .parallel-group{flex-direction:column}
-}
+.branch-lines .drop-l{left:25%}.branch-lines .drop-r{right:25%}
+@media(max-width:600px){.loss-grid{grid-template-columns:1fr}.config-grid{grid-template-columns:1fr 1fr}.parallel-group{flex-direction:column}}
 </style>
 </head>
 <body>
-
-<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn">&#127769;</button>
-
-<div id="container">
-
+<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">&#127769;</button>
+<div class="wrap">
 <h1>v13b &mdash; CA-Only Diffusion Model</h1>
-<p class="subtitle">ContactConditionedPairStack + IPA Frame Denoiser</p>
-<p class="hint">Click any stage to expand details</p>
+<p class="sub">Click any block to expand. Every block has a diagram showing what it does.</p>
 
-<!-- 1. INPUT -->
-<div class="stage" onclick="toggle(this)">
-  <div class="stage-header">
-    <span class="stage-num">Input</span>
-    <span class="stage-title">Training Batch</span>
-    <span class="stage-dims">B &times; L</span>
-    <span class="expand-arrow">&#9654;</span>
+<!-- ===== 1. INPUT ===== -->
+<div class="block open" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">Input</span>
+    <span class="block-title">C&alpha; Coordinates</span>
+    <span class="arr">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-body">
-    <ul>
-      <li><code>ids</code> &mdash; (B, L) token sequence (integer AA indices)</li>
-      <li><code>true_coords</code> &mdash; (B, L, 3) C&alpha; xyz coordinates in &Aring;</li>
-      <li><code>coord_mask</code> &mdash; (B, L) boolean validity mask for resolved residues</li>
-    </ul>
-  </div></div>
-</div>
-
-<div class="connector"><div class="line"></div></div>
-
-<!-- 2. FROZEN ENCODER -->
-<div class="stage" onclick="toggle(this)">
-  <div class="stage-header">
-    <span class="stage-num">Stage 1</span>
-    <span class="stage-title">Frozen Protein Encoder</span>
-    <span class="stage-dims">&rarr; (B,L,128) + (B,L,L)</span>
-    <span class="expand-arrow">&#9654;</span>
-  </div>
-  <div class="stage-details"><div class="detail-body">
-    <div class="sub-box">
-      <div class="sub-box-title">ContactClassifier (frozen, no grad)</div>
-      <ul>
-        <li>Pre-trained sequence encoder producing per-residue embeddings</li>
-        <li>Output <code>single</code>: (B, L, 128) &mdash; per-residue feature vectors</li>
-        <li>Output <code>contact_probs</code>: (B, L, L) &mdash; predicted residue-residue contact probability map</li>
-        <li>All parameters frozen during v13b training &mdash; gradients do not flow back</li>
-      </ul>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 120" width="700" height="120">
+        <g font-size="11" text-anchor="middle" font-family="inherit">
+          <!-- Chain of CA atoms -->
+          <circle cx="100" cy="40" r="8" fill="var(--svg-accent)" stroke="var(--svg-accent)" stroke-width="2"/>
+          <circle cx="200" cy="40" r="8" fill="var(--svg-accent)" stroke="var(--svg-accent)" stroke-width="2"/>
+          <circle cx="300" cy="40" r="8" fill="var(--svg-accent)" stroke="var(--svg-accent)" stroke-width="2"/>
+          <circle cx="400" cy="40" r="8" fill="var(--svg-accent)" stroke="var(--svg-accent)" stroke-width="2"/>
+          <circle cx="500" cy="40" r="8" fill="var(--svg-accent)" stroke="var(--svg-accent)" stroke-width="2"/>
+          <!-- Bonds -->
+          <line x1="108" y1="40" x2="192" y2="40" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <line x1="208" y1="40" x2="292" y2="40" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <line x1="308" y1="40" x2="392" y2="40" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <line x1="408" y1="40" x2="492" y2="40" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <!-- Labels -->
+          <text x="100" y="44" fill="#fff" font-size="9" font-weight="bold">CA</text>
+          <text x="200" y="44" fill="#fff" font-size="9" font-weight="bold">CA</text>
+          <text x="300" y="44" fill="#fff" font-size="9" font-weight="bold">CA</text>
+          <text x="400" y="44" fill="#fff" font-size="9" font-weight="bold">CA</text>
+          <text x="500" y="44" fill="#fff" font-size="9" font-weight="bold">CA</text>
+          <!-- Distances -->
+          <text x="150" y="30" fill="var(--text3)" font-size="9">3.8&#197;</text>
+          <text x="250" y="30" fill="var(--text3)" font-size="9">3.8&#197;</text>
+          <text x="350" y="30" fill="var(--text3)" font-size="9">3.8&#197;</text>
+          <text x="450" y="30" fill="var(--text3)" font-size="9">3.8&#197;</text>
+          <!-- Residue indices -->
+          <text x="100" y="68" fill="var(--text3)" font-size="9">res 1</text>
+          <text x="200" y="68" fill="var(--text3)" font-size="9">res 2</text>
+          <text x="300" y="68" fill="var(--text3)" font-size="9">res 3</text>
+          <text x="400" y="68" fill="var(--text3)" font-size="9">...</text>
+          <text x="500" y="68" fill="var(--text3)" font-size="9">res L</text>
+          <!-- Brace -->
+          <path d="M 85 80 Q 300 100 515 80" stroke="var(--svg-accent)" fill="none" stroke-width="1"/>
+          <text x="300" y="112" fill="var(--svg-accent)" font-size="11" font-weight="600">one CA per residue: (B, L, 3)</text>
+        </g>
+      </svg>
     </div>
-  </div></div>
-</div>
-
-<div class="connector"><div class="line"></div></div>
-
-<!-- 3. PAIR STACK -->
-<div class="stage" onclick="toggle(this)">
-  <div class="stage-header">
-    <span class="stage-num">Stage 2</span>
-    <span class="stage-title">ContactConditionedPairStackV13</span>
-    <span class="stage-dims">&rarr; (B,L,L,128)</span>
-    <span class="expand-arrow">&#9654;</span>
-  </div>
-  <div class="stage-details"><div class="detail-body">
-    <div class="sub-box">
-      <div class="sub-box-title">SingleToPairV13</div>
-      <ul>
-        <li>Left &amp; right linear projections of single repr into pair space</li>
-        <li><code>LogScaledRPE</code>: 128 bins, max_sep=512 &mdash; log-scaled relative position encoding</li>
-        <li>Sinusoidal RPE added in parallel</li>
-        <li>Output: initial pair (B, L, L, 128)</li>
-      </ul>
-    </div>
-    <div class="sub-box">
-      <div class="sub-box-title">OuterProductMean</div>
-      <ul>
-        <li>d_opm = 32 &mdash; low-rank outer product of single features</li>
-        <li>Added to pair representation</li>
-      </ul>
-    </div>
-    <div class="sub-box">
-      <div class="sub-box-title">Contact Map Conditioning</div>
-      <ul>
-        <li>Gated injection of contact_probs from encoder</li>
-        <li>d_contact_proj = 128 &mdash; learned projection + sigmoid gate</li>
-      </ul>
-    </div>
-    <div class="sub-box">
-      <div class="sub-box-title">EnhancedPairBlock <span class="repeat-badge">&times;8</span></div>
-      <ul>
-        <li><strong>TriangleMultiplicativeUpdate</strong> (outgoing) &mdash; tri_mul_dim=64</li>
-        <li><strong>TriangleMultiplicativeUpdate</strong> (incoming) &mdash; tri_mul_dim=64</li>
-        <li><strong>AxialBlock</strong>: row + column attention, n_heads=4, d_ffn=512</li>
-        <li>Pre-LayerNorm, residual connections throughout</li>
-      </ul>
-    </div>
-    <p style="margin-top:8px">Final output: <code>pair</code> (B, L, L, 128)</p>
-  </div></div>
-</div>
-
-<div class="connector"><div class="line"></div></div>
-
-<!-- 4. DIFFUSION PROCESS -->
-<div class="stage" onclick="toggle(this)">
-  <div class="stage-header">
-    <span class="stage-num">Stage 3</span>
-    <span class="stage-title">Diffusion Process</span>
-    <span class="stage-dims">x<sub>0</sub> &rarr; x<sub>t</sub></span>
-    <span class="expand-arrow">&#9654;</span>
-  </div>
-  <div class="stage-details"><div class="detail-body">
-    <div class="sub-box">
-      <div class="sub-box-title">Forward Diffusion (training only)</div>
-      <ul>
-        <li><strong>Normalize</strong>: x<sub>0</sub> = (coords &minus; centroid) / coord_scale, where coord_scale = 10.0</li>
-        <li><strong>Sample timestep</strong>: t ~ Uniform(0, 1000)</li>
-        <li><strong>Add noise</strong>: x<sub>t</sub> = &radic;&alpha;&#772;<sub>t</sub> &middot; x<sub>0</sub> + &radic;(1 &minus; &alpha;&#772;<sub>t</sub>) &middot; &epsilon;, &nbsp; &epsilon; ~ N(0, I)</li>
-        <li><strong>Schedule</strong>: Cosine noise schedule (smooth &alpha;&#772; decay)</li>
-      </ul>
+    <div class="explain">
+      <strong>v13b uses only C&alpha; atoms</strong> &mdash; one 3D coordinate per residue. The model learns to generate the simplified backbone trace, not individual N, C, O atoms. Input includes <code>ids</code> (amino acid tokens), <code>true_coords</code> (B, L, 3), and <code>coord_mask</code> (resolved residues).
     </div>
   </div></div>
 </div>
 
-<div class="connector"><div class="line"></div></div>
+<div class="conn"><div class="l"></div></div>
 
-<!-- 5. FRAME INIT + SELF-CONDITIONING -->
-<div class="stage" onclick="toggle(this)">
-  <div class="stage-header">
-    <span class="stage-num">Stage 4</span>
-    <span class="stage-title">Frame Init + Self-Conditioning</span>
-    <span class="stage-dims">&rarr; Rigid Frames + Confidence</span>
-    <span class="expand-arrow">&#9654;</span>
+<!-- ===== 2. ENCODER ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">1</span>
+    <span class="block-title">Frozen Protein Encoder</span>
+    <span class="arr">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-body">
-    <div class="sub-box">
-      <div class="sub-box-title">init_frames(x<sub>t</sub>, t)</div>
-      <ul>
-        <li><strong>Gram-Schmidt</strong> orthogonalization on consecutive C&alpha; triplets</li>
-        <li>Builds local coordinate frames: rotation R &isin; SO(3) + translation t &isin; R&sup3;</li>
-      </ul>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 130" width="700" height="130">
+        <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--svg-fg)"/></marker></defs>
+        <!-- Sequence input -->
+        <rect x="20" y="35" width="120" height="40" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+        <text x="80" y="50" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="inherit">amino acid sequence</text>
+        <text x="80" y="64" text-anchor="middle" font-size="12" fill="var(--svg-fg)" font-family="monospace">M E T H I K ...</text>
+
+        <!-- Arrow -->
+        <line x1="145" y1="55" x2="195" y2="55" stroke="var(--svg-fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+
+        <!-- Encoder box -->
+        <rect x="200" y="25" width="130" height="60" rx="6" fill="var(--bg2)" stroke="var(--svg-accent)" stroke-width="2"/>
+        <text x="265" y="48" text-anchor="middle" font-size="11" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">Contact</text>
+        <text x="265" y="62" text-anchor="middle" font-size="11" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">Classifier</text>
+        <text x="265" y="78" text-anchor="middle" font-size="8" fill="var(--text3)" font-family="inherit">&#x1F512; frozen</text>
+
+        <!-- Two outputs -->
+        <line x1="335" y1="42" x2="400" y2="30" stroke="var(--svg-fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+        <line x1="335" y1="65" x2="400" y2="80" stroke="var(--svg-fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+
+        <!-- Single repr -->
+        <rect x="405" y="12" width="130" height="35" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+        <text x="470" y="27" text-anchor="middle" font-size="10" fill="var(--svg-fg)" font-weight="600" font-family="inherit">single</text>
+        <text x="470" y="40" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="monospace">(B, L, 128)</text>
+
+        <!-- Contact map - small heatmap -->
+        <rect x="405" y="60" width="130" height="55" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+        <text x="435" y="75" font-size="10" fill="var(--svg-fg)" font-weight="600" font-family="inherit">contacts</text>
+        <!-- Mini heatmap grid -->
+        <g transform="translate(500,65)">
+          <rect x="0" y="0" width="8" height="8" fill="var(--svg-accent)" opacity=".8"/>
+          <rect x="8" y="0" width="8" height="8" fill="var(--svg-accent)" opacity=".1"/>
+          <rect x="16" y="0" width="8" height="8" fill="var(--svg-accent)" opacity=".3"/>
+          <rect x="0" y="8" width="8" height="8" fill="var(--svg-accent)" opacity=".1"/>
+          <rect x="8" y="8" width="8" height="8" fill="var(--svg-accent)" opacity=".8"/>
+          <rect x="16" y="8" width="8" height="8" fill="var(--svg-accent)" opacity=".6"/>
+          <rect x="0" y="16" width="8" height="8" fill="var(--svg-accent)" opacity=".3"/>
+          <rect x="8" y="16" width="8" height="8" fill="var(--svg-accent)" opacity=".6"/>
+          <rect x="16" y="16" width="8" height="8" fill="var(--svg-accent)" opacity=".8"/>
+        </g>
+        <text x="512" y="108" text-anchor="middle" font-size="8" fill="var(--text3)" font-family="monospace">(B, L, L)</text>
+      </svg>
     </div>
-    <div class="sub-box">
-      <div class="sub-box-title">SNR-Gated Confidence</div>
-      <ul>
-        <li>snr_high = 1.0 (high confidence threshold)</li>
-        <li>snr_low = 0.2 (low confidence threshold)</li>
-        <li><strong>SLERP</strong> toward identity quaternion at low SNR</li>
-        <li>Prevents unreliable frames from dominating at high noise levels</li>
-      </ul>
+    <div class="explain">
+      Pre-trained encoder converts amino acid sequence into <strong>per-residue features</strong> (128-dim) and a <strong>contact probability map</strong> (which residues are physically close). All weights frozen &mdash; no gradients flow back.
     </div>
-    <div class="sub-box">
-      <div class="sub-box-title">Self-Conditioning (50% prob)</div>
-      <ul>
-        <li>With 50% probability during training:</li>
-        <li>Run full denoiser forward pass <strong>without gradients</strong> &rarr; x<sub>0,prev</sub></li>
-        <li>Build frames from x<sub>0,prev</sub> &rarr; <code>self_cond_frames</code></li>
-        <li>These are fed into the main denoiser pass as additional conditioning</li>
-        <li>With 50% probability: self_cond_frames = None (unconditional)</li>
-      </ul>
-    </div>
-    <p style="margin-top:6px">Output: <code>rigid_frames</code> (rotations + translations) + <code>confidence</code> per residue</p>
   </div></div>
 </div>
 
-<div class="connector"><div class="line"></div></div>
+<div class="conn"><div class="l"></div></div>
 
-<!-- 6. IPA DENOISER -->
-<div class="stage" onclick="toggle(this)">
-  <div class="stage-header">
-    <span class="stage-num">Stage 5</span>
-    <span class="stage-title">IPA Denoiser (8 layers)</span>
-    <span class="stage-dims">&rarr; x<sub>0,pred</sub> + R<sub>pred</sub></span>
-    <span class="expand-arrow">&#9654;</span>
+<!-- ===== 3. PAIR STACK ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">2</span>
+    <span class="block-title">Pair Stack &mdash; Triangle Updates &times;8</span>
+    <span class="arr">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-body">
-    <div class="sub-box">
-      <div class="sub-box-title">Input Preparation</div>
-      <ul>
-        <li><strong>Timestep embedding</strong> &rarr; d_ipa_hidden = 512</li>
-        <li><strong>Node projection</strong>: concat(single, t_emb) &rarr; Linear &rarr; 512</li>
-        <li><strong>Confidence injection</strong>: frame confidence modulates node features</li>
-        <li><strong>Pair enrichment</strong> + contact bias from Stage 2</li>
-      </ul>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 200" width="700" height="200">
+        <defs><marker id="ah2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--svg-accent)"/></marker></defs>
+        <text x="350" y="18" text-anchor="middle" font-size="12" fill="var(--svg-fg)" font-weight="bold" font-family="inherit">Triangle Multiplicative Update</text>
+        <text x="350" y="32" text-anchor="middle" font-size="10" fill="var(--text3)" font-family="inherit">How edge (i,j) learns about the structure</text>
+
+        <!-- Triangle: i, j, k -->
+        <g transform="translate(100, 50)">
+          <circle cx="0" cy="120" r="16" fill="var(--svg-accent)" opacity=".15" stroke="var(--svg-accent)" stroke-width="2"/>
+          <circle cx="200" cy="120" r="16" fill="var(--svg-accent)" opacity=".15" stroke="var(--svg-accent)" stroke-width="2"/>
+          <circle cx="100" cy="10" r="16" fill="var(--svg-green)" opacity=".15" stroke="var(--svg-green)" stroke-width="2"/>
+          <text x="0" y="125" text-anchor="middle" font-size="16" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">i</text>
+          <text x="200" y="125" text-anchor="middle" font-size="16" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">j</text>
+          <text x="100" y="15" text-anchor="middle" font-size="16" fill="var(--svg-green)" font-weight="bold" font-family="inherit">k</text>
+
+          <!-- Edge i→k -->
+          <line x1="14" y1="108" x2="86" y2="24" stroke="var(--svg-green)" stroke-width="2" marker-end="url(#ah2)" opacity=".6"/>
+          <text x="35" y="58" font-size="10" fill="var(--svg-green)" font-family="inherit" transform="rotate(-55,35,58)">edge(i,k)</text>
+
+          <!-- Edge k→j -->
+          <line x1="114" y1="24" x2="186" y2="108" stroke="var(--svg-green)" stroke-width="2" marker-end="url(#ah2)" opacity=".6"/>
+          <text x="165" y="58" font-size="10" fill="var(--svg-green)" font-family="inherit" transform="rotate(55,165,58)">edge(k,j)</text>
+
+          <!-- Edge i→j (the one being updated) -->
+          <line x1="18" y1="124" x2="180" y2="124" stroke="var(--svg-red)" stroke-width="3"/>
+          <text x="100" y="148" text-anchor="middle" font-size="11" fill="var(--svg-red)" font-weight="bold" font-family="inherit">edge(i,j) gets updated</text>
+        </g>
+
+        <!-- Equation -->
+        <g transform="translate(420, 55)">
+          <text x="0" y="15" font-size="11" fill="var(--svg-fg)" font-family="inherit" font-weight="600">The idea:</text>
+          <text x="0" y="35" font-size="10" fill="var(--text2)" font-family="inherit">&bull; To understand how residue i</text>
+          <text x="0" y="50" font-size="10" fill="var(--text2)" font-family="inherit">&nbsp; relates to residue j...</text>
+          <text x="0" y="70" font-size="10" fill="var(--text2)" font-family="inherit">&bull; Look at ALL intermediate</text>
+          <text x="0" y="85" font-size="10" fill="var(--text2)" font-family="inherit">&nbsp; residues k that connect them</text>
+          <text x="0" y="105" font-size="10" fill="var(--text2)" font-family="inherit">&bull; Aggregate: edge(i,j) +=</text>
+          <text x="0" y="120" font-size="10" fill="var(--svg-accent)" font-family="monospace">&nbsp; &Sigma;<tspan font-size="8" dy="2">k</tspan><tspan dy="-2"> edge(i,k) &times; edge(k,j)</tspan></text>
+          <text x="0" y="140" font-size="10" fill="var(--text2)" font-family="inherit">&bull; Repeated 8&times; to propagate</text>
+          <text x="0" y="155" font-size="10" fill="var(--text2)" font-family="inherit">&nbsp; long-range structural info</text>
+        </g>
+      </svg>
     </div>
-    <div class="sub-box">
-      <div class="sub-box-title">IPABlock <span class="repeat-badge">&times;8</span></div>
-      <div style="margin:6px 0">
-        <strong>InvariantPointAttention</strong>
-        <ul>
-          <li>n_heads = 8, n_query_points = 8, d_hidden = 512</li>
-          <li><strong>Scalar attention</strong>: q, k, v linear projections</li>
-          <li><strong>Point attention</strong>: 3D geometric queries/keys in local frames, <em>forced fp32</em></li>
-          <li><strong>Pair bias</strong>: pair features bias attention logits</li>
-          <li>Output: concat(scalar, point_norms, pair_out) &rarr; 1216 &rarr; Linear &rarr; 512</li>
-        </ul>
-      </div>
-      <div style="margin:6px 0">
-        <strong>Transition FFN</strong>
-        <ul><li>512 &rarr; 1024 &rarr; ReLU &rarr; 512 (residual)</li></ul>
-      </div>
-      <div style="margin:6px 0">
-        <strong>FrameUpdate</strong>
-        <ul>
-          <li>MLP &rarr; quaternion (4-dim, normalized) + translation (3-dim)</li>
-          <li>SE(3) compose with current frames</li>
-        </ul>
-      </div>
+    <div class="explain">
+      The pair stack builds a <strong>pairwise relationship matrix</strong> (B, L, L, 128). Each entry describes how two residues relate structurally. The triangle update is inspired by AlphaFold2: if residue i is near k, and k is near j, then i is likely near j. Eight rounds of this propagate information across the whole chain. Also includes <strong>contact map conditioning</strong> (gated injection from encoder), <strong>OuterProductMean</strong> (d=32), and <strong>LogScaledRPE</strong> (128 bins, max_sep=512).
     </div>
-    <p style="margin-top:8px">Output: <code>x<sub>0,pred</sub></code> (B, L, 3), <code>R<sub>pred</sub></code> (B, L, 3, 3)</p>
   </div></div>
 </div>
 
-<div class="connector"><div class="line"></div></div>
+<div class="conn"><div class="l"></div></div>
 
-<!-- 7. AUXILIARY HEADS -->
+<!-- ===== 4. DIFFUSION ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">3</span>
+    <span class="block-title">Diffusion &mdash; Add Noise, Learn to Denoise</span>
+    <span class="arr">&#9654;</span>
+  </div>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 140" width="700" height="140">
+        <!-- Clean structure (helix-like) -->
+        <g transform="translate(40,30)">
+          <text x="50" y="-5" text-anchor="middle" font-size="10" fill="var(--svg-green)" font-weight="600" font-family="inherit">clean structure</text>
+          <path d="M10,50 Q25,20 40,50 Q55,80 70,50 Q85,20 100,50" stroke="var(--svg-green)" stroke-width="2.5" fill="none"/>
+          <circle cx="10" cy="50" r="4" fill="var(--svg-green)"/>
+          <circle cx="40" cy="50" r="4" fill="var(--svg-green)"/>
+          <circle cx="70" cy="50" r="4" fill="var(--svg-green)"/>
+          <circle cx="100" cy="50" r="4" fill="var(--svg-green)"/>
+          <text x="50" y="85" text-anchor="middle" font-size="10" fill="var(--text3)" font-family="monospace">x&#x2080;</text>
+        </g>
+
+        <!-- Arrow with noise equation -->
+        <g transform="translate(165,55)">
+          <line x1="0" y1="25" x2="100" y2="25" stroke="var(--svg-fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+          <text x="50" y="15" text-anchor="middle" font-size="9" fill="var(--svg-fg)" font-family="inherit">+ noise (&epsilon;)</text>
+          <text x="50" y="55" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="monospace">x&#x209C; = &#x221A;&#x3B1;&#x305;&#x209C;&#x22C5;x&#x2080; + &#x221A;(1-&#x3B1;&#x305;&#x209C;)&#x22C5;&epsilon;</text>
+        </g>
+
+        <!-- Noisy structure (scattered dots) -->
+        <g transform="translate(290,30)">
+          <text x="50" y="-5" text-anchor="middle" font-size="10" fill="var(--svg-red)" font-weight="600" font-family="inherit">noisy structure</text>
+          <circle cx="15" cy="35" r="4" fill="var(--svg-red)" opacity=".6"/>
+          <circle cx="55" cy="60" r="4" fill="var(--svg-red)" opacity=".6"/>
+          <circle cx="85" cy="25" r="4" fill="var(--svg-red)" opacity=".6"/>
+          <circle cx="40" cy="55" r="4" fill="var(--svg-red)" opacity=".6"/>
+          <line x1="15" y1="35" x2="40" y2="55" stroke="var(--svg-red)" stroke-width="1" stroke-dasharray="2,2" opacity=".4"/>
+          <line x1="40" y1="55" x2="55" y2="60" stroke="var(--svg-red)" stroke-width="1" stroke-dasharray="2,2" opacity=".4"/>
+          <text x="50" y="85" text-anchor="middle" font-size="10" fill="var(--text3)" font-family="monospace">x&#x209C;</text>
+        </g>
+
+        <!-- Arrow: model predicts clean -->
+        <g transform="translate(415,55)">
+          <line x1="0" y1="25" x2="100" y2="25" stroke="var(--svg-accent)" stroke-width="2" marker-end="url(#ah)"/>
+          <text x="50" y="15" text-anchor="middle" font-size="10" fill="var(--svg-accent)" font-weight="600" font-family="inherit">model predicts</text>
+          <text x="50" y="55" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="inherit">denoise x&#x209C; &rarr; x&#x302;&#x2080;</text>
+        </g>
+
+        <!-- Predicted structure -->
+        <g transform="translate(540,30)">
+          <text x="60" y="-5" text-anchor="middle" font-size="10" fill="var(--svg-accent)" font-weight="600" font-family="inherit">predicted structure</text>
+          <path d="M10,50 Q25,22 40,50 Q55,78 70,50 Q85,22 100,50" stroke="var(--svg-accent)" stroke-width="2.5" fill="none" stroke-dasharray="4,2"/>
+          <circle cx="10" cy="50" r="4" fill="var(--svg-accent)"/>
+          <circle cx="40" cy="50" r="4" fill="var(--svg-accent)"/>
+          <circle cx="70" cy="50" r="4" fill="var(--svg-accent)"/>
+          <circle cx="100" cy="50" r="4" fill="var(--svg-accent)"/>
+          <text x="60" y="85" text-anchor="middle" font-size="10" fill="var(--text3)" font-family="monospace">x&#x302;&#x2080;</text>
+        </g>
+      </svg>
+    </div>
+    <div class="explain">
+      <strong>Training:</strong> Take a known protein structure, add random Gaussian noise at a random timestep t (out of 1000), then train the model to predict the original clean structure from the noisy version. Coordinates are normalized: x<sub>0</sub> = (coords &minus; centroid) / 10.0. <strong>Generation:</strong> Start from pure noise, iteratively denoise using DDIM (50 steps) to produce new protein structures.
+    </div>
+  </div></div>
+</div>
+
+<div class="conn"><div class="l"></div></div>
+
+<!-- ===== 5. FRAME INIT ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">4</span>
+    <span class="block-title">Frame Initialization &mdash; CA Triplets</span>
+    <span class="arr">&#9654;</span>
+  </div>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 220" width="700" height="220">
+        <text x="250" y="18" text-anchor="middle" font-size="12" fill="var(--svg-fg)" font-weight="bold" font-family="inherit">Gram-Schmidt on CA Triplets</text>
+
+        <!-- 3 consecutive CA atoms -->
+        <g transform="translate(80,110)">
+          <!-- CA atoms forming a bend -->
+          <circle cx="0" cy="40" r="12" fill="var(--svg-accent)" opacity=".2" stroke="var(--svg-accent)" stroke-width="2"/>
+          <text x="0" y="44" text-anchor="middle" font-size="11" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">CA<tspan font-size="8" dy="2">i-1</tspan></text>
+
+          <circle cx="120" cy="0" r="14" fill="var(--svg-accent)" opacity=".2" stroke="var(--svg-accent)" stroke-width="2.5"/>
+          <text x="120" y="4" text-anchor="middle" font-size="11" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">CA<tspan font-size="8" dy="2">i</tspan></text>
+          <text x="120" y="20" font-size="8" text-anchor="middle" fill="var(--text3)" font-family="inherit">origin</text>
+
+          <circle cx="240" cy="30" r="12" fill="var(--svg-accent)" opacity=".2" stroke="var(--svg-accent)" stroke-width="2"/>
+          <text x="240" y="34" text-anchor="middle" font-size="11" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">CA<tspan font-size="8" dy="2">i+1</tspan></text>
+
+          <!-- Bonds -->
+          <line x1="12" y1="35" x2="106" y2="5" stroke="var(--svg-fg)" stroke-width="1.5"/>
+          <line x1="134" y1="5" x2="228" y2="25" stroke="var(--svg-fg)" stroke-width="1.5"/>
+
+          <!-- X axis: CA_i → CA_i+1 -->
+          <line x1="125" y1="-8" x2="195" y2="-8" stroke="var(--svg-red)" stroke-width="2.5" marker-end="url(#ah)"/>
+          <text x="200" y="-12" font-size="10" fill="var(--svg-red)" font-weight="bold" font-family="inherit">x</text>
+          <text x="215" y="-12" font-size="9" fill="var(--text3)" font-family="inherit">(CA<tspan font-size="7" dy="1">i</tspan><tspan dy="-1">&rarr;CA</tspan><tspan font-size="7" dy="1">i+1</tspan><tspan dy="-1">)</tspan></text>
+
+          <!-- Z axis: normal to plane -->
+          <line x1="120" y1="-10" x2="120" y2="-75" stroke="var(--svg-accent)" stroke-width="2.5" marker-end="url(#ah)"/>
+          <text x="130" y="-77" font-size="10" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">z</text>
+          <text x="145" y="-77" font-size="9" fill="var(--text3)" font-family="inherit">(plane normal)</text>
+
+          <!-- Y axis -->
+          <line x1="115" y1="-8" x2="70" y2="-50" stroke="var(--svg-green)" stroke-width="2.5" marker-end="url(#ah)"/>
+          <text x="58" y="-48" font-size="10" fill="var(--svg-green)" font-weight="bold" font-family="inherit">y</text>
+          <text x="50" y="-58" font-size="9" fill="var(--text3)" font-family="inherit">(z &times; x)</text>
+
+          <!-- Plane shading -->
+          <polygon points="0,40 120,0 240,30" fill="var(--svg-accent)" opacity=".05" stroke="var(--svg-accent)" stroke-width="1" stroke-dasharray="3,2"/>
+        </g>
+
+        <!-- Warning box -->
+        <g transform="translate(430, 40)">
+          <rect x="0" y="0" width="240" height="140" rx="6" fill="var(--bg2)" stroke="var(--border)"/>
+          <text x="120" y="22" text-anchor="middle" font-size="11" fill="var(--svg-fg)" font-weight="bold" font-family="inherit">Gram-Schmidt Process</text>
+          <line x1="15" y1="30" x2="225" y2="30" stroke="var(--border)"/>
+          <text x="15" y="48" font-size="9" fill="var(--text2)" font-family="inherit">1. v<tspan font-size="7" dy="1">1</tspan><tspan dy="-1"> = CA</tspan><tspan font-size="7" dy="1">i+1</tspan><tspan dy="-1"> &minus; CA</tspan><tspan font-size="7" dy="1">i</tspan><tspan dy="-1"> &rarr; normalize &rarr; x-axis</tspan></text>
+          <text x="15" y="65" font-size="9" fill="var(--text2)" font-family="inherit">2. v<tspan font-size="7" dy="1">2</tspan><tspan dy="-1"> = CA</tspan><tspan font-size="7" dy="1">i-1</tspan><tspan dy="-1"> &minus; CA</tspan><tspan font-size="7" dy="1">i</tspan></text>
+          <text x="15" y="82" font-size="9" fill="var(--text2)" font-family="inherit">3. z = v<tspan font-size="7" dy="1">1</tspan><tspan dy="-1"> &times; v</tspan><tspan font-size="7" dy="1">2</tspan><tspan dy="-1"> (cross product)</tspan></text>
+          <text x="15" y="99" font-size="9" fill="var(--text2)" font-family="inherit">4. y = z &times; x (completes frame)</text>
+          <line x1="15" y1="108" x2="225" y2="108" stroke="var(--border)"/>
+          <text x="15" y="125" font-size="9" fill="var(--svg-orange)" font-family="inherit">&#x26A0; Near-collinear triplets at high</text>
+          <text x="15" y="138" font-size="9" fill="var(--svg-orange)" font-family="inherit">&nbsp;&nbsp; noise &rarr; SNR-gated confidence</text>
+        </g>
+      </svg>
+    </div>
+    <div class="explain">
+      Each residue gets a <strong>local coordinate frame</strong> (3 axes + origin at CA<sub>i</sub>) built from three consecutive C&alpha; atoms via Gram-Schmidt orthogonalization. <strong>SNR-gated confidence</strong> (snr_high=1.0, snr_low=0.2) SLERPs toward identity at high noise to avoid unstable frames. <strong>Self-conditioning</strong> (50% of the time) feeds a previous no-grad prediction as extra input.
+    </div>
+  </div></div>
+</div>
+
+<div class="conn"><div class="l"></div></div>
+
+<!-- ===== 6. IPA DENOISER ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">5</span>
+    <span class="block-title">IPA Denoiser &mdash; 8 Layers</span>
+    <span class="arr">&#9654;</span>
+  </div>
+  <div class="block-body"><div class="body-inner">
+    <div class="vis">
+      <svg viewBox="0 0 700 280" width="700" height="280">
+        <text x="350" y="18" text-anchor="middle" font-size="12" fill="var(--svg-fg)" font-weight="bold" font-family="inherit">One IPA Layer (Invariant Point Attention)</text>
+
+        <!-- Input -->
+        <rect x="260" y="30" width="180" height="28" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+        <text x="350" y="49" text-anchor="middle" font-size="10" fill="var(--svg-fg)" font-family="inherit">node features h (B, L, 512)</text>
+
+        <!-- Split into two branches -->
+        <line x1="310" y1="58" x2="310" y2="80" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="390" y1="58" x2="390" y2="80" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="310" y1="80" x2="130" y2="80" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="390" y1="80" x2="570" y2="80" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="130" y1="80" x2="130" y2="95" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="570" y1="80" x2="570" y2="95" stroke="var(--svg-fg)" stroke-width="1"/>
+
+        <!-- Scalar attention branch -->
+        <rect x="50" y="95" width="160" height="80" rx="6" fill="var(--bg2)" stroke="var(--svg-accent)" stroke-width="1.5"/>
+        <text x="130" y="115" text-anchor="middle" font-size="10" fill="var(--svg-accent)" font-weight="600" font-family="inherit">Scalar Attention</text>
+        <text x="130" y="132" text-anchor="middle" font-size="9" fill="var(--text2)" font-family="inherit">Standard Q, K, V</text>
+        <text x="130" y="145" text-anchor="middle" font-size="9" fill="var(--text2)" font-family="inherit">8 heads, 512-dim</text>
+        <text x="130" y="160" text-anchor="middle" font-size="9" fill="var(--text2)" font-family="inherit">+ pair bias on logits</text>
+
+        <!-- Point attention branch -->
+        <rect x="490" y="95" width="160" height="80" rx="6" fill="var(--bg2)" stroke="var(--svg-green)" stroke-width="1.5"/>
+        <text x="570" y="115" text-anchor="middle" font-size="10" fill="var(--svg-green)" font-weight="600" font-family="inherit">Point Attention</text>
+        <!-- Mini 3D frame diagram -->
+        <g transform="translate(525,125)">
+          <line x1="0" y1="0" x2="25" y2="0" stroke="var(--svg-red)" stroke-width="1.5"/>
+          <line x1="0" y1="0" x2="0" y2="-20" stroke="var(--svg-accent)" stroke-width="1.5"/>
+          <line x1="0" y1="0" x2="-12" y2="10" stroke="var(--svg-green)" stroke-width="1.5"/>
+          <circle cx="18" cy="-8" r="3" fill="var(--svg-orange)" opacity=".6"/>
+          <circle cx="8" cy="5" r="3" fill="var(--svg-orange)" opacity=".6"/>
+          <text x="30" y="-5" font-size="8" fill="var(--text3)" font-family="inherit">query</text>
+          <text x="30" y="5" font-size="8" fill="var(--text3)" font-family="inherit">points</text>
+        </g>
+        <text x="570" y="160" text-anchor="middle" font-size="9" fill="var(--text2)" font-family="inherit">3D queries in local frames</text>
+
+        <!-- Merge -->
+        <line x1="130" y1="175" x2="130" y2="195" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="570" y1="175" x2="570" y2="195" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="130" y1="195" x2="570" y2="195" stroke="var(--svg-fg)" stroke-width="1"/>
+        <line x1="350" y1="195" x2="350" y2="210" stroke="var(--svg-fg)" stroke-width="1"/>
+        <text x="350" y="190" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="inherit">concat &rarr; 1216 &rarr; Linear &rarr; 512</text>
+
+        <!-- FFN -->
+        <rect x="260" y="210" width="180" height="25" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+        <text x="350" y="227" text-anchor="middle" font-size="10" fill="var(--svg-fg)" font-family="inherit">FFN: 512 &rarr; 1024 &rarr; 512</text>
+
+        <!-- Frame Update -->
+        <line x1="350" y1="235" x2="350" y2="248" stroke="var(--svg-fg)" stroke-width="1"/>
+        <rect x="240" y="248" width="220" height="25" rx="4" fill="var(--svg-orange)" opacity=".1" stroke="var(--svg-orange)" stroke-width="1.5"/>
+        <text x="350" y="265" text-anchor="middle" font-size="10" fill="var(--svg-orange)" font-weight="600" font-family="inherit">Frame Update: MLP &rarr; &Delta;R, &Delta;t &rarr; SE(3) compose</text>
+
+        <!-- ×8 badge -->
+        <rect x="620" y="248" width="55" height="25" rx="12" fill="var(--svg-accent)" opacity=".15" stroke="var(--svg-accent)"/>
+        <text x="647" y="265" text-anchor="middle" font-size="12" fill="var(--svg-accent)" font-weight="bold" font-family="inherit">&times;8</text>
+      </svg>
+    </div>
+    <div class="explain">
+      The core denoiser. <strong>Invariant Point Attention (IPA)</strong> combines standard sequence attention with <strong>3D geometric attention</strong> &mdash; queries and keys are actual 3D points positioned in each residue's local coordinate frame. This makes the attention SE(3)-equivariant: the output doesn't change if you rotate the whole structure. After each layer, the <strong>frame update</strong> refines each residue's rotation and translation. 8 layers of refinement progressively sharpen the structure prediction. Output: <code>x<sub>0,pred</sub></code> (B, L, 3) + <code>R<sub>pred</sub></code> (B, L, 3, 3).
+    </div>
+  </div></div>
+</div>
+
+<div class="conn"><div class="l"></div></div>
+
+<!-- ===== 7. AUX HEADS ===== -->
 <div class="section-label">Auxiliary Heads</div>
-
 <div class="branch-lines">
   <div class="trunk"></div>
   <div class="bar"></div>
@@ -325,187 +467,186 @@ h1{text-align:center;font-size:1.6rem;font-weight:700;color:var(--text);margin-b
 </div>
 
 <div class="parallel-group">
-  <div class="stage" onclick="toggle(this)">
-    <div class="stage-header">
-      <span class="stage-num">Aux A</span>
-      <span class="stage-title">Distance Head</span>
-      <span class="expand-arrow">&#9654;</span>
+  <div class="block" onclick="tog(this)">
+    <div class="block-head">
+      <span class="tag">Aux A</span>
+      <span class="block-title">Distance Head</span>
+      <span class="arr">&#9654;</span>
     </div>
-    <div class="stage-details"><div class="detail-body">
-      <div class="sub-box">
-        <div class="sub-box-title">AuxPairStack</div>
-        <ul>
-          <li>SingleToPair projection (d_aux = 64)</li>
-          <li>OuterProductMean</li>
-          <li>contact_proj from encoder contact_probs</li>
-          <li>2&times; AxialBlock (lightweight)</li>
-        </ul>
-      </div>
-      <div class="sub-box">
-        <div class="sub-box-title">OrdinalDistanceHead</div>
-        <ul>
-          <li>32 ordinal bins spanning 2&ndash;40 &Aring;</li>
-          <li>Output: <code>dist_logits</code> (B, L, L, 32)</li>
-          <li>Output: <code>dist_pred</code> (B, L, L) expected distance</li>
-        </ul>
+    <div class="block-body"><div class="body-inner">
+      <div class="vis">
+        <svg viewBox="0 0 280 100" width="280" height="100">
+          <!-- Distance matrix mini viz -->
+          <g transform="translate(20,10)">
+            <rect x="0" y="0" width="80" height="80" rx="4" fill="var(--bg2)" stroke="var(--border)"/>
+            <!-- Grid cells with varying intensity -->
+            <rect x="4" y="4" width="14" height="14" fill="var(--svg-accent)" opacity=".9"/>
+            <rect x="22" y="4" width="14" height="14" fill="var(--svg-accent)" opacity=".2"/>
+            <rect x="40" y="4" width="14" height="14" fill="var(--svg-accent)" opacity=".1"/>
+            <rect x="58" y="4" width="14" height="14" fill="var(--svg-accent)" opacity=".3"/>
+            <rect x="4" y="22" width="14" height="14" fill="var(--svg-accent)" opacity=".2"/>
+            <rect x="22" y="22" width="14" height="14" fill="var(--svg-accent)" opacity=".9"/>
+            <rect x="40" y="22" width="14" height="14" fill="var(--svg-accent)" opacity=".5"/>
+            <rect x="58" y="22" width="14" height="14" fill="var(--svg-accent)" opacity=".1"/>
+            <rect x="4" y="40" width="14" height="14" fill="var(--svg-accent)" opacity=".1"/>
+            <rect x="22" y="40" width="14" height="14" fill="var(--svg-accent)" opacity=".5"/>
+            <rect x="40" y="40" width="14" height="14" fill="var(--svg-accent)" opacity=".9"/>
+            <rect x="58" y="40" width="14" height="14" fill="var(--svg-accent)" opacity=".4"/>
+            <rect x="4" y="58" width="14" height="14" fill="var(--svg-accent)" opacity=".3"/>
+            <rect x="22" y="58" width="14" height="14" fill="var(--svg-accent)" opacity=".1"/>
+            <rect x="40" y="58" width="14" height="14" fill="var(--svg-accent)" opacity=".4"/>
+            <rect x="58" y="58" width="14" height="14" fill="var(--svg-accent)" opacity=".9"/>
+          </g>
+          <g transform="translate(115,15)" font-family="inherit">
+            <text x="0" y="10" font-size="10" fill="var(--svg-fg)" font-weight="600">32-bin ordinal</text>
+            <text x="0" y="25" font-size="9" fill="var(--text2)">2&ndash;40 &#197; range</text>
+            <text x="0" y="50" font-size="9" fill="var(--text2)">AuxPairStack (d=64)</text>
+            <text x="0" y="65" font-size="9" fill="var(--text2)">+ 2&times; AxialBlock</text>
+          </g>
+        </svg>
       </div>
     </div></div>
   </div>
 
-  <div class="stage" onclick="toggle(this)">
-    <div class="stage-header">
-      <span class="stage-num">Aux B</span>
-      <span class="stage-title">R<sub>g</sub> Predictor</span>
-      <span class="expand-arrow">&#9654;</span>
+  <div class="block" onclick="tog(this)">
+    <div class="block-head">
+      <span class="tag">Aux B</span>
+      <span class="block-title">R<sub>g</sub> Predictor</span>
+      <span class="arr">&#9654;</span>
     </div>
-    <div class="stage-details"><div class="detail-body">
-      <div class="sub-box">
-        <div class="sub-box-title">Attention Pooling + MLP</div>
-        <ul>
-          <li>Learned attention pooling over single features (B, L, 128) &rarr; (B, 128)</li>
-          <li>MLP &rarr; softplus activation + 3.0 bias</li>
-          <li>Output: <code>rg_pred</code> (B,) &mdash; predicted radius of gyration in &Aring;</li>
-        </ul>
+    <div class="block-body"><div class="body-inner">
+      <div class="vis">
+        <svg viewBox="0 0 280 100" width="280" height="100">
+          <!-- Rg diagram: circle with radius -->
+          <g transform="translate(50,50)">
+            <circle cx="0" cy="0" r="30" fill="none" stroke="var(--svg-fg)" stroke-width="1" stroke-dasharray="3,2" opacity=".4"/>
+            <circle cx="0" cy="0" r="3" fill="var(--svg-accent)"/>
+            <line x1="0" y1="0" x2="25" y2="-16" stroke="var(--svg-accent)" stroke-width="1.5"/>
+            <text x="18" y="-3" font-size="9" fill="var(--svg-accent)" font-family="inherit">Rg</text>
+            <!-- Scattered CA dots -->
+            <circle cx="12" cy="-20" r="3" fill="var(--svg-accent)" opacity=".4"/>
+            <circle cx="-18" cy="10" r="3" fill="var(--svg-accent)" opacity=".4"/>
+            <circle cx="5" cy="22" r="3" fill="var(--svg-accent)" opacity=".4"/>
+            <circle cx="-10" cy="-15" r="3" fill="var(--svg-accent)" opacity=".4"/>
+            <circle cx="20" cy="8" r="3" fill="var(--svg-accent)" opacity=".4"/>
+          </g>
+          <g transform="translate(110,20)" font-family="inherit">
+            <text x="0" y="10" font-size="10" fill="var(--svg-fg)" font-weight="600">Radius of gyration</text>
+            <text x="0" y="28" font-size="9" fill="var(--text2)">Attn pooling + MLP</text>
+            <text x="0" y="43" font-size="9" fill="var(--text2)">softplus + 3.0 bias</text>
+            <text x="0" y="65" font-size="9" fill="var(--text3)" font-family="monospace">output: (B,) &#197;</text>
+          </g>
+        </svg>
       </div>
     </div></div>
   </div>
 </div>
 
-<div class="connector"><div class="line"></div></div>
+<div class="conn"><div class="l"></div></div>
 
-<!-- 8. LOSSES -->
-<div class="stage" onclick="toggle(this)">
-  <div class="stage-header">
-    <span class="stage-num">Losses</span>
-    <span class="stage-title">Multi-Task Loss Functions</span>
-    <span class="stage-dims">9 terms</span>
-    <span class="expand-arrow">&#9654;</span>
+<!-- ===== 8. LOSSES ===== -->
+<div class="block open" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">6</span>
+    <span class="block-title">Loss Functions &mdash; 9 Terms</span>
+    <span class="arr">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-body">
+  <div class="block-body"><div class="body-inner">
     <div class="loss-grid">
       <div class="loss-item">
-        <div class="loss-name">FAPE Loss</div>
-        <div class="loss-weight">w = 1.0</div>
-        <div class="loss-desc">Frame-aligned point error on x<sub>0,pred</sub> vs x<sub>0,true</sub> with R<sub>pred</sub>. Clamped max 10.0</div>
+        <svg width="32" height="32" viewBox="0 0 32 32"><rect x="2" y="8" width="12" height="12" rx="2" fill="none" stroke="var(--svg-accent)" stroke-width="1.5" transform="rotate(-10,8,14)"/><rect x="18" y="10" width="12" height="12" rx="2" fill="none" stroke="var(--svg-red)" stroke-width="1.5" transform="rotate(5,24,16)"/><line x1="14" y1="14" x2="18" y2="16" stroke="var(--svg-fg)" stroke-width="1" stroke-dasharray="2,1"/></svg>
+        <div class="loss-info"><div class="loss-name">FAPE</div><div class="loss-w">w = 1.0</div><div class="loss-desc">Frame-aligned point error &mdash; how well do predicted points match true points in each residue's local frame? Clamped max 10.0</div></div>
       </div>
       <div class="loss-item">
-        <div class="loss-name">Frame Rotation</div>
-        <div class="loss-weight">w = 0.5</div>
-        <div class="loss-desc">1 &minus; cos(angle) between R<sub>pred</sub> and frames from true_coords. Clamped max 2.0</div>
+        <svg width="32" height="32" viewBox="0 0 32 32"><line x1="8" y1="24" x2="24" y2="24" stroke="var(--svg-accent)" stroke-width="2"/><line x1="8" y1="24" x2="8" y2="8" stroke="var(--svg-accent)" stroke-width="2"/><line x1="10" y1="22" x2="22" y2="22" stroke="var(--svg-red)" stroke-width="1.5" transform="rotate(-20,16,22)"/><line x1="10" y1="22" x2="10" y2="10" stroke="var(--svg-red)" stroke-width="1.5" transform="rotate(-20,10,22)"/><path d="M12,20 A4,4 0 0,1 14,18" stroke="var(--svg-orange)" stroke-width="1.5" fill="none"/></svg>
+        <div class="loss-info"><div class="loss-name">Frame Rotation</div><div class="loss-w">w = 0.5</div><div class="loss-desc">Angular distance between predicted and true frames: 1 &minus; cos(&theta;). Clamped max 2.0</div></div>
       </div>
       <div class="loss-item">
-        <div class="loss-name">Distance MSE</div>
-        <div class="loss-weight">w = 1.0</div>
-        <div class="loss-desc">MSE on predicted vs true pairwise C&alpha; distances. Clamped max 10.0</div>
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="8" cy="16" r="4" fill="var(--svg-accent)" opacity=".3" stroke="var(--svg-accent)" stroke-width="1.5"/><circle cx="24" cy="16" r="4" fill="var(--svg-accent)" opacity=".3" stroke="var(--svg-accent)" stroke-width="1.5"/><line x1="12" y1="16" x2="20" y2="16" stroke="var(--svg-fg)" stroke-width="1" stroke-dasharray="2,2"/><text x="16" y="10" text-anchor="middle" font-size="7" fill="var(--text3)">d</text></svg>
+        <div class="loss-info"><div class="loss-name">Distance MSE</div><div class="loss-w">w = 1.0</div><div class="loss-desc">MSE on all pairwise C&alpha; distances. Clamped max 10.0</div></div>
       </div>
       <div class="loss-item">
-        <div class="loss-name">Bond Geometry</div>
-        <div class="loss-weight">w = 3.0 (annealed 1&rarr;3)</div>
-        <div class="loss-desc">Consecutive C&alpha; distance vs 3.8&Aring; target. Annealed E1&rarr;E10. Clamped max 10.0</div>
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="10" cy="16" r="4" fill="var(--svg-green)" opacity=".3" stroke="var(--svg-green)" stroke-width="1.5"/><circle cx="22" cy="16" r="4" fill="var(--svg-green)" opacity=".3" stroke="var(--svg-green)" stroke-width="1.5"/><line x1="14" y1="16" x2="18" y2="16" stroke="var(--svg-green)" stroke-width="2"/><text x="16" y="28" text-anchor="middle" font-size="7" fill="var(--text3)">3.8&#197;</text></svg>
+        <div class="loss-info"><div class="loss-name">Bond Geometry</div><div class="loss-w">w = 3.0 (annealed 1&rarr;3)</div><div class="loss-desc">Consecutive C&alpha; distance vs 3.8&#197; target. Annealed E1&rarr;E10. Clamped max 10.0</div></div>
       </div>
       <div class="loss-item">
-        <div class="loss-name">Chirality</div>
-        <div class="loss-weight">w = 0.1</div>
-        <div class="loss-desc">Signed volume of C&alpha; quartets &mdash; preserves correct handedness</div>
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="10" r="3" fill="var(--svg-fg)" opacity=".3"/><circle cx="8" cy="22" r="3" fill="var(--svg-fg)" opacity=".3"/><circle cx="24" cy="22" r="3" fill="var(--svg-fg)" opacity=".3"/><circle cx="16" cy="28" r="3" fill="var(--svg-fg)" opacity=".3"/><line x1="16" y1="13" x2="8" y2="19" stroke="var(--svg-fg)" stroke-width="1"/><line x1="16" y1="13" x2="24" y2="19" stroke="var(--svg-fg)" stroke-width="1"/><line x1="16" y1="13" x2="16" y2="25" stroke="var(--svg-fg)" stroke-width="1"/><text x="16" y="7" text-anchor="middle" font-size="6" fill="var(--text3)">L/D</text></svg>
+        <div class="loss-info"><div class="loss-name">Chirality</div><div class="loss-w">w = 0.1</div><div class="loss-desc">Signed volume of C&alpha; quartets &mdash; preserves correct handedness</div></div>
       </div>
       <div class="loss-item">
-        <div class="loss-name">Angle Loss</div>
-        <div class="loss-weight">w = 0.5</div>
-        <div class="loss-desc">MSE on C&alpha;&ndash;C&alpha;&ndash;C&alpha; bond angles vs ground truth</div>
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="6" cy="20" r="3" fill="var(--svg-fg)" opacity=".3"/><circle cx="16" cy="10" r="3" fill="var(--svg-fg)" opacity=".3"/><circle cx="26" cy="20" r="3" fill="var(--svg-fg)" opacity=".3"/><line x1="9" y1="18" x2="14" y2="12" stroke="var(--svg-fg)" stroke-width="1.5"/><line x1="18" y1="12" x2="23" y2="18" stroke="var(--svg-fg)" stroke-width="1.5"/><path d="M10,15 A8,8 0 0,1 22,15" stroke="var(--svg-orange)" stroke-width="1.5" fill="none"/><text x="16" y="28" text-anchor="middle" font-size="7" fill="var(--text3)">&theta;</text></svg>
+        <div class="loss-info"><div class="loss-name">Angle</div><div class="loss-w">w = 0.5</div><div class="loss-desc">MSE on C&alpha;&ndash;C&alpha;&ndash;C&alpha; bond angles vs ground truth</div></div>
       </div>
       <div class="loss-item">
-        <div class="loss-name">Clash Loss</div>
-        <div class="loss-weight">w = 0.1</div>
-        <div class="loss-desc">ReLU&sup2;(3.8&Aring; &minus; d) for non-bonded pairs. Clamped max 25.0</div>
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="12" cy="16" r="6" fill="var(--svg-red)" opacity=".15" stroke="var(--svg-red)" stroke-width="1.5"/><circle cx="20" cy="16" r="6" fill="var(--svg-red)" opacity=".15" stroke="var(--svg-red)" stroke-width="1.5"/><text x="16" y="28" text-anchor="middle" font-size="6" fill="var(--svg-red)">overlap!</text></svg>
+        <div class="loss-info"><div class="loss-name">Clash</div><div class="loss-w">w = 0.1</div><div class="loss-desc">ReLU&sup2;(3.8&#197; &minus; d) for non-bonded pairs. Clamped max 25.0</div></div>
       </div>
       <div class="loss-item">
-        <div class="loss-name">Aux Distance</div>
-        <div class="loss-weight">w = 0.03</div>
-        <div class="loss-desc">Ordinal BCE on distance bin predictions from aux head</div>
+        <svg width="32" height="32" viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="2" fill="none" stroke="var(--svg-fg)" stroke-width="1" opacity=".3"/><rect x="6" y="8" width="5" height="4" fill="var(--svg-accent)" opacity=".6"/><rect x="13" y="8" width="5" height="4" fill="var(--svg-accent)" opacity=".2"/><rect x="20" y="8" width="5" height="4" fill="var(--svg-accent)" opacity=".4"/><rect x="6" y="14" width="5" height="4" fill="var(--svg-accent)" opacity=".2"/><rect x="13" y="14" width="5" height="4" fill="var(--svg-accent)" opacity=".7"/><rect x="20" y="14" width="5" height="4" fill="var(--svg-accent)" opacity=".3"/></svg>
+        <div class="loss-info"><div class="loss-name">Aux Distance</div><div class="loss-w">w = 0.03</div><div class="loss-desc">Ordinal BCE on 32-bin distance predictions from aux head</div></div>
       </div>
       <div class="loss-item" style="grid-column:1/3">
-        <div class="loss-name">R<sub>g</sub> Loss</div>
-        <div class="loss-weight">w = 0.5</div>
-        <div class="loss-desc">MSE on log(R<sub>g</sub>) predicted vs true radius of gyration</div>
+        <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="none" stroke="var(--svg-fg)" stroke-width="1" stroke-dasharray="3,2" opacity=".4"/><circle cx="16" cy="16" r="2" fill="var(--svg-accent)"/><text x="16" y="30" text-anchor="middle" font-size="7" fill="var(--text3)">Rg</text></svg>
+        <div class="loss-info"><div class="loss-name">Rg Loss</div><div class="loss-w">w = 0.5</div><div class="loss-desc">MSE on log(radius of gyration) &mdash; ensures correct overall compactness</div></div>
       </div>
     </div>
   </div></div>
 </div>
 
-<div class="connector"><div class="line"></div></div>
+<div class="conn"><div class="l"></div></div>
 
-<!-- Tracked Metric -->
+<!-- ===== TRACKED METRIC ===== -->
 <div class="metric-box">
   <div class="metric-label">Tracked Metric (Early Stopping)</div>
   <div class="metric-formula">structural = total &minus; aux_dist &times; 0.03</div>
-  <div class="metric-note">Patience: 15 / 15 epochs</div>
+  <div class="metric-note">All losses except auxiliary distance prediction. Patience: 15 epochs.</div>
 </div>
 
-<div class="connector"><div class="line"></div></div>
+<div class="conn"><div class="l"></div></div>
 
-<!-- 9. TRAINING CONFIG -->
-<div class="stage" onclick="toggle(this)">
-  <div class="stage-header">
-    <span class="stage-num">Config</span>
-    <span class="stage-title">Training Configuration</span>
-    <span class="expand-arrow">&#9654;</span>
+<!-- ===== 9. TRAINING CONFIG ===== -->
+<div class="block" onclick="tog(this)">
+  <div class="block-head">
+    <span class="tag">Config</span>
+    <span class="block-title">Training Configuration</span>
+    <span class="arr">&#9654;</span>
   </div>
-  <div class="stage-details"><div class="detail-body">
+  <div class="block-body"><div class="body-inner">
     <div class="config-grid">
-      <div class="config-item">
-        <div class="config-label">Optimizer</div>
-        <div class="config-val">AdamW</div>
-      </div>
-      <div class="config-item">
-        <div class="config-label">Denoiser LR</div>
-        <div class="config-val">2e-5</div>
-      </div>
-      <div class="config-item">
-        <div class="config-label">Pair Stack LR</div>
-        <div class="config-val">6e-5</div>
-      </div>
-      <div class="config-item">
-        <div class="config-label">Aux Head LR</div>
-        <div class="config-val">4e-5</div>
-      </div>
-      <div class="config-item">
-        <div class="config-label">EMA Decay</div>
-        <div class="config-val">0.999</div>
-      </div>
-      <div class="config-item">
-        <div class="config-label">CFG Uncond</div>
-        <div class="config-val">10%</div>
-      </div>
+      <div class="config-item"><div class="config-label">Optimizer</div><div class="config-val">AdamW</div></div>
+      <div class="config-item"><div class="config-label">Denoiser LR</div><div class="config-val">2e-5</div></div>
+      <div class="config-item"><div class="config-label">Pair Stack LR</div><div class="config-val">6e-5 (3&times;)</div></div>
+      <div class="config-item"><div class="config-label">Aux Head LR</div><div class="config-val">4e-5</div></div>
+      <div class="config-item"><div class="config-label">EMA Decay</div><div class="config-val">0.999</div></div>
+      <div class="config-item"><div class="config-label">CFG Uncond</div><div class="config-val">10%</div></div>
     </div>
-    <div style="margin-top:12px">
-      <div class="sub-box">
-        <div class="sub-box-title">LR Schedule</div>
-        <ul>
-          <li><strong>Warmup</strong>: 3 epochs (linear ramp)</li>
-          <li><strong>Constant</strong>: epochs 3&ndash;20</li>
-          <li><strong>Cosine decay</strong>: epochs 20+</li>
-        </ul>
-      </div>
-      <div class="sub-box">
-        <div class="sub-box-title">Regularization</div>
-        <ul>
-          <li>Per-module gradient clipping</li>
-          <li>CFG training: 10% of batches mask tokens for unconditional generation</li>
-          <li>EMA model tracked for evaluation</li>
-        </ul>
-      </div>
+    <div class="sub-block" style="margin-top:10px">
+      <div class="sub-block-title">LR Schedule</div>
+      <div class="explain"><ul>
+        <li><strong>Warmup</strong>: 3 epochs (linear ramp)</li>
+        <li><strong>Constant</strong>: epochs 3&ndash;20</li>
+        <li><strong>Cosine decay</strong>: epochs 20+</li>
+      </ul></div>
+    </div>
+    <div class="sub-block">
+      <div class="sub-block-title">Regularization</div>
+      <div class="explain"><ul>
+        <li>Per-module gradient clipping</li>
+        <li>CFG training: 10% of batches mask tokens for unconditional generation</li>
+        <li>EMA model tracked for evaluation</li>
+      </ul></div>
     </div>
   </div></div>
 </div>
 
-</div><!-- /container -->
+</div><!-- /wrap -->
 
 <script>
-function toggle(el){el.classList.toggle('expanded')}
+function tog(el){el.classList.toggle('open')}
 function toggleTheme(){
-  var html=document.documentElement,btn=document.getElementById('themeBtn');
-  if(html.getAttribute('data-theme')==='dark'){html.removeAttribute('data-theme');btn.textContent='\u{1F319}';localStorage.setItem('theme','light')}
-  else{html.setAttribute('data-theme','dark');btn.textContent='\u{2600}\u{FE0F}';localStorage.setItem('theme','dark')}
+  var h=document.documentElement,b=document.getElementById('themeBtn');
+  if(h.getAttribute('data-theme')==='dark'){h.removeAttribute('data-theme');b.textContent='\u{1F319}';localStorage.setItem('theme','light')}
+  else{h.setAttribute('data-theme','dark');b.textContent='\u{2600}\u{FE0F}';localStorage.setItem('theme','dark')}
 }
 (function(){var s=localStorage.getItem('theme');if(s==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('themeBtn').textContent='\u{2600}\u{FE0F}'}})();
 </script>
