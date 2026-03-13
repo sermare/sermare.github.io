@@ -7,24 +7,26 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#ffffff;--bg-box:#f5f5f5;
-  --text:#111111;--text2:#555555;--text3:#888888;
-  --accent:#2563eb;--border:#dddddd;
-  --radius:6px;--shadow:0 1px 3px rgba(0,0,0,0.1);
+  --bg:#ffffff;--bg-box:#f7f7f7;
+  --text:#333333;--text2:#555555;--text3:#777777;
+  --accent:#1772d0;--border:#e4e4e4;
+  --toggle-bg:#e4e4e4;--toggle-fg:#333;
+  --radius:6px;--shadow:0 1px 3px rgba(0,0,0,0.08);
   --font:-apple-system,system-ui,'Segoe UI',Helvetica,Arial,sans-serif;
   --mono:'SF Mono',Consolas,'Liberation Mono',monospace;
 }
-.dark{
-  --bg:#1a1a2e;--bg-box:#2a2a3e;
-  --text:#e0e0e0;--text2:#aaaaaa;--text3:#777777;
-  --accent:#5b8def;--border:#3a3a4e;
+[data-theme="dark"]{
+  --bg:#0d1117;--bg-box:#161b22;
+  --text:#c9d1d9;--text2:#8b949e;--text3:#8b949e;
+  --accent:#58a6ff;--border:#30363d;
+  --toggle-bg:#30363d;--toggle-fg:#c9d1d9;
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;transition:background 0.3s,color 0.3s}
 
-/* Dark mode toggle */
-#theme-toggle{position:fixed;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--bg-box);color:var(--text);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;z-index:100;transition:background 0.3s,border-color 0.3s}
-#theme-toggle:hover{border-color:var(--accent)}
+/* Dark mode toggle — matches main site */
+.theme-toggle{position:fixed;top:18px;right:18px;z-index:100;background:var(--toggle-bg);border:1px solid var(--border);border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);color:var(--toggle-fg);transition:background 0.3s,border-color 0.3s}
+.theme-toggle:hover{opacity:0.8}
 
 #container{max-width:800px;margin:0 auto;padding:40px 20px 80px}
 
@@ -103,7 +105,7 @@ h1{text-align:center;font-size:1.6rem;font-weight:700;color:var(--text);margin-b
 </head>
 <body>
 
-<button id="theme-toggle" onclick="document.body.classList.toggle('dark');this.textContent=document.body.classList.contains('dark')?'\u2600':'\u263E'" aria-label="Toggle dark mode">&#9790;</button>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn">&#127769;</button>
 
 <div id="container">
 
@@ -500,6 +502,12 @@ h1{text-align:center;font-size:1.6rem;font-weight:700;color:var(--text);margin-b
 
 <script>
 function toggle(el){el.classList.toggle('expanded')}
+function toggleTheme(){
+  var html=document.documentElement,btn=document.getElementById('themeBtn');
+  if(html.getAttribute('data-theme')==='dark'){html.removeAttribute('data-theme');btn.textContent='\u{1F319}';localStorage.setItem('theme','light')}
+  else{html.setAttribute('data-theme','dark');btn.textContent='\u{2600}\u{FE0F}';localStorage.setItem('theme','dark')}
+}
+(function(){var s=localStorage.getItem('theme');if(s==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('themeBtn').textContent='\u{2600}\u{FE0F}'}})();
 </script>
 </body>
 </html>

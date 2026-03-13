@@ -9,26 +9,30 @@
 
   :root{
     --bg:#ffffff;
-    --text:#111111;
-    --text-secondary:#666666;
-    --accent:#2563eb;
-    --box-bg:#f5f5f5;
-    --border:#dddddd;
+    --text:#333333;
+    --text-secondary:#777777;
+    --accent:#1772d0;
+    --box-bg:#f7f7f7;
+    --border:#e4e4e4;
     --code-bg:#f0f0f0;
     --connector:rgba(0,0,0,0.15);
     --table-border:rgba(0,0,0,0.08);
+    --toggle-bg:#e4e4e4;
+    --toggle-fg:#333;
   }
 
-  body.dark{
-    --bg:#1a1a2e;
-    --text:#e0e0e0;
-    --text-secondary:#999999;
-    --accent:#5b8def;
-    --box-bg:#2a2a3e;
-    --border:#3a3a4e;
+  [data-theme="dark"]{
+    --bg:#0d1117;
+    --text:#c9d1d9;
+    --text-secondary:#8b949e;
+    --accent:#58a6ff;
+    --box-bg:#161b22;
+    --border:#30363d;
     --code-bg:rgba(255,255,255,0.08);
     --connector:rgba(255,255,255,0.15);
     --table-border:rgba(255,255,255,0.06);
+    --toggle-bg:#30363d;
+    --toggle-fg:#c9d1d9;
   }
 
   body{
@@ -39,15 +43,15 @@
     line-height:1.5;
   }
 
-  /* Dark mode toggle */
+  /* Dark mode toggle — matches main site */
   .theme-toggle{
-    position:fixed;top:14px;right:14px;z-index:100;
-    background:var(--box-bg);border:1px solid var(--border);
-    border-radius:4px;padding:4px 10px;cursor:pointer;
-    font-size:0.75rem;color:var(--text-secondary);
-    font-family:inherit;
+    position:fixed;top:18px;right:18px;z-index:100;
+    background:var(--toggle-bg);border:1px solid var(--border);
+    border-radius:50%;width:38px;height:38px;cursor:pointer;
+    font-size:18px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 1px 3px rgba(0,0,0,0.08);color:var(--toggle-fg);
   }
-  .theme-toggle:hover{border-color:var(--accent);color:var(--accent);}
+  .theme-toggle:hover{opacity:0.8;}
 
   /* Header */
   .page-header{
@@ -183,7 +187,7 @@
 </head>
 <body>
 
-<button class="theme-toggle" onclick="toggleTheme()">dark mode</button>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn">&#127769;</button>
 
 <div class="page-header">
   <h1>v14 &mdash; Full Backbone Diffusion Model</h1>
@@ -442,21 +446,22 @@ function toggle(el) {
 }
 
 function toggleTheme() {
-  document.body.classList.toggle('dark');
-  var btn = document.querySelector('.theme-toggle');
-  btn.textContent = document.body.classList.contains('dark') ? 'light mode' : 'dark mode';
-  // Redraw canvases with new colors
+  var html=document.documentElement,btn=document.getElementById('themeBtn');
+  if(html.getAttribute('data-theme')==='dark'){html.removeAttribute('data-theme');btn.textContent='\u{1F319}';localStorage.setItem('theme','light')}
+  else{html.setAttribute('data-theme','dark');btn.textContent='\u{2600}\u{FE0F}';localStorage.setItem('theme','dark')}
   requestAnimationFrame(drawCanvases);
 }
 
 function getColor() {
-  var isDark = document.body.classList.contains('dark');
+  var isDark = document.documentElement.getAttribute('data-theme')==='dark';
   return {
-    line: isDark ? '#5b8def' : '#2563eb',
-    axis: isDark ? '#666' : '#999',
-    bg: isDark ? '#1a1a2e' : '#ffffff'
+    line: isDark ? '#58a6ff' : '#1772d0',
+    axis: isDark ? '#8b949e' : '#777',
+    bg: isDark ? '#0d1117' : '#ffffff'
   };
 }
+
+(function(){var s=localStorage.getItem('theme');if(s==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('themeBtn').textContent='\u{2600}\u{FE0F}'}})();
 
 function drawCanvases() {
   drawRamp();
