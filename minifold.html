@@ -257,15 +257,15 @@
       </div>
 
       <!-- v15 card -->
-      <div style="flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; background: var(--bg-alt); opacity: 0.7;">
+      <div style="flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; background: var(--bg-alt);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <strong style="font-size: 15px; color: var(--heading-color);">v15</strong>
-          <span class="tag tag-stale" style="font-size: 11px;">PENDING</span>
+          <span class="tag tag-best" style="font-size: 11px;">TRAINING</span>
         </div>
         <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.7;">
-          pLDDT + pAE confidence heads<br>
-          15 loss terms &middot; awaiting GPU<br>
-          Extends v14 backbone model
+          Best structural: <strong>2.508</strong> (E2)<br>
+          Current: E2 &middot; pat 0/15<br>
+          pLDDT + pAE confidence heads &middot; 15 terms
         </div>
       </div>
 
@@ -376,13 +376,36 @@
     </div>
 
     <!-- ============================================================== -->
-    <!--  v15 PLACEHOLDER                                                -->
+    <!--  v15 TABLE                                                       -->
     <!-- ============================================================== -->
-    <h4 class="training-progress-heading" style="margin-top: 24px;">v15 &mdash; Confidence Heads (pending GPU)</h4>
-    <p style="font-size: 0.90em; color: var(--text-secondary); margin: 4px 0 12px 0;">
-      Extends v14 with pLDDT (per-residue) + pAE (pairwise) confidence prediction heads.
-      15 loss terms total. Will begin training once GPU allocation is available.
+    <h4 class="training-progress-heading" style="margin-top: 24px;">v15 &mdash; Full backbone + pLDDT + pAE confidence heads</h4>
+    <p style="font-size: 0.90em; color: var(--text-secondary); margin: 4px 0 8px 0;">
+      Extends v14 run3 with pLDDT (per-residue) + pAE (pairwise) confidence prediction. 15 loss terms.
+      Initialized from v14 run3 E24 best weights. w_plddt=0.2, w_pae=0.2.
     </p>
+    <div class="training-table-wrapper">
+      <table class="training-table">
+        <thead>
+          <tr>
+            <th>Epoch</th>
+            <th>Val Total</th>
+            <th>CA Structural</th>
+            <th>FAPE</th>
+            <th>Frame Rot</th>
+            <th>Dist MSE</th>
+            <th>BB FAPE</th>
+            <th>pLDDT</th>
+            <th>pAE</th>
+            <th>DDIM TM</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td><strong>4.549</strong></td><td style="color: #2ca02c;"><strong>2.543</strong></td><td>1.625</td><td>0.822</td><td>0.393</td><td>1.614</td><td>4.049</td><td>4.283</td><td>0.088</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td><strong>2</strong></td><td><strong>4.671</strong></td><td style="color: #2ca02c;"><strong>2.508</strong></td><td>1.602</td><td>0.814</td><td>0.386</td><td>1.592</td><td>3.551</td><td>3.968</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- ============================================================== -->
     <!--  LOSS CURVES                                                    -->
