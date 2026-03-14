@@ -198,8 +198,7 @@
     </p>
 
     <div class="mf-tabs">
-      <button class="mf-tab active" onclick="switchTab('folding')">Structure Folding</button>
-      <button class="mf-tab" onclick="switchTab('backbone')">Full Backbone</button>
+      <button class="mf-tab active" onclick="switchTab('folding')">Training Progress</button>
       <button class="mf-tab" onclick="switchTab('sidechain')">Side Chain</button>
       <button class="mf-tab" onclick="switchTab('classifier')">Classifier</button>
       <button class="mf-tab" onclick="switchTab('details')">More Details</button>
@@ -207,600 +206,231 @@
     </div>
 
     <!-- ============================================================== -->
-    <!--  TAB: STRUCTURE FOLDING                                         -->
+    <!--  TAB: TRAINING PROGRESS (consolidated)                          -->
     <!-- ============================================================== -->
     <div id="tab-folding" class="mf-panel active">
 
+    <h2 class="section-heading">Training Progress</h2>
+
     <!-- ============================================================== -->
-    <!--  v13 ARCHITECTURE                                               -->
+    <!--  SUMMARY CARDS                                                  -->
     <!-- ============================================================== -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
 
-    <h2 class="section-heading">v13 Architecture</h2>
-
-    <div class="training-card">
-      <div class="training-card-header">
-        <h3 class="training-card-title">Protein Backbone Diffusion Model v13</h3>
-        <span class="training-status status-active">Training</span>
-      </div>
-
-      <div class="training-goal">
-        <strong>Goal:</strong> Learn beta-sheet topology by enabling long-range pair information propagation. v12 pair stack is blind to sequence separations >32 residues, which is exactly where beta-sheet hydrogen bonds live. v13 fixes this with Evoformer-style triangle updates and log-scaled relative position encoding.
-      </div>
-
-      <div class="training-details">
-        <div class="training-detail-item">
-          <span class="detail-label">Architecture</span>
-          <span class="detail-value">Enhanced pair stack (8 blocks, triangle multiplicative updates) + IPA denoiser (8 layers, 8 heads, 8 query points, 512-dim) + frozen ContactClassifier encoder &mdash; ~35&ndash;38M params</span>
+      <!-- v13b card -->
+      <div style="flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; background: var(--bg-alt);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="font-size: 15px; color: var(--heading-color);">v13b</strong>
+          <span class="tag tag-best" style="font-size: 11px;">TRAINING</span>
         </div>
-        <div class="training-detail-item">
-          <span class="detail-label">Training</span>
-          <span class="detail-value">Single GPU, batch_size=4, grad_accum=4 (eff=16), LR=2e-5, pair_stack 3x LR, CFG p_uncond=0.1, SC=0.25</span>
-        </div>
-        <div class="training-detail-item">
-          <span class="detail-label">Initialization</span>
-          <span class="detail-value">v12b EMA weights (b30 best) via strict=False; denoiser/aux/rg: exact match; pair_stack: trains from scratch (new architecture)</span>
-        </div>
-        <div class="training-detail-item">
-          <span class="detail-label">Dataset</span>
-          <span class="detail-value">CATH 4.2: 18,024 train / 608 val proteins, max 125 residues</span>
+        <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.7;">
+          CA-only &middot; ~35M params<br>
+          Best structural: <strong style="color: #2ca02c;">2.375</strong> at E42<br>
+          Current: E45 &middot; pat 3/15
         </div>
       </div>
 
-      <h4 class="training-progress-heading" style="margin-top: 20px;">Key Architectural Changes</h4>
-
-      <div class="arch-feature">
-        <div class="af-label">Deeper Pair Stack</div>
-        <div class="af-value">
-          4 &rarr; 8 <code>EnhancedPairBlock</code> blocks. Each block applies: (1) triangle multiplicative update (outgoing), (2) triangle multiplicative update (incoming), (3) row + column axial attention + FFN. The triangle updates implement transitivity: "if i contacts k and j contacts k, then i and j are structurally related." This is exactly how beta-sheet topology is encoded &mdash; two strands share contacts via loop residues. Hidden dim: <code>tri_mul_dim=64</code>, <code>d_pair=128</code>.
+      <!-- v14 run2 card -->
+      <div style="flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; background: var(--bg-alt);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="font-size: 15px; color: var(--heading-color);">v14 run2</strong>
+          <span class="tag tag-stop" style="font-size: 11px;">EARLY STOP</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.7;">
+          Full backbone &middot; ~38M params<br>
+          Best structural: <strong>2.425</strong> at E15<br>
+          Stopped at E30 &middot; pat 15/15
         </div>
       </div>
 
-      <div class="arch-feature">
-        <div class="af-label">Log-Scaled RPE</div>
-        <div class="af-value">
-          Replaces linear-clipped <code>max_rel_pos=32</code> with 128 log-spaced bins covering 0&ndash;512 residues. The old RPE was zero for |i-j| > 32, making long-range sheet contacts invisible. New encoding: fine linear bins for positions 0&ndash;8 (helices: i+3, i+4), log-spaced bins for positions 8&ndash;512 (sheets: i+20..i+100+), sign-aware (separate embeddings for upstream/downstream). Additionally, sinusoidal continuous RPE features (32-dim sin/cos encoding projected to d_pair) provide smooth interpolation between bins.
+      <!-- v14 run3 card -->
+      <div style="flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; background: var(--bg-alt);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="font-size: 15px; color: var(--heading-color);">v14 run3</strong>
+          <span class="tag tag-best" style="font-size: 11px;">TRAINING</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.7;">
+          From E15 &middot; BB_LR 2x + L2 reg<br>
+          Best structural: <strong style="color: #2ca02c;">2.335</strong> at E24<br>
+          Current: E31 &middot; pat 7/15
         </div>
       </div>
 
-      <div class="arch-feature">
-        <div class="af-label">Classifier-Free Guidance</div>
-        <div class="af-value">
-          10% conditioning dropout during training (<code>p_uncond=0.1</code>). When triggered, residue tokens are replaced with MASK tokens (preserving CLS/EOS/PAD structure) so the model learns unconditional generation. At sampling time, enables CFG: <code>eps = eps_uncond + w * (eps_cond - eps_uncond)</code>. Critical fix: using PAD as the null token caused <code>mask = ids.ne(PAD)</code> to return all-False, creating degenerate all-masked pair representations that produced NaN. Using MASK instead preserves valid attention masks.
+      <!-- v15 card -->
+      <div style="flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; background: var(--bg-alt); opacity: 0.7;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="font-size: 15px; color: var(--heading-color);">v15</strong>
+          <span class="tag tag-stale" style="font-size: 11px;">PENDING</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.7;">
+          pLDDT + pAE confidence heads<br>
+          15 loss terms &middot; awaiting GPU<br>
+          Extends v14 backbone model
         </div>
       </div>
 
-      <div class="arch-feature">
-        <div class="af-label">LR Schedule</div>
-        <div class="af-value">
-          Three-phase schedule motivated by v12b finding that breakthroughs happen in narrow LR windows:
-          (1) Linear warmup: 3 epochs (0.01x &rarr; 1x LR),
-          (2) Constant LR: 20 epochs at peak LR (the key change &mdash; give the model more time at productive learning rates),
-          (3) Slow cosine decay: remaining ~37 epochs down to <code>eta_min=1e-6</code>.
-          Per-module LR groups: pair_stack at 3x base LR (6e-5), aux_pair at 2x.
-        </div>
+    </div>
+
+    <!-- Architecture diagram buttons -->
+    <div style="text-align: center; margin: 16px 0 24px 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+      <a href="data/training/v13b_architecture.html" target="_blank" style="display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #1f77b4, #2ca02c); color: white; text-decoration: none; border-radius: 8px; font-size: 0.92em; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(31,119,180,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(31,119,180,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(31,119,180,0.3)'">
+        v13b Architecture &rarr;
+      </a>
+      <a href="data/training/v14_architecture.html" target="_blank" style="display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #e67e22, #f1c40f); color: #1a1a2e; text-decoration: none; border-radius: 8px; font-size: 0.92em; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(230,126,34,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(230,126,34,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(230,126,34,0.3)'">
+        v14 Architecture &rarr;
+      </a>
+      <a href="data/training/v15_architecture.html" target="_blank" style="display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #7b2ff7, #c084fc); color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 0.92em; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(123,47,247,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(123,47,247,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(123,47,247,0.3)'">
+        v15 Architecture &rarr;
+      </a>
+    </div>
+
+    <!-- ============================================================== -->
+    <!--  v13b TABLE                                                     -->
+    <!-- ============================================================== -->
+    <h4 class="training-progress-heading">v13b &mdash; CA-only (from scratch, CLIP_PS=5.0, dist_head in optimizer)</h4>
+    <div class="training-table-wrapper">
+      <table class="training-table">
+        <thead>
+          <tr>
+            <th>Epoch</th><th>Val Total</th><th>Structural</th><th>FAPE</th><th>Frame Rot</th>
+            <th>Dist MSE</th><th>Bond</th><th>Aux Dist</th><th>Chirality</th><th>Angle</th>
+            <th>Rg</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- NEW BEST milestones (E9+, skipping early every-epoch-is-best) -->
+          <tr><td><strong>9</strong></td><td>2.608</td><td><strong>2.599</strong></td><td>1.675</td><td>0.841</td><td>0.357</td><td>0.008</td><td>0.302</td><td>0.375</td><td>0.137</td><td>0.038</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td><strong>13</strong></td><td>2.588</td><td><strong>2.579</strong></td><td>1.649</td><td>0.829</td><td>0.370</td><td>0.007</td><td>0.301</td><td>0.371</td><td>0.138</td><td>0.037</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td><strong>17</strong></td><td>2.551</td><td><strong>2.542</strong></td><td>1.641</td><td>0.826</td><td>0.352</td><td>0.006</td><td>0.306</td><td>0.356</td><td>0.129</td><td>0.036</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td><strong>24</strong></td><td>2.507</td><td><strong>2.498</strong></td><td>1.628</td><td>0.814</td><td>0.335</td><td>0.005</td><td>0.302</td><td>0.356</td><td>0.117</td><td>0.035</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td><strong>28</strong></td><td>2.487</td><td><strong>2.475</strong></td><td>1.604</td><td>0.810</td><td>0.339</td><td>0.006</td><td>0.423</td><td>0.345</td><td>0.113</td><td>0.035</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td><strong>31</strong></td><td>2.471</td><td><strong>2.461</strong></td><td>1.597</td><td>0.801</td><td>0.337</td><td>0.005</td><td>0.345</td><td>0.359</td><td>0.116</td><td>0.035</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td><strong>40</strong></td><td>2.465</td><td><strong>2.456</strong></td><td>1.597</td><td>0.797</td><td>0.335</td><td>0.006</td><td>0.309</td><td>0.352</td><td>0.111</td><td>0.034</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td><strong>42</strong></td><td><strong>2.384</strong></td><td style="color: #2ca02c;"><strong>2.375</strong></td><td>1.553</td><td>0.759</td><td>0.325</td><td>0.005</td><td>0.309</td><td>0.339</td><td>0.104</td><td>0.034</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <!-- separator -->
+          <tr><td colspan="12" style="border-top: 2px dashed var(--border); padding: 4px; font-size: 0.8em; color: #888; text-align: center;">Recent epochs</td></tr>
+          <!-- Last 5 epochs -->
+          <tr><td>41</td><td>2.492</td><td>2.483</td><td>1.608</td><td>0.810</td><td>0.346</td><td>0.006</td><td>0.309</td><td>0.341</td><td>0.112</td><td>0.034</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
+          <tr><td><strong>42</strong></td><td><strong>2.384</strong></td><td style="color: #2ca02c;"><strong>2.375</strong></td><td>1.553</td><td>0.759</td><td>0.325</td><td>0.005</td><td>0.309</td><td>0.339</td><td>0.104</td><td>0.034</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td>43</td><td>2.446</td><td>2.437</td><td>1.584</td><td>0.780</td><td>0.342</td><td>0.005</td><td>0.313</td><td>0.351</td><td>0.107</td><td>0.034</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
+          <tr><td>44</td><td>2.425</td><td>2.416</td><td>1.595</td><td>0.785</td><td>0.314</td><td>0.004</td><td>0.309</td><td>0.341</td><td>0.101</td><td>0.034</td><td><span class="tag tag-stale">pat 2/15</span></td></tr>
+          <tr><td>45</td><td>2.460</td><td>2.450</td><td>1.568</td><td>0.778</td><td>0.376</td><td>0.005</td><td>0.310</td><td>0.335</td><td>0.104</td><td>0.034</td><td><span class="tag tag-stale">pat 3/15</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ============================================================== -->
+    <!--  v14 run2 TABLE                                                 -->
+    <!-- ============================================================== -->
+    <h4 class="training-progress-heading" style="margin-top: 24px;">v14 run2 &mdash; Full backbone, from scratch (early stopped)</h4>
+    <div class="training-table-wrapper">
+      <table class="training-table">
+        <thead>
+          <tr>
+            <th>Epoch</th><th>Val Total</th><th>CA Structural</th><th>FAPE</th><th>Frame Rot</th>
+            <th>Dist MSE</th><th>BB FAPE</th><th>BB Bond</th><th>Omega</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- NEW BEST milestones (E5+) -->
+          <tr><td><strong>5</strong></td><td>4.671</td><td><strong>2.840</strong></td><td>1.756</td><td>0.933</td><td>0.432</td><td>1.747</td><td>0.007</td><td>0.036</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td><strong>8</strong></td><td>4.311</td><td><strong>2.623</strong></td><td>1.645</td><td>0.843</td><td>0.410</td><td>1.635</td><td>0.005</td><td>0.022</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td><strong>10</strong></td><td>4.257</td><td><strong>2.587</strong></td><td>1.631</td><td>0.846</td><td>0.394</td><td>1.621</td><td>0.004</td><td>0.020</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <tr><td><strong>15</strong></td><td><strong>4.017</strong></td><td style="color: #2ca02c;"><strong>2.425</strong></td><td>1.558</td><td>0.785</td><td>0.350</td><td>1.549</td><td>0.004</td><td>0.017</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <!-- separator -->
+          <tr><td colspan="10" style="border-top: 2px dashed var(--border); padding: 4px; font-size: 0.8em; color: #888; text-align: center;">Final epochs</td></tr>
+          <tr><td>26</td><td>4.132</td><td>2.523</td><td>1.579</td><td>0.817</td><td>0.415</td><td>1.569</td><td>0.004</td><td>0.015</td><td><span class="tag tag-stale">pat 11/15</span></td></tr>
+          <tr><td>27</td><td>4.108</td><td>2.509</td><td>1.571</td><td>0.808</td><td>0.417</td><td>1.560</td><td>0.003</td><td>0.014</td><td><span class="tag tag-stale">pat 12/15</span></td></tr>
+          <tr><td>28</td><td>4.160</td><td>2.535</td><td>1.598</td><td>0.824</td><td>0.407</td><td>1.587</td><td>0.003</td><td>0.013</td><td><span class="tag tag-stale">pat 13/15</span></td></tr>
+          <tr><td>29</td><td>4.219</td><td>2.578</td><td>1.614</td><td>0.837</td><td>0.428</td><td>1.603</td><td>0.004</td><td>0.013</td><td><span class="tag tag-stale">pat 14/15</span></td></tr>
+          <tr><td>30</td><td>4.241</td><td>2.594</td><td>1.621</td><td>0.836</td><td>0.438</td><td>1.610</td><td>0.003</td><td>0.013</td><td><span class="tag tag-stop">EARLY STOP</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ============================================================== -->
+    <!--  v14 run3 TABLE                                                 -->
+    <!-- ============================================================== -->
+    <h4 class="training-progress-heading" style="margin-top: 24px;">v14 run3 &mdash; Restarted from E15, BB_LR 2x + L2 offset reg (w=0.1)</h4>
+    <div class="training-table-wrapper">
+      <table class="training-table">
+        <thead>
+          <tr>
+            <th>Epoch</th><th>Val Total</th><th>CA Structural</th><th>FAPE</th><th>Frame Rot</th>
+            <th>Dist MSE</th><th>BB FAPE</th><th>BB Bond</th><th>Omega</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- NEW BEST milestones -->
+          <tr><td><strong>24</strong></td><td><strong>3.865</strong></td><td style="color: #2ca02c;"><strong>2.335</strong></td><td>1.500</td><td>0.743</td><td>0.350</td><td>1.492</td><td>0.003</td><td>0.013</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
+          <!-- separator -->
+          <tr><td colspan="10" style="border-top: 2px dashed var(--border); padding: 4px; font-size: 0.8em; color: #888; text-align: center;">Recent epochs</td></tr>
+          <tr><td>27</td><td>4.033</td><td>2.459</td><td>1.545</td><td>0.787</td><td>0.404</td><td>1.536</td><td>0.003</td><td>0.014</td><td><span class="tag tag-stale">pat 3/15</span></td></tr>
+          <tr><td>28</td><td>3.954</td><td>2.406</td><td>1.518</td><td>0.770</td><td>0.389</td><td>1.509</td><td>0.003</td><td>0.014</td><td><span class="tag tag-stale">pat 4/15</span></td></tr>
+          <tr><td>29</td><td>4.017</td><td>2.436</td><td>1.552</td><td>0.785</td><td>0.377</td><td>1.543</td><td>0.003</td><td>0.014</td><td><span class="tag tag-stale">pat 5/15</span></td></tr>
+          <tr><td>30</td><td>4.043</td><td>2.466</td><td>1.548</td><td>0.787</td><td>0.409</td><td>1.539</td><td>0.003</td><td>0.013</td><td><span class="tag tag-stale">pat 6/15</span></td></tr>
+          <tr><td>31</td><td>3.998</td><td>2.425</td><td>1.544</td><td>0.784</td><td>0.375</td><td>1.535</td><td>0.003</td><td>0.013</td><td><span class="tag tag-stale">pat 7/15</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ============================================================== -->
+    <!--  v15 PLACEHOLDER                                                -->
+    <!-- ============================================================== -->
+    <h4 class="training-progress-heading" style="margin-top: 24px;">v15 &mdash; Confidence Heads (pending GPU)</h4>
+    <p style="font-size: 0.90em; color: var(--text-secondary); margin: 4px 0 12px 0;">
+      Extends v14 with pLDDT (per-residue) + pAE (pairwise) confidence prediction heads.
+      15 loss terms total. Will begin training once GPU allocation is available.
+    </p>
+
+    <!-- ============================================================== -->
+    <!--  LOSS CURVES                                                    -->
+    <!-- ============================================================== -->
+    <hr style="margin: 28px 0; border: none; border-top: 1px solid var(--border);">
+    <h4 class="training-progress-heading">Loss Curves</h4>
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0;">
+      <div style="flex: 1; min-width: 300px; text-align: center;">
+        <p style="font-size: 0.85em; color: var(--text-secondary); margin-bottom: 6px;"><strong>v13b</strong> (solid) vs v13 (faint)</p>
+        <img src="data/training/v13b_loss_curves.png" alt="v13b loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
       </div>
-
-      <div class="arch-feature">
-        <div class="af-label">Temperature/Eta Sampling</div>
-        <div class="af-value">
-          DDIM with configurable <code>eta</code> parameter to fix mode collapse observed in pure DDIM (eta=0) sampling. Adding stochasticity (eta > 0) diversifies generated structures while maintaining quality.
-        </div>
+      <div style="flex: 1; min-width: 300px; text-align: center;">
+        <p style="font-size: 0.85em; color: var(--text-secondary); margin-bottom: 6px;"><strong>v14</strong> run3 (bold) vs run2 (faint)</p>
+        <img src="data/training/v14_loss_curves.png" alt="v14 loss curves" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
       </div>
+    </div>
 
-      <div class="arch-feature">
-        <div class="af-label">Parameters</div>
-        <div class="af-value">
-          ~35&ndash;38M total (up from 31.1M in v12b). Extra ~5&ndash;8M from deeper pair stack + triangle multiplicative updates. Denoiser, aux_pair_stack, rg_pred, dist_head: exact match with v12b. Pair stack: entirely new architecture, trains from scratch.
-        </div>
-      </div>
-
-      <!-- NaN Debugging Story -->
-      <div class="nan-story">
-        <h5>The NaN Debugging Story</h5>
-        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">
-          Three sources of numerical instability discovered and fixed during v12/v13 development:
-        </p>
-        <ul>
-          <li><strong>fp16 epsilon underflow in Gram-Schmidt:</strong> Frame initialization computes cross products and normalizations on noised coordinates. Under fp16 autocast, near-zero vectors produced NaN during normalization. Fixed with explicit fp32 casting and epsilon guards.</li>
-          <li><strong>IPA point attention overflow:</strong> The 3D point attention distances can become very large for distant residues, causing exp() overflow in softmax. Triangle multiplicative updates now force fp32 for the einsum accumulation (L terms under fp16 can overflow to inf, and inf * sigmoid(0) = NaN). Output clamped to [-1e4, 1e4] before norm/projection.</li>
-          <li><strong>Unsafe torch.cdist backward:</strong> <code>torch.cdist</code> backward produces NaN when distance is exactly zero (self-distances and coincident masked-out coords at the origin). Replaced with manual computation: <code>(diff.pow(2).sum(-1) + 1e-10).sqrt()</code>.</li>
-        </ul>
-      </div>
-
-      <!-- v13 Summary (full table moved to Archive tab) -->
-      <h4 class="training-progress-heading" style="margin-top: 24px;">v13 Training Summary</h4>
-      <div class="training-table-wrapper">
-        <table class="training-table">
-          <thead>
-            <tr>
-              <th>Epoch</th>
-              <th>Val Total</th>
-              <th>FAPE</th>
-              <th>Frame Rot</th>
-              <th>Dist MSE</th>
-              <th>Bond</th>
-              <th>Aux Dist</th>
-              <th>Chirality</th>
-              <th>Angle</th>
-              <th>Rg</th>
-              <th>DDIM TM</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="v13-tbody">
-            <tr><td><strong>4</strong></td><td style="color: #2ca02c;"><strong>2.373</strong></td><td style="color: #2ca02c;"><strong>1.546</strong></td><td style="color: #2ca02c;"><strong>0.771</strong></td><td style="color: #2ca02c;"><strong>0.312</strong></td><td>0.008</td><td>0.323</td><td>0.319</td><td>0.113</td><td>0.036</td><td>&mdash;</td><td><span class="tag tag-best">BEST (all-time)</span></td></tr>
-            <tr><td>19</td><td>2.425</td><td>1.553</td><td>0.791</td><td>0.346</td><td>0.005</td><td>0.399</td><td>0.343</td><td>0.102</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-stop">EARLY STOP</span></td></tr>
-            <tr><td colspan="12" style="text-align: center; color: #888; font-size: 0.88em; font-style: italic; padding: 8px;">Full 19-epoch table moved to <a href="#" onclick="switchTab('archive'); return false;" style="color: var(--link);">Archive tab</a>. Superseded by v13b.</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="training-observations" style="border-left: 3px solid #e74c3c; padding-left: 14px; margin: 16px 0;">
-        <h4>v13 Post-Mortem &amp; v13b (Mar 11, 2026)</h4>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          v13 early stopped at E19 (pat 15/15). Best val remained E4 (2.373). Post-mortem audit revealed
-          <strong>two critical bugs</strong> preventing further improvement:
-        </p>
-        <ol style="font-size: 0.90em; line-height: 1.6; margin: 8px 0;">
-          <li><strong>Pair stack gradient clipping strangling learning:</strong> <code>CLIP_PAIR_STACK=0.5</code> but raw
-            gradient norms were ~1000&times; higher. The 3&times; LR multiplier was completely negated. The pair stack
-            (the entire architectural innovation of v13) was barely learning.</li>
-          <li><strong><code>dist_head</code> missing from optimizer:</strong> The ordinal distance head was never added to any
-            optimizer parameter group. It received gradients but they were never applied &mdash; frozen at random init
-            for all 19 epochs.</li>
-        </ol>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          <strong>v13b</strong> is now training from scratch (no pretrained weights) with <code>CLIP_PAIR_STACK=5.0</code>
-          and <code>dist_head</code> in the optimizer. Training from scratch avoids the gradient scale mismatch between
-          pretrained denoiser and randomly initialized pair stack.
-        </p>
-      </div>
-
-      <!-- v13b Architecture Diagram -->
-      <div style="text-align: center; margin: 16px 0;">
-        <a href="data/training/v13b_architecture.html" target="_blank" style="display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #1f77b4, #2ca02c); color: white; text-decoration: none; border-radius: 8px; font-size: 0.95em; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(31,119,180,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(31,119,180,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(31,119,180,0.3)'">
-          View Full v13b Architecture Diagram &rarr;
-        </a>
-        <p style="font-size: 0.82em; color: var(--text-secondary); margin-top: 6px;">Interactive diagram &mdash; click modules to expand details. All 9 loss functions, IPA denoiser, pair stack with triangle updates.</p>
-      </div>
-
-      <!-- v13b Training Progress -->
-      <h4 class="training-progress-heading" style="margin-top: 24px;">v13b Training Progress</h4>
-      <p style="font-size: 0.90em; color: var(--text-secondary); margin: 4px 0 12px 0;">
-        From scratch, <code>CLIP_PAIR_STACK=5.0</code>, <code>dist_head</code> in optimizer. Previous v13 losses shown faint in plots.
-      </p>
-      <div class="training-table-wrapper">
-        <table class="training-table">
-          <thead>
-            <tr>
-              <th>Epoch</th>
-              <th>Val Total</th>
-              <th>Structural</th>
-              <th>FAPE</th>
-              <th>Frame Rot</th>
-              <th>Dist MSE</th>
-              <th>Bond</th>
-              <th>Aux Dist</th>
-              <th>Chirality</th>
-              <th>Angle</th>
-              <th>Rg</th>
-              <th>DDIM TM</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="v13b-tbody">
-            <tr><td>1</td><td>5.016</td><td>4.998</td><td>2.012</td><td>1.162</td><td>0.941</td><td>0.154</td><td>0.583</td><td>0.512</td><td>0.489</td><td>1.966</td><td>0.103</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>2</td><td>3.946</td><td>3.933</td><td>2.044</td><td>1.147</td><td>0.500</td><td>0.025</td><td>0.437</td><td>0.538</td><td>0.303</td><td>1.150</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>3</td><td>3.103</td><td>3.091</td><td>1.948</td><td>1.040</td><td>0.395</td><td>0.020</td><td>0.388</td><td>0.504</td><td>0.243</td><td>0.049</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>4</td><td>2.937</td><td>2.928</td><td>1.835</td><td>0.977</td><td>0.401</td><td>0.015</td><td>0.325</td><td>0.476</td><td>0.217</td><td>0.041</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>5</td><td>2.813</td><td>2.804</td><td>1.773</td><td>0.915</td><td>0.394</td><td>0.013</td><td>0.309</td><td>0.402</td><td>0.189</td><td>0.040</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>6</td><td>2.736</td><td>2.727</td><td>1.730</td><td>0.893</td><td>0.384</td><td>0.011</td><td>0.305</td><td>0.393</td><td>0.169</td><td>0.039</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>7</td><td>2.720</td><td>2.711</td><td>1.711</td><td>0.881</td><td>0.394</td><td>0.010</td><td>0.303</td><td>0.392</td><td>0.165</td><td>0.038</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>8</td><td>2.675</td><td>2.666</td><td>1.684</td><td>0.864</td><td>0.400</td><td>0.009</td><td>0.302</td><td>0.383</td><td>0.142</td><td>0.038</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>9</td><td>2.608</td><td>2.599</td><td>1.675</td><td>0.841</td><td>0.357</td><td>0.008</td><td>0.302</td><td>0.375</td><td>0.137</td><td>0.038</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>10</td><td>2.663</td><td>2.599</td><td>1.700</td><td>0.870</td><td>0.370</td><td>0.008</td><td>0.301</td><td>0.375</td><td>0.139</td><td>0.037</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>11</td><td>2.640</td><td>2.599</td><td>1.700</td><td>0.851</td><td>0.357</td><td>0.008</td><td>0.301</td><td>0.376</td><td>0.139</td><td>0.037</td><td>&mdash;</td><td><span class="tag tag-stale">pat 2/15</span></td></tr>
-            <tr><td>12</td><td>2.661</td><td>2.599</td><td>1.698</td><td>0.850</td><td>0.381</td><td>0.007</td><td>0.300</td><td>0.380</td><td>0.140</td><td>0.037</td><td>&mdash;</td><td><span class="tag tag-stale">pat 3/15</span></td></tr>
-            <tr><td>13</td><td>2.588</td><td>2.579</td><td>1.649</td><td>0.829</td><td>0.370</td><td>0.007</td><td>0.301</td><td>0.371</td><td>0.138</td><td>0.037</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>14</td><td>2.655</td><td>2.579</td><td>1.676</td><td>0.860</td><td>0.397</td><td>0.006</td><td>0.310</td><td>0.382</td><td>0.135</td><td>0.036</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>15</td><td>2.574</td><td>2.565</td><td>1.630</td><td>0.831</td><td>0.373</td><td>0.008</td><td>0.314</td><td>0.368</td><td>0.137</td><td>0.036</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>16</td><td>2.610</td><td>2.565</td><td>1.661</td><td>0.845</td><td>0.371</td><td>0.007</td><td>0.310</td><td>0.381</td><td>0.140</td><td>0.036</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>17</td><td>2.551</td><td>2.542</td><td>1.641</td><td>0.826</td><td>0.352</td><td>0.006</td><td>0.306</td><td>0.356</td><td>0.129</td><td>0.036</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>18</td><td>2.561</td><td>2.542</td><td>1.629</td><td>0.812</td><td>0.384</td><td>0.006</td><td>0.308</td><td>0.364</td><td>0.123</td><td>0.036</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>19</td><td>2.595</td><td>2.542</td><td>1.665</td><td>0.848</td><td>0.360</td><td>0.006</td><td>0.308</td><td>0.359</td><td>0.130</td><td>0.036</td><td>&mdash;</td><td><span class="tag tag-stale">pat 2/15</span></td></tr>
-            <tr><td>20</td><td>2.596</td><td>2.542</td><td>1.655</td><td>0.841</td><td>0.375</td><td>0.006</td><td>0.306</td><td>0.375</td><td>0.128</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-stale">pat 3/15</span></td></tr>
-            <tr><td>21</td><td>2.617</td><td>2.542</td><td>1.647</td><td>0.834</td><td>0.410</td><td>0.006</td><td>0.306</td><td>0.357</td><td>0.123</td><td>0.036</td><td>&mdash;</td><td><span class="tag tag-stale">pat 4/15</span></td></tr>
-            <tr><td><strong>22</strong></td><td><strong>2.550</strong></td><td style="color: #2ca02c;"><strong>2.541</strong></td><td>1.640</td><td>0.833</td><td>0.355</td><td>0.005</td><td>0.303</td><td>0.357</td><td>0.120</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>23</td><td>2.631</td><td>2.541</td><td>1.674</td><td>0.856</td><td>0.379</td><td>0.007</td><td>0.303</td><td>0.369</td><td>0.132</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td><strong>24</strong></td><td><strong>2.507</strong></td><td style="color: #2ca02c;"><strong>2.498</strong></td><td>1.628</td><td>0.814</td><td>0.335</td><td>0.005</td><td>0.302</td><td>0.356</td><td>0.117</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>25</td><td>2.524</td><td>2.498</td><td>1.624</td><td>0.823</td><td>0.350</td><td>0.006</td><td>0.303</td><td>0.359</td><td>0.118</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td><strong>26</strong></td><td><strong>2.497</strong></td><td style="color: #2ca02c;"><strong>2.488</strong></td><td>1.600</td><td>0.806</td><td>0.356</td><td>0.006</td><td>0.303</td><td>0.352</td><td>0.117</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>27</td><td>2.610</td><td>2.488</td><td>1.665</td><td>0.844</td><td>0.380</td><td>0.006</td><td>0.303</td><td>0.364</td><td>0.125</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td><strong>28</strong></td><td><strong>2.487</strong></td><td style="color: #2ca02c;"><strong>2.475</strong></td><td>1.604</td><td>0.810</td><td>0.339</td><td>0.006</td><td>0.423</td><td>0.345</td><td>0.113</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>29</td><td>2.597</td><td>2.475</td><td>1.669</td><td>0.830</td><td>0.376</td><td>0.005</td><td>0.394</td><td>0.347</td><td>0.114</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>30</td><td>2.558</td><td>2.475</td><td>1.630</td><td>0.829</td><td>0.374</td><td>0.006</td><td>0.421</td><td>0.357</td><td>0.116</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-stale">pat 2/15</span></td></tr>
-            <tr><td><strong>31</strong></td><td><strong>2.471</strong></td><td style="color: #2ca02c;"><strong>2.461</strong></td><td>1.597</td><td>0.801</td><td>0.337</td><td>0.005</td><td>0.345</td><td>0.359</td><td>0.116</td><td>0.035</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>32</td><td>2.504</td><td>2.461</td><td>1.625</td><td>0.814</td><td>0.336</td><td>0.005</td><td>0.350</td><td>0.353</td><td>0.114</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>33</td><td>2.475</td><td>2.461</td><td>1.599</td><td>0.808</td><td>0.340</td><td>0.005</td><td>0.341</td><td>0.336</td><td>0.112</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 2/15</span></td></tr>
-            <tr><td>34</td><td>2.488</td><td>2.461</td><td>1.603</td><td>0.802</td><td>0.346</td><td>0.006</td><td>0.338</td><td>0.353</td><td>0.113</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 3/15</span></td></tr>
-            <tr><td>35</td><td>2.498</td><td>2.461</td><td>1.628</td><td>0.804</td><td>0.336</td><td>0.005</td><td>0.326</td><td>0.352</td><td>0.111</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 4/15</span></td></tr>
-            <tr><td>36</td><td>2.518</td><td>2.461</td><td>1.636</td><td>0.828</td><td>0.335</td><td>0.005</td><td>0.325</td><td>0.344</td><td>0.111</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 5/15</span></td></tr>
-            <tr><td>37</td><td>2.549</td><td>2.461</td><td>1.608</td><td>0.817</td><td>0.400</td><td>0.005</td><td>0.317</td><td>0.342</td><td>0.111</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 6/15</span></td></tr>
-            <tr><td>38</td><td>2.615</td><td>2.461</td><td>1.648</td><td>0.847</td><td>0.400</td><td>0.005</td><td>0.315</td><td>0.349</td><td>0.115</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 7/15</span></td></tr>
-            <tr><td>39</td><td>2.555</td><td>2.461</td><td>1.645</td><td>0.824</td><td>0.400</td><td>0.005</td><td>0.315</td><td>0.349</td><td>0.115</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 8/15</span></td></tr>
-            <tr><td><strong>40</strong></td><td><strong>2.465</strong></td><td style="color: #2ca02c;"><strong>2.456</strong></td><td>1.597</td><td>0.797</td><td>0.335</td><td>0.006</td><td>0.309</td><td>0.352</td><td>0.111</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>41</td><td>2.492</td><td>2.456</td><td>1.608</td><td>0.810</td><td>0.346</td><td>0.005</td><td>0.305</td><td>0.351</td><td>0.111</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td><strong>42</strong></td><td><strong>2.384</strong></td><td style="color: #2ca02c;"><strong>2.375</strong></td><td>1.553</td><td>0.759</td><td>0.325</td><td>0.005</td><td>0.309</td><td>0.339</td><td>0.104</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>43</td><td>2.446</td><td>2.375</td><td>1.584</td><td>0.780</td><td>0.342</td><td>0.005</td><td>0.300</td><td>0.344</td><td>0.109</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>44</td><td>2.425</td><td>2.375</td><td>1.595</td><td>0.785</td><td>0.314</td><td>0.005</td><td>0.299</td><td>0.342</td><td>0.107</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 2/15</span></td></tr>
-            <tr><td>45</td><td>2.460</td><td>2.375</td><td>1.568</td><td>0.778</td><td>0.376</td><td>0.005</td><td>0.296</td><td>0.341</td><td>0.108</td><td>0.034</td><td>&mdash;</td><td><span class="tag tag-stale">pat 3/15</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- v13b Loss Curves -->
-      <h4 class="training-progress-heading">v13b Loss Curves</h4>
-      <div style="text-align: center; margin: 16px 0;">
-        <img src="data/training/v13b_loss_curves.png" alt="v13b loss curves (v13 faint overlay)" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-      </div>
-      <p style="font-size: 0.85em; color: var(--text-secondary); margin: 4px 0 16px 0;">
-        v13b (solid) vs v13 (faint). v13b starts from scratch so early losses are higher &mdash; expect crossover as pair stack and dist_head learn properly.
-      </p>
-
-      <!-- v13b Pseudo-Ramachandran -->
-      <h4 class="training-progress-heading">v13b Pseudo-Ramachandran Evolution</h4>
-
-      <p style="font-size: 0.85em; color: var(--text-secondary); margin: 8px 0 4px 0;"><strong>Epoch 7</strong> (structural 2.711)</p>
-      <div style="text-align: center; margin: 4px 0 16px 0;">
-        <img src="data/training/v13b_pseudo_ramachandran_E7.png" alt="v13b pseudo-Ramachandran E7" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-      </div>
-
-      <p style="font-size: 0.85em; color: var(--text-secondary); margin: 8px 0 4px 0;"><strong>Epoch 11</strong> (structural 2.599)</p>
-      <div style="text-align: center; margin: 4px 0 16px 0;">
-        <img src="data/training/v13b_pseudo_ramachandran_E11.png" alt="v13b pseudo-Ramachandran E11" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-      </div>
-
-      <p style="font-size: 0.85em; color: var(--text-secondary); margin: 8px 0 4px 0;"><strong>Epoch 40</strong> (structural 2.456)</p>
-      <div style="text-align: center; margin: 4px 0 16px 0;">
+    <!-- ============================================================== -->
+    <!--  RAMACHANDRAN                                                   -->
+    <!-- ============================================================== -->
+    <hr style="margin: 28px 0; border: none; border-top: 1px solid var(--border);">
+    <h4 class="training-progress-heading">Ramachandran Plots (latest per model)</h4>
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0;">
+      <div style="flex: 1; min-width: 300px; text-align: center;">
+        <p style="font-size: 0.85em; color: var(--text-secondary); margin-bottom: 6px;"><strong>v13b E40</strong> pseudo-Ramachandran (structural 2.456)</p>
         <img src="data/training/v13b_pseudo_ramachandran_E40.png" alt="v13b pseudo-Ramachandran E40" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
       </div>
-
-      <div class="training-observations" style="border-left: 3px solid #1f77b4; padding-left: 14px; margin: 16px 0;">
-        <h4>Interpretation &mdash; v13b at E40</h4>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          <strong>Ground truth</strong> (left, 102K residues) shows the expected pseudo-Ramachandran landscape: a dominant
-          &alpha;-helix cluster at ~(50&deg;, 50&deg;) and a &beta;-sheet ridge at ~(&minus;120&deg;, 120&deg;).
-        </p>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          <strong>E7 &rarr; E11 comparison:</strong> The DDIM samples (center panels) show visible improvement. At E7, density
-          was broadly scattered with only faint hints of the &alpha; and &beta; basins. By E11, the &alpha;-helix
-          cluster at (50&deg;, 50&deg;) is noticeably more concentrated, and the &beta;-sheet ridge is beginning to
-          emerge as a distinct feature rather than background noise. The forbidden region (center of the plot) is
-          becoming emptier &mdash; the model is learning which dihedral combinations are physically implausible.
-        </p>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          <strong>x<sub>0</sub>-prediction</strong> (right) continues to show comparable quality to DDIM. The gap between
-          single-step denoising and iterative DDIM refinement has not yet opened significantly, suggesting the model
-          is still in the phase where per-step denoising quality &mdash; not multi-step coherence &mdash; is the bottleneck.
-        </p>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          <strong>Current status:</strong> Structural loss at 2.599 with patience 2/15. The model is in a shallow plateau
-          after the scheduler-fix recovery. Frame rotation (0.851) and FAPE (1.700) are both still improving per-epoch
-          even as the tracked structural metric stalls &mdash; suggesting the plateau may break soon.
-        </p>
-      </div>
-
-    </div>
-
-    </div> <!-- /tab-folding -->
-
-    <!-- ============================================================== -->
-    <!--  TAB: FULL BACKBONE                                             -->
-    <!-- ============================================================== -->
-    <div id="tab-backbone" class="mf-panel">
-
-    <h2 class="section-heading">v14 &mdash; Full Backbone Diffusion Model</h2>
-
-    <div class="training-card">
-      <div class="training-card-header">
-        <h3 class="training-card-title">Full Backbone Diffusion Model v14</h3>
-        <span class="training-status status-pending">Initializing</span>
-      </div>
-
-      <!-- Motivation -->
-      <div class="training-observations" style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
-        <h4>Why Full Backbone?</h4>
-        <ul style="font-size: 0.92em; line-height: 1.8; padding-left: 20px;">
-          <li><strong>C&alpha;-only is lossy:</strong> v13 predicts a single point per residue &mdash; backbone geometry (N-C&alpha;-C-O) must be reconstructed post-hoc using tools like pNeRF or idealization heuristics.</li>
-          <li><strong>Post-hoc reconstruction introduces errors:</strong> Peptide bond planarity, bond angles, and omega dihedrals are approximated, not learned. Small errors compound over the chain, especially for longer proteins.</li>
-          <li><strong>Learnable peptide geometry:</strong> Full backbone prediction lets the model learn actual peptide plane geometry, enforcing physically valid backbone structures during training rather than hoping reconstruction recovers them.</li>
-          <li><strong>More natural frame representation:</strong> Frames are built from actual N-C&alpha;-C planes instead of Gram&ndash;Schmidt on C&alpha; triplets. This is more numerically stable, especially at high noise levels where consecutive C&alpha; atoms can become nearly collinear.</li>
-          <li><strong>Direct angle supervision:</strong> Enables direct &phi;/&psi; angle supervision and omega planarity loss &mdash; the model is penalized for non-planar peptide bonds, not just C&alpha; position errors.</li>
-        </ul>
-      </div>
-
-      <!-- Architecture Overview -->
-      <h4 class="training-progress-heading" style="margin-top: 20px;">Architecture Overview</h4>
-
-      <div class="arch-feature">
-        <div class="af-label">Model Size</div>
-        <div class="af-value">
-          ~35&ndash;40M params. Same IPA denoiser as v13 (8 layers, 8 heads, 8 query points, 512-dim), with a new backbone reconstruction head that maps per-residue single representations to full backbone atom positions.
-        </div>
-      </div>
-
-      <div class="arch-feature">
-        <div class="af-label">Key Change</div>
-        <div class="af-value">
-          Model predicts per-residue rigid frames (rotation + translation) &rarr; places N, C&alpha;, C, O using ideal geometry + learned offsets. The frame defines the local coordinate system; backbone atoms are positioned relative to it using idealized bond lengths as initialization.
-        </div>
-      </div>
-
-      <div class="arch-feature">
-        <div class="af-label">Ideal Bond Lengths</div>
-        <div class="af-value">
-          N&ndash;C&alpha; &asymp; 1.458&Aring;, C&alpha;&ndash;C &asymp; 1.523&Aring;, C&ndash;N(next) &asymp; 1.329&Aring;, C=O &asymp; 1.231&Aring;. These serve as initialization for the backbone head; the model learns residual offsets from these idealized values.
-        </div>
-      </div>
-
-      <div class="arch-feature">
-        <div class="af-label">Noise Strategy</div>
-        <div class="af-value">
-          Noise is added to C&alpha; positions (frame translations) &mdash; backbone atoms (N, C, O) are <em>derived</em> from the denoised frames, not independently noised. This ensures backbone geometry stays consistent throughout the diffusion process.
-        </div>
-      </div>
-
-      <div class="arch-feature">
-        <div class="af-label">Initialization</div>
-        <div class="af-value">
-          <strong>run2:</strong> Training from scratch (no weight init). run1 used v13 weights via <code>strict=False</code> but plateaued due to bugs. run2 fixes: AuxPairStack contact conditioning, bb_rmsd metric, improved NaN fallback.
-        </div>
-      </div>
-
-      <!-- New Loss Functions -->
-      <h4 class="training-progress-heading" style="margin-top: 24px;">New Loss Functions</h4>
-
-      <div class="arch-feature">
-        <div class="af-label">Backbone FAPE</div>
-        <div class="af-value">
-          Frame-aligned point error computed over all 4 backbone atoms (N, C&alpha;, C, O), not just C&alpha;. Measures how well the predicted backbone superimposes onto the ground truth in each residue&rsquo;s local frame.
-        </div>
-      </div>
-
-      <div class="arch-feature">
-        <div class="af-label">Backbone Bond Loss</div>
-        <div class="af-value">
-          MSE on predicted N&ndash;C&alpha;, C&alpha;&ndash;C, C&ndash;N(next), and C=O bond lengths vs ideal values. Ensures the model produces chemically valid bond distances.
-        </div>
-      </div>
-
-      <div class="arch-feature">
-        <div class="af-label">Backbone Angle Loss</div>
-        <div class="af-value">
-          MSE on predicted N&ndash;C&alpha;&ndash;C, C&alpha;&ndash;C&ndash;N(next), and C&ndash;N&ndash;C&alpha; bond angles vs ideal values. Penalizes deviations from expected tetrahedral/planar geometry.
-        </div>
-      </div>
-
-      <div class="arch-feature">
-        <div class="af-label">Omega Dihedral Loss</div>
-        <div class="af-value">
-          Peptide bond planarity &mdash; cosine loss enforcing &omega; &asymp; 180&deg;. The peptide bond is planar due to partial double-bond character; this loss directly penalizes non-planar (cis-like) peptide bonds.
-        </div>
-      </div>
-
-      <!-- v14 Architecture Diagram -->
-      <div style="text-align: center; margin: 16px 0;">
-        <a href="data/training/v14_architecture.html" target="_blank" style="display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #e67e22, #f1c40f); color: #1a1a2e; text-decoration: none; border-radius: 8px; font-size: 0.95em; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(230,126,34,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(230,126,34,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(230,126,34,0.3)'">
-          View Full v14 Architecture Diagram &rarr;
-        </a>
-        <p style="font-size: 0.82em; color: var(--text-secondary); margin-top: 6px;">Interactive diagram &mdash; all 13 loss functions, BackboneAtomHead, bb_ramp schedule, peptide plane frames. NEW components highlighted in gold.</p>
-        <a href="data/training/v15_architecture.html" target="_blank" style="display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #7b2ff7, #c084fc); color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 0.95em; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(123,47,247,0.3); margin-top: 10px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(123,47,247,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(123,47,247,0.3)'">
-          View Full v15 Architecture Diagram &rarr;
-        </a>
-        <p style="font-size: 0.82em; color: var(--text-secondary); margin-top: 6px;">v15 extends v14 with pLDDT + pAE confidence heads &mdash; 15 loss terms, per-residue and pairwise confidence prediction.</p>
-      </div>
-
-      <!-- Training Table -->
-      <h4 class="training-progress-heading" style="margin-top: 24px;">v14 run2 Training Progress</h4>
-      <div class="training-observations" style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 12px 0 12px 0;">
-        <p style="font-size: 0.92em; line-height: 1.6; margin: 4px 0;">
-          <strong>run2 (Mar 12, 2026):</strong> Fresh from scratch &mdash; no v13 weight init. Three bugs fixed from run1:
-          (1) AuxPairStack now uses contact_probs (was accepted but ignored),
-          (2) bb_rmsd actually computed in DDIM eval,
-          (3) NaN fallback rebuilds from finite components only.
-          Run1 data archived as faint overlay in loss curves.
-        </p>
-      </div>
-      <div class="training-table-wrapper">
-        <table class="training-table">
-          <thead>
-            <tr>
-              <th>Epoch</th>
-              <th>Val Total</th>
-              <th>CA Structural</th>
-              <th>FAPE</th>
-              <th>Frame Rot</th>
-              <th>Dist MSE</th>
-              <th>BB FAPE</th>
-              <th>BB Bond</th>
-              <th>Omega</th>
-              <th>DDIM TM</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="v14-tbody">
-            <tr><td>1</td><td>7.993</td><td>7.201</td><td>2.404</td><td>1.208</td><td>0.889</td><td>2.401</td><td>0.511</td><td>0.474</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>2</td><td>6.123</td><td>5.084</td><td>2.036</td><td>1.170</td><td>0.896</td><td>2.031</td><td>0.116</td><td>0.340</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>3</td><td>5.165</td><td>3.851</td><td>1.931</td><td>1.119</td><td>0.756</td><td>1.922</td><td>0.023</td><td>0.191</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>4</td><td>4.812</td><td>3.181</td><td>1.901</td><td>1.054</td><td>0.497</td><td>1.890</td><td>0.010</td><td>0.073</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>5</td><td>4.671</td><td>2.840</td><td>1.756</td><td>0.933</td><td>0.432</td><td>1.747</td><td>0.007</td><td>0.036</td><td>0.111</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>6</td><td>4.528</td><td>2.762</td><td>1.709</td><td>0.905</td><td>0.436</td><td>1.700</td><td>0.006</td><td>0.028</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>7</td><td>4.413</td><td>2.693</td><td>1.671</td><td>0.882</td><td>0.428</td><td>1.662</td><td>0.005</td><td>0.024</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>8</td><td>4.311</td><td>2.623</td><td>1.645</td><td>0.843</td><td>0.410</td><td>1.635</td><td>0.005</td><td>0.022</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>9</td><td>4.387</td><td>2.623</td><td>1.663</td><td>0.868</td><td>0.437</td><td>1.653</td><td>0.005</td><td>0.023</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>10</td><td>4.257</td><td>2.587</td><td>1.631</td><td>0.846</td><td>0.394</td><td>1.621</td><td>0.004</td><td>0.020</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>11</td><td>4.287</td><td>2.587</td><td>1.625</td><td>0.847</td><td>0.439</td><td>1.615</td><td>0.004</td><td>0.019</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>12</td><td>4.338</td><td>2.587</td><td>1.660</td><td>0.865</td><td>0.414</td><td>1.649</td><td>0.004</td><td>0.019</td><td>&mdash;</td><td><span class="tag tag-stale">pat 2/15</span></td></tr>
-            <tr><td>13</td><td>4.247</td><td>2.587</td><td>1.624</td><td>0.840</td><td>0.411</td><td>1.614</td><td>0.004</td><td>0.019</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>14</td><td>4.247</td><td>2.583</td><td>1.628</td><td>0.843</td><td>0.402</td><td>1.618</td><td>0.004</td><td>0.019</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td><strong>15</strong></td><td><strong>4.017</strong></td><td style="color: #2ca02c;"><strong>2.425</strong></td><td>1.558</td><td>0.785</td><td>0.350</td><td>1.549</td><td>0.004</td><td>0.017</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>16</td><td>4.257</td><td>2.425</td><td>1.632</td><td>0.853</td><td>0.406</td><td>1.621</td><td>0.004</td><td>0.017</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>17</td><td>4.196</td><td>2.425</td><td>1.605</td><td>0.829</td><td>0.415</td><td>1.595</td><td>0.004</td><td>0.016</td><td>&mdash;</td><td><span class="tag tag-stale">pat 2/15</span></td></tr>
-            <tr><td>18</td><td>4.196</td><td>2.425</td><td>1.605</td><td>0.840</td><td>0.411</td><td>1.594</td><td>0.003</td><td>0.016</td><td>&mdash;</td><td><span class="tag tag-stale">pat 3/15</span></td></tr>
-            <tr><td>19</td><td>4.147</td><td>2.425</td><td>1.592</td><td>0.815</td><td>0.402</td><td>1.582</td><td>0.004</td><td>0.015</td><td>&mdash;</td><td><span class="tag tag-stale">pat 4/15</span></td></tr>
-            <tr><td>20</td><td>4.086</td><td>2.425</td><td>1.575</td><td>0.804</td><td>0.381</td><td>1.565</td><td>0.004</td><td>0.016</td><td>&mdash;</td><td><span class="tag tag-stale">pat 5/15</span></td></tr>
-            <tr><td>21</td><td>4.124</td><td>2.425</td><td>1.577</td><td>0.807</td><td>0.416</td><td>1.567</td><td>0.004</td><td>0.015</td><td>&mdash;</td><td><span class="tag tag-stale">pat 6/15</span></td></tr>
-            <tr><td>22</td><td>4.154</td><td>2.425</td><td>1.600</td><td>0.828</td><td>0.389</td><td>1.590</td><td>0.004</td><td>0.014</td><td>&mdash;</td><td><span class="tag tag-stale">pat 7/15</span></td></tr>
-            <tr><td>23</td><td>4.059</td><td>2.425</td><td>1.569</td><td>0.798</td><td>0.373</td><td>1.560</td><td>0.003</td><td>0.014</td><td>&mdash;</td><td><span class="tag tag-stale">pat 8/15</span></td></tr>
-            <tr><td>24</td><td>4.089</td><td>2.425</td><td>1.576</td><td>0.804</td><td>0.388</td><td>1.566</td><td>0.003</td><td>0.015</td><td>&mdash;</td><td><span class="tag tag-stale">pat 9/15</span></td></tr>
-            <tr><td>25</td><td>4.073</td><td>2.425</td><td>1.565</td><td>0.790</td><td>0.400</td><td>1.555</td><td>0.004</td><td>0.014</td><td>&mdash;</td><td><span class="tag tag-stale">pat 10/15</span></td></tr>
-            <tr><td>26</td><td>4.132</td><td>2.425</td><td>1.579</td><td>0.817</td><td>0.415</td><td>1.569</td><td>0.004</td><td>0.015</td><td>&mdash;</td><td><span class="tag tag-stale">pat 11/15</span></td></tr>
-            <tr><td>27</td><td>4.108</td><td>2.425</td><td>1.571</td><td>0.808</td><td>0.417</td><td>1.560</td><td>0.003</td><td>0.014</td><td>&mdash;</td><td><span class="tag tag-stale">pat 12/15</span></td></tr>
-            <tr><td>28</td><td>4.160</td><td>2.425</td><td>1.598</td><td>0.824</td><td>0.407</td><td>1.587</td><td>0.004</td><td>0.013</td><td>&mdash;</td><td><span class="tag tag-stale">pat 13/15</span></td></tr>
-            <tr><td>29</td><td>4.219</td><td>2.425</td><td>1.614</td><td>0.837</td><td>0.428</td><td>1.603</td><td>0.004</td><td>0.013</td><td>&mdash;</td><td><span class="tag tag-stale">pat 14/15</span></td></tr>
-            <tr><td>30</td><td>4.241</td><td>2.425</td><td>1.621</td><td>0.836</td><td>0.438</td><td>1.610</td><td>0.003</td><td>0.013</td><td>&mdash;</td><td><span class="tag tag-stop">EARLY STOP</span></td></tr>
-            <tr><td colspan="11" style="text-align: center; color: #888; font-size: 0.85em; padding: 10px; border-top: 2px solid var(--border);">
-              <strong>Run 3</strong> &mdash; Restarted from E15 best weights. BB head LR reduced 5&times;&rarr;2&times;, L2 offset penalty (w=0.1). Fresh optimizer, warmup E16&ndash;20.
-            </td></tr>
-            <tr><td>16</td><td>4.091</td><td>2.425</td><td>1.562</td><td>0.803</td><td>0.403</td><td>1.553</td><td>0.004</td><td>0.018</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>17</td><td>4.059</td><td>2.425</td><td>1.561</td><td>0.805</td><td>0.381</td><td>1.552</td><td>0.003</td><td>0.016</td><td>&mdash;</td><td><span class="tag tag-stale">pat 2/15</span></td></tr>
-            <tr><td>18</td><td>4.164</td><td>2.425</td><td>1.591</td><td>0.823</td><td>0.416</td><td>1.581</td><td>0.003</td><td>0.015</td><td>&mdash;</td><td><span class="tag tag-stale">pat 3/15</span></td></tr>
-            <tr><td>19</td><td>4.057</td><td>2.425</td><td>1.550</td><td>0.800</td><td>0.406</td><td>1.540</td><td>0.003</td><td>0.014</td><td>&mdash;</td><td><span class="tag tag-stale">pat 4/15</span></td></tr>
-            <tr><td>20</td><td>4.146</td><td>2.425</td><td>1.589</td><td>0.817</td><td>0.408</td><td>1.580</td><td>0.003</td><td>0.014</td><td>0.103</td><td><span class="tag tag-stale">pat 5/15</span></td></tr>
-            <tr><td>21</td><td>4.043</td><td>2.425</td><td>1.556</td><td>0.783</td><td>0.391</td><td>1.547</td><td>0.003</td><td>0.014</td><td>&mdash;</td><td><span class="tag tag-stale">pat 6/15</span></td></tr>
-            <tr><td>22</td><td>4.096</td><td>2.425</td><td>1.570</td><td>0.805</td><td>0.405</td><td>1.560</td><td>0.003</td><td>0.014</td><td>&mdash;</td><td><span class="tag tag-stale">pat 7/15</span></td></tr>
-            <tr><td>23</td><td>4.033</td><td>2.425</td><td>1.553</td><td>0.799</td><td>0.379</td><td>1.543</td><td>0.003</td><td>0.014</td><td>&mdash;</td><td><span class="tag tag-stale">pat 8/15</span></td></tr>
-            <tr><td><strong>24</strong></td><td><strong>3.865</strong></td><td style="color: #2ca02c;"><strong>2.335</strong></td><td>1.500</td><td>0.743</td><td>0.350</td><td>1.491</td><td>0.003</td><td>0.013</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-            <tr><td>25</td><td>4.061</td><td>2.335</td><td>1.563</td><td>0.793</td><td>0.392</td><td>1.554</td><td>0.003</td><td>0.014</td><td>0.100</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-            <tr><td>26</td><td>4.092</td><td>2.335</td><td>1.575</td><td>0.814</td><td>0.388</td><td>1.565</td><td>0.003</td><td>0.014</td><td>&mdash;</td><td><span class="tag tag-stale">pat 2/15</span></td></tr>
-            <tr><td>27</td><td>4.033</td><td>2.335</td><td>1.545</td><td>0.787</td><td>0.392</td><td>1.536</td><td>0.003</td><td>0.014</td><td>&mdash;</td><td><span class="tag tag-stale">pat 3/15</span></td></tr>
-            <tr><td>28</td><td>3.954</td><td>2.335</td><td>1.518</td><td>0.770</td><td>0.392</td><td>1.509</td><td>0.003</td><td>0.013</td><td>&mdash;</td><td><span class="tag tag-stale">pat 4/15</span></td></tr>
-            <tr><td>29</td><td>4.017</td><td>2.335</td><td>1.552</td><td>0.785</td><td>0.388</td><td>1.543</td><td>0.003</td><td>0.013</td><td>&mdash;</td><td><span class="tag tag-stale">pat 5/15</span></td></tr>
-            <tr><td>30</td><td>4.043</td><td>2.335</td><td>1.548</td><td>0.787</td><td>0.399</td><td>1.539</td><td>0.003</td><td>0.013</td><td>0.096</td><td><span class="tag tag-stale">pat 6/15</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- v14 Loss Curves -->
-      <h4 class="training-progress-heading">v14 Loss Curves</h4>
-      <div style="text-align: center; margin: 16px 0;">
-        <img src="data/training/v14_loss_curves.png" alt="v14 loss curves — run3 (bold) vs run2 (faint)" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-      </div>
-      <p style="font-size: 0.85em; color: var(--text-secondary); margin: 4px 0 16px 0;">
-        v14 run3 (bold) vs run2 (faint) vs run1 (very faint). Run3 restarts from E15 best with reduced BB head LR (2&times;) and L2 offset regularization.
-        Patience tracks CA-only structural loss (excludes aux + backbone contributions).
-      </p>
-
-      <!-- v14 Pseudo-Ramachandran -->
-      <h4 class="training-progress-heading">v14 run2 Pseudo-Ramachandran Evolution</h4>
-
-      <p style="font-size: 0.85em; color: var(--text-secondary); margin: 8px 0 4px 0;"><strong>Epoch 5</strong> (structural 2.840)</p>
-      <div style="text-align: center; margin: 4px 0 16px 0;">
-        <img src="data/training/v14_run2_pseudo_ramachandran_E5.png" alt="v14 run2 pseudo-Ramachandran E5" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-      </div>
-
-      <p style="font-size: 0.85em; color: var(--text-secondary); margin: 8px 0 4px 0;"><strong>Epoch 12</strong> (structural 2.587)</p>
-      <div style="text-align: center; margin: 4px 0 16px 0;">
-        <img src="data/training/v14_run2_pseudo_ramachandran_E12.png" alt="v14 run2 pseudo-Ramachandran E12" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-      </div>
-
-      <p style="font-size: 0.85em; color: var(--text-secondary); margin: 8px 0 4px 0;"><strong>Run3 Epoch 24</strong> (structural 2.335) &mdash; BB_LR 2&times;, L2 offset reg</p>
-      <div style="text-align: center; margin: 4px 0 16px 0;">
-        <img src="data/training/v14_run3_pseudo_ramachandran.png" alt="v14 run3 pseudo-Ramachandran E24" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-      </div>
-
-      <div class="training-observations" style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
-        <h4>Interpretation &mdash; v14 at E12</h4>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          <strong>E5 &rarr; E12 comparison:</strong> Clear improvement over 7 epochs. At E5 (structural 2.840), the DDIM
-          samples were nearly uniform noise with only the faintest hint of structure. By E12 (structural 2.587), the
-          &alpha;-helix basin at (50&deg;, 50&deg;) is visibly forming, and the &beta;-sheet ridge is beginning to
-          separate from the background. The pseudo-Ramachandran is computed from C&alpha; trace only, even though v14
-          predicts full N/CA/C/O backbone coordinates.
-        </p>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          <strong>x<sub>0</sub>-prediction</strong> (right panels) shows stronger improvement than DDIM between E5 and E12.
-          The single-step denoiser at E12 produces noticeably sharper basin structure than at E5, indicating the model
-          has learned substantially better per-step denoising. The gap between x<sub>0</sub>-pred and DDIM quality
-          remains small, consistent with the model still being in the regime where individual denoising steps &mdash;
-          not multi-step coherence &mdash; limit generative quality.
-        </p>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          <strong>Current status:</strong> v14 at E12 with structural 2.587, patience 2/15. Frame rotation (0.865) and
-          backbone geometry are both strong (BB Bond 0.004, Omega 0.019). The model is in the constant LR phase (2e-5)
-          and still converging steadily despite the patience counter. v14 is slightly ahead of v13b on structural loss
-          (2.587 vs 2.599), suggesting the full backbone prediction task is not hurting &mdash; and may be helping &mdash;
-          the C&alpha; quality through implicit regularization.
-        </p>
-      </div>
-
-      <!-- v14 True Ramachandran -->
-      <h4 class="training-progress-heading">v14 True Ramachandran &mdash; from predicted N/CA/C</h4>
-
-      <p style="font-size: 0.85em; color: var(--text-secondary); margin: 8px 0 4px 0;"><strong>Run2 Epoch 12</strong> (structural 2.587)</p>
-      <div style="text-align: center; margin: 4px 0 16px 0;">
-        <img src="data/training/v14_run2_ramachandran_E12.png" alt="v14 true Ramachandran from N-CA-C at E12" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-      </div>
-
-      <p style="font-size: 0.85em; color: var(--text-secondary); margin: 8px 0 4px 0;"><strong>Run3 Epoch 24</strong> (structural 2.335) &mdash; BB_LR 2&times;, L2 offset reg</p>
-      <div style="text-align: center; margin: 4px 0 16px 0;">
+      <div style="flex: 1; min-width: 300px; text-align: center;">
+        <p style="font-size: 0.85em; color: var(--text-secondary); margin-bottom: 6px;"><strong>v14 run3 E24</strong> true Ramachandran (structural 2.335)</p>
         <img src="data/training/v14_run3_ramachandran_E24.png" alt="v14 run3 true Ramachandran E24" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
       </div>
-      <div class="training-observations" style="border-left: 3px solid #9b59b6; padding-left: 14px; margin: 16px 0;">
-        <h4>True vs Pseudo Ramachandran</h4>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          Since v14 predicts full backbone atoms (N, CA, C, O), we can compute <strong>true &phi;/&psi; dihedral angles</strong>
-          instead of the C&alpha;-only pseudo-dihedrals used for v13b. True &phi; = dihedral(C<sub>i-1</sub>, N<sub>i</sub>,
-          CA<sub>i</sub>, C<sub>i</sub>) and &psi; = dihedral(N<sub>i</sub>, CA<sub>i</sub>, C<sub>i</sub>, N<sub>i+1</sub>).
-        </p>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          <strong>Ground truth</strong> (left, 105K angles) shows the textbook Ramachandran plot: a dense &alpha;<sub>R</sub>
-          basin at (&minus;60&deg;, &minus;45&deg;), the &beta;-sheet band at (&minus;120&deg;, 130&deg;), and the small
-          &alpha;<sub>L</sub> cluster at (60&deg;, 40&deg;). The forbidden regions (upper right, lower left quadrants) are
-          nearly empty, as expected for well-resolved crystal structures.
-        </p>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          <strong>DDIM true Ramachandran</strong> (center, 8K angles) from v14&rsquo;s predicted N/CA/C coordinates shows that
-          the model is learning correct backbone dihedral geometry. The &alpha;<sub>R</sub> and &beta; basins are emerging,
-          though still broader than ground truth. Compared to the <strong>pseudo-Ramachandran</strong> (right, CA-only), the
-          true Ramachandran provides a sharper diagnostic &mdash; it directly measures whether the predicted N and C atom
-          placements are physically reasonable, not just whether CA positions form protein-like chains.
-        </p>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          This is a key advantage of v14 over v13b: the full backbone output allows direct validation against
-          crystallographic quality metrics. As training progresses, we expect the true Ramachandran to tighten
-          toward the allowed regions, with the forbidden-region population serving as a sensitive indicator of
-          backbone quality.
-        </p>
-      </div>
-
-      <div class="training-observations" style="border-left: 3px solid #e74c3c; padding-left: 14px; margin: 16px 0;">
-        <h4>v14 Bug History</h4>
-        <p style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;"><strong>Restart 1 (architecture/training):</strong>
-          ideal N/C/O offsets 10&times; too large, backbone head LR misrouted, <code>bb_angle</code> missing from CSV.</p>
-        <p style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;"><strong>Restart 2 (training loop):</strong>
-          patience tracked total loss (impossible to beat E1 with bb_ramp), <code>dist_head</code> frozen,
-          <code>opt_steps_per_epoch</code> off-by-one, DDIM <code>sqrt</code> before <code>clamp</code>, NaN skip zeroed accumulated gradients.</p>
-        <p style="font-size: 0.90em; line-height: 1.6; margin: 4px 0;"><strong>Run2 fixes:</strong>
-          AuxPairStack contact_probs, bb_rmsd computation, NaN fallback. Training from scratch, no v13 init.</p>
-      </div>
-
-      <!-- Comparison with v13 -->
-      <div class="training-observations" style="border-left: 3px solid #1f77b4; padding-left: 14px; margin: 16px 0;">
-        <h4>Relationship to v13</h4>
-        <p style="font-size: 0.92em; line-height: 1.6;">
-          v14 runs <strong>in parallel</strong> with v13, not as a replacement. v13 explores pair stack improvements
-          for long-range contacts and beta-sheet topology (deeper triangle updates, log-scaled RPE). v14 explores
-          a richer output representation &mdash; predicting full backbone atom positions instead of C&alpha;-only.
-          These are orthogonal improvements: v13 improves how the model <em>reasons</em> about structure
-          (pair representation), while v14 improves what the model <em>outputs</em> (backbone fidelity).
-          Insights from both lines will be combined in a future version.
-        </p>
-      </div>
-
     </div>
 
-    </div> <!-- /tab-backbone -->
+    <!-- ============================================================== -->
+    <!--  v13 ARCHIVED NOTE                                              -->
+    <!-- ============================================================== -->
+    <hr style="margin: 28px 0; border: none; border-top: 1px solid var(--border);">
+    <details style="margin-bottom: 16px;">
+      <summary style="cursor: pointer; font-size: 14px; color: var(--text-secondary); font-weight: 600;">
+        v13 (original) &mdash; superseded by v13b
+      </summary>
+      <p style="font-size: 0.88em; color: var(--text-secondary); margin: 8px 0; line-height: 1.6;">
+        Early stopped at E19 (pat 15/15, best E4 structural 2.373). Two bugs: <code>CLIP_PAIR_STACK=0.5</code> strangled
+        pair stack learning, <code>dist_head</code> frozen at random init. Full table in
+        <a href="#" onclick="switchTab('archive'); return false;" style="color: var(--link);">Archive tab</a>.
+      </p>
+    </details>
+
+    </div> <!-- /tab-folding -->
 
     <!-- ============================================================== -->
     <!--  TAB: SIDE CHAIN                                                -->
