@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v15 — Full Backbone + Confidence Prediction</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  :root{
+    --bg:#ffffff;
+    --text:#333333;
+    --text-secondary:#777777;
+    --accent:#1772d0;
+    --box-bg:#f7f7f7;
+    --border:#e4e4e4;
+    --code-bg:#f0f0f0;
+    --connector:rgba(0,0,0,0.15);
+    --table-border:rgba(0,0,0,0.08);
+    --toggle-bg:#e4e4e4;
+    --toggle-fg:#333;
+    --red:#d73a49;
+    --green:#22863a;
+    --blue:#1772d0;
+    --orange:#e36209;
+    --purple:#6f42c1;
+    --svg-fg:#333333;
+    --svg-fg2:#555555;
+    --svg-muted:#999999;
+  }
+
+  [data-theme="dark"]{
+    --bg:#0d1117;
+    --text:#c9d1d9;
+    --text-secondary:#8b949e;
+    --accent:#58a6ff;
+    --box-bg:#161b22;
+    --border:#30363d;
+    --code-bg:rgba(255,255,255,0.08);
+    --connector:rgba(255,255,255,0.15);
+    --table-border:rgba(255,255,255,0.06);
+    --toggle-bg:#30363d;
+    --toggle-fg:#c9d1d9;
+    --red:#f85149;
+    --green:#3fb950;
+    --blue:#58a6ff;
+    --orange:#d29922;
+    --purple:#bc8cff;
+    --svg-fg:#c9d1d9;
+    --svg-fg2:#8b949e;
+    --svg-muted:#484f58;
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh;
+    line-height:1.5;
+  }
+
+  .theme-toggle{
+    position:fixed;top:18px;right:18px;z-index:100;
+    background:var(--toggle-bg);border:1px solid var(--border);
+    border-radius:50%;width:38px;height:38px;cursor:pointer;
+    font-size:18px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 1px 3px rgba(0,0,0,0.08);color:var(--toggle-fg);
+  }
+  .theme-toggle:hover{opacity:0.8;}
+
+  .page-header{
+    text-align:center;
+    padding:40px 20px 16px;
+    max-width:800px;margin:0 auto;
+  }
+  .page-header h1{font-size:1.6rem;font-weight:700;color:var(--text);}
+  .page-header .subtitle{color:var(--text-secondary);font-size:0.85rem;margin-top:6px;}
+
+  .diagram{
+    display:flex;flex-direction:column;align-items:center;
+    padding:10px 20px 60px;gap:0;max-width:800px;margin:0 auto;
+  }
+
+  .arrow{width:1px;height:24px;background:var(--connector);position:relative;}
+  .arrow::after{
+    content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+    border-left:4px solid transparent;border-right:4px solid transparent;
+    border-top:5px solid var(--connector);
+  }
+
+  .box{
+    border:1px solid var(--border);border-radius:6px;
+    padding:14px 18px;width:100%;max-width:700px;
+    cursor:pointer;background:var(--box-bg);position:relative;
+    transition:background 0.2s;
+  }
+  .box h3{font-size:0.95rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px;}
+  .box .summary{font-size:0.82rem;color:var(--text-secondary);margin-top:2px;}
+
+  .box .expand-icon{
+    position:absolute;top:14px;right:14px;
+    font-size:0.65rem;color:var(--text-secondary);transition:transform 0.2s;
+  }
+  .box.open .expand-icon{transform:rotate(180deg);}
+
+  .box .details{
+    max-height:0;overflow:hidden;
+    transition:max-height 0.5s ease,opacity 0.3s ease;
+    opacity:0;font-size:0.8rem;line-height:1.6;
+    color:var(--text);margin-top:0;
+  }
+  .box.open .details{max-height:4000px;opacity:1;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;}
+  .box .details code{
+    background:var(--code-bg);padding:1px 5px;border-radius:3px;
+    font-family:'SF Mono','Fira Code','Courier New',monospace;font-size:0.76rem;
+  }
+  .box .details ul{margin:6px 0 4px 18px;list-style:disc;}
+  .box .details li{margin:2px 0;}
+
+  .new-badge{
+    font-size:0.6rem;font-weight:700;color:var(--accent);
+    border:1px solid var(--accent);border-radius:3px;
+    padding:0px 4px;letter-spacing:0.5px;
+    display:inline-block;vertical-align:middle;line-height:1.4;
+  }
+
+  .v15-badge{
+    font-size:0.6rem;font-weight:700;color:var(--purple);
+    border:1px solid var(--purple);border-radius:3px;
+    padding:0px 4px;letter-spacing:0.5px;
+    display:inline-block;vertical-align:middle;line-height:1.4;
+  }
+
+  .tag{
+    display:inline-block;font-size:0.68rem;font-weight:600;
+    padding:1px 7px;border-radius:3px;
+    color:var(--text-secondary);border:1px solid var(--border);vertical-align:middle;
+  }
+
+  .row{display:flex;gap:12px;width:100%;max-width:700px;}
+  .row .box{flex:1;max-width:none;}
+
+  .loss-table{width:100%;border-collapse:collapse;margin:8px 0 4px;font-size:0.76rem;}
+  .loss-table th{text-align:left;padding:4px 8px;border-bottom:1px solid var(--border);font-weight:600;color:var(--text);}
+  .loss-table td{padding:3px 8px;border-bottom:1px solid var(--table-border);color:var(--text);}
+  .loss-table td:nth-child(2){text-align:center;font-family:'SF Mono',monospace;color:var(--accent);}
+  .loss-table td:nth-child(3){color:var(--text-secondary);font-size:0.72rem;}
+
+  .formula{
+    display:inline-block;padding:6px 10px;margin:6px 0;
+    background:var(--code-bg);border-radius:4px;
+    font-family:'SF Mono','Fira Code',monospace;
+    font-size:0.76rem;color:var(--accent);letter-spacing:0.3px;
+    border:1px solid var(--border);
+  }
+
+  .visual{
+    margin:10px 0;padding:12px;
+    background:var(--bg);border:1px solid var(--border);border-radius:6px;
+    display:flex;justify-content:center;align-items:center;
+    overflow-x:auto;
+  }
+  .visual svg{max-width:100%;height:auto;}
+
+  .preview-visual{
+    margin-top:8px;padding:8px;
+    background:var(--bg);border:1px solid var(--border);border-radius:4px;
+    display:flex;justify-content:center;overflow:hidden;
+    max-height:70px;
+  }
+  .preview-visual svg{max-width:100%;height:auto;}
+
+  canvas{border-radius:4px;border:1px solid var(--border);}
+
+  @media(max-width:600px){
+    .row{flex-direction:column;}
+    .box{padding:12px 14px;}
+    .page-header h1{font-size:1.3rem;}
+    .visual{padding:6px;}
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn">&#127769;</button>
+
+<div class="page-header">
+  <h1>v15 &mdash; Full Backbone + Confidence Prediction</h1>
+  <p class="subtitle">pLDDT + pAE confidence heads on top of v14 backbone diffusion &middot; Click any box to expand</p>
+</div>
+
+<div class="diagram" id="diagram">
+
+  <!-- ============================================================ -->
+  <!-- 1. INPUT TENSORS -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>1. Input Tensors</h3>
+    <div class="summary">ids, true_coords, true_backbone, masks</div>
+    <div class="preview-visual">
+      <svg width="340" height="50" viewBox="0 0 340 50">
+        <defs><marker id="arr1" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="var(--svg-muted)"/></marker></defs>
+        <g transform="translate(10,25)">
+          <line x1="0" y1="0" x2="320" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <circle cx="20" cy="0" r="10" fill="none" stroke="var(--accent)" stroke-width="1.5"/><text x="20" y="4" text-anchor="middle" font-size="8" fill="var(--accent)">N</text>
+          <circle cx="55" cy="0" r="12" fill="var(--accent)" fill-opacity="0.15" stroke="var(--accent)" stroke-width="2"/><text x="55" y="4" text-anchor="middle" font-size="8" fill="var(--accent)" font-weight="bold">CA</text>
+          <circle cx="90" cy="0" r="10" fill="none" stroke="var(--accent)" stroke-width="1.5"/><text x="90" y="4" text-anchor="middle" font-size="8" fill="var(--accent)">C</text>
+          <circle cx="120" cy="0" r="8" fill="none" stroke="var(--red)" stroke-width="1.5"/><text x="120" y="3" text-anchor="middle" font-size="7" fill="var(--red)">O</text>
+          <line x1="30" y1="0" x2="43" y2="0" stroke="var(--accent)" stroke-width="1.5"/>
+          <line x1="67" y1="0" x2="80" y2="0" stroke="var(--accent)" stroke-width="1.5"/>
+          <line x1="100" y1="0" x2="112" y2="0" stroke="var(--red)" stroke-width="1.5"/>
+          <line x1="100" y1="0" x2="150" y2="0" stroke="var(--svg-muted)" stroke-width="1.5"/>
+          <circle cx="160" cy="0" r="7" fill="none" stroke="var(--svg-muted)" stroke-width="1"/><text x="160" y="3" text-anchor="middle" font-size="6" fill="var(--svg-muted)">N</text>
+          <circle cx="190" cy="0" r="9" fill="var(--svg-muted)" fill-opacity="0.1" stroke="var(--svg-muted)" stroke-width="1"/><text x="190" y="3" text-anchor="middle" font-size="6" fill="var(--svg-muted)">CA</text>
+          <circle cx="220" cy="0" r="7" fill="none" stroke="var(--svg-muted)" stroke-width="1"/><text x="220" y="3" text-anchor="middle" font-size="6" fill="var(--svg-muted)">C</text>
+          <circle cx="245" cy="0" r="6" fill="none" stroke="var(--svg-muted)" stroke-width="1"/>
+          <text x="280" y="4" font-size="9" fill="var(--svg-muted)">. . .</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">Each protein is represented as a chain of residues. v15 inherits the same input format as v14, tracking <strong>4 backbone atoms per residue</strong>:</p>
+      <ul>
+        <li><code>ids</code> &mdash; (B, L) token sequence</li>
+        <li><code>true_coords</code> &mdash; (B, L, 3) C&alpha; coordinates</li>
+        <li><code>true_backbone</code> &mdash; (B, L, 4, 3) [N, CA, C, O] atoms</li>
+        <li><code>coord_mask</code> &mdash; (B, L) per-residue mask</li>
+        <li><code>backbone_mask</code> &mdash; (B, L, 4) per-atom mask</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 2. FROZEN ENCODER -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>2. Frozen Encoder <span class="tag">FROZEN</span></h3>
+    <div class="summary">ContactClassifier &rarr; single embeddings + contact probabilities</div>
+    <div class="preview-visual">
+      <svg width="380" height="50" viewBox="0 0 380 50">
+        <rect x="5" y="12" width="70" height="26" rx="4" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="40" y="29" text-anchor="middle" font-size="9" fill="var(--accent)">Sequence</text>
+        <line x1="75" y1="25" x2="105" y2="25" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <rect x="108" y="8" width="80" height="34" rx="4" fill="var(--accent)" fill-opacity="0.1" stroke="var(--accent)" stroke-width="2"/>
+        <text x="148" y="22" text-anchor="middle" font-size="9" fill="var(--accent)" font-weight="bold">Encoder</text>
+        <text x="148" y="34" text-anchor="middle" font-size="7" fill="var(--text-secondary)">frozen</text>
+        <line x1="188" y1="18" x2="218" y2="12" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <line x1="188" y1="32" x2="218" y2="38" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <rect x="220" y="1" width="90" height="20" rx="3" fill="none" stroke="var(--green)" stroke-width="1.2"/>
+        <text x="265" y="14" text-anchor="middle" font-size="8" fill="var(--green)">single (B,L,128)</text>
+        <rect x="220" y="28" width="90" height="20" rx="3" fill="none" stroke="var(--orange)" stroke-width="1.2"/>
+        <text x="265" y="41" text-anchor="middle" font-size="8" fill="var(--orange)">contacts (B,L,L)</text>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">A pre-trained encoder converts amino acid sequences into two representations. Its weights are <strong>not updated</strong> during training.</p>
+      <ul>
+        <li>Pre-trained <strong>ContactClassifier</strong> (weights frozen)</li>
+        <li>Output: <code>single</code> (B, L, 128) &mdash; per-residue embeddings</li>
+        <li>Output: <code>contact_probs</code> (B, L, L) &mdash; pairwise contact map</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 3. PAIR STACK -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>3. Pair Stack</h3>
+    <div class="summary">SingleToPairV13 + RPE + OPM + Contact Conditioning &rarr; 8&times; EnhancedPairBlock</div>
+    <div class="preview-visual">
+      <svg width="320" height="50" viewBox="0 0 320 50">
+        <g transform="translate(100,5)">
+          <circle cx="20" cy="20" r="10" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="20" y="24" text-anchor="middle" font-size="9" fill="var(--accent)" font-weight="bold">i</text>
+          <circle cx="60" cy="5" r="10" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="60" y="9" text-anchor="middle" font-size="9" fill="var(--accent)" font-weight="bold">k</text>
+          <circle cx="20" cy="40" r="10" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="20" y="44" text-anchor="middle" font-size="9" fill="var(--accent)" font-weight="bold">i</text>
+          <circle cx="100" cy="40" r="10" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="100" y="44" text-anchor="middle" font-size="9" fill="var(--accent)" font-weight="bold">j</text>
+          <line x1="30" y1="37" x2="50" y2="12" stroke="var(--svg-muted)" stroke-width="1.2"/>
+          <line x1="70" y1="12" x2="90" y2="37" stroke="var(--svg-muted)" stroke-width="1.2"/>
+          <line x1="32" y1="40" x2="88" y2="40" stroke="var(--accent)" stroke-width="2.5"/>
+        </g>
+        <text x="230" y="30" font-size="9" fill="var(--text-secondary)">&times;8 triangle updates</text>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">Builds a rich pairwise representation by combining several signals, then refines it with <strong>triangle multiplicative updates</strong>.</p>
+      <ul>
+        <li><strong>SingleToPairV13</strong> projects single &rarr; pair representation</li>
+        <li><strong>LogScaledRPE</strong> &mdash; 128 bins, max distance 512 residues</li>
+        <li><strong>OuterProductMean</strong> &mdash; d_opm=32</li>
+        <li><strong>Contact Map Conditioning</strong> &mdash; gated, d=128</li>
+        <li>8&times; <strong>EnhancedPairBlock</strong>: TriMul (out + in) + AxialBlock</li>
+        <li>Output: <code>pair</code> (B, L, L, 128) &mdash; <em>also feeds pAE head</em></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 4. DIFFUSION PROCESS -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>4. Diffusion Process</h3>
+    <div class="summary">Normalize &rarr; sample t &rarr; add noise to C&alpha; coords</div>
+    <div class="preview-visual">
+      <svg width="360" height="50" viewBox="0 0 360 50">
+        <g transform="translate(20,25)">
+          <path d="M0,0 Q10,-15 20,-10 Q30,5 40,-8 Q50,-20 60,-5 Q70,10 80,-2" fill="none" stroke="var(--green)" stroke-width="2"/>
+          <text x="40" y="20" text-anchor="middle" font-size="8" fill="var(--green)">clean</text>
+        </g>
+        <text x="125" y="30" font-size="12" fill="var(--svg-muted)">&rarr; +noise &rarr;</text>
+        <g transform="translate(180,25)">
+          <path d="M0,5 Q8,-18 18,-5 Q25,12 35,-12 Q42,-22 52,2 Q58,15 68,-8 Q78,-15 85,0" fill="none" stroke="var(--orange)" stroke-width="2" stroke-dasharray="3,2"/>
+          <text x="42" y="22" text-anchor="middle" font-size="8" fill="var(--orange)">noisy</text>
+        </g>
+        <text x="280" y="30" font-size="12" fill="var(--svg-muted)">&rarr;</text>
+        <g transform="translate(295,10)">
+          <circle cx="15" cy="15" r="3" fill="var(--red)" fill-opacity="0.4"/>
+          <circle cx="30" cy="8" r="3" fill="var(--red)" fill-opacity="0.4"/>
+          <circle cx="5" cy="28" r="3" fill="var(--red)" fill-opacity="0.4"/>
+          <circle cx="40" cy="22" r="3" fill="var(--red)" fill-opacity="0.4"/>
+          <circle cx="22" cy="32" r="3" fill="var(--red)" fill-opacity="0.4"/>
+          <circle cx="48" cy="12" r="3" fill="var(--red)" fill-opacity="0.4"/>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <ul>
+        <li>Normalize C&alpha; coordinates (center + scale)</li>
+        <li>Sample diffusion timestep <code>t ~ U(0, T)</code></li>
+        <li>Add Gaussian noise to C&alpha; positions: <code>x_t = &alpha;_t x_0 + &sigma;_t &epsilon;</code></li>
+        <li><strong>Note:</strong> Noise applied only to C&alpha; &mdash; full backbone is derived from frames</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 5. FRAME INITIALIZATION -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>5. Frame Init &mdash; Peptide Plane</h3>
+    <div class="summary">Peptide Plane Frames from N-CA-C (more stable than CA-triplet Gram-Schmidt)</div>
+    <div class="preview-visual">
+      <svg width="280" height="55" viewBox="0 0 280 55">
+        <defs>
+          <marker id="arrR" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--red)"/></marker>
+          <marker id="arrG" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--green)"/></marker>
+          <marker id="arrB" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--blue)"/></marker>
+        </defs>
+        <g transform="translate(80,28)">
+          <circle cx="0" cy="0" r="8" fill="var(--accent)" fill-opacity="0.2" stroke="var(--accent)" stroke-width="2"/>
+          <text x="0" y="3" text-anchor="middle" font-size="7" fill="var(--accent)" font-weight="bold">CA</text>
+          <line x1="8" y1="0" x2="55" y2="0" stroke="var(--red)" stroke-width="2" marker-end="url(#arrR)"/>
+          <text x="60" y="4" font-size="7" fill="var(--red)" font-weight="bold">x</text>
+          <line x1="0" y1="-8" x2="0" y2="-40" stroke="var(--green)" stroke-width="2" marker-end="url(#arrG)"/>
+          <text x="5" y="-38" font-size="7" fill="var(--green)" font-weight="bold">y</text>
+          <line x1="-5" y1="5" x2="-35" y2="22" stroke="var(--blue)" stroke-width="2"/>
+          <text x="-40" y="26" font-size="7" fill="var(--blue)" font-weight="bold">z</text>
+          <circle cx="-40" cy="-10" r="6" fill="none" stroke="var(--blue)" stroke-width="1.5"/>
+          <text x="-40" y="-7" text-anchor="middle" font-size="6" fill="var(--blue)">N</text>
+          <line x1="-6" y1="-4" x2="-34" y2="-8" stroke="var(--svg-muted)" stroke-width="1.2"/>
+          <circle cx="50" cy="-3" r="6" fill="none" stroke="var(--red)" stroke-width="1.5"/>
+          <text x="50" y="0" text-anchor="middle" font-size="6" fill="var(--red)">C</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">Each residue gets a <strong>local coordinate frame</strong> (rotation + translation) built from N, CA, C atoms.</p>
+      <ul>
+        <li><code>e1 = norm(CA-&gt;C)</code></li>
+        <li><code>e3 = norm((N-CA) x e1)</code></li>
+        <li><code>e2 = e3 x e1</code></li>
+        <li>R = [e1 | e2 | e3], t = CA position</li>
+      </ul>
+      <p style="margin-top:8px;font-size:0.78rem;"><strong>Self-Conditioning (50%):</strong> With 50% probability, run denoiser once to get x&#x302;&#x2080;, then feed as additional input for the real forward pass.</p>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 6. IPA DENOISER + BACKBONE ATOM HEAD -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>6. IPA Denoiser + BackboneAtomHead</h3>
+    <div class="summary">8&times; IPABlock &rarr; x&#x302;&#x2080;, R&#x302; &rarr; BackboneAtomHead &rarr; full [N, CA, C, O]</div>
+    <div class="preview-visual">
+      <svg width="380" height="55" viewBox="0 0 380 55">
+        <g transform="translate(10,10)">
+          <rect x="0" y="5" width="60" height="30" rx="4" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="30" y="24" text-anchor="middle" font-size="8" fill="var(--accent)" font-weight="600">IPA x8</text>
+          <line x1="60" y1="20" x2="85" y2="20" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="88" y="0" width="50" height="18" rx="3" fill="none" stroke="var(--green)" stroke-width="1"/>
+          <text x="113" y="12" text-anchor="middle" font-size="7" fill="var(--green)">x0,R</text>
+          <rect x="88" y="22" width="50" height="18" rx="3" fill="none" stroke="var(--purple)" stroke-width="1"/>
+          <text x="113" y="34" text-anchor="middle" font-size="7" fill="var(--purple)">h(512)</text>
+          <line x1="138" y1="31" x2="165" y2="24" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="168" y="5" width="90" height="30" rx="4" fill="var(--purple)" fill-opacity="0.1" stroke="var(--purple)" stroke-width="1.5"/>
+          <text x="213" y="24" text-anchor="middle" font-size="8" fill="var(--purple)" font-weight="600">BackboneHead</text>
+          <line x1="258" y1="20" x2="285" y2="20" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="288" y="5" width="70" height="30" rx="4" fill="none" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="323" y="18" text-anchor="middle" font-size="7" fill="var(--green)">N,CA,C,O</text>
+          <text x="323" y="30" text-anchor="middle" font-size="7" fill="var(--text-secondary)">(B,L,4,3)</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">IPA is a special attention mechanism that operates in <strong>3D space</strong>, making it SE(3)-equivariant. Three attention channels are merged: scalar QKV, point-based geometric attention, and pair bias.</p>
+      <p style="font-weight:600;margin:12px 0 8px;">BackboneAtomHead &mdash; predicting all 4 atoms:</p>
+      <p>After IPA predicts CA positions and frames, the BackboneAtomHead places N, C, O atoms relative to each CA using ideal geometry + learned corrections.</p>
+      <ul>
+        <li>MLP: Linear(512&rarr;256) &rarr; ReLU &rarr; Linear(256&rarr;256) &rarr; ReLU &rarr; Linear(256&rarr;9)</li>
+        <li>Output 9 values = 3 atoms &times; 3 coords (dN, dC, dO)</li>
+        <li><code>pos_atom = t + R @ (ideal_offset + delta)</code></li>
+        <li>Zero-init: starts at ideal geometry</li>
+      </ul>
+      <p style="margin-top:6px;">Output: <code>backbone_pred</code> (B, L, 4, 3) and <strong>single representation h</strong> (B, L, 512) &mdash; <em>feeds pLDDT head</em></p>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 7. pLDDT HEAD (NEW in v15) -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)" style="border-color:var(--purple);">
+    <span class="expand-icon">&#9660;</span>
+    <h3>7. pLDDT Head <span class="v15-badge">v15 NEW</span></h3>
+    <div class="summary">Predicted Local Distance Difference Test &mdash; per-residue confidence</div>
+    <div class="preview-visual">
+      <svg width="400" height="55" viewBox="0 0 400 55">
+        <!-- Protein chain with confidence coloring -->
+        <g transform="translate(20,28)">
+          <circle cx="0" cy="0" r="8" fill="#d73a49" fill-opacity="0.7" stroke="#d73a49" stroke-width="1.5"/>
+          <circle cx="25" cy="0" r="8" fill="#e36209" fill-opacity="0.7" stroke="#e36209" stroke-width="1.5"/>
+          <circle cx="50" cy="0" r="8" fill="#e8a030" fill-opacity="0.7" stroke="#e8a030" stroke-width="1.5"/>
+          <circle cx="75" cy="0" r="8" fill="#a0c040" fill-opacity="0.7" stroke="#a0c040" stroke-width="1.5"/>
+          <circle cx="100" cy="0" r="8" fill="#22863a" fill-opacity="0.7" stroke="#22863a" stroke-width="1.5"/>
+          <circle cx="125" cy="0" r="8" fill="#22863a" fill-opacity="0.8" stroke="#22863a" stroke-width="1.5"/>
+          <circle cx="150" cy="0" r="8" fill="#22863a" fill-opacity="0.9" stroke="#22863a" stroke-width="1.5"/>
+          <circle cx="175" cy="0" r="8" fill="#a0c040" fill-opacity="0.7" stroke="#a0c040" stroke-width="1.5"/>
+          <circle cx="200" cy="0" r="8" fill="#e36209" fill-opacity="0.7" stroke="#e36209" stroke-width="1.5"/>
+          <circle cx="225" cy="0" r="8" fill="#d73a49" fill-opacity="0.6" stroke="#d73a49" stroke-width="1.5"/>
+          <line x1="8" y1="0" x2="17" y2="0" stroke="var(--svg-muted)" stroke-width="1"/>
+          <line x1="33" y1="0" x2="42" y2="0" stroke="var(--svg-muted)" stroke-width="1"/>
+          <line x1="58" y1="0" x2="67" y2="0" stroke="var(--svg-muted)" stroke-width="1"/>
+          <line x1="83" y1="0" x2="92" y2="0" stroke="var(--svg-muted)" stroke-width="1"/>
+          <line x1="108" y1="0" x2="117" y2="0" stroke="var(--svg-muted)" stroke-width="1"/>
+          <line x1="133" y1="0" x2="142" y2="0" stroke="var(--svg-muted)" stroke-width="1"/>
+          <line x1="158" y1="0" x2="167" y2="0" stroke="var(--svg-muted)" stroke-width="1"/>
+          <line x1="183" y1="0" x2="192" y2="0" stroke="var(--svg-muted)" stroke-width="1"/>
+          <line x1="208" y1="0" x2="217" y2="0" stroke="var(--svg-muted)" stroke-width="1"/>
+        </g>
+        <!-- Legend -->
+        <g transform="translate(270,12)">
+          <rect x="0" y="0" width="12" height="12" rx="2" fill="#d73a49"/>
+          <text x="16" y="10" font-size="7" fill="var(--text-secondary)">low</text>
+          <rect x="45" y="0" width="12" height="12" rx="2" fill="#e8a030"/>
+          <text x="61" y="10" font-size="7" fill="var(--text-secondary)">mid</text>
+          <rect x="90" y="0" width="12" height="12" rx="2" fill="#22863a"/>
+          <text x="106" y="10" font-size="7" fill="var(--text-secondary)">high</text>
+        </g>
+        <text x="310" y="38" font-size="8" fill="var(--purple)" font-weight="600">pLDDT per residue</text>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;"><strong>pLDDT</strong> (predicted Local Distance Difference Test) measures per-residue accuracy by checking whether local CA-CA distances are preserved within distance thresholds (0.5, 1.0, 2.0, 4.0 &Aring;). The head learns to predict its own accuracy &mdash; <strong>forcing the trunk to represent uncertainty</strong>.</p>
+
+      <p style="font-weight:600;margin:10px 0 6px;">Architecture:</p>
+      <div class="visual">
+        <svg width="520" height="200" viewBox="0 0 520 200">
+          <defs>
+            <marker id="arr_p" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="var(--purple)"/></marker>
+          </defs>
+          <!-- Input -->
+          <g transform="translate(20,30)">
+            <rect x="0" y="0" width="140" height="36" rx="5" fill="var(--purple)" fill-opacity="0.08" stroke="var(--purple)" stroke-width="1.5"/>
+            <text x="70" y="16" text-anchor="middle" font-size="10" fill="var(--purple)" font-weight="600">single repr h</text>
+            <text x="70" y="30" text-anchor="middle" font-size="9" fill="var(--text-secondary)">(B, L, 512)</text>
+          </g>
+          <line x1="160" y1="48" x2="190" y2="48" stroke="var(--purple)" stroke-width="2" marker-end="url(#arr_p)"/>
+          <!-- MLP -->
+          <g transform="translate(195,20)">
+            <rect x="0" y="0" width="180" height="56" rx="5" fill="var(--code-bg)" stroke="var(--border)" stroke-width="1"/>
+            <text x="90" y="18" text-anchor="middle" font-size="10" fill="var(--text)" font-weight="600">pLDDT MLP</text>
+            <text x="90" y="36" text-anchor="middle" font-size="9" fill="var(--accent)" font-family="monospace">Linear(512-&gt;256) + ReLU</text>
+            <text x="90" y="50" text-anchor="middle" font-size="9" fill="var(--accent)" font-family="monospace">Linear(256-&gt;50)</text>
+          </g>
+          <line x1="375" y1="48" x2="405" y2="48" stroke="var(--purple)" stroke-width="2" marker-end="url(#arr_p)"/>
+          <!-- Output -->
+          <g transform="translate(410,20)">
+            <rect x="0" y="0" width="100" height="56" rx="5" fill="var(--green)" fill-opacity="0.08" stroke="var(--green)" stroke-width="1.5"/>
+            <text x="50" y="16" text-anchor="middle" font-size="9" fill="var(--green)" font-weight="600">50-bin dist</text>
+            <text x="50" y="32" text-anchor="middle" font-size="8" fill="var(--text-secondary)">over LDDT [0,1]</text>
+            <text x="50" y="48" text-anchor="middle" font-size="8" fill="var(--text-secondary)">(B, L, 50)</text>
+          </g>
+
+          <!-- Protein chain coloring -->
+          <text x="260" y="105" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="600">Per-residue confidence coloring</text>
+          <g transform="translate(40,120)">
+            <!-- Chain backbone -->
+            <path d="M0,30 C30,5 60,55 90,25 C120,-5 150,45 180,20 C210,0 240,50 270,30 C300,10 330,40 360,25 C380,15 400,35 420,28" fill="none" stroke="var(--svg-muted)" stroke-width="2"/>
+            <!-- Residue dots with gradient coloring -->
+            <circle cx="0" cy="30" r="7" fill="#d73a49" fill-opacity="0.8"/><text x="0" y="33" text-anchor="middle" font-size="6" fill="white" font-weight="bold">1</text>
+            <circle cx="45" cy="15" r="7" fill="#e36209" fill-opacity="0.8"/>
+            <circle cx="90" cy="25" r="7" fill="#e8a030" fill-opacity="0.8"/>
+            <circle cx="135" cy="40" r="7" fill="#a0c040" fill-opacity="0.8"/>
+            <circle cx="180" cy="20" r="7" fill="#22863a" fill-opacity="0.9"/>
+            <circle cx="225" cy="35" r="7" fill="#22863a" fill-opacity="0.95"/>
+            <circle cx="270" cy="30" r="7" fill="#22863a" fill-opacity="0.9"/>
+            <circle cx="315" cy="22" r="7" fill="#a0c040" fill-opacity="0.8"/>
+            <circle cx="360" cy="25" r="7" fill="#e36209" fill-opacity="0.8"/>
+            <circle cx="400" cy="28" r="7" fill="#d73a49" fill-opacity="0.7"/>
+            <!-- Labels -->
+            <text x="0" y="52" text-anchor="middle" font-size="7" fill="#d73a49">0.15</text>
+            <text x="180" y="8" text-anchor="middle" font-size="7" fill="#22863a">0.92</text>
+            <text x="225" y="52" text-anchor="middle" font-size="7" fill="#22863a">0.95</text>
+            <text x="400" y="48" text-anchor="middle" font-size="7" fill="#d73a49">0.20</text>
+          </g>
+        </svg>
+      </div>
+
+      <p style="font-weight:600;margin:10px 0 6px;">LDDT definition:</p>
+      <p style="margin-bottom:6px;">For each residue, LDDT checks all CA-CA pairs within a 15&Aring; radius and computes the fraction of distances preserved within thresholds:</p>
+      <div class="formula">LDDT_i = (1/4) &sum; [|d_pred - d_true| &lt; &tau;] / N_contacts, &tau; &isin; {0.5, 1.0, 2.0, 4.0}&Aring;</div>
+      <ul>
+        <li>Ranges from 0 (completely wrong) to 1 (perfect)</li>
+        <li>The 50-bin distribution is trained with <strong>cross-entropy</strong> on binned ground-truth LDDT</li>
+        <li>Loss weight: <code>w = 0.2</code></li>
+        <li>At inference: <code>pLDDT = &sum; bin_center &times; softmax(logits)</code> gives a scalar per residue</li>
+      </ul>
+      <p style="margin-top:8px;font-size:0.78rem;"><strong>Why it matters:</strong> The head forces the trunk's single representation to encode uncertainty. Loops and disordered regions get low pLDDT, well-packed cores get high pLDDT &mdash; the model learns <em>what it doesn't know</em>.</p>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 8. pAE HEAD (NEW in v15) -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)" style="border-color:var(--purple);">
+    <span class="expand-icon">&#9660;</span>
+    <h3>8. pAE Head <span class="v15-badge">v15 NEW</span></h3>
+    <div class="summary">Predicted Aligned Error &mdash; pairwise domain-level confidence</div>
+    <div class="preview-visual">
+      <svg width="380" height="60" viewBox="0 0 380 60">
+        <!-- Mini heatmap -->
+        <g transform="translate(20,5)">
+          <!-- Row 0 -->
+          <rect x="0" y="0" width="8" height="8" fill="#22863a" fill-opacity="0.9"/>
+          <rect x="9" y="0" width="8" height="8" fill="#22863a" fill-opacity="0.7"/>
+          <rect x="18" y="0" width="8" height="8" fill="#22863a" fill-opacity="0.6"/>
+          <rect x="27" y="0" width="8" height="8" fill="#e8a030" fill-opacity="0.5"/>
+          <rect x="36" y="0" width="8" height="8" fill="#d73a49" fill-opacity="0.6"/>
+          <rect x="45" y="0" width="8" height="8" fill="#d73a49" fill-opacity="0.7"/>
+          <!-- Row 1 -->
+          <rect x="0" y="9" width="8" height="8" fill="#22863a" fill-opacity="0.7"/>
+          <rect x="9" y="9" width="8" height="8" fill="#22863a" fill-opacity="0.9"/>
+          <rect x="18" y="9" width="8" height="8" fill="#22863a" fill-opacity="0.7"/>
+          <rect x="27" y="9" width="8" height="8" fill="#e8a030" fill-opacity="0.4"/>
+          <rect x="36" y="9" width="8" height="8" fill="#d73a49" fill-opacity="0.5"/>
+          <rect x="45" y="9" width="8" height="8" fill="#d73a49" fill-opacity="0.6"/>
+          <!-- Row 2 -->
+          <rect x="0" y="18" width="8" height="8" fill="#22863a" fill-opacity="0.6"/>
+          <rect x="9" y="18" width="8" height="8" fill="#22863a" fill-opacity="0.7"/>
+          <rect x="18" y="18" width="8" height="8" fill="#22863a" fill-opacity="0.9"/>
+          <rect x="27" y="18" width="8" height="8" fill="#e8a030" fill-opacity="0.5"/>
+          <rect x="36" y="18" width="8" height="8" fill="#d73a49" fill-opacity="0.5"/>
+          <rect x="45" y="18" width="8" height="8" fill="#d73a49" fill-opacity="0.6"/>
+          <!-- Row 3 -->
+          <rect x="0" y="27" width="8" height="8" fill="#e8a030" fill-opacity="0.5"/>
+          <rect x="9" y="27" width="8" height="8" fill="#e8a030" fill-opacity="0.4"/>
+          <rect x="18" y="27" width="8" height="8" fill="#e8a030" fill-opacity="0.5"/>
+          <rect x="27" y="27" width="8" height="8" fill="#22863a" fill-opacity="0.9"/>
+          <rect x="36" y="27" width="8" height="8" fill="#22863a" fill-opacity="0.7"/>
+          <rect x="45" y="27" width="8" height="8" fill="#22863a" fill-opacity="0.6"/>
+          <!-- Row 4 -->
+          <rect x="0" y="36" width="8" height="8" fill="#d73a49" fill-opacity="0.6"/>
+          <rect x="9" y="36" width="8" height="8" fill="#d73a49" fill-opacity="0.5"/>
+          <rect x="18" y="36" width="8" height="8" fill="#d73a49" fill-opacity="0.5"/>
+          <rect x="27" y="36" width="8" height="8" fill="#22863a" fill-opacity="0.7"/>
+          <rect x="36" y="36" width="8" height="8" fill="#22863a" fill-opacity="0.9"/>
+          <rect x="45" y="36" width="8" height="8" fill="#22863a" fill-opacity="0.7"/>
+          <!-- Row 5 -->
+          <rect x="0" y="45" width="8" height="8" fill="#d73a49" fill-opacity="0.7"/>
+          <rect x="9" y="45" width="8" height="8" fill="#d73a49" fill-opacity="0.6"/>
+          <rect x="18" y="45" width="8" height="8" fill="#d73a49" fill-opacity="0.6"/>
+          <rect x="27" y="45" width="8" height="8" fill="#22863a" fill-opacity="0.6"/>
+          <rect x="36" y="45" width="8" height="8" fill="#22863a" fill-opacity="0.7"/>
+          <rect x="45" y="45" width="8" height="8" fill="#22863a" fill-opacity="0.9"/>
+        </g>
+        <g transform="translate(80,8)">
+          <text x="0" y="10" font-size="8" fill="var(--purple)" font-weight="600">L x L aligned error matrix</text>
+          <text x="0" y="24" font-size="7" fill="var(--text-secondary)">Green blocks = confident domains</text>
+          <text x="0" y="36" font-size="7" fill="var(--text-secondary)">Red off-diag = uncertain inter-domain</text>
+        </g>
+        <g transform="translate(280,18)">
+          <rect x="0" y="0" width="80" height="30" rx="4" fill="var(--purple)" fill-opacity="0.1" stroke="var(--purple)" stroke-width="1.5"/>
+          <text x="40" y="14" text-anchor="middle" font-size="8" fill="var(--purple)" font-weight="600">pAE Head</text>
+          <text x="40" y="26" text-anchor="middle" font-size="7" fill="var(--text-secondary)">(B,L,L,64)</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">For each pair (i, j), <strong>pAE</strong> predicts the error of residue j's position when the structure is aligned using residue i's local frame. This tells us which parts of the structure are well-determined <em>relative to each other</em> &mdash; critical for multi-domain proteins where domains may be individually correct but their relative orientation is uncertain.</p>
+
+      <p style="font-weight:600;margin:10px 0 6px;">Architecture:</p>
+      <div class="visual">
+        <svg width="520" height="120" viewBox="0 0 520 120">
+          <defs>
+            <marker id="arr_p2" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="var(--purple)"/></marker>
+          </defs>
+          <!-- Input -->
+          <g transform="translate(10,30)">
+            <rect x="0" y="0" width="140" height="50" rx="5" fill="var(--orange)" fill-opacity="0.08" stroke="var(--orange)" stroke-width="1.5"/>
+            <text x="70" y="18" text-anchor="middle" font-size="10" fill="var(--orange)" font-weight="600">pair repr z</text>
+            <text x="70" y="34" text-anchor="middle" font-size="9" fill="var(--text-secondary)">(B, L, L, 128)</text>
+            <text x="70" y="46" text-anchor="middle" font-size="8" fill="var(--text-secondary)">from pair stack</text>
+          </g>
+          <line x1="150" y1="55" x2="185" y2="55" stroke="var(--purple)" stroke-width="2" marker-end="url(#arr_p2)"/>
+          <!-- MLP -->
+          <g transform="translate(190,25)">
+            <rect x="0" y="0" width="180" height="60" rx="5" fill="var(--code-bg)" stroke="var(--border)" stroke-width="1"/>
+            <text x="90" y="18" text-anchor="middle" font-size="10" fill="var(--text)" font-weight="600">pAE MLP</text>
+            <text x="90" y="36" text-anchor="middle" font-size="9" fill="var(--accent)" font-family="monospace">Linear(128-&gt;64) + ReLU</text>
+            <text x="90" y="52" text-anchor="middle" font-size="9" fill="var(--accent)" font-family="monospace">Linear(64-&gt;64)</text>
+          </g>
+          <line x1="370" y1="55" x2="405" y2="55" stroke="var(--purple)" stroke-width="2" marker-end="url(#arr_p2)"/>
+          <!-- Output -->
+          <g transform="translate(410,25)">
+            <rect x="0" y="0" width="100" height="60" rx="5" fill="var(--green)" fill-opacity="0.08" stroke="var(--green)" stroke-width="1.5"/>
+            <text x="50" y="16" text-anchor="middle" font-size="9" fill="var(--green)" font-weight="600">64-bin dist</text>
+            <text x="50" y="32" text-anchor="middle" font-size="8" fill="var(--text-secondary)">over [0, 32]&Aring;</text>
+            <text x="50" y="48" text-anchor="middle" font-size="8" fill="var(--text-secondary)">(B, L, L, 64)</text>
+          </g>
+        </svg>
+      </div>
+
+      <p style="font-weight:600;margin:10px 0 6px;">The L&times;L aligned error matrix:</p>
+      <div class="visual">
+        <svg width="480" height="320" viewBox="0 0 480 320">
+          <!-- Axes -->
+          <text x="240" y="18" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="700">Predicted Aligned Error (pAE) matrix</text>
+          <text x="180" y="38" text-anchor="middle" font-size="9" fill="var(--text-secondary)">scored residue j &rarr;</text>
+          <text x="22" y="180" text-anchor="middle" font-size="9" fill="var(--text-secondary)" transform="rotate(-90,22,180)">aligned residue i &rarr;</text>
+
+          <!-- Matrix -->
+          <g transform="translate(45,45)">
+            <!-- Domain labels -->
+            <text x="65" y="-5" text-anchor="middle" font-size="9" fill="var(--green)" font-weight="600">Domain A</text>
+            <text x="205" y="-5" text-anchor="middle" font-size="9" fill="var(--blue)" font-weight="600">Domain B</text>
+            <rect x="0" y="0" width="270" height="270" fill="none" stroke="var(--border)" stroke-width="1"/>
+
+            <!-- Domain A block (top-left) - green/low error -->
+            <rect x="0" y="0" width="130" height="130" fill="#22863a" fill-opacity="0.25" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <!-- Fine structure within domain A -->
+            <rect x="5" y="5" width="20" height="20" fill="#22863a" fill-opacity="0.5"/>
+            <rect x="30" y="5" width="20" height="20" fill="#22863a" fill-opacity="0.35"/>
+            <rect x="55" y="5" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="80" y="5" width="20" height="20" fill="#22863a" fill-opacity="0.25"/>
+            <rect x="105" y="5" width="20" height="20" fill="#22863a" fill-opacity="0.2"/>
+            <rect x="5" y="30" width="20" height="20" fill="#22863a" fill-opacity="0.35"/>
+            <rect x="30" y="30" width="20" height="20" fill="#22863a" fill-opacity="0.5"/>
+            <rect x="55" y="30" width="20" height="20" fill="#22863a" fill-opacity="0.35"/>
+            <rect x="80" y="30" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="105" y="30" width="20" height="20" fill="#22863a" fill-opacity="0.2"/>
+            <rect x="5" y="55" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="30" y="55" width="20" height="20" fill="#22863a" fill-opacity="0.35"/>
+            <rect x="55" y="55" width="20" height="20" fill="#22863a" fill-opacity="0.5"/>
+            <rect x="80" y="55" width="20" height="20" fill="#22863a" fill-opacity="0.4"/>
+            <rect x="105" y="55" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="5" y="80" width="20" height="20" fill="#22863a" fill-opacity="0.25"/>
+            <rect x="30" y="80" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="55" y="80" width="20" height="20" fill="#22863a" fill-opacity="0.4"/>
+            <rect x="80" y="80" width="20" height="20" fill="#22863a" fill-opacity="0.5"/>
+            <rect x="105" y="80" width="20" height="20" fill="#22863a" fill-opacity="0.35"/>
+            <rect x="5" y="105" width="20" height="20" fill="#22863a" fill-opacity="0.2"/>
+            <rect x="30" y="105" width="20" height="20" fill="#22863a" fill-opacity="0.2"/>
+            <rect x="55" y="105" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="80" y="105" width="20" height="20" fill="#22863a" fill-opacity="0.35"/>
+            <rect x="105" y="105" width="20" height="20" fill="#22863a" fill-opacity="0.5"/>
+
+            <!-- Domain B block (bottom-right) - green/low error -->
+            <rect x="140" y="140" width="130" height="130" fill="#1772d0" fill-opacity="0.2" stroke="var(--blue)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <rect x="145" y="145" width="20" height="20" fill="#22863a" fill-opacity="0.5"/>
+            <rect x="170" y="145" width="20" height="20" fill="#22863a" fill-opacity="0.4"/>
+            <rect x="195" y="145" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="220" y="145" width="20" height="20" fill="#22863a" fill-opacity="0.25"/>
+            <rect x="245" y="145" width="20" height="20" fill="#22863a" fill-opacity="0.2"/>
+            <rect x="145" y="170" width="20" height="20" fill="#22863a" fill-opacity="0.4"/>
+            <rect x="170" y="170" width="20" height="20" fill="#22863a" fill-opacity="0.5"/>
+            <rect x="195" y="170" width="20" height="20" fill="#22863a" fill-opacity="0.4"/>
+            <rect x="220" y="170" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="245" y="170" width="20" height="20" fill="#22863a" fill-opacity="0.25"/>
+            <rect x="145" y="195" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="170" y="195" width="20" height="20" fill="#22863a" fill-opacity="0.4"/>
+            <rect x="195" y="195" width="20" height="20" fill="#22863a" fill-opacity="0.5"/>
+            <rect x="220" y="195" width="20" height="20" fill="#22863a" fill-opacity="0.4"/>
+            <rect x="245" y="195" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="145" y="220" width="20" height="20" fill="#22863a" fill-opacity="0.25"/>
+            <rect x="170" y="220" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="195" y="220" width="20" height="20" fill="#22863a" fill-opacity="0.4"/>
+            <rect x="220" y="220" width="20" height="20" fill="#22863a" fill-opacity="0.5"/>
+            <rect x="245" y="220" width="20" height="20" fill="#22863a" fill-opacity="0.4"/>
+            <rect x="145" y="245" width="20" height="20" fill="#22863a" fill-opacity="0.2"/>
+            <rect x="170" y="245" width="20" height="20" fill="#22863a" fill-opacity="0.25"/>
+            <rect x="195" y="245" width="20" height="20" fill="#22863a" fill-opacity="0.3"/>
+            <rect x="220" y="245" width="20" height="20" fill="#22863a" fill-opacity="0.4"/>
+            <rect x="245" y="245" width="20" height="20" fill="#22863a" fill-opacity="0.5"/>
+
+            <!-- Off-diagonal blocks - red/high error (inter-domain) -->
+            <rect x="140" y="0" width="130" height="130" fill="#d73a49" fill-opacity="0.15"/>
+            <rect x="0" y="140" width="130" height="130" fill="#d73a49" fill-opacity="0.15"/>
+            <!-- Some fine structure in off-diag -->
+            <rect x="145" y="5" width="20" height="20" fill="#d73a49" fill-opacity="0.3"/>
+            <rect x="170" y="30" width="20" height="20" fill="#d73a49" fill-opacity="0.35"/>
+            <rect x="195" y="55" width="20" height="20" fill="#d73a49" fill-opacity="0.4"/>
+            <rect x="220" y="80" width="20" height="20" fill="#d73a49" fill-opacity="0.35"/>
+            <rect x="245" y="105" width="20" height="20" fill="#d73a49" fill-opacity="0.3"/>
+            <rect x="5" y="145" width="20" height="20" fill="#d73a49" fill-opacity="0.3"/>
+            <rect x="30" y="170" width="20" height="20" fill="#d73a49" fill-opacity="0.35"/>
+            <rect x="55" y="195" width="20" height="20" fill="#d73a49" fill-opacity="0.4"/>
+            <rect x="80" y="220" width="20" height="20" fill="#d73a49" fill-opacity="0.35"/>
+            <rect x="105" y="245" width="20" height="20" fill="#d73a49" fill-opacity="0.3"/>
+
+            <!-- Annotations -->
+            <text x="65" y="70" text-anchor="middle" font-size="10" fill="#22863a" font-weight="700">LOW</text>
+            <text x="65" y="83" text-anchor="middle" font-size="8" fill="#22863a">error</text>
+            <text x="205" y="210" text-anchor="middle" font-size="10" fill="#22863a" font-weight="700">LOW</text>
+            <text x="205" y="223" text-anchor="middle" font-size="8" fill="#22863a">error</text>
+            <text x="205" y="70" text-anchor="middle" font-size="10" fill="#d73a49" font-weight="700">HIGH</text>
+            <text x="205" y="83" text-anchor="middle" font-size="8" fill="#d73a49">error</text>
+            <text x="65" y="210" text-anchor="middle" font-size="10" fill="#d73a49" font-weight="700">HIGH</text>
+            <text x="65" y="223" text-anchor="middle" font-size="8" fill="#d73a49">error</text>
+          </g>
+
+          <!-- Colorbar -->
+          <g transform="translate(340,50)">
+            <defs>
+              <linearGradient id="paeGrad" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stop-color="#22863a"/>
+                <stop offset="50%" stop-color="#e8a030"/>
+                <stop offset="100%" stop-color="#d73a49"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="18" height="200" fill="url(#paeGrad)" rx="3" stroke="var(--border)" stroke-width="1"/>
+            <text x="24" y="10" font-size="8" fill="var(--text-secondary)">32&Aring; (uncertain)</text>
+            <text x="24" y="105" font-size="8" fill="var(--text-secondary)">16&Aring;</text>
+            <text x="24" y="200" font-size="8" fill="var(--text-secondary)">0&Aring; (confident)</text>
+          </g>
+        </svg>
+      </div>
+
+      <ul>
+        <li>Input: pair representation <code>(B, L, L, 128)</code> from the pair stack</li>
+        <li>MLP: <code>Linear(128&rarr;64) &rarr; ReLU &rarr; Linear(64&rarr;64)</code></li>
+        <li>64 bins over [0, 32]&Aring; aligned error range</li>
+        <li>Loss: cross-entropy on binned aligned error, <code>w = 0.2</code></li>
+        <li>At inference: <code>pAE_ij = &sum; bin_center &times; softmax(logits)</code></li>
+      </ul>
+      <p style="margin-top:8px;font-size:0.78rem;"><strong>Key insight:</strong> pAE is <em>not symmetric</em> &mdash; aligning on residue i and scoring residue j is different from the reverse. Block-diagonal structure in the pAE matrix reveals domain boundaries: within-domain pairs have low error, cross-domain pairs have high error when the relative orientation is uncertain.</p>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 9. AUXILIARY HEADS -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>9. Auxiliary Heads</h3>
+    <div class="summary">AuxPairStack + OrdinalDistanceHead + RgPredictor</div>
+    <div class="details">
+      <ul>
+        <li><strong>AuxPairStack</strong> &mdash; lightweight pair refinement</li>
+        <li><strong>OrdinalDistanceHead</strong> &mdash; ordinal distance bins</li>
+        <li><strong>RgPredictor</strong> &mdash; radius of gyration prediction</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 10. LOSSES -->
+  <!-- ============================================================ -->
+  <div class="row">
+    <!-- CA LOSSES -->
+    <div class="box" onclick="toggle(this)">
+      <span class="expand-icon">&#9660;</span>
+      <h3>C&alpha; Losses <span class="tag">9 terms</span></h3>
+      <div class="summary">Inherited from v13b</div>
+      <div class="details">
+        <p style="margin-bottom:8px;">Each loss enforces a different geometric property:</p>
+        <table class="loss-table">
+          <tr><th>Loss</th><th>Weight</th><th>Clamp</th></tr>
+          <tr><td>FAPE</td><td>1.0</td><td>max 10.0</td></tr>
+          <tr><td>Frame Rotation</td><td>0.5</td><td>max 2.0</td></tr>
+          <tr><td>Distance MSE</td><td>1.0</td><td>max 10.0</td></tr>
+          <tr><td>Bond Geometry</td><td>3.0</td><td>max 10.0 (annealed 1&rarr;3)</td></tr>
+          <tr><td>Chirality</td><td>0.1</td><td>&mdash;</td></tr>
+          <tr><td>Angle</td><td>0.5</td><td>&mdash;</td></tr>
+          <tr><td>Clash</td><td>0.1</td><td>max 25.0</td></tr>
+          <tr><td>Aux Distance</td><td>0.03</td><td>&mdash;</td></tr>
+          <tr><td>Rg Loss</td><td>0.5</td><td>&mdash;</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- BACKBONE LOSSES -->
+    <div class="box" onclick="toggle(this)">
+      <span class="expand-icon">&#9660;</span>
+      <h3>BB Losses <span class="tag">4 terms</span></h3>
+      <div class="summary">Scaled by bb_ramp schedule</div>
+      <div class="details">
+        <table class="loss-table">
+          <tr><th>Loss</th><th>Weight</th><th>Clamp</th></tr>
+          <tr><td>BB FAPE</td><td>1.0</td><td>max 10.0</td></tr>
+          <tr><td>BB Bond</td><td>2.0</td><td>max 10.0</td></tr>
+          <tr><td>BB Angle</td><td>0.5</td><td>max 5.0</td></tr>
+          <tr><td>Omega</td><td>0.5</td><td>max 5.0</td></tr>
+        </table>
+        <div style="margin-top:12px;">
+          <p style="font-size:0.76rem;font-weight:600;margin-bottom:4px;">bb_ramp schedule:</p>
+          <div class="formula">bb_ramp = min(epoch / 5, 1.0)</div>
+          <canvas id="rampCanvas" width="260" height="60" style="display:block;margin-top:8px;background:var(--bg);"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 10b. CONFIDENCE LOSSES (NEW in v15) -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)" style="border-color:var(--purple);">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Confidence Losses <span class="v15-badge">v15 NEW</span> <span class="tag">2 terms</span></h3>
+    <div class="summary">pLDDT cross-entropy + pAE cross-entropy (w=0.2 each)</div>
+    <div class="details">
+      <p style="margin-bottom:8px;">Two new loss terms for the confidence prediction heads. These are <strong>not</strong> included in the structural metric.</p>
+      <table class="loss-table">
+        <tr><th>Loss</th><th>Weight</th><th>Details</th></tr>
+        <tr><td>pLDDT CE</td><td>0.2</td><td>Cross-entropy on 50-bin LDDT distribution</td></tr>
+        <tr><td>pAE CE</td><td>0.2</td><td>Cross-entropy on 64-bin aligned error distribution</td></tr>
+      </table>
+      <p style="margin-top:10px;font-size:0.78rem;">Ground truth LDDT is computed from predicted vs. true CA-CA distances, then binned into 50 uniform bins over [0, 1]. Ground truth aligned error is computed per-pair by aligning on frame i and measuring distance of residue j, then binned into 64 bins over [0, 32]&Aring;.</p>
+      <p style="margin-top:6px;font-size:0.78rem;font-weight:600;">Total losses in v15: 9 (CA) + 4 (BB) + 2 (confidence) = 15 terms</p>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 11. TRACKED METRIC -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>11. Tracked Metric: val_structural</h3>
+    <div class="summary">total &minus; aux&times;0.03 &minus; bb_contribution &minus; confidence_losses</div>
+    <div class="details">
+      <div class="visual">
+        <svg width="520" height="120" viewBox="0 0 520 120">
+          <rect x="0" y="0" width="520" height="120" rx="5" fill="var(--code-bg)" stroke="var(--border)" stroke-width="1"/>
+          <text x="260" y="22" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="600">Validation metric (for early stopping and checkpointing)</text>
+          <text x="260" y="48" text-anchor="middle" font-size="12" fill="var(--accent)" font-family="monospace" font-weight="600">val_structural = total - aux*0.03 - bb_contribution</text>
+          <text x="260" y="68" text-anchor="middle" font-size="12" fill="var(--accent)" font-family="monospace" font-weight="600">              - plddt_loss*0.2 - pae_loss*0.2</text>
+          <text x="260" y="88" text-anchor="middle" font-size="9" fill="var(--text-secondary)">bb_contribution = bb_ramp * (w_fape*l_fape + w_bond*l_bond + w_angle*l_angle + w_omega*l_omega)</text>
+          <text x="260" y="108" text-anchor="middle" font-size="8" fill="var(--purple)">Structural metric excludes confidence losses &mdash; confidence heads are ancillary and should not affect structural checkpointing</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 12. TRAINING CONFIGURATION -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>12. Training Configuration</h3>
+    <div class="summary">AdamW, per-module LR, CFG 10%, EMA 0.999 &mdash; init from v14 run3 best</div>
+    <div class="details">
+      <p style="margin-bottom:8px;font-weight:600;color:var(--purple);">Initialization: loaded from v14 run3 best weights <span class="v15-badge">v15 NEW</span></p>
+      <p style="margin-bottom:12px;font-size:0.78rem;">All existing modules (encoder, pair stack, IPA denoiser, backbone atom head, auxiliary heads) are initialized from the best v14 run3 checkpoint. The two new confidence heads (pLDDT, pAE) are randomly initialized.</p>
+
+      <p style="margin-bottom:6px;font-weight:600;">Per-module Learning Rates (AdamW):</p>
+      <table class="loss-table">
+        <tr><th>Module</th><th>LR</th><th>Note</th></tr>
+        <tr><td>Denoiser (IPA)</td><td>2e-5</td><td>base</td></tr>
+        <tr><td>Pair Stack</td><td>6e-5</td><td>3&times;</td></tr>
+        <tr><td>BackboneAtomHead</td><td>10e-5</td><td>5&times;</td></tr>
+        <tr><td>pLDDT Head</td><td>10e-5</td><td>5&times; <span class="v15-badge">v15 NEW</span></td></tr>
+        <tr><td>pAE Head</td><td>10e-5</td><td>5&times; <span class="v15-badge">v15 NEW</span></td></tr>
+      </table>
+      <p style="margin-top:12px;font-weight:600;margin-bottom:6px;">LR Schedule:</p>
+      <div class="visual">
+        <svg width="420" height="120" viewBox="0 0 420 120">
+          <defs><marker id="arrAx" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="var(--svg-muted)"/></marker></defs>
+          <line x1="40" y1="90" x2="400" y2="90" stroke="var(--svg-muted)" stroke-width="1" marker-end="url(#arrAx)"/>
+          <line x1="40" y1="90" x2="40" y2="10" stroke="var(--svg-muted)" stroke-width="1" marker-end="url(#arrAx)"/>
+          <text x="220" y="110" text-anchor="middle" font-size="9" fill="var(--text-secondary)">epochs</text>
+          <text x="20" y="55" text-anchor="middle" font-size="9" fill="var(--text-secondary)" transform="rotate(-90,20,55)">LR</text>
+          <text x="40" y="103" text-anchor="middle" font-size="8" fill="var(--svg-muted)">0</text>
+          <text x="85" y="103" text-anchor="middle" font-size="8" fill="var(--svg-muted)">5</text>
+          <text x="220" y="103" text-anchor="middle" font-size="8" fill="var(--svg-muted)">20</text>
+          <text x="390" y="103" text-anchor="middle" font-size="8" fill="var(--svg-muted)">40</text>
+          <rect x="40" y="10" width="45" height="80" fill="var(--green)" fill-opacity="0.04"/>
+          <rect x="85" y="10" width="135" height="80" fill="var(--accent)" fill-opacity="0.04"/>
+          <rect x="220" y="10" width="170" height="80" fill="var(--orange)" fill-opacity="0.04"/>
+          <line x1="40" y1="88" x2="85" y2="20" stroke="var(--accent)" stroke-width="2.5"/>
+          <line x1="85" y1="20" x2="220" y2="20" stroke="var(--accent)" stroke-width="2.5"/>
+          <polyline points="220,20 235,21 250,24 265,29 280,36 295,44 310,53 325,62 340,70 355,77 370,83 385,87 390,88" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <text x="62" y="55" text-anchor="middle" font-size="8" fill="var(--green)" font-weight="600">warmup</text>
+          <text x="152" y="38" text-anchor="middle" font-size="8" fill="var(--accent)" font-weight="600">constant</text>
+          <text x="305" y="38" text-anchor="middle" font-size="8" fill="var(--orange)" font-weight="600">cosine decay</text>
+        </svg>
+      </div>
+      <p style="font-size:0.76rem;"><strong>CFG:</strong> 10% dropout (classifier-free guidance)</p>
+      <p style="font-size:0.76rem;"><strong>EMA:</strong> 0.999 exponential moving average</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggle(el) {
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) {
+    requestAnimationFrame(drawCanvases);
+  }
+}
+
+function toggleTheme() {
+  var html=document.documentElement,btn=document.getElementById('themeBtn');
+  if(html.getAttribute('data-theme')==='dark'){html.removeAttribute('data-theme');btn.textContent='\u{1F319}';localStorage.setItem('theme','light')}
+  else{html.setAttribute('data-theme','dark');btn.textContent='\u{2600}\u{FE0F}';localStorage.setItem('theme','dark')}
+  requestAnimationFrame(drawCanvases);
+}
+
+function getColor() {
+  var isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  return {
+    line: isDark ? '#58a6ff' : '#1772d0',
+    axis: isDark ? '#8b949e' : '#777',
+    bg: isDark ? '#0d1117' : '#ffffff'
+  };
+}
+
+(function(){var s=localStorage.getItem('theme');if(s==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('themeBtn').textContent='\u{2600}\u{FE0F}'}})();
+
+function drawCanvases() {
+  drawRamp();
+}
+
+function drawRamp() {
+  var c = document.getElementById('rampCanvas');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height;
+  var col = getColor();
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = col.bg;
+  ctx.fillRect(0, 0, w, h);
+
+  var pad = {l: 28, r: 8, t: 8, b: 16};
+  var pw = w - pad.l - pad.r;
+  var ph = h - pad.t - pad.b;
+
+  ctx.fillStyle = col.axis;
+  ctx.font = '9px -apple-system, sans-serif';
+  ctx.fillText('0', pad.l - 2, h - 2);
+  ctx.fillText('5', pad.l + pw * 0.5 - 4, h - 2);
+  ctx.fillText('10 ep', pw + pad.l - 28, h - 2);
+  ctx.fillText('1.0', 2, 14);
+  ctx.fillText('0', 10, h - pad.b + 2);
+
+  ctx.strokeStyle = col.line;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (var i = 0; i <= 100; i++) {
+    var epoch = i / 10;
+    var ramp = Math.min(epoch / 5, 1.0);
+    var x = pad.l + (epoch / 10) * pw;
+    var y = pad.t + (1 - ramp) * ph;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+}
+</script>
+
+</body>
+</html>
