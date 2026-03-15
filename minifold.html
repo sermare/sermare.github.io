@@ -194,7 +194,7 @@
       Full architecture history, training tables, loss functions, and analysis for the protein backbone diffusion model.
     </p>
     <p id="last-updated" style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px; font-style: italic;">
-      Last updated: Mar 14, 2026 at 9:30 PM PST
+      Last updated: Mar 14, 2026 at 9:45 PM PST
     </p>
 
     <div class="mf-tabs">
@@ -382,8 +382,8 @@
     <!-- ============================================================== -->
     <h4 class="training-progress-heading" style="margin-top: 24px;">v15 &mdash; Full backbone + pLDDT + pAE confidence heads</h4>
     <p style="font-size: 0.90em; color: var(--text-secondary); margin: 4px 0 8px 0;">
-      Extends v14 run3 with pLDDT (per-residue) + pAE (pairwise) confidence prediction. 15 loss terms.
-      Initialized from v14 run3 E24 best weights. w_plddt=0.2, w_pae=0.2.
+      Frozen trunk (v14 run3 E24 weights). Only pLDDT + pAE heads trainable (156K params).
+      LR 1e-4, w_plddt=0.2, w_pae=0.2. Structural quality preserved from v14 run3.
     </p>
     <div class="training-table-wrapper">
       <table class="training-table">
@@ -403,15 +403,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td><strong>1</strong></td><td><strong>4.549</strong></td><td style="color: #2ca02c;"><strong>2.543</strong></td><td>1.625</td><td>0.822</td><td>0.393</td><td>1.614</td><td>4.049</td><td>4.283</td><td>0.088</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-          <tr><td><strong>2</strong></td><td><strong>4.671</strong></td><td style="color: #2ca02c;"><strong>2.508</strong></td><td>1.602</td><td>0.814</td><td>0.386</td><td>1.592</td><td>3.551</td><td>3.968</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-          <tr><td><strong>3</strong></td><td><strong>4.852</strong></td><td style="color: #2ca02c;"><strong>2.449</strong></td><td>1.579</td><td>0.798</td><td>0.375</td><td>1.569</td><td>3.328</td><td>3.837</td><td>&mdash;</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
-          <tr><td>4</td><td>4.940</td><td>2.449</td><td>1.575</td><td>0.795</td><td>0.384</td><td>1.566</td><td>3.196</td><td>3.788</td><td>&mdash;</td><td><span class="tag tag-stale">pat 1/15</span></td></tr>
-          <tr><td>5</td><td>5.469</td><td>2.449</td><td>1.577</td><td>0.802</td><td>0.382</td><td>1.568</td><td>3.120</td><td>3.775</td><td>0.095</td><td><span class="tag tag-stale">pat 2/15</span></td></tr>
-          <tr><td>6</td><td>5.652</td><td>2.449</td><td>1.593</td><td>0.821</td><td>0.392</td><td>1.583</td><td>3.077</td><td>3.766</td><td>&mdash;</td><td><span class="tag tag-stale">pat 3/15</span></td></tr>
-          <tr><td>7</td><td>5.808</td><td>2.449</td><td>1.560</td><td>0.788</td><td>0.393</td><td>1.551</td><td>3.048</td><td>3.761</td><td>&mdash;</td><td><span class="tag tag-stale">pat 4/15</span></td></tr>
-          <tr><td>8</td><td>5.998</td><td>2.449</td><td>1.607</td><td>0.824</td><td>0.385</td><td>1.597</td><td>3.051</td><td>3.749</td><td>&mdash;</td><td><span class="tag tag-stale">pat 5/15</span></td></tr>
-          <tr><td>9</td><td>6.074</td><td>2.449</td><td>1.594</td><td>0.824</td><td>0.385</td><td>1.584</td><td>3.029</td><td>3.748</td><td>&mdash;</td><td><span class="tag tag-stale">pat 6/15</span></td></tr>
+          <tr><td colspan="11" style="text-align: center; color: #888; font-size: 0.85em; padding: 8px; border-bottom: 2px solid var(--border);">
+            <strong>Frozen trunk</strong> &mdash; only pLDDT + pAE heads trainable (156K params). LR 1e-4. Structural losses logged but not optimized.
+          </td></tr>
+          <tr><td><strong>1</strong></td><td><strong>4.322</strong></td><td>2.335</td><td>1.623</td><td>0.839</td><td>0.431</td><td>1.613</td><td>3.130</td><td>3.818</td><td>0.100</td><td><span class="tag tag-best">NEW BEST</span></td></tr>
         </tbody>
       </table>
     </div>
