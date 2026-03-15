@@ -200,7 +200,7 @@
     <div class="mf-tabs">
       <button class="mf-tab active" onclick="switchTab('folding')">Training Progress</button>
       <button class="mf-tab" onclick="switchTab('sidechain')">Side Chain</button>
-      <button class="mf-tab" onclick="switchTab('classifier')">Classifier</button>
+      <button class="mf-tab" onclick="switchTab('classifier')">Encoder</button>
       <button class="mf-tab" onclick="switchTab('details')">More Details</button>
       <button class="mf-tab" onclick="switchTab('archive')">Archive</button>
     </div>
@@ -1086,7 +1086,164 @@
     <!-- ============================================================== -->
     <div id="tab-classifier" class="mf-panel">
 
-    <h2 class="section-heading">Contact Classifier (Stage 1 &mdash; Multi-task Encoder)</h2>
+    <h2 class="section-heading">Encoder V2 &mdash; 6-Task Multi-Scale Encoder</h2>
+
+    <!-- ===== KEY FINDING CALLOUT ===== -->
+    <div style="border: 2px solid #2ca02c; border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; background: var(--bg-alt);">
+      <h4 style="margin: 0 0 8px 0; color: #2ca02c; font-size: 15px;">Key Finding: Architecture was right, just needed capacity</h4>
+      <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.7; color: var(--text);">
+        <li>v1 encoder was the bottleneck &mdash; only <strong>46.5% SS accuracy</strong> with 1.2M params</li>
+        <li>v2 achieves <strong>78.6% SS accuracy at epoch 1</strong> with 13.3M params &mdash; immediate improvement from capacity alone</li>
+        <li>This encoder will be the foundation for the <strong>v16 diffusion model</strong></li>
+      </ul>
+    </div>
+
+    <!-- ===== ENCODER V2 CARD ===== -->
+    <div class="training-card">
+      <div class="training-card-header">
+        <h3 class="training-card-title">Encoder V2</h3>
+        <span class="training-status status-active">Training</span>
+      </div>
+
+      <div class="training-goal">
+        <strong>Goal:</strong> Train a 13.3M-parameter transformer encoder on CATH 4.2 with 6 simultaneous tasks (contacts, CATH class, CATH architecture, secondary structure, distance distributions, masked LM). Replaces the v1 encoder as the frozen backbone for all downstream diffusion models.
+      </div>
+
+      <div class="training-details">
+        <div class="training-detail-item">
+          <span class="detail-label">Architecture</span>
+          <span class="detail-value">ContactClassifierV2 &mdash; 13.3M params, dim=256, 6 transformer towers, 8 heads, d_pair=128, 4 contact prediction blocks with outer product mean</span>
+        </div>
+        <div class="training-detail-item">
+          <span class="detail-label">Tasks (6)</span>
+          <span class="detail-value">Contact BCE, CATH Class (4-way), CATH Architecture (35-way), SS Prediction (3-state), Distance Distribution (32 bins), Masked LM (15%)</span>
+        </div>
+        <div class="training-detail-item">
+          <span class="detail-label">Max Length</span>
+          <span class="detail-value">600 residues (was 256 in v1)</span>
+        </div>
+      </div>
+
+      <!-- v1 vs v2 comparison table -->
+      <h4 class="training-progress-heading">v1 vs v2 Comparison</h4>
+      <div class="training-table-wrapper">
+        <table class="training-table" style="font-size: 0.88em;">
+          <thead>
+            <tr>
+              <th></th>
+              <th>v1 (current)</th>
+              <th>v2 (training)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>dim</strong></td><td>128</td><td><strong>256</strong></td></tr>
+            <tr><td><strong>towers</strong></td><td>2</td><td><strong>6</strong></td></tr>
+            <tr><td><strong>heads</strong></td><td>4</td><td><strong>8</strong></td></tr>
+            <tr><td><strong>d_pair</strong></td><td>64</td><td><strong>128</strong></td></tr>
+            <tr><td><strong>contact blocks</strong></td><td>2</td><td><strong>4</strong></td></tr>
+            <tr><td><strong>params</strong></td><td>1.2M</td><td><strong>13.3M</strong></td></tr>
+            <tr><td><strong>max_len</strong></td><td>256</td><td><strong>600</strong></td></tr>
+            <tr><td><strong>SS accuracy</strong></td><td>46.5%</td><td><strong>78.6% (E1!)</strong></td></tr>
+            <tr><td><strong>tasks</strong></td><td>3</td><td><strong>6</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Training progress -->
+      <h4 class="training-progress-heading">Training Progress</h4>
+      <div class="training-table-wrapper">
+        <table class="training-table">
+          <thead>
+            <tr>
+              <th>Epoch</th>
+              <th>Total Loss</th>
+              <th>Class Acc</th>
+              <th>SS Acc</th>
+              <th>Contact F1</th>
+              <th>Dist Acc</th>
+              <th>MLM Acc</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>7.029</td>
+              <td>46.5%</td>
+              <td>78.6%</td>
+              <td>0.392</td>
+              <td>61.8%</td>
+              <td>16.4%</td>
+              <td><span class="tag tag-best">NEW BEST</span></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>6.485</td>
+              <td>56.4%</td>
+              <td>78.6%</td>
+              <td>0.401</td>
+              <td>62.1%</td>
+              <td>18.1%</td>
+              <td><span class="tag tag-best">NEW BEST</span></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>6.055</td>
+              <td>67.4%</td>
+              <td>78.6%</td>
+              <td>0.442</td>
+              <td>62.3%</td>
+              <td>18.3%</td>
+              <td><span class="tag tag-best">NEW BEST</span></td>
+            </tr>
+            <tr>
+              <td><strong>4</strong></td>
+              <td><strong>6.205</strong></td>
+              <td><strong>59.7%</strong></td>
+              <td><strong>78.5%</strong></td>
+              <td><strong>0.474</strong></td>
+              <td><strong>62.4%</strong></td>
+              <td><strong>18.8%</strong></td>
+              <td><span class="tag tag-best">NEW BEST</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 6 training tasks -->
+      <h4 class="training-progress-heading">Training Tasks (6)</h4>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+        <div style="padding: 10px 14px; border-left: 3px solid #1f77b4; background: var(--bg); border-radius: 0 6px 6px 0;">
+          <strong style="font-size: 13px; color: var(--heading-color);">1. Contact BCE</strong>
+          <div style="font-size: 13px; color: var(--text-secondary);">8&Aring; C&alpha;&ndash;C&alpha; binary contact map prediction</div>
+        </div>
+        <div style="padding: 10px 14px; border-left: 3px solid #ff7f0e; background: var(--bg); border-radius: 0 6px 6px 0;">
+          <strong style="font-size: 13px; color: var(--heading-color);">2. CATH Class</strong>
+          <div style="font-size: 13px; color: var(--text-secondary);">4-way CE &mdash; protein structural class</div>
+        </div>
+        <div style="padding: 10px 14px; border-left: 3px solid #2ca02c; background: var(--bg); border-radius: 0 6px 6px 0;">
+          <strong style="font-size: 13px; color: var(--heading-color);">3. CATH Architecture</strong>
+          <div style="font-size: 13px; color: var(--text-secondary);">35-way CE &mdash; fold architecture</div>
+        </div>
+        <div style="padding: 10px 14px; border-left: 3px solid #d62728; background: var(--bg); border-radius: 0 6px 6px 0;">
+          <strong style="font-size: 13px; color: var(--heading-color);">4. SS Prediction <span style="font-size: 11px; color: #2ca02c;">(NEW)</span></strong>
+          <div style="font-size: 13px; color: var(--text-secondary);">3-state H/E/C per-residue secondary structure from phi/psi</div>
+        </div>
+        <div style="padding: 10px 14px; border-left: 3px solid #9467bd; background: var(--bg); border-radius: 0 6px 6px 0;">
+          <strong style="font-size: 13px; color: var(--heading-color);">5. Distance Distribution <span style="font-size: 11px; color: #2ca02c;">(NEW)</span></strong>
+          <div style="font-size: 13px; color: var(--text-secondary);">32 bins, 2&ndash;20&Aring; &mdash; ordinal distance prediction between pairs</div>
+        </div>
+        <div style="padding: 10px 14px; border-left: 3px solid #8c564b; background: var(--bg); border-radius: 0 6px 6px 0;">
+          <strong style="font-size: 13px; color: var(--heading-color);">6. Masked LM <span style="font-size: 11px; color: #2ca02c;">(NEW)</span></strong>
+          <div style="font-size: 13px; color: var(--text-secondary);">BERT-style, 15% masking &mdash; self-supervised sequence understanding</div>
+        </div>
+      </div>
+
+    </div> <!-- /encoder-v2 card -->
+
+    <hr class="section-divider">
+
+    <h2 class="section-heading">Encoder V1 &mdash; Contact Classifier (Stage 1)</h2>
 
       <div class="training-card">
         <div class="training-card-header">
