@@ -1086,27 +1086,170 @@
     <!-- ============================================================== -->
     <div id="tab-classifier" class="mf-panel">
 
-    <h2 class="section-heading">Encoder V2 &mdash; 6-Task Multi-Scale Encoder</h2>
+    <h2 class="section-heading">Encoder Variants &mdash; Full Comparison</h2>
 
-    <!-- ===== KEY FINDING CALLOUT ===== -->
-    <div style="border: 2px solid #2ca02c; border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; background: var(--bg-alt);">
-      <h4 style="margin: 0 0 8px 0; color: #2ca02c; font-size: 15px;">Key Finding: Architecture was right, just needed capacity</h4>
-      <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.7; color: var(--text);">
-        <li>v1 encoder was the bottleneck &mdash; only <strong>46.5% SS accuracy</strong> with 1.2M params</li>
-        <li>v2 achieves <strong>78.6% SS accuracy at epoch 1</strong> with 13.3M params &mdash; immediate improvement from capacity alone</li>
-        <li>This encoder will be the foundation for the <strong>v16 diffusion model</strong></li>
-      </ul>
+    <!-- ===== 1. UNIFIED COMPARISON TABLE ===== -->
+    <h4 class="training-progress-heading">All Encoder Models</h4>
+    <div class="training-table-wrapper">
+      <table class="training-table" style="font-size: 0.85em;">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Params</th>
+            <th>SS Acc</th>
+            <th>Contact F1</th>
+            <th>Contact P</th>
+            <th>Contact R</th>
+            <th>Dist Acc</th>
+            <th>MLM Acc</th>
+            <th>Class Acc</th>
+            <th>Val Loss</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>v1 original</strong></td>
+            <td>1.2M</td>
+            <td>46.5% <span style="font-size:10px;color:var(--text-secondary);">(probe)</span></td>
+            <td>0.498</td>
+            <td>0.367</td>
+            <td>0.773</td>
+            <td style="color: var(--text-secondary);">&mdash;</td>
+            <td style="color: var(--text-secondary);">&mdash;</td>
+            <td>66.3%</td>
+            <td>3.988</td>
+          </tr>
+          <tr style="background: var(--bg-alt);">
+            <td><strong>v2 original</strong></td>
+            <td>13.3M</td>
+            <td><span class="tag tag-best">78.7%</span></td>
+            <td><span class="tag tag-best">0.508</span></td>
+            <td>0.380</td>
+            <td>0.770</td>
+            <td><span class="tag tag-best">62.5%</span></td>
+            <td><span class="tag tag-best">19.2%</span></td>
+            <td><span class="tag tag-best">69.2%</span></td>
+            <td>6.055</td>
+          </tr>
+          <tr>
+            <td><strong>v2 small</strong></td>
+            <td>~5M</td>
+            <td colspan="8" style="text-align:center; color: var(--text-secondary); font-style: italic;">
+              <span class="training-status status-active" style="font-size:11px; padding:2px 8px;">TRAINING</span>
+            </td>
+          </tr>
+          <tr style="background: var(--bg-alt);">
+            <td><strong>v2 regularized</strong></td>
+            <td>~13.3M</td>
+            <td colspan="8" style="text-align:center; color: var(--text-secondary); font-style: italic;">
+              <span class="training-status status-active" style="font-size:11px; padding:2px 8px;">TRAINING</span>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>v2 small+reg</strong></td>
+            <td>~5M</td>
+            <td colspan="8" style="text-align:center; color: var(--text-secondary); font-style: italic;">
+              <span class="training-status status-active" style="font-size:11px; padding:2px 8px;">TRAINING</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- ===== ENCODER V2 CARD ===== -->
+    <!-- ===== 2. PER-TASK COMPARISON PANELS (3x2 grid) ===== -->
+    <h4 class="training-progress-heading">Per-Task Best</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+      <!-- Contact Map -->
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px; border-left: 3px solid #1f77b4;">
+        <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Contact F1</div>
+        <div style="font-size: 22px; font-weight: 700; color: var(--heading-color); margin: 4px 0 2px;">0.508</div>
+        <div style="font-size: 12px; color: var(--text-secondary);">v2 original (E16)</div>
+      </div>
+      <!-- SS Prediction -->
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px; border-left: 3px solid #2ca02c;">
+        <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">SS Accuracy</div>
+        <div style="font-size: 22px; font-weight: 700; color: var(--heading-color); margin: 4px 0 2px;">78.7%</div>
+        <div style="font-size: 12px; color: var(--text-secondary);">v2 original &mdash; v1 baseline: 46.5%</div>
+      </div>
+      <!-- CATH Classification -->
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px; border-left: 3px solid #ff7f0e;">
+        <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">CATH Class Acc</div>
+        <div style="font-size: 22px; font-weight: 700; color: var(--heading-color); margin: 4px 0 2px;">69.2%</div>
+        <div style="font-size: 12px; color: var(--text-secondary);">v2 original (E20 equiv)</div>
+      </div>
+      <!-- Distance Prediction -->
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px; border-left: 3px solid #9467bd;">
+        <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Distance Acc</div>
+        <div style="font-size: 22px; font-weight: 700; color: var(--heading-color); margin: 4px 0 2px;">62.5%</div>
+        <div style="font-size: 12px; color: var(--text-secondary);">v2 original (v2 only)</div>
+      </div>
+      <!-- MLM -->
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px; border-left: 3px solid #8c564b;">
+        <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">MLM Accuracy</div>
+        <div style="font-size: 22px; font-weight: 700; color: var(--heading-color); margin: 4px 0 2px;">19.2%</div>
+        <div style="font-size: 12px; color: var(--text-secondary);">v2 original (v2 only)</div>
+      </div>
+      <!-- Total Loss -->
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px; border-left: 3px solid #d62728;">
+        <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Best Val Loss</div>
+        <div style="font-size: 22px; font-weight: 700; color: var(--heading-color); margin: 4px 0 2px;">3.988</div>
+        <div style="font-size: 12px; color: var(--text-secondary);">v1 (3 tasks) &mdash; v2: 6.055 (6 tasks)</div>
+      </div>
+    </div>
+
+    <!-- ===== 3. TRAINING CURVES ===== -->
+    <h4 class="training-progress-heading">Training Curves</h4>
+    <div style="text-align: center; margin: 16px 0;">
+      <img src="data/training/encoder_comparison.png" alt="Encoder variant comparison" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+      <p style="font-size: 0.82em; color: var(--text-secondary); margin-top: 6px;">
+        Row 1: Shared metrics (total loss, class acc, contact F1). Row 2: V2-only tasks (SS, distance, MLM). Row 3: Contact P/R, v1 losses, architecture summary.
+        <br>Auto-updated every 10 minutes as variants train.
+      </p>
+    </div>
+
+    <!-- ===== 4. VARIANT ARCHITECTURE CARDS ===== -->
+    <h4 class="training-progress-heading">New Variants</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="font-size: 14px; color: var(--heading-color);">small</strong>
+          <span class="training-status status-active" style="font-size: 11px; padding: 2px 8px;">TRAINING</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+          dim=192, 4 towers, ~5M params<br>
+          dropout=0.30
+        </div>
+      </div>
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="font-size: 14px; color: var(--heading-color);">regularized</strong>
+          <span class="training-status status-active" style="font-size: 11px; padding: 2px 8px;">TRAINING</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+          dim=256, 6 towers, ~13M params<br>
+          dropout=0.45, wd=0.10
+        </div>
+      </div>
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="font-size: 14px; color: var(--heading-color);">small+reg</strong>
+          <span class="training-status status-active" style="font-size: 11px; padding: 2px 8px;">TRAINING</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+          dim=192, 4 towers, ~5M params<br>
+          dropout=0.40, wd=0.08
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- ===== V2 ORIGINAL DETAILS ===== -->
+    <h2 class="section-heading">Encoder V2 Original &mdash; 6-Task Multi-Scale Encoder</h2>
     <div class="training-card">
       <div class="training-card-header">
         <h3 class="training-card-title">Encoder V2</h3>
         <span class="training-status status-active">Training</span>
-      </div>
-
-      <div class="training-goal">
-        <strong>Goal:</strong> Train a 13.3M-parameter transformer encoder on CATH 4.2 with 6 simultaneous tasks (contacts, CATH class, CATH architecture, secondary structure, distance distributions, masked LM). Replaces the v1 encoder as the frozen backbone for all downstream diffusion models.
       </div>
 
       <div class="training-details">
@@ -1124,41 +1267,6 @@
         </div>
       </div>
 
-      <!-- Encoder comparison plot -->
-      <h4 class="training-progress-heading">V1 vs V2 Training Curves</h4>
-      <div style="text-align: center; margin: 16px 0;">
-        <img src="data/training/encoder_comparison.png" alt="Encoder v1 vs v2 comparison" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-        <p style="font-size: 0.82em; color: var(--text-secondary); margin-top: 6px;">
-          Row 1: Shared metrics (total loss, class acc, contact F1). Row 2: V2-only tasks (SS, distance, MLM). Row 3: Contact P/R, v1 losses, architecture summary.
-        </p>
-      </div>
-
-      <!-- v1 vs v2 comparison table -->
-      <h4 class="training-progress-heading">v1 vs v2 Comparison</h4>
-      <div class="training-table-wrapper">
-        <table class="training-table" style="font-size: 0.88em;">
-          <thead>
-            <tr>
-              <th></th>
-              <th>v1 (current)</th>
-              <th>v2 (training)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td><strong>dim</strong></td><td>128</td><td><strong>256</strong></td></tr>
-            <tr><td><strong>towers</strong></td><td>2</td><td><strong>6</strong></td></tr>
-            <tr><td><strong>heads</strong></td><td>4</td><td><strong>8</strong></td></tr>
-            <tr><td><strong>d_pair</strong></td><td>64</td><td><strong>128</strong></td></tr>
-            <tr><td><strong>contact blocks</strong></td><td>2</td><td><strong>4</strong></td></tr>
-            <tr><td><strong>params</strong></td><td>1.2M</td><td><strong>13.3M</strong></td></tr>
-            <tr><td><strong>max_len</strong></td><td>256</td><td><strong>600</strong></td></tr>
-            <tr><td><strong>SS accuracy</strong></td><td>46.5%</td><td><strong>78.6% (E1!)</strong></td></tr>
-            <tr><td><strong>tasks</strong></td><td>3</td><td><strong>6</strong></td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Training progress -->
       <h4 class="training-progress-heading">Training Progress</h4>
       <div class="training-table-wrapper">
         <table class="training-table">
@@ -1235,23 +1343,23 @@
           <div style="font-size: 13px; color: var(--text-secondary);">35-way CE &mdash; fold architecture</div>
         </div>
         <div style="padding: 10px 14px; border-left: 3px solid #d62728; background: var(--bg); border-radius: 0 6px 6px 0;">
-          <strong style="font-size: 13px; color: var(--heading-color);">4. SS Prediction <span style="font-size: 11px; color: #2ca02c;">(NEW)</span></strong>
+          <strong style="font-size: 13px; color: var(--heading-color);">4. SS Prediction</strong>
           <div style="font-size: 13px; color: var(--text-secondary);">3-state H/E/C per-residue secondary structure from phi/psi</div>
         </div>
         <div style="padding: 10px 14px; border-left: 3px solid #9467bd; background: var(--bg); border-radius: 0 6px 6px 0;">
-          <strong style="font-size: 13px; color: var(--heading-color);">5. Distance Distribution <span style="font-size: 11px; color: #2ca02c;">(NEW)</span></strong>
+          <strong style="font-size: 13px; color: var(--heading-color);">5. Distance Distribution</strong>
           <div style="font-size: 13px; color: var(--text-secondary);">32 bins, 2&ndash;20&Aring; &mdash; ordinal distance prediction between pairs</div>
         </div>
         <div style="padding: 10px 14px; border-left: 3px solid #8c564b; background: var(--bg); border-radius: 0 6px 6px 0;">
-          <strong style="font-size: 13px; color: var(--heading-color);">6. Masked LM <span style="font-size: 11px; color: #2ca02c;">(NEW)</span></strong>
+          <strong style="font-size: 13px; color: var(--heading-color);">6. Masked LM</strong>
           <div style="font-size: 13px; color: var(--text-secondary);">BERT-style, 15% masking &mdash; self-supervised sequence understanding</div>
         </div>
       </div>
-
     </div> <!-- /encoder-v2 card -->
 
     <hr class="section-divider">
 
+    <!-- ===== V1 DETAILS ===== -->
     <h2 class="section-heading">Encoder V1 &mdash; Contact Classifier (Stage 1)</h2>
 
       <div class="training-card">
@@ -1279,7 +1387,8 @@
           </div>
         </div>
 
-        <h4 class="training-progress-heading">Training Progress (all 25 epochs &mdash; early stopped)</h4>
+        <details style="margin-bottom: 16px;">
+          <summary style="cursor: pointer; font-weight: 600; font-size: 14px; color: var(--heading-color); padding: 8px 0;">Training Progress (all 25 epochs &mdash; early stopped)</summary>
         <div class="training-table-wrapper">
           <table class="training-table">
             <thead>
@@ -1574,17 +1683,16 @@
             </tbody>
           </table>
         </div>
+        </details>
 
         <div class="training-observations">
           <h4>Final Results</h4>
           <ul>
             <li>Best val loss: <strong>3.988</strong> at epoch 10 (best weights saved)</li>
             <li>Val class accuracy: <strong>66.3%</strong> (4-way CATH class), Val architecture accuracy: <strong>31.8%</strong> (38+ architectures)</li>
-            <li>Contact recall: <strong>77.3%</strong>, Contact BCE: <strong>0.659</strong> &mdash; model successfully learned spatial proximity from sequence</li>
-            <li>Train class accuracy: 78.1%, Train arch accuracy: 47.8%</li>
+            <li>Contact P=0.367, R=0.773, F1=<strong>0.498</strong> at best checkpoint &mdash; model successfully learned spatial proximity from sequence</li>
             <li>Early stopped at epoch 25 (patience 15) &mdash; val loss plateaued after epoch 10</li>
             <li>1.2M params, trained from scratch on CATH 4.2 (18k proteins)</li>
-            <li>Training survived 7 SLURM job allocations with checkpoint resume</li>
           </ul>
         </div>
 
@@ -1606,9 +1714,6 @@
             <li><strong>3ggm.A</strong> (L=81, Mainly Beta): Beta-sheet proteins produce characteristic off-diagonal block patterns from strand&ndash;strand hydrogen bonding. The model recovers these long-range parallel and anti-parallel strand pairings well.</li>
             <li><strong>1f9x.A</strong> (L=120, Mainly Alpha): Alpha-helical proteins show strong banded diagonal patterns from helix-internal i&rarr;i+4 contacts. The model reproduces both the local helical periodicity and inter-helix contacts at larger separations.</li>
           </ul>
-          <p style="margin-top: 8px;">
-            These results demonstrate that a 1.2M-parameter transformer encoder trained from scratch on CATH 4.2 (~18k proteins) can learn meaningful spatial proximity signals across all major fold classes &mdash; without any pretrained language model or evolutionary information.
-          </p>
         </div>
 
         <h4 class="training-progress-heading">Learned Embedding Space (PCA &amp; UMAP)</h4>
