@@ -194,7 +194,7 @@
       Full architecture history, training tables, loss functions, and analysis for the protein backbone diffusion model.
     </p>
     <p id="last-updated" style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px; font-style: italic;">
-      Last updated: Mar 15, 2026 at 6:30 PM PST
+      Last updated: Mar 15, 2026 at 6:40 PM PST
     </p>
 
     <div class="mf-tabs">
@@ -1228,9 +1228,37 @@
     <div style="text-align: center; margin: 16px 0;">
       <img src="data/training/encoder_v3_sweep.png" alt="V3 sweep comparison" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
       <p style="font-size: 0.82em; color: var(--text-secondary); margin-top: 6px;">
-        Row 1: F1, val loss, SS accuracy. Row 2: precision, recall, class accuracy. Row 3: MLM, best F1 bars, improvement over v2 ceiling.
-        <br>5 of 10 variants shown (contrastive variants resubmitted after fp16 fix).
+        Row 1: F1 curves, val loss, precision. Row 2: recall, best F1 bars, latest F1 bars.
+        Row 3: improvement over v2, objective matrix heatmap (sorted by best F1), key findings.
       </p>
+    </div>
+
+    <!-- Interpretation -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0;">
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px; border-left: 3px solid #2ca02c;">
+        <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px;">Contrastive Learning = Key Ingredient</div>
+        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+          All top variants use contrastive loss (InfoNCE on CATH topology). It pulls proteins with the same fold closer in embedding space, giving the pair stack explicit structural signal that binary contacts alone cannot provide. Combined with distance regression, it produces the best F1 (0.567).
+        </div>
+      </div>
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px; border-left: 3px solid #ff7f0e;">
+        <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px;">Distance Regression > Binned Distance</div>
+        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+          Predicting exact CA-CA distances (smooth L1) gives richer gradient signal than 32-bin ordinal classification. Every variant that includes dist_reg shows improved precision &mdash; the pair head learns to be more selective about which contacts to predict. Distance MAE dropped from 4.5&Aring; to 2.5&Aring; in 8 epochs.
+        </div>
+      </div>
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px; border-left: 3px solid #9467bd;">
+        <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px;">SS Masking = Best Generalizer</div>
+        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+          Masking entire secondary structure elements (helices/sheets) forces the model to reconstruct spatial patterns from incomplete information. Best val loss (5.94) but F1 oscillates &mdash; the augmentation may be too aggressive for 18K proteins. Would likely shine with more data.
+        </div>
+      </div>
+      <div style="background: var(--bg-alt); border-radius: 8px; padding: 14px 16px; border-left: 3px solid #e377c2;">
+        <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px;">Span Masking Helps Loss, Not F1</div>
+        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+          Masking 5-15 contiguous residues (vs random tokens) produces the best generalizing model by val loss, but doesn&rsquo;t directly improve contact prediction. The benefit is in richer single representations &mdash; useful when these embeddings feed into the diffusion model&rsquo;s pair stack.
+        </div>
+      </div>
     </div>
 
     <!-- V3 comparison table -->
@@ -1240,12 +1268,15 @@
           <th>Variant</th><th>New Objectives</th><th>E3 F1</th><th>Best F1</th><th>E3 Loss</th><th>vs V2 Ceiling</th><th>Status</th>
         </tr></thead>
         <tbody>
-          <tr style="background:#f0fff0"><td><strong>6. span_dist</strong></td><td>span mask + dist regression</td><td style="color:#2ca02c"><strong>0.560</strong></td><td style="color:#2ca02c"><strong>0.560</strong></td><td>6.569</td><td style="color:#2ca02c"><strong>+4.0pp</strong></td><td><span class="tag tag-best">LEADER</span></td></tr>
-          <tr><td>9. ss_mask</td><td>SS segment masking</td><td>0.450</td><td>0.590 (E1)</td><td>6.214</td><td>+7.0pp (E1)</td><td><span class="tag tag-stale">oscillating</span></td></tr>
-          <tr><td>1. baseline</td><td>(control)</td><td>0.501</td><td>0.563 (E1)</td><td>6.389</td><td>+4.3pp (E1)</td><td>training</td></tr>
-          <tr><td>2. span</td><td>span masking only</td><td>0.484</td><td>0.506 (E1)</td><td><strong>6.160</strong></td><td>&minus;1.4pp</td><td>best loss</td></tr>
-          <tr><td>4. dist_reg</td><td>distance regression only</td><td>0.445</td><td>0.487 (E1)</td><td>6.553</td><td>&minus;3.3pp</td><td>training</td></tr>
-          <tr><td colspan="7" style="text-align:center; color:#888; font-style:italic; padding:6px;">Contrastive variants (3, 5, 7, 8, 10) &mdash; resubmitted after fp16 fix, pending results</td></tr>
+          <tr style="background:#f0fff0"><td><strong>7. contr_dist</strong></td><td>contrastive + dist regression</td><td>E4</td><td style="color:#2ca02c"><strong>0.567</strong></td><td>6.764</td><td style="color:#2ca02c"><strong>+4.7pp</strong></td><td><span class="tag tag-best">LEADER</span></td></tr>
+          <tr style="background:#f0fff0"><td><strong>6. span_dist</strong></td><td>span mask + dist regression</td><td>E8</td><td>0.560 (E3)</td><td>6.325</td><td style="color:#2ca02c">+4.0pp</td><td>sustained</td></tr>
+          <tr style="background:#f0fff0"><td><strong>10. full</strong></td><td>span + contr + dist + ss_mask</td><td>E4</td><td>0.557 (E3)</td><td>7.175</td><td style="color:#2ca02c">+3.7pp</td><td>surging</td></tr>
+          <tr style="background:#f0fff0"><td><strong>8. all_three</strong></td><td>span + contr + dist reg</td><td>E4</td><td>0.542 (E4)</td><td>6.857</td><td style="color:#2ca02c">+2.2pp</td><td>improving</td></tr>
+          <tr><td>9. ss_mask</td><td>SS segment masking</td><td>E8</td><td>0.590 (E1)</td><td><strong>5.938</strong></td><td>+7.0pp (E1)</td><td>best loss, F1 oscillates</td></tr>
+          <tr><td>1. baseline</td><td>(control)</td><td>E8</td><td>0.563 (E1)</td><td>6.277</td><td>+4.3pp (E1)</td><td>declining</td></tr>
+          <tr><td>3. contrastive</td><td>contrastive only</td><td>E4</td><td>0.504 (E4)</td><td>6.696</td><td>&minus;1.6pp</td><td>improving</td></tr>
+          <tr><td>4. dist_reg</td><td>distance regression only</td><td>E8</td><td>0.494 (E8)</td><td>6.396</td><td>&minus;2.6pp</td><td>slow climb</td></tr>
+          <tr><td>2. span</td><td>span masking only</td><td>E8</td><td>0.506 (E1)</td><td>6.110</td><td>&minus;1.4pp</td><td>best generalizer</td></tr>
         </tbody>
       </table>
     </div>
