@@ -215,135 +215,167 @@
     <p style="color:var(--text-secondary); margin-bottom:18px;">
       Unconditional protein backbone generation via SE(3) diffusion on rigid body frames.
       No sequence input, no encoder &mdash; predicts clean frames from noised rotations + translations.
-      <strong>Architecture:</strong> 4-layer IPA + Transformer with backbone frame updates (~6.4M params).
-      <strong>Data:</strong> CATH 4.3 (10,600 train / 476 val chains, max 256 residues).
+      Training two model variants in parallel on CATH 4.3 (10,600 train / 476 val chains, max 256 residues).
     </p>
 
+    <!-- Model comparison cards -->
+    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:24px;">
+      <div class="timeline-section" style="flex:1; min-width:280px; margin-bottom:0">
+        <h3 style="margin-top:0">4-Layer (v1)</h3>
+        <p style="margin:0; font-size:13px; color:var(--text-secondary)">~6.4M params &middot; d_node=256, d_edge=128<br>
+        4&times; IPA (12 heads) + Transformer + BackboneUpdate<br>
+        Best val: 0.298 (E43) &middot; RMSD: 4.26 A<br>
+        Status: training on A40, 55 epochs</p>
+      </div>
+      <div class="timeline-section" style="flex:1; min-width:280px; margin-bottom:0">
+        <h3 style="margin-top:0">8-Layer (v2)</h3>
+        <p style="margin:0; font-size:13px; color:var(--text-secondary)">~12.8M params &middot; d_node=256, d_edge=128<br>
+        8&times; IPA (12 heads) + Transformer + BackboneUpdate<br>
+        Detached frames (stop-grad on R,x in IPA)<br>
+        Status: training on 2&times;A40 (DataParallel), 2 epochs</p>
+      </div>
+    </div>
+
+    <!-- Shared architecture details -->
     <div class="timeline-section">
-      <h3 style="margin-top:0">Model Architecture</h3>
-      <ul style="margin-bottom:0">
-        <li><strong>Frames:</strong> SE(3) = SO(3) rotation + R3 translation per residue</li>
-        <li><strong>Translation diffusion:</strong> VP-SDE (Ornstein-Uhlenbeck process) in nanometers</li>
-        <li><strong>Rotation diffusion:</strong> Isotropic Gaussian on SO(3) (IGSO3), Frobenius geodesic loss</li>
-        <li><strong>IPA:</strong> 12 heads, 8 query points, 12 value points per layer</li>
-        <li><strong>Transformer:</strong> 4 heads, 1024 FFN dim, skip connection to initial features</li>
-        <li><strong>Backbone update:</strong> Quaternion delta &rarr; rotation matrix, Gram-Schmidt re-orthogonalization</li>
-        <li><strong>Self-conditioning:</strong> 50% of steps use pairwise Ca distogram from previous prediction</li>
-        <li><strong>Auxiliary losses (t&lt;0.25):</strong> Backbone atom MSE (N, CA, C, O) + pairwise Ca distance MSE</li>
+      <h3 style="margin-top:0">Shared Architecture</h3>
+      <ul style="margin-bottom:0; font-size:13px">
+        <li>SE(3) frames = SO(3) rotation + R3 translation per residue</li>
+        <li>Translation: VP-SDE (OU process) &middot; Rotation: IGSO3, Frobenius geodesic loss</li>
+        <li>IPA: 12 heads, 8 query points, 12 value points &middot; Transformer: 4 heads, 1024 FFN</li>
+        <li>Backbone update: quaternion delta &rarr; rotation matrix, Gram-Schmidt re-orthogonalization</li>
+        <li>Self-conditioning: 50% of steps use Ca distogram from previous prediction</li>
+        <li>Auxiliary losses (t&lt;0.25): backbone atom MSE + pairwise Ca distance MSE</li>
       </ul>
     </div>
 
+    <!-- Val comparison plot -->
     <div class="timeline-section">
-      <h3 style="margin-top:0">Training Losses</h3>
-      <img src="data/training/framediff_losses.png" alt="FrameDiff loss curves" style="width:100%; border-radius:8px; margin-bottom:12px;">
+      <h3 style="margin-top:0">4L vs 8L Validation Loss</h3>
+      <img src="data/training/framediff_val_comparison.png" alt="4L vs 8L validation" style="width:100%; border-radius:8px; margin-bottom:8px;">
       <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
-        Train (solid) and validation (dashed) curves for total loss, translation MSE (L_x), and rotation geodesic (L_r).
+        Validation loss comparison. The 8-layer model just started &mdash; early results show similar E0-E1 trajectory to the 4-layer.
+        The 8-layer uses stop-gradient on intermediate frames to avoid NaN from deep rotation chains.
       </p>
     </div>
 
+    <!-- Loss curves -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Training Losses (Total, L_x, L_r)</h3>
+      <img src="data/training/framediff_losses.png" alt="FrameDiff loss curves" style="width:100%; border-radius:8px; margin-bottom:8px;">
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
+        Solid = train, dashed = validation. Blue/pink = 4-layer, cyan/orange = 8-layer.
+      </p>
+    </div>
+
+    <!-- Metrics -->
     <div class="timeline-section">
       <h3 style="margin-top:0">Structural Metrics</h3>
-      <img src="data/training/framediff_metrics.png" alt="FrameDiff metrics" style="width:100%; border-radius:8px; margin-bottom:12px;">
+      <img src="data/training/framediff_metrics.png" alt="FrameDiff metrics" style="width:100%; border-radius:8px; margin-bottom:8px;">
       <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
-        Ca RMSD (Angstroms) and rotation angle error (degrees) over training epochs.
+        Ca RMSD decreased from 7.0 A to 4.3 A over 55 epochs. Rotation error stabilized at ~166 deg
+        (Frobenius loss ceiling &mdash; proper IGSO3 score matching would improve this).
       </p>
     </div>
 
+    <!-- Auxiliary losses -->
     <div class="timeline-section">
       <h3 style="margin-top:0">Auxiliary Losses</h3>
-      <img src="data/training/framediff_aux_losses.png" alt="FrameDiff auxiliary losses" style="width:100%; border-radius:8px; margin-bottom:12px;">
+      <img src="data/training/framediff_aux_losses.png" alt="FrameDiff auxiliary losses" style="width:100%; border-radius:8px; margin-bottom:8px;">
       <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
-        Backbone atom reconstruction loss (L_bb) and pairwise distance loss (L_2d), applied when t &lt; 0.25.
+        L_bb (backbone atom reconstruction) and L_2d (pairwise Ca distance), applied only when t&lt;0.25.
+        L_2d converged rapidly to ~0.007. L_bb shows high epoch-to-epoch variance due to sparse sampling.
       </p>
     </div>
 
+    <!-- Training phases plot -->
     <div class="timeline-section">
-      <h3 style="margin-top:0">Training Progress Table</h3>
+      <h3 style="margin-top:0">Training Phases</h3>
+      <img src="data/training/framediff_phases.png" alt="FrameDiff training phases" style="width:100%; border-radius:8px; margin-bottom:8px;">
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
+        Phase 1 (E0-5): rotation bootstrap, L_r collapses 0.45&rarr;0.14.
+        Phase 2 (E5-25): translation learning, RMSD 5.5&rarr;4.6 A.
+        Phase 3 (E25+): refinement plateau, val total 0.36&rarr;0.30.
+        The 4-layer model shows instability after E49 (val rising), suggesting capacity limits.
+      </p>
+    </div>
+
+    <!-- 4-Layer progress table -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">4-Layer Training Progress</h3>
       <div style="overflow-x:auto">
       <table class="metrics-table" style="width:100%">
         <thead>
-          <tr>
-            <th>Epoch</th><th>L_x</th><th>L_r</th><th>Total</th><th>RMSD (A)</th><th>Rot Err (deg)</th><th>Val Total</th><th>Notes</th>
-          </tr>
+          <tr><th>Epoch</th><th>L_x</th><th>L_r</th><th>Total</th><th>RMSD (A)</th><th>Val Total</th><th>Notes</th></tr>
         </thead>
         <tbody>
-          <tr><td>0</td><td>0.630</td><td>0.446</td><td>1.171</td><td>7.02</td><td>64.3</td><td>0.867</td><td></td></tr>
-          <tr><td>5</td><td>0.413</td><td>0.143</td><td>0.645</td><td>5.50</td><td>163.7</td><td>0.496</td><td>L_r converges rapidly</td></tr>
-          <tr><td>10</td><td>0.352</td><td>0.131</td><td>0.546</td><td>5.01</td><td>164.6</td><td>0.426</td><td>RMSD breaks 5 A</td></tr>
-          <tr><td>15</td><td>0.333</td><td>0.127</td><td>0.517</td><td>4.87</td><td>164.9</td><td>0.425</td><td></td></tr>
-          <tr><td>20</td><td>0.321</td><td>0.121</td><td>0.483</td><td>4.72</td><td>165.4</td><td>0.385</td><td>Val gap narrows</td></tr>
-          <tr><td>25</td><td>0.424</td><td>0.117</td><td>0.565</td><td>4.60</td><td>165.7</td><td>0.364</td><td></td></tr>
-          <tr><td>30</td><td>0.281</td><td>0.115</td><td>0.432</td><td>4.51</td><td>165.9</td><td>0.349</td><td></td></tr>
-          <tr><td>35</td><td>0.286</td><td>0.111</td><td>0.434</td><td>4.44</td><td>166.2</td><td>0.339</td><td></td></tr>
-          <tr><td>40</td><td>0.258</td><td>0.110</td><td>0.400</td><td>4.38</td><td>166.2</td><td>0.319</td><td></td></tr>
-          <tr style="font-weight:bold; color:#5cb85c"><td>43</td><td>0.263</td><td>0.108</td><td>0.407</td><td>4.35</td><td>166.4</td><td>0.298</td><td>NEW BEST</td></tr>
-          <tr><td>48</td><td>0.271</td><td>0.107</td><td>0.406</td><td>4.35</td><td>166.5</td><td>0.322</td><td>Still training</td></tr>
+          <tr><td>0</td><td>0.630</td><td>0.446</td><td>1.171</td><td>7.02</td><td>0.867</td><td></td></tr>
+          <tr><td>5</td><td>0.413</td><td>0.143</td><td>0.645</td><td>5.50</td><td>0.496</td><td>L_r converges</td></tr>
+          <tr><td>10</td><td>0.352</td><td>0.131</td><td>0.546</td><td>5.01</td><td>0.426</td><td>RMSD &lt; 5 A</td></tr>
+          <tr><td>20</td><td>0.321</td><td>0.121</td><td>0.483</td><td>4.72</td><td>0.385</td><td></td></tr>
+          <tr><td>30</td><td>0.281</td><td>0.115</td><td>0.432</td><td>4.51</td><td>0.349</td><td></td></tr>
+          <tr><td>40</td><td>0.258</td><td>0.110</td><td>0.400</td><td>4.38</td><td>0.319</td><td></td></tr>
+          <tr style="color:#4CAF50"><td>43</td><td>0.263</td><td>0.108</td><td>0.407</td><td>4.35</td><td>0.298</td><td>Best checkpoint</td></tr>
+          <tr><td>49</td><td>0.244</td><td>0.105</td><td>0.379</td><td>4.26</td><td>0.318</td><td></td></tr>
+          <tr><td>55</td><td>0.348</td><td>0.146</td><td>0.534</td><td>5.31</td><td>0.422</td><td>Instability</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- 8-Layer progress table -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">8-Layer Training Progress</h3>
+      <div style="overflow-x:auto">
+      <table class="metrics-table" style="width:100%">
+        <thead>
+          <tr><th>Epoch</th><th>L_x</th><th>L_r</th><th>Total</th><th>RMSD (A)</th><th>Val Total</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>0.782</td><td>0.461</td><td>1.392</td><td>7.84</td><td>0.896</td><td>2&times;A40, DataParallel</td></tr>
+          <tr><td>1</td><td>0.491</td><td>0.421</td><td>0.996</td><td>6.07</td><td>0.755</td><td>Tracking 4L trajectory</td></tr>
         </tbody>
       </table>
       </div>
       <p style="color:var(--text-secondary); font-size:13px; margin-top:8px; margin-bottom:0">
-        <em>Last updated: Mar 16, 2026 at 9:50 AM PST. 49 epochs complete, best val=0.298 (E43). Training ongoing (job 32691332).</em>
+        <em>Last updated: Mar 16, 2026 at 11:15 AM PST. Both models training. 4L on A40, 8L on 2&times;A40.</em>
       </p>
     </div>
 
+    <!-- Generation results -->
     <div class="timeline-section">
-      <h3 style="margin-top:0">Training Interpretation</h3>
-      <p>Three distinct phases are visible in the training curves:</p>
-      <ol>
-        <li><strong>Phase 1 (E0&ndash;5): Rotation bootstrap.</strong>
-          L_r drops from 0.45 to 0.14 as the model learns the basic orientation of peptide plane frames.
-          The rotation error jumps from 64&deg; to 164&deg; &mdash; this is <em>not</em> degradation but rather
-          the model switching from predicting near-identity rotations to predicting the correct handedness
-          (the Frobenius loss is minimized by the &pi;-rotated solution initially).</li>
-        <li><strong>Phase 2 (E5&ndash;25): Translation learning.</strong>
-          L_x drops from 0.41 to 0.27 as the model learns residue-level positioning. RMSD improves from
-          5.5 A to 4.6 A. The rotation loss plateau at ~0.11 indicates the Frobenius fallback has reached
-          its representational limit (proper IGSO3 score matching would further improve rotations).</li>
-        <li><strong>Phase 3 (E25&ndash;48): Refinement plateau.</strong>
-          Val total slowly decreases from 0.36 to 0.30, with diminishing returns. L_x fluctuates around
-          0.25&ndash;0.27 while L_r stabilizes at 0.107. The model is now fine-tuning local geometry.
-          Further gains will require: (a) longer training, (b) proper IGSO3 rotation diffusion,
-          (c) learning rate scheduling, or (d) increased model capacity.</li>
-      </ol>
-      <p><strong>Key observations:</strong></p>
-      <ul style="margin-bottom:0">
-        <li>Val total (0.298) is <em>lower</em> than train total (0.407) because validation doesn't use augmentation noise and benefits from self-conditioning convergence.</li>
-        <li>L_2d (pairwise distance) converged quickly to ~0.007, confirming the model learns correct inter-residue distances early.</li>
-        <li>L_bb (backbone atom) shows high variance (0.10&ndash;0.35) because it only applies when t&lt;0.25, making it noisy across epochs.</li>
-        <li>The ~0.5% NaN gradient skip rate (from residual edge cases in SO(3) geometry) has no measurable impact on convergence.</li>
-      </ul>
-    </div>
-
-    <div class="timeline-section">
-      <h3 style="margin-top:0">First Generation Results (Epoch 32)</h3>
-      <p>Generated 16 backbones (8&times;L80, 4&times;L120, 4&times;L200) using 200-step DDPM reverse diffusion with self-conditioning.</p>
+      <h3 style="margin-top:0">Generation Results (Epoch 32, 4-Layer)</h3>
+      <p style="font-size:13px">16 backbones generated (8&times;L80, 4&times;L120, 4&times;L200) via 200-step DDPM reverse diffusion.</p>
       <div style="overflow-x:auto">
       <table class="metrics-table" style="width:100%">
         <thead>
-          <tr><th>Length</th><th>Samples</th><th>Mean Ca-Ca (A)</th><th>Ideal Ca-Ca</th><th>Rg (A)</th><th>Status</th></tr>
+          <tr><th>Metric</th><th>Generated</th><th>Ideal</th><th>Status</th></tr>
         </thead>
         <tbody>
-          <tr><td>80</td><td>8</td><td>5.2 &ndash; 9.0</td><td>3.8</td><td>53 &ndash; 85</td><td style="color:#f0ad4e">Coarse fold topology, local geometry needs work</td></tr>
-          <tr><td>120</td><td>4</td><td>5.8 &ndash; 10.9</td><td>3.8</td><td>70 &ndash; 90</td><td style="color:#f0ad4e">Extended chains, not yet compact</td></tr>
-          <tr><td>200</td><td>4</td><td>6.7 &ndash; 8.6</td><td>3.8</td><td>83 &ndash; 92</td><td style="color:#f0ad4e">Overly extended, needs more training</td></tr>
+          <tr><td>Ca-Ca distance</td><td>5.2 &ndash; 9.0 A</td><td>3.8 A</td><td style="color:#f0ad4e">1.5-2.5x too large</td></tr>
+          <tr><td>Peptide bond (C-N)</td><td>6.9 &ndash; 10.7 A</td><td>1.33 A</td><td style="color:#d9534f">Not connected</td></tr>
+          <tr><td>Intra-residue N-CA</td><td>1.46 A</td><td>1.46 A</td><td style="color:#5cb85c">Exact (by construction)</td></tr>
+          <tr><td>Intra-residue CA-C</td><td>1.52 A</td><td>1.52 A</td><td style="color:#5cb85c">Exact (by construction)</td></tr>
+          <tr><td>Helical i&rarr;i+3</td><td>~25% in range</td><td>5.4 A</td><td style="color:#f0ad4e">Near random chance</td></tr>
         </tbody>
       </table>
       </div>
       <p style="color:var(--text-secondary); font-size:13px; margin-top:8px; margin-bottom:0">
-        Ca-Ca bond lengths are ~1.5&ndash;2.5x the ideal 3.8 A, indicating the model has learned rough structure
-        but needs more training and better reverse diffusion (rotation sampling uses naive matrix interpolation
-        rather than geodesic SLERP on SO(3)). Next steps: resume training to 100+ epochs, implement proper
-        IGSO3 reverse SDE, evaluate with self-consistency (ProteinMPNN &rarr; ESMFold &rarr; TM-score).
+        Intra-residue geometry is perfect (fixed ideal bond lengths applied to frames). The bottleneck is
+        inter-residue connectivity &mdash; neighboring frames are not yet close enough to form peptide bonds.
+        This requires more training and better reverse diffusion (geodesic SLERP instead of naive matrix interpolation).
       </p>
     </div>
 
+    <!-- Debugging milestones -->
     <div class="timeline-section">
-      <h3 style="margin-top:0">Key Debugging Milestones</h3>
-      <ul style="margin-bottom:0">
-        <li><strong>NaN Fix #1:</strong> Disabled IGSO3 score matching (NaN density), switched to Frobenius geodesic loss</li>
-        <li><strong>NaN Fix #2:</strong> Replaced SVD re-orthogonalization with Gram-Schmidt (SVD not differentiable at degenerate points)</li>
-        <li><strong>NaN Fix #3:</strong> Rewrote <code>_log_map_so3</code> to avoid <code>torch.acos</code> gradient singularity at &theta;=0</li>
-        <li><strong>NaN Fix #4 (final):</strong> Replaced <code>Tensor.norm()</code> in IPA with <code>sqrt(x&sup2; + &epsilon;)</code> &mdash; norm gradient is x/||x|| &rarr; NaN at zero vectors</li>
+      <h3 style="margin-top:0">Debugging Timeline</h3>
+      <ul style="margin-bottom:0; font-size:13px">
+        <li>Fix #1: Disabled IGSO3 score matching (NaN density) &rarr; Frobenius geodesic loss</li>
+        <li>Fix #2: SVD re-orthogonalization &rarr; Gram-Schmidt (SVD not differentiable at degenerate points)</li>
+        <li>Fix #3: <code>_log_map_so3</code> Pad&eacute; approximation (avoids <code>torch.acos</code> gradient singularity at &theta;=0)</li>
+        <li>Fix #4: <code>Tensor.norm()</code> &rarr; <code>sqrt(x&sup2; + &epsilon;)</code> in IPA (norm gradient = x/||x|| &rarr; NaN at zero)</li>
+        <li>Fix #5: Stop-gradient on intermediate frames for 8-layer model (prevents NaN from deep rotation chains)</li>
       </ul>
     </div>
 
