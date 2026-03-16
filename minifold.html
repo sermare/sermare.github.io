@@ -194,7 +194,7 @@
       Full architecture history, training tables, loss functions, and analysis for the protein backbone diffusion model.
     </p>
     <p id="last-updated" style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px; font-style: italic;">
-      Last updated: Mar 15, 2026 at 5:50 PM PST
+      Last updated: Mar 15, 2026 at 6:00 PM PST
     </p>
 
     <div class="mf-tabs">
@@ -1206,14 +1206,48 @@
       </div>
     </div>
 
-    <!-- ===== 3. TRAINING CURVES ===== -->
-    <h4 class="training-progress-heading">Training Curves</h4>
+    <!-- ===== 3. V2 TRAINING CURVES ===== -->
+    <h4 class="training-progress-heading">V2 Architecture Comparison</h4>
     <div style="text-align: center; margin: 16px 0;">
-      <img src="data/training/encoder_comparison.png" alt="Encoder variant comparison" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
-      <p style="font-size: 0.82em; color: var(--text-secondary); margin-top: 6px;">
-        Row 1: Shared metrics (total loss, class acc, contact F1). Row 2: V2-only tasks (SS, distance, MLM). Row 3: Contact P/R, v1 losses, architecture summary.
-        <br>Auto-updated every 10 minutes as variants train.
+      <img src="data/training/encoder_comparison.png" alt="Encoder v2 variant comparison" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+      <p style="font-size: 0.82em; color: var(--text-secondary); margin-top: 6px;">V2 variants: architecture sweep (size vs regularization). All hit SS=78.7%, F1~0.52 ceiling.</p>
+    </div>
+
+    <!-- ===== V3 SWEEP: TRAINING OBJECTIVES ===== -->
+    <hr style="margin: 24px 0; border: none; border-top: 2px solid var(--border);">
+    <div style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
+      <h4 style="margin: 0 0 6px;">V3 Sweep &mdash; Breaking the Ceiling with Better Training Objectives</h4>
+      <p style="font-size: 0.88em; color: var(--text-secondary); margin: 0;">
+        Same 5M architecture, 10 variants testing: <strong>span masking</strong> (mask 5-15 contiguous residues),
+        <strong>contrastive learning</strong> (InfoNCE on CATH topology), <strong>distance regression</strong> (smooth L1 on real distances),
+        <strong>SS segment masking</strong> (mask entire helices/sheets). <em>span_dist broke through the v2 F1 ceiling!</em>
       </p>
+    </div>
+
+    <h4 class="training-progress-heading">V3 Sweep Results</h4>
+    <div style="text-align: center; margin: 16px 0;">
+      <img src="data/training/encoder_v3_sweep.png" alt="V3 sweep comparison" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+      <p style="font-size: 0.82em; color: var(--text-secondary); margin-top: 6px;">
+        Row 1: F1, val loss, SS accuracy. Row 2: precision, recall, class accuracy. Row 3: MLM, best F1 bars, improvement over v2 ceiling.
+        <br>5 of 10 variants shown (contrastive variants resubmitted after fp16 fix).
+      </p>
+    </div>
+
+    <!-- V3 comparison table -->
+    <div class="training-table-wrapper">
+      <table class="training-table" style="font-size: 0.85em;">
+        <thead><tr>
+          <th>Variant</th><th>New Objectives</th><th>E3 F1</th><th>Best F1</th><th>E3 Loss</th><th>vs V2 Ceiling</th><th>Status</th>
+        </tr></thead>
+        <tbody>
+          <tr style="background:#f0fff0"><td><strong>6. span_dist</strong></td><td>span mask + dist regression</td><td style="color:#2ca02c"><strong>0.560</strong></td><td style="color:#2ca02c"><strong>0.560</strong></td><td>6.569</td><td style="color:#2ca02c"><strong>+4.0pp</strong></td><td><span class="tag tag-best">LEADER</span></td></tr>
+          <tr><td>9. ss_mask</td><td>SS segment masking</td><td>0.450</td><td>0.590 (E1)</td><td>6.214</td><td>+7.0pp (E1)</td><td><span class="tag tag-stale">oscillating</span></td></tr>
+          <tr><td>1. baseline</td><td>(control)</td><td>0.501</td><td>0.563 (E1)</td><td>6.389</td><td>+4.3pp (E1)</td><td>training</td></tr>
+          <tr><td>2. span</td><td>span masking only</td><td>0.484</td><td>0.506 (E1)</td><td><strong>6.160</strong></td><td>&minus;1.4pp</td><td>best loss</td></tr>
+          <tr><td>4. dist_reg</td><td>distance regression only</td><td>0.445</td><td>0.487 (E1)</td><td>6.553</td><td>&minus;3.3pp</td><td>training</td></tr>
+          <tr><td colspan="7" style="text-align:center; color:#888; font-style:italic; padding:6px;">Contrastive variants (3, 5, 7, 8, 10) &mdash; resubmitted after fp16 fix, pending results</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- ===== VARIANT TRAINING PROGRESS ===== -->
