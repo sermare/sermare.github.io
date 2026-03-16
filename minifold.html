@@ -198,11 +198,101 @@
     </p>
 
     <div class="mf-tabs">
+      <button class="mf-tab" onclick="switchTab('framediff')">FrameDiff</button>
       <button class="mf-tab active" onclick="switchTab('folding')">Training Progress</button>
       <button class="mf-tab" onclick="switchTab('sidechain')">Side Chain</button>
       <button class="mf-tab" onclick="switchTab('classifier')">Encoder</button>
       <button class="mf-tab" onclick="switchTab('details')">More Details</button>
       <button class="mf-tab" onclick="switchTab('archive')">Archive</button>
+    </div>
+
+    <!-- ============================================================== -->
+    <!--  TAB: FRAMEDIFF — SE(3) Unconditional Backbone Diffusion        -->
+    <!-- ============================================================== -->
+    <div id="tab-framediff" class="mf-panel">
+
+    <h2 class="section-heading">FrameDiff: SE(3) Backbone Diffusion</h2>
+    <p style="color:var(--text-secondary); margin-bottom:18px;">
+      Unconditional protein backbone generation via SE(3) diffusion on rigid body frames.
+      No sequence input, no encoder &mdash; predicts clean frames from noised rotations + translations.
+      <strong>Architecture:</strong> 4-layer IPA + Transformer with backbone frame updates (~6.4M params).
+      <strong>Data:</strong> CATH 4.3 (10,600 train / 476 val chains, max 256 residues).
+    </p>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Model Architecture</h3>
+      <ul style="margin-bottom:0">
+        <li><strong>Frames:</strong> SE(3) = SO(3) rotation + R3 translation per residue</li>
+        <li><strong>Translation diffusion:</strong> VP-SDE (Ornstein-Uhlenbeck process) in nanometers</li>
+        <li><strong>Rotation diffusion:</strong> Isotropic Gaussian on SO(3) (IGSO3), Frobenius geodesic loss</li>
+        <li><strong>IPA:</strong> 12 heads, 8 query points, 12 value points per layer</li>
+        <li><strong>Transformer:</strong> 4 heads, 1024 FFN dim, skip connection to initial features</li>
+        <li><strong>Backbone update:</strong> Quaternion delta &rarr; rotation matrix, Gram-Schmidt re-orthogonalization</li>
+        <li><strong>Self-conditioning:</strong> 50% of steps use pairwise Ca distogram from previous prediction</li>
+        <li><strong>Auxiliary losses (t&lt;0.25):</strong> Backbone atom MSE (N, CA, C, O) + pairwise Ca distance MSE</li>
+      </ul>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Training Losses</h3>
+      <img src="data/training/framediff_losses.png" alt="FrameDiff loss curves" style="width:100%; border-radius:8px; margin-bottom:12px;">
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
+        Train (solid) and validation (dashed) curves for total loss, translation MSE (L_x), and rotation geodesic (L_r).
+      </p>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Structural Metrics</h3>
+      <img src="data/training/framediff_metrics.png" alt="FrameDiff metrics" style="width:100%; border-radius:8px; margin-bottom:12px;">
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
+        Ca RMSD (Angstroms) and rotation angle error (degrees) over training epochs.
+      </p>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Auxiliary Losses</h3>
+      <img src="data/training/framediff_aux_losses.png" alt="FrameDiff auxiliary losses" style="width:100%; border-radius:8px; margin-bottom:12px;">
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
+        Backbone atom reconstruction loss (L_bb) and pairwise distance loss (L_2d), applied when t &lt; 0.25.
+      </p>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Training Progress Table</h3>
+      <div style="overflow-x:auto">
+      <table class="metrics-table" style="width:100%">
+        <thead>
+          <tr>
+            <th>Epoch</th><th>L_x</th><th>L_r</th><th>Total</th><th>RMSD (A)</th><th>Rot Err (deg)</th><th>Val Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>0.630</td><td>0.446</td><td>1.171</td><td>7.02</td><td>64.3</td><td>0.867</td></tr>
+          <tr><td>1</td><td>0.479</td><td>0.400</td><td>0.957</td><td>6.02</td><td>60.1</td><td>0.793</td></tr>
+          <tr><td>2</td><td>0.467</td><td>0.220</td><td>0.770</td><td>5.92</td><td>139.6</td><td>0.573</td></tr>
+          <tr><td>3</td><td>0.460</td><td>0.151</td><td>0.701</td><td>5.83</td><td>163.2</td><td>0.522</td></tr>
+          <tr><td>4</td><td>0.450</td><td>0.145</td><td>0.676</td><td>5.76</td><td>163.6</td><td>0.525</td></tr>
+          <tr><td>5</td><td>0.413</td><td>0.143</td><td>0.645</td><td>5.50</td><td>163.7</td><td>0.496</td></tr>
+          <tr><td>6</td><td>0.377</td><td>0.141</td><td>0.595</td><td>5.23</td><td>163.9</td><td>0.445</td></tr>
+          <tr style="font-weight:bold"><td>7</td><td>0.377</td><td>0.137</td><td>0.610</td><td>5.18</td><td>164.2</td><td>0.454</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p style="color:var(--text-secondary); font-size:13px; margin-top:8px; margin-bottom:0">
+        <em>Last updated: Mar 16, 2026 at 2:45 AM PST. Training ongoing (job 32675144).</em>
+      </p>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Key Debugging Milestones</h3>
+      <ul style="margin-bottom:0">
+        <li><strong>NaN Fix #1:</strong> Disabled IGSO3 score matching (NaN density), switched to Frobenius geodesic loss</li>
+        <li><strong>NaN Fix #2:</strong> Replaced SVD re-orthogonalization with Gram-Schmidt (SVD not differentiable at degenerate points)</li>
+        <li><strong>NaN Fix #3:</strong> Rewrote <code>_log_map_so3</code> to avoid <code>torch.acos</code> gradient singularity at &theta;=0</li>
+        <li><strong>NaN Fix #4 (final):</strong> Replaced <code>Tensor.norm()</code> in IPA with <code>sqrt(x&sup2; + &epsilon;)</code> &mdash; norm gradient is x/||x|| &rarr; NaN at zero vectors</li>
+      </ul>
+    </div>
+
     </div>
 
     <!-- ============================================================== -->
