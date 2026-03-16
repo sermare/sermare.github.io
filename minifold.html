@@ -225,14 +225,14 @@
         <p style="margin:0; font-size:13px; color:var(--text-secondary)">~6.4M params &middot; d_node=256, d_edge=128<br>
         4&times; IPA (12 heads) + Transformer + BackboneUpdate<br>
         Best val: 0.298 (E43) &middot; RMSD: 4.26 A<br>
-        Status: training on A40, 55 epochs</p>
+        Status: E74, diverging after E49 &mdash; capacity limited</p>
       </div>
       <div class="timeline-section" style="flex:1; min-width:280px; margin-bottom:0">
         <h3 style="margin-top:0">8-Layer (v2)</h3>
         <p style="margin:0; font-size:13px; color:var(--text-secondary)">~12.8M params &middot; d_node=256, d_edge=128<br>
         8&times; IPA (12 heads) + Transformer + BackboneUpdate<br>
         Detached frames (stop-grad on R,x in IPA)<br>
-        Status: training on 2&times;A40 (DataParallel), 2 epochs</p>
+        Best val: 0.376 (E17) &middot; RMSD: 4.87 A &middot; 19 epochs</p>
       </div>
     </div>
 
@@ -295,8 +295,9 @@
       <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
         Phase 1 (E0-5): rotation bootstrap, L_r collapses 0.45&rarr;0.14.
         Phase 2 (E5-25): translation learning, RMSD 5.5&rarr;4.6 A.
-        Phase 3 (E25+): refinement plateau, val total 0.36&rarr;0.30.
-        The 4-layer model shows instability after E49 (val rising), suggesting capacity limits.
+        Phase 3 (E25-49): refinement plateau, val total 0.36&rarr;0.30.
+        Phase 4 (E50+): divergence &mdash; the 4-layer model destabilized after E49 and has not recovered.
+        The 8-layer model is now the primary candidate, currently at E18 with val=0.376 and still improving.
       </p>
     </div>
 
@@ -316,11 +317,18 @@
           <tr><td>30</td><td>0.281</td><td>0.115</td><td>0.432</td><td>4.51</td><td>0.349</td><td></td></tr>
           <tr><td>40</td><td>0.258</td><td>0.110</td><td>0.400</td><td>4.38</td><td>0.319</td><td></td></tr>
           <tr style="color:#4CAF50"><td>43</td><td>0.263</td><td>0.108</td><td>0.407</td><td>4.35</td><td>0.298</td><td>Best checkpoint</td></tr>
-          <tr><td>49</td><td>0.244</td><td>0.105</td><td>0.379</td><td>4.26</td><td>0.318</td><td></td></tr>
-          <tr><td>55</td><td>0.348</td><td>0.146</td><td>0.534</td><td>5.31</td><td>0.422</td><td>Instability</td></tr>
+          <tr><td>49</td><td>0.244</td><td>0.105</td><td>0.379</td><td>4.26</td><td>0.318</td><td>Last stable epoch</td></tr>
+          <tr><td>55</td><td>0.348</td><td>0.146</td><td>0.534</td><td>5.31</td><td>0.422</td><td>Instability begins</td></tr>
+          <tr><td>65</td><td>0.366</td><td>0.147</td><td>0.550</td><td>5.36</td><td>0.563</td><td>Diverging</td></tr>
+          <tr><td>74</td><td>0.360</td><td>0.151</td><td>0.552</td><td>5.50</td><td>0.458</td><td>Not recovering</td></tr>
         </tbody>
       </table>
       </div>
+      <p style="color:var(--text-secondary); font-size:13px; margin-top:8px; margin-bottom:0">
+        The 4-layer model peaked at E43 (val=0.298) then entered a divergence phase after E49.
+        RMSD regressed from 4.26 A back to 5.5 A. Early stopping will trigger at E73 (patience=30).
+        The best checkpoint at E43 is preserved.
+      </p>
     </div>
 
     <!-- 8-Layer progress table -->
@@ -333,12 +341,16 @@
         </thead>
         <tbody>
           <tr><td>0</td><td>0.782</td><td>0.461</td><td>1.392</td><td>7.84</td><td>0.896</td><td>2&times;A40, DataParallel</td></tr>
-          <tr><td>1</td><td>0.491</td><td>0.421</td><td>0.996</td><td>6.07</td><td>0.755</td><td>Tracking 4L trajectory</td></tr>
+          <tr><td>3</td><td>0.381</td><td>0.388</td><td>0.817</td><td>5.35</td><td>0.690</td><td>Pre rotation transition</td></tr>
+          <tr><td>5</td><td>0.346</td><td>0.180</td><td>0.583</td><td>5.26</td><td>0.498</td><td>Rotation bootstrap</td></tr>
+          <tr><td>9</td><td>0.310</td><td>0.141</td><td>0.488</td><td>5.02</td><td>0.404</td><td>RMSD &lt; 5 A</td></tr>
+          <tr style="color:#4CAF50"><td>17</td><td>0.320</td><td>0.130</td><td>0.509</td><td>4.87</td><td>0.376</td><td>Best so far</td></tr>
+          <tr><td>18</td><td>0.352</td><td>0.129</td><td>0.571</td><td>4.94</td><td>0.394</td><td>Still improving</td></tr>
         </tbody>
       </table>
       </div>
       <p style="color:var(--text-secondary); font-size:13px; margin-top:8px; margin-bottom:0">
-        <em>Last updated: Mar 16, 2026 at 11:15 AM PST. Both models training. 4L on A40, 8L on 2&times;A40.</em>
+        <em>Last updated: Mar 16, 2026 at 12:50 PM PST. 4L at E74 (diverged, best=E43). 8L at E18 (val=0.376, still improving fast).</em>
       </p>
     </div>
 
