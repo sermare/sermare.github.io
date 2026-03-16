@@ -1261,6 +1261,27 @@
       </div>
     </div>
 
+    <!-- Encoder Analysis: UMAPs + Contact Maps + SS Probes -->
+    <hr style="margin: 24px 0; border: none; border-top: 2px solid var(--border);">
+    <h4 class="training-progress-heading">Encoder Analysis &mdash; UMAPs, Contact Maps, SS Probes</h4>
+    <div style="text-align: center; margin: 16px 0;">
+      <img src="data/training/encoder_analysis.png" alt="Encoder analysis: UMAPs, contact maps, SS probes" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border);">
+      <p style="font-size: 0.82em; color: var(--text-secondary); margin-top: 6px;">
+        4 models &times; 4 panels: UMAP by CATH class, UMAP by SS composition, predicted vs true contact map, SS linear probe accuracy.
+      </p>
+    </div>
+    <div style="border-left: 3px solid #2ca02c; padding-left: 14px; margin: 16px 0;">
+      <h4 style="margin: 0 0 6px;">Are these encoders good enough for structure prediction?</h4>
+      <p style="font-size: 0.88em; color: var(--text-secondary); margin: 0; line-height: 1.7;">
+        <strong>Yes.</strong> All encoders achieve <strong>~78.5&ndash;78.8% SS accuracy</strong> from a single linear probe &mdash; well above the 60% threshold.
+        The SS information is encoded in the single representations. The real differentiator between encoders is <strong>contact map quality</strong> (F1) and
+        <strong>UMAP fold clustering</strong>, which determine whether the pair stack can extract long-range structural relationships.
+        The v3_contr_dist encoder (F1=0.567, contrastive-trained) provides the richest representations for v16.
+      </p>
+    </div>
+
+    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--border);">
+
     <!-- V3 comparison table -->
     <div class="training-table-wrapper">
       <table class="training-table" style="font-size: 0.85em;">
