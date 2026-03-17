@@ -358,8 +358,35 @@
         </tbody>
       </table>
       </div>
+    </div>
+
+    <!-- v2 (IGSO3) progress table -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">v2 (IGSO3) Training Progress</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:8px">
+        14.4M params, 8 layers, IGSO3 rotation noise + score matching loss.
+        Note: L_r and val_total are on a different scale (IGSO3 score matching) and not directly comparable to v1.
+      </p>
+      <div style="overflow-x:auto">
+      <table class="metrics-table" style="width:100%">
+        <thead>
+          <tr><th>Epoch</th><th>L_x</th><th>L_r (IGSO3)</th><th>Rot Err (deg)</th><th>RMSD (A)</th><th>Val Total</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>0.879</td><td>7.60</td><td>66.5</td><td>8.45</td><td>7.69</td><td></td></tr>
+          <tr><td>4</td><td>0.527</td><td>6.89</td><td>54.5</td><td>6.36</td><td>7.27</td><td></td></tr>
+          <tr><td>6</td><td>0.496</td><td>6.81</td><td>53.6</td><td>6.19</td><td>7.08</td><td></td></tr>
+          <tr><td>9</td><td>0.467</td><td>6.68</td><td>52.3</td><td>5.98</td><td>6.90</td><td>RMSD &lt; 6 A</td></tr>
+          <tr><td>12</td><td>0.419</td><td>6.71</td><td>51.9</td><td>5.74</td><td>6.92</td><td></td></tr>
+          <tr><td>14</td><td>0.375</td><td>6.71</td><td>51.5</td><td>5.49</td><td>6.76</td><td></td></tr>
+          <tr style="color:#4CAF50"><td>16</td><td>0.359</td><td>6.67</td><td>51.2</td><td>5.36</td><td>6.53</td><td>Best val</td></tr>
+        </tbody>
+      </table>
+      </div>
       <p style="color:var(--text-secondary); font-size:13px; margin-top:8px; margin-bottom:0">
-        <em>Last updated: Mar 16, 2026 at 9:40 PM PST. 4L dead. 8L done E36. v2 at E16 (val 6.53 new best, RMSD 5.36).</em>
+        Rot error steadily decreasing (66&rarr;51 deg) without the &pi;-flip seen in v1.
+        IGSO3 score matching provides proper directional supervision for rotations.
+        <em>Last updated: Mar 16, 2026 at 9:45 PM PST.</em>
       </p>
     </div>
 
