@@ -213,51 +213,34 @@
 
     <h2 class="section-heading">FrameDiff v3: Paper-Correct SE(3) Backbone Diffusion</h2>
     <p style="color:var(--text-secondary); margin-bottom:18px;">
-      Paper-verified reimplementation of Yim et al. (2302.02277v3). 24.9M params, 8 layers, 2&times;A40.
-      IGSO3 rotation score matching + VP-SDE translation diffusion on CATH 4.3 (10,125 chains, 60-256 residues).
+      FrameDiff v3 &mdash; 24.9M params, 8 layers, CATH 4.3.
       <span style="background:#2ca02c22; color:#2ca02c; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; margin-left:6px;">TRAINING</span>
     </p>
 
     <div class="timeline-section">
-      <h3 style="margin-top:0">Model Configuration</h3>
-      <div class="arch-feature"><div class="af-label">Parameters</div><div class="af-value">24.9M (8 layers, d_node=256, d_edge=128)</div></div>
-      <div class="arch-feature"><div class="af-label">IPA</div><div class="af-value">8 heads, 8 query points, 12 value points, d_head=16, AF2 w_C constant</div></div>
-      <div class="arch-feature"><div class="af-label">Transformer</div><div class="af-value">4 heads &times; 2 layers, 1024 FFN, Pre-LN, operates on (d_node + d_skip)</div></div>
-      <div class="arch-feature"><div class="af-label">Rotation Noise</div><div class="af-value">IGSO3 with log sigma schedule (&sigma;<sub>min</sub>=0.1, &sigma;<sub>max</sub>=1.5)</div></div>
-      <div class="arch-feature"><div class="af-label">Translation Noise</div><div class="af-value">VP-SDE linear beta (&beta;<sub>min</sub>=0.1, &beta;<sub>max</sub>=20.0)</div></div>
-      <div class="arch-feature"><div class="af-label">Optimizer</div><div class="af-value">Adam, lr=1e-4, warmup 1000 steps, cosine decay &rarr; 1e-6</div></div>
-      <div class="arch-feature"><div class="af-label">Training</div><div class="af-value">EMA 0.999, grad clip 1.0, batch_size 8, self-conditioning 50%, stop_grad_frames</div></div>
-    </div>
-
-    <div class="timeline-section">
-      <h3 style="margin-top:0">Architecture Breakdown (Paper App. I.2, Fig. 2)</h3>
-      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:14px;">
-        Each of L=8 refinement layers follows: IPA &rarr; LN &rarr; concat(h<sub>ipa</sub>, Linear(h<sub>0</sub>)) &rarr; Transformer &rarr; Linear + residual &rarr; MLP &rarr; EdgeUpdate &rarr; BackboneUpdate
-      </p>
-
-      <div class="arch-feature" style="border-left-color:#1f77b4"><div class="af-label">1. Node Init</div><div class="af-value">sin(res_idx, 128) + sin(t, 128) &rarr; 3-layer MLP(256&rarr;256) with ReLU + LayerNorm</div></div>
-      <div class="arch-feature" style="border-left-color:#2ca02c"><div class="af-label">2. Edge Init</div><div class="af-value">&phi;(n) + &phi;(m) + &phi;(m&minus;n) + &phi;(t) + &phi;(disp_sc) = 320 &rarr; 3-layer MLP &rarr; d_edge=128. Distogram: 22-bin cumulative indicator (2.0nm max)</div></div>
-      <div class="arch-feature" style="border-left-color:#d62728"><div class="af-label">3. IPA</div><div class="af-value">Invariant Point Attention (AF2 Alg. 22). Points transformed through per-residue SE(3) frames. Output concatenates: scalar values (H&times;D) + 3D local-frame points (H&times;Vp&times;3) + point norms (H&times;Vp) + pair-weighted values (H&times;D) = 640 &rarr; Linear &rarr; 256</div></div>
-      <div class="arch-feature" style="border-left-color:#ff7f0e"><div class="af-label">4. Transformer</div><div class="af-value">Input: concat(h_ipa, Linear(h_0)) of dim (256+64). 2&times; Pre-LN self-attention (4 heads) + FFN(1024). Output projected back to d_node via post_trans_proj + h_ipa residual</div></div>
-      <div class="arch-feature" style="border-left-color:#9467bd"><div class="af-label">5. EdgeUpdate</div><div class="af-value">Separate src/tgt projections to D_h/2, concat with z &rarr; 3-layer MLP + LayerNorm + residual + trailing Linear</div></div>
-      <div class="arch-feature" style="border-left-color:#8c564b"><div class="af-label">6. BackboneUpdate</div><div class="af-value">Single Linear &rarr; (b,c,d, dx). Quaternion q=(1,b,c,d)/||&middot;||, R_new = R &times; dR (Gram-Schmidt re-orthog), x_new = x + R&times;dx (re-centered)</div></div>
-      <div class="arch-feature" style="border-left-color:#e377c2"><div class="af-label">7. TorsionHead</div><div class="af-value">3-layer MLP(d_node) + h_L skip connection &rarr; Linear &rarr; (sin&psi;, cos&psi;) normalized to unit circle. Feeds directly into R_x(&psi;) for O atom placement</div></div>
-    </div>
-
-    <div class="timeline-section">
-      <h3 style="margin-top:0">Loss Functions (Paper Sec. 4.2)</h3>
-      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
-        Total = L<sub>x</sub> + L<sub>r</sub> + 0.25 &middot; &#x1D7D9;{t &lt; 0.25} &middot; (L<sub>bb</sub> + L<sub>2D</sub>)
-      </p>
+      <h3 style="margin-top:0">Training Progress (selected epochs)</h3>
+      <div style="overflow-x:auto">
       <table class="metrics-table" style="width:100%; font-size:13px;">
-        <thead><tr><th>Loss</th><th>Formula</th><th>Description</th></tr></thead>
+        <thead>
+          <tr><th>Epoch</th><th>L_x</th><th>L_r</th><th>Rot Err</th><th>RMSD</th><th>Val Total</th><th>Notes</th></tr>
+        </thead>
         <tbody>
-          <tr><td><strong>L<sub>x</sub></strong></td><td>||x&#x0302;<sup>(0)</sup> &minus; x<sup>(0)</sup>||&sup2;</td><td>Translation MSE (C&alpha; x0-prediction)</td></tr>
-          <tr><td><strong>L<sub>r</sub></strong></td><td>&lambda;<sub>r</sub>(t) &middot; ||s<sub>pred</sub> &minus; s<sub>true</sub>||&sup2;</td><td>IGSO3 denoising score matching. s = (df/d&omega;)/f &middot; axis. &lambda;<sub>r</sub> = 1/E[||score||&sup2;]</td></tr>
-          <tr><td><strong>L<sub>bb</sub></strong></td><td>(1/4N)&sum;||a&#x0302; &minus; a||&sup2;</td><td>Backbone atom MSE over {N, C&alpha;, C, O}, gated at t &lt; 0.25</td></tr>
-          <tr><td><strong>L<sub>2D</sub></strong></td><td>(1/Z)&sum; &#x1D7D9;{d&lt;6&Aring;} &middot; (d&#x0302;&minus;d)&sup2;</td><td>All-atom pairwise distance MSE within 6&Aring; cutoff, gated at t &lt; 0.25</td></tr>
+          <tr><td>0</td><td>2.044</td><td>0.908</td><td>77.8&deg;</td><td>12.73 A</td><td>3.228</td><td></td></tr>
+          <tr><td>1</td><td>1.439</td><td>0.755</td><td>71.4&deg;</td><td>10.52 A</td><td>2.353</td><td></td></tr>
+          <tr style="color:#d9534f"><td>2</td><td>1.413</td><td style="color:#d9534f">61145</td><td>70.7&deg;</td><td>10.31 A</td><td>1.943</td><td>L_r spike (transient)</td></tr>
+          <tr><td>7</td><td>1.322</td><td>0.687</td><td>68.5&deg;</td><td>9.87 A</td><td>1.918</td><td></td></tr>
+          <tr><td>10</td><td>1.300</td><td>0.681</td><td>68.1&deg;</td><td>9.80 A</td><td>1.817</td><td></td></tr>
+          <tr><td>15</td><td>1.285</td><td>0.659</td><td>66.4&deg;</td><td>9.65 A</td><td>1.865</td><td></td></tr>
+          <tr><td>22</td><td>1.281</td><td>0.654</td><td>66.6&deg;</td><td>9.65 A</td><td>1.780</td><td></td></tr>
+          <tr style="color:#4CAF50"><td><strong>24</strong></td><td><strong>1.272</strong></td><td><strong>0.654</strong></td><td><strong>66.7&deg;</strong></td><td><strong>9.65 A</strong></td><td style="color:#2ca02c"><strong>1.688</strong></td><td><span class="tag tag-best">BEST</span></td></tr>
+          <tr><td>25</td><td>1.219</td><td>0.643</td><td>65.3&deg;</td><td>9.42 A</td><td>1.777</td><td>Best train total</td></tr>
+          <tr><td>28</td><td>1.260</td><td>0.648</td><td>66.1&deg;</td><td>9.55 A</td><td>1.815</td><td>Latest</td></tr>
         </tbody>
       </table>
+      </div>
+      <p style="color:var(--text-secondary); font-size:12px; margin-top:8px; margin-bottom:0">
+        <em>Last updated: Mar 18, 2026. Training ongoing (~13 min/epoch). 3 L_r spikes in 29 epochs (IGSO3 score at extreme angles).</em>
+      </p>
     </div>
 
     <div class="timeline-section">
@@ -330,29 +313,45 @@
     </div>
 
     <div class="timeline-section">
-      <h3 style="margin-top:0">Training Progress (selected epochs)</h3>
-      <div style="overflow-x:auto">
+      <h3 style="margin-top:0">Loss Functions (Paper Sec. 4.2)</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+        Total = L<sub>x</sub> + L<sub>r</sub> + 0.25 &middot; &#x1D7D9;{t &lt; 0.25} &middot; (L<sub>bb</sub> + L<sub>2D</sub>)
+      </p>
       <table class="metrics-table" style="width:100%; font-size:13px;">
-        <thead>
-          <tr><th>Epoch</th><th>L_x</th><th>L_r</th><th>Rot Err</th><th>RMSD</th><th>Val Total</th><th>Notes</th></tr>
-        </thead>
+        <thead><tr><th>Loss</th><th>Formula</th><th>Description</th></tr></thead>
         <tbody>
-          <tr><td>0</td><td>2.044</td><td>0.908</td><td>77.8&deg;</td><td>12.73 A</td><td>3.228</td><td></td></tr>
-          <tr><td>1</td><td>1.439</td><td>0.755</td><td>71.4&deg;</td><td>10.52 A</td><td>2.353</td><td></td></tr>
-          <tr style="color:#d9534f"><td>2</td><td>1.413</td><td style="color:#d9534f">61145</td><td>70.7&deg;</td><td>10.31 A</td><td>1.943</td><td>L_r spike (transient)</td></tr>
-          <tr><td>7</td><td>1.322</td><td>0.687</td><td>68.5&deg;</td><td>9.87 A</td><td>1.918</td><td></td></tr>
-          <tr><td>10</td><td>1.300</td><td>0.681</td><td>68.1&deg;</td><td>9.80 A</td><td>1.817</td><td></td></tr>
-          <tr><td>15</td><td>1.285</td><td>0.659</td><td>66.4&deg;</td><td>9.65 A</td><td>1.865</td><td></td></tr>
-          <tr><td>22</td><td>1.281</td><td>0.654</td><td>66.6&deg;</td><td>9.65 A</td><td>1.780</td><td></td></tr>
-          <tr style="color:#4CAF50"><td><strong>24</strong></td><td><strong>1.272</strong></td><td><strong>0.654</strong></td><td><strong>66.7&deg;</strong></td><td><strong>9.65 A</strong></td><td style="color:#2ca02c"><strong>1.688</strong></td><td><span class="tag tag-best">BEST</span></td></tr>
-          <tr><td>25</td><td>1.219</td><td>0.643</td><td>65.3&deg;</td><td>9.42 A</td><td>1.777</td><td>Best train total</td></tr>
-          <tr><td>28</td><td>1.260</td><td>0.648</td><td>66.1&deg;</td><td>9.55 A</td><td>1.815</td><td>Latest</td></tr>
+          <tr><td><strong>L<sub>x</sub></strong></td><td>||x&#x0302;<sup>(0)</sup> &minus; x<sup>(0)</sup>||&sup2;</td><td>Translation MSE (C&alpha; x0-prediction)</td></tr>
+          <tr><td><strong>L<sub>r</sub></strong></td><td>&lambda;<sub>r</sub>(t) &middot; ||s<sub>pred</sub> &minus; s<sub>true</sub>||&sup2;</td><td>IGSO3 denoising score matching. s = (df/d&omega;)/f &middot; axis. &lambda;<sub>r</sub> = 1/E[||score||&sup2;]</td></tr>
+          <tr><td><strong>L<sub>bb</sub></strong></td><td>(1/4N)&sum;||a&#x0302; &minus; a||&sup2;</td><td>Backbone atom MSE over {N, C&alpha;, C, O}, gated at t &lt; 0.25</td></tr>
+          <tr><td><strong>L<sub>2D</sub></strong></td><td>(1/Z)&sum; &#x1D7D9;{d&lt;6&Aring;} &middot; (d&#x0302;&minus;d)&sup2;</td><td>All-atom pairwise distance MSE within 6&Aring; cutoff, gated at t &lt; 0.25</td></tr>
         </tbody>
       </table>
-      </div>
-      <p style="color:var(--text-secondary); font-size:12px; margin-top:8px; margin-bottom:0">
-        <em>Last updated: Mar 18, 2026. Training ongoing (~13 min/epoch). 3 L_r spikes in 29 epochs (IGSO3 score at extreme angles).</em>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Model Configuration</h3>
+      <div class="arch-feature"><div class="af-label">Parameters</div><div class="af-value">24.9M (8 layers, d_node=256, d_edge=128)</div></div>
+      <div class="arch-feature"><div class="af-label">IPA</div><div class="af-value">8 heads, 8 query points, 12 value points, d_head=16, AF2 w_C constant</div></div>
+      <div class="arch-feature"><div class="af-label">Transformer</div><div class="af-value">4 heads &times; 2 layers, 1024 FFN, Pre-LN, operates on (d_node + d_skip)</div></div>
+      <div class="arch-feature"><div class="af-label">Rotation Noise</div><div class="af-value">IGSO3 with log sigma schedule (&sigma;<sub>min</sub>=0.1, &sigma;<sub>max</sub>=1.5)</div></div>
+      <div class="arch-feature"><div class="af-label">Translation Noise</div><div class="af-value">VP-SDE linear beta (&beta;<sub>min</sub>=0.1, &beta;<sub>max</sub>=20.0)</div></div>
+      <div class="arch-feature"><div class="af-label">Optimizer</div><div class="af-value">Adam, lr=1e-4, warmup 1000 steps, cosine decay &rarr; 1e-6</div></div>
+      <div class="arch-feature"><div class="af-label">Training</div><div class="af-value">EMA 0.999, grad clip 1.0, batch_size 8, self-conditioning 50%, stop_grad_frames</div></div>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Architecture Breakdown (Paper App. I.2, Fig. 2)</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:14px;">
+        Each of L=8 refinement layers follows: IPA &rarr; LN &rarr; concat(h<sub>ipa</sub>, Linear(h<sub>0</sub>)) &rarr; Transformer &rarr; Linear + residual &rarr; MLP &rarr; EdgeUpdate &rarr; BackboneUpdate
       </p>
+
+      <div class="arch-feature" style="border-left-color:#1f77b4"><div class="af-label">1. Node Init</div><div class="af-value">sin(res_idx, 128) + sin(t, 128) &rarr; 3-layer MLP(256&rarr;256) with ReLU + LayerNorm</div></div>
+      <div class="arch-feature" style="border-left-color:#2ca02c"><div class="af-label">2. Edge Init</div><div class="af-value">&phi;(n) + &phi;(m) + &phi;(m&minus;n) + &phi;(t) + &phi;(disp_sc) = 320 &rarr; 3-layer MLP &rarr; d_edge=128. Distogram: 22-bin cumulative indicator (2.0nm max)</div></div>
+      <div class="arch-feature" style="border-left-color:#d62728"><div class="af-label">3. IPA</div><div class="af-value">Invariant Point Attention (AF2 Alg. 22). Points transformed through per-residue SE(3) frames. Output concatenates: scalar values (H&times;D) + 3D local-frame points (H&times;Vp&times;3) + point norms (H&times;Vp) + pair-weighted values (H&times;D) = 640 &rarr; Linear &rarr; 256</div></div>
+      <div class="arch-feature" style="border-left-color:#ff7f0e"><div class="af-label">4. Transformer</div><div class="af-value">Input: concat(h_ipa, Linear(h_0)) of dim (256+64). 2&times; Pre-LN self-attention (4 heads) + FFN(1024). Output projected back to d_node via post_trans_proj + h_ipa residual</div></div>
+      <div class="arch-feature" style="border-left-color:#9467bd"><div class="af-label">5. EdgeUpdate</div><div class="af-value">Separate src/tgt projections to D_h/2, concat with z &rarr; 3-layer MLP + LayerNorm + residual + trailing Linear</div></div>
+      <div class="arch-feature" style="border-left-color:#8c564b"><div class="af-label">6. BackboneUpdate</div><div class="af-value">Single Linear &rarr; (b,c,d, dx). Quaternion q=(1,b,c,d)/||&middot;||, R_new = R &times; dR (Gram-Schmidt re-orthog), x_new = x + R&times;dx (re-centered)</div></div>
+      <div class="arch-feature" style="border-left-color:#e377c2"><div class="af-label">7. TorsionHead</div><div class="af-value">3-layer MLP(d_node) + h_L skip connection &rarr; Linear &rarr; (sin&psi;, cos&psi;) normalized to unit circle. Feeds directly into R_x(&psi;) for O atom placement</div></div>
     </div>
 
     <div class="timeline-section">
