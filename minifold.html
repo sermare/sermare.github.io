@@ -200,6 +200,7 @@
     <div class="mf-tabs">
       <button class="mf-tab active" onclick="switchTab('framediff')">FrameDiff</button>
       <button class="mf-tab" onclick="switchTab('fdmini')">FD-Mini</button>
+      <button class="mf-tab" onclick="switchTab('fdtiny')">FD-Tiny</button>
       <button class="mf-tab" onclick="switchTab('folding')">Training Progress</button>
       <button class="mf-tab" onclick="switchTab('sidechain')">Side Chain</button>
       <button class="mf-tab" onclick="switchTab('classifier')">Encoder</button>
@@ -239,7 +240,7 @@
       </table>
       </div>
       <p style="color:var(--text-secondary); font-size:12px; margin-top:8px; margin-bottom:0">
-        <em>Last updated: Mar 18, 2026 at 01:01 PM PST. Epoch 48. Training ongoing (~13 min/epoch). 3 L_r spikes in 29 epochs (IGSO3 score at extreme angles).</em>
+        <em>Last updated: Mar 18, 2026 at 01:04 PM PST. Epoch 48. Training ongoing (~13 min/epoch). 3 L_r spikes in 29 epochs (IGSO3 score at extreme angles).</em>
       </p>
     </div>
 
@@ -399,7 +400,7 @@
       </table>
       </div>
       <p style="color:var(--text-secondary); font-size:12px; margin-top:8px; margin-bottom:0">
-        <em id="fdmini-updated">Last updated: Mar 18, 2026 at 01:01 PM PST. Epoch 12. Training ongoing (~17 min/epoch).</em>
+        <em id="fdmini-updated">Last updated: Mar 18, 2026 at 01:04 PM PST. Epoch 12. Training ongoing (~17 min/epoch).</em>
       </p>
     </div>
 
@@ -472,6 +473,108 @@
       <div class="arch-feature"><div class="af-label">Transformer</div><div class="af-value">4 heads &times; 2 layers, 768 FFN (v3: 1024)</div></div>
       <div class="arch-feature"><div class="af-label">Training</div><div class="af-value">Same as v3: Adam 1e-4, cosine decay, EMA 0.999, stop_grad, self-cond 50%</div></div>
       <div class="arch-feature"><div class="af-label">Hardware</div><div class="af-value">4&times; GPU (savio_lowprio), ~17 min/epoch</div></div>
+    </div>
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!--  TAB: FD-TINY — Smallest model with reduced noise               -->
+    <!-- ============================================================== -->
+    <div id="tab-fdtiny" class="mf-panel">
+
+    <h2 class="section-heading">FrameDiff-Tiny: Minimal SE(3) Diffusion</h2>
+    <p style="color:var(--text-secondary); margin-bottom:18px;">
+      3.7M params, 4 layers, d_node=128, d_edge=64, d_ffn=512. Reduced noise: &sigma;<sub>max</sub>=1.0, &beta;<sub>max</sub>=10.0. 1&times; GPU.
+      <span style="background:#2ca02c22; color:#2ca02c; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; margin-left:6px;">TRAINING</span>
+    </p>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Training Progress</h3>
+      <div style="overflow-x:auto">
+      <table id="fdtiny-table" class="metrics-table" style="width:100%; font-size:13px;">
+        <thead>
+          <tr><th>Epoch</th><th>L_x</th><th>L_r</th><th>Rot Err</th><th>RMSD</th><th>Val Total</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>1.499</td><td>0.842</td><td>50.6&deg;</td><td>10.63 A</td><td>2.720</td><td></td></tr>
+          <tr style="color:#4CAF50"><td><strong>1</strong></td><td><strong>0.768</strong></td><td><strong><span style="color:#d9534f">25941</span></strong></td><td><strong>42.4&deg;</strong></td><td><strong>7.48 A</strong></td><td style="color:#2ca02c"><strong>1.501</strong></td><td><span class="tag tag-best">BEST</span></td></tr>
+          <tr style="color:#d9534f"><td>2</td><td>0.693</td><td><span style="color:#d9534f">16989</span></td><td>40.9&deg;</td><td>7.12 A</td><td><span style="color:#d9534f">spike</span></td><td>Latest</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p style="color:var(--text-secondary); font-size:12px; margin-top:8px; margin-bottom:0">
+        <em id="fdtiny-updated">Last updated: Mar 18, 2026 at 01:04 PM PST. Epoch 2. Training ongoing.</em>
+      </p>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Training Curves</h3>
+      <div id="fdtiny-charts" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;"></div>
+      <script>
+      (function(){
+        var D = {
+          ep: [0, 1, 2],
+          val_total: [2.720, 1.501, null],
+          Lx: [1.499, 0.768, 0.693],
+          Lr: [0.842, null, null],
+          rot: [50.580, 42.360, 40.920],
+          rmsd: [10.631, 7.477, 7.115]
+        };
+        var W=340, H=180, pad={t:24,r:16,b:28,l:48};
+        var pw=W-pad.l-pad.r, ph=H-pad.t-pad.b;
+        function chart(title, series, colors) {
+          var allVals = [];
+          series.forEach(function(s){ s.forEach(function(v){ if(v!==null) allVals.push(v); }); });
+          var yMin = Math.min.apply(null, allVals), yMax = Math.max.apply(null, allVals);
+          var yPad = (yMax-yMin)*0.1 || 0.1;
+          yMin -= yPad; yMax += yPad;
+          var xMax = Math.max(D.ep.length - 1, 1);
+          function xP(i){ return pad.l + (i/xMax)*pw; }
+          function yP(v){ return pad.t + (1-(v-yMin)/(yMax-yMin))*ph; }
+          var isDark = document.documentElement.getAttribute('data-theme')==='dark';
+          var axisC = isDark ? '#8b949e' : '#999';
+          var gridC = isDark ? '#21262d' : '#f0f0f0';
+          var svg = '<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;max-width:'+W+'px">';
+          svg += '<rect width="'+W+'" height="'+H+'" fill="'+(isDark?'#0d1117':'#fff')+'" rx="6"/>';
+          svg += '<text x="'+W/2+'" y="16" text-anchor="middle" fill="'+axisC+'" font-size="12" font-weight="600">'+title+'</text>';
+          for(var g=0;g<5;g++){
+            var v=yMin+(yMax-yMin)*g/4, y=yP(v);
+            svg += '<line x1="'+pad.l+'" y1="'+y+'" x2="'+(W-pad.r)+'" y2="'+y+'" stroke="'+gridC+'" stroke-width="0.5"/>';
+            svg += '<text x="'+(pad.l-4)+'" y="'+(y+3)+'" text-anchor="end" fill="'+axisC+'" font-size="9">'+v.toFixed(2)+'</text>';
+          }
+          series.forEach(function(s, si){
+            var pts = [];
+            D.ep.forEach(function(e, i){ if(s[i]!==null) pts.push(xP(i)+','+yP(s[i])); });
+            if(pts.length>1) svg += '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+colors[si]+'" stroke-width="1.8" stroke-linejoin="round"/>';
+            pts.forEach(function(p){ svg += '<circle cx="'+p.split(',')[0]+'" cy="'+p.split(',')[1]+'" r="2.5" fill="'+colors[si]+'"/>'; });
+          });
+          svg += '</svg>';
+          return svg;
+        }
+        var c = document.getElementById('fdtiny-charts');
+        if(!c) return;
+        function draw(){
+          var isDark = document.documentElement.getAttribute('data-theme')==='dark';
+          var blue=isDark?'#58a6ff':'#1772d0', red=isDark?'#f85149':'#d73a49', green=isDark?'#3fb950':'#22863a', orange=isDark?'#d29922':'#e36209';
+          c.innerHTML =
+            '<div>'+chart('Val Total Loss', [D.val_total], [blue])+'</div>'+
+            '<div>'+chart('Translation Loss (L_x)', [D.Lx], [blue])+'</div>'+
+            '<div>'+chart('Rotation Loss (L_r)', [D.Lr], [red])+'</div>'+
+            '<div>'+chart('Rotation Error (deg)', [D.rot], [orange])+'</div>';
+        }
+        draw();
+        var obs = new MutationObserver(draw);
+        obs.observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+      })();
+      </script>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Configuration</h3>
+      <div class="arch-feature"><div class="af-label">Parameters</div><div class="af-value">3.7M (4 layers, d_node=128, d_edge=64, d_skip=32)</div></div>
+      <div class="arch-feature"><div class="af-label">Transformer</div><div class="af-value">4 heads &times; 2 layers, 512 FFN</div></div>
+      <div class="arch-feature"><div class="af-label">Noise (reduced)</div><div class="af-value">&sigma;<sub>max</sub>=1.0 (vs 1.5), &beta;<sub>max</sub>=10.0 (vs 20.0) &mdash; easier denoising, potentially less diverse samples</div></div>
+      <div class="arch-feature"><div class="af-label">Hardware</div><div class="af-value">1&times; GPU (savio_lowprio)</div></div>
     </div>
 
     </div>
