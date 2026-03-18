@@ -8,6 +8,8 @@
   <meta name="description" content="Mini-Fold: Protein structure diffusion model - architecture, training details, and evolution">
   <link rel="stylesheet" href="stylesheet.css">
   <link rel="icon" type="image/png" href="data/avatar.png">
+  <!-- 3Dmol.js for PDB visualization -->
+  <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
   <!-- KaTeX for math rendering -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
@@ -372,6 +374,39 @@
       </div>
     </div>
 
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Generated Structures (epoch 24 checkpoint)</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+        100-residue backbones sampled with 500 reverse SDE steps, &zeta;=0.1. Drag to rotate, scroll to zoom.
+      </p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div>
+          <div id="v3-viewer-0" style="height:280px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 0</p>
+        </div>
+        <div>
+          <div id="v3-viewer-1" style="height:280px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 1</p>
+        </div>
+      </div>
+      <script>
+      (function(){
+        var files = ['data/training/pdbs/v3_000_L100.pdb','data/training/pdbs/v3_001_L100.pdb'];
+        files.forEach(function(f,i){
+          var el = document.getElementById('v3-viewer-'+i);
+          if(!el) return;
+          var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            viewer.addModel(pdb,'pdb');
+            viewer.setStyle({},{cartoon:{color:'spectrum'}});
+            viewer.zoomTo();
+            viewer.render();
+          });
+        });
+      })();
+      </script>
+    </div>
+
     </div>
 
     <!-- ============================================================== -->
@@ -481,6 +516,39 @@
       <div class="arch-feature"><div class="af-label">Hardware</div><div class="af-value">4&times; GPU (savio_lowprio), ~17 min/epoch</div></div>
     </div>
 
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Generated Structures (epoch 21 checkpoint)</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+        100-residue backbones, 500 steps, &zeta;=0.1. Drag to rotate, scroll to zoom.
+      </p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div>
+          <div id="mini-viewer-0" style="height:280px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 0</p>
+        </div>
+        <div>
+          <div id="mini-viewer-1" style="height:280px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 1</p>
+        </div>
+      </div>
+      <script>
+      (function(){
+        var files = ['data/training/pdbs/mini_000_L100.pdb','data/training/pdbs/mini_001_L100.pdb'];
+        files.forEach(function(f,i){
+          var el = document.getElementById('mini-viewer-'+i);
+          if(!el) return;
+          var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            viewer.addModel(pdb,'pdb');
+            viewer.setStyle({},{cartoon:{color:'spectrum'}});
+            viewer.zoomTo();
+            viewer.render();
+          });
+        });
+      })();
+      </script>
+    </div>
+
     </div>
 
     <!-- ============================================================== -->
@@ -587,6 +655,53 @@
       <div class="arch-feature"><div class="af-label">Transformer</div><div class="af-value">4 heads &times; 2 layers, 512 FFN</div></div>
       <div class="arch-feature"><div class="af-label">Noise (reduced)</div><div class="af-value">&sigma;<sub>max</sub>=1.0 (vs 1.5), &beta;<sub>max</sub>=10.0 (vs 20.0) &mdash; easier denoising, potentially less diverse samples</div></div>
       <div class="arch-feature"><div class="af-label">Hardware</div><div class="af-value">1&times; GPU (savio_lowprio)</div></div>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Generated Structures (best checkpoint)</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+        100-residue backbones, 500 steps, &zeta;=0.1. Drag to rotate, scroll to zoom.
+      </p>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+        <div>
+          <div id="tiny-viewer-0" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 0</p>
+        </div>
+        <div>
+          <div id="tiny-viewer-1" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 1</p>
+        </div>
+        <div>
+          <div id="tiny-viewer-2" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 2</p>
+        </div>
+        <div>
+          <div id="tiny-viewer-3" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 3</p>
+        </div>
+        <div>
+          <div id="tiny-viewer-4" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 4</p>
+        </div>
+      </div>
+      <script>
+      (function(){
+        var files = ['data/training/pdbs/tiny_000_L100.pdb','data/training/pdbs/tiny_001_L100.pdb',
+                     'data/training/pdbs/tiny_002_L100.pdb','data/training/pdbs/tiny_003_L100.pdb',
+                     'data/training/pdbs/tiny_004_L100.pdb'];
+        files.forEach(function(f,i){
+          var el = document.getElementById('tiny-viewer-'+i);
+          if(!el) return;
+          var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            viewer.addModel(pdb,'pdb');
+            viewer.setStyle({},{cartoon:{color:'spectrum'}});
+            viewer.zoomTo();
+            viewer.render();
+          });
+        });
+      })();
+      </script>
     </div>
 
     </div>
