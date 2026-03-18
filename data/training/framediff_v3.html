@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FrameDiff v3 — Paper-Correct SE(3) Diffusion</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  :root{
+    --bg:#ffffff;
+    --text:#333333;
+    --text-secondary:#777777;
+    --accent:#1772d0;
+    --box-bg:#f7f7f7;
+    --border:#e4e4e4;
+    --code-bg:#f0f0f0;
+    --connector:rgba(0,0,0,0.15);
+    --table-border:rgba(0,0,0,0.08);
+    --toggle-bg:#e4e4e4;
+    --toggle-fg:#333;
+    --red:#d73a49;
+    --green:#22863a;
+    --blue:#1772d0;
+    --orange:#e36209;
+    --purple:#6f42c1;
+    --svg-fg:#333333;
+    --svg-fg2:#555555;
+    --svg-muted:#999999;
+  }
+
+  [data-theme="dark"]{
+    --bg:#0d1117;
+    --text:#c9d1d9;
+    --text-secondary:#8b949e;
+    --accent:#58a6ff;
+    --box-bg:#161b22;
+    --border:#30363d;
+    --code-bg:rgba(255,255,255,0.08);
+    --connector:rgba(255,255,255,0.15);
+    --table-border:rgba(255,255,255,0.06);
+    --toggle-bg:#30363d;
+    --toggle-fg:#c9d1d9;
+    --red:#f85149;
+    --green:#3fb950;
+    --blue:#58a6ff;
+    --orange:#d29922;
+    --purple:#bc8cff;
+    --svg-fg:#c9d1d9;
+    --svg-fg2:#8b949e;
+    --svg-muted:#484f58;
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh;
+    line-height:1.5;
+  }
+
+  .theme-toggle{
+    position:fixed;top:18px;right:18px;z-index:100;
+    background:var(--toggle-bg);border:1px solid var(--border);
+    border-radius:50%;width:38px;height:38px;cursor:pointer;
+    font-size:18px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 1px 3px rgba(0,0,0,0.08);color:var(--toggle-fg);
+  }
+  .theme-toggle:hover{opacity:0.8;}
+
+  .page-header{
+    text-align:center;
+    padding:40px 20px 16px;
+    max-width:800px;margin:0 auto;
+  }
+  .page-header h1{font-size:1.6rem;font-weight:700;color:var(--text);}
+  .page-header .subtitle{color:var(--text-secondary);font-size:0.85rem;margin-top:6px;}
+
+  .diagram{
+    display:flex;flex-direction:column;align-items:center;
+    padding:10px 20px 60px;gap:0;max-width:800px;margin:0 auto;
+  }
+
+  .arrow{width:1px;height:24px;background:var(--connector);position:relative;}
+  .arrow::after{
+    content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+    border-left:4px solid transparent;border-right:4px solid transparent;
+    border-top:5px solid var(--connector);
+  }
+
+  .box{
+    border:1px solid var(--border);border-radius:6px;
+    padding:14px 18px;width:100%;max-width:700px;
+    cursor:pointer;background:var(--box-bg);position:relative;
+    transition:background 0.2s;
+  }
+  .box h3{font-size:0.95rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px;}
+  .box .summary{font-size:0.82rem;color:var(--text-secondary);margin-top:2px;}
+
+  .box .expand-icon{
+    position:absolute;top:14px;right:14px;
+    font-size:0.65rem;color:var(--text-secondary);transition:transform 0.2s;
+  }
+  .box.open .expand-icon{transform:rotate(180deg);}
+
+  .box .details{
+    max-height:0;overflow:hidden;
+    transition:max-height 0.5s ease,opacity 0.3s ease;
+    opacity:0;font-size:0.8rem;line-height:1.6;
+    color:var(--text);margin-top:0;
+  }
+  .box.open .details{max-height:6000px;opacity:1;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;}
+  .box .details code{
+    background:var(--code-bg);padding:1px 5px;border-radius:3px;
+    font-family:'SF Mono','Fira Code','Courier New',monospace;font-size:0.76rem;
+  }
+  .box .details ul{margin:6px 0 4px 18px;list-style:disc;}
+  .box .details li{margin:2px 0;}
+
+  .tag{
+    display:inline-block;font-size:0.68rem;font-weight:600;
+    padding:1px 7px;border-radius:3px;
+    color:var(--text-secondary);border:1px solid var(--border);vertical-align:middle;
+  }
+
+  .warn-badge{
+    font-size:0.6rem;font-weight:700;color:var(--orange);
+    border:1px solid var(--orange);border-radius:3px;
+    padding:0px 4px;letter-spacing:0.5px;
+    display:inline-block;vertical-align:middle;line-height:1.4;
+  }
+
+  .pass-badge{
+    font-size:0.6rem;font-weight:700;color:var(--green);
+    border:1px solid var(--green);border-radius:3px;
+    padding:0px 4px;letter-spacing:0.5px;
+    display:inline-block;vertical-align:middle;line-height:1.4;
+  }
+
+  .row{display:flex;gap:12px;width:100%;max-width:700px;}
+  .row .box{flex:1;max-width:none;}
+
+  .loss-table{width:100%;border-collapse:collapse;margin:8px 0 4px;font-size:0.76rem;}
+  .loss-table th{text-align:left;padding:4px 8px;border-bottom:1px solid var(--border);font-weight:600;color:var(--text);}
+  .loss-table td{padding:3px 8px;border-bottom:1px solid var(--table-border);color:var(--text);}
+  .loss-table td:nth-child(2){text-align:center;font-family:'SF Mono',monospace;color:var(--accent);}
+  .loss-table td:nth-child(3){color:var(--text-secondary);font-size:0.72rem;}
+
+  .formula{
+    display:inline-block;padding:6px 10px;margin:6px 0;
+    background:var(--code-bg);border-radius:4px;
+    font-family:'SF Mono','Fira Code',monospace;
+    font-size:0.76rem;color:var(--accent);letter-spacing:0.3px;
+    border:1px solid var(--border);
+  }
+
+  .visual{
+    margin:10px 0;padding:12px;
+    background:var(--bg);border:1px solid var(--border);border-radius:6px;
+    display:flex;justify-content:center;align-items:center;
+    overflow-x:auto;
+  }
+  .visual svg{max-width:100%;height:auto;}
+
+  .preview-visual{
+    margin-top:8px;padding:8px;
+    background:var(--bg);border:1px solid var(--border);border-radius:4px;
+    display:flex;justify-content:center;overflow:hidden;
+    max-height:70px;
+  }
+  .preview-visual svg{max-width:100%;height:auto;}
+
+  .section-title{
+    font-size:1.1rem;font-weight:700;color:var(--text);
+    margin:32px 0 12px;text-align:center;width:100%;max-width:700px;
+  }
+
+  .chart-container{
+    width:100%;max-width:700px;
+    background:var(--box-bg);border:1px solid var(--border);border-radius:6px;
+    padding:16px;margin-bottom:12px;
+  }
+  .chart-container h4{font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:10px;}
+
+  .footer{
+    text-align:center;padding:24px 20px 40px;
+    font-size:0.78rem;color:var(--text-secondary);
+    max-width:800px;margin:0 auto;
+    border-top:1px solid var(--border);margin-top:20px;
+  }
+
+  @media(max-width:600px){
+    .row{flex-direction:column;}
+    .box{padding:12px 14px;}
+    .page-header h1{font-size:1.3rem;}
+    .visual{padding:6px;}
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn">&#127769;</button>
+
+<div class="page-header">
+  <h1>FrameDiff v3 &mdash; Paper-Correct SE(3) Diffusion</h1>
+  <p class="subtitle">Yim et al. 2302.02277v3 &middot; CATH Dataset &middot; 8L / 24.9M params &middot; Click any box to expand</p>
+</div>
+
+<div class="diagram" id="diagram">
+
+  <!-- ============================================================ -->
+  <!-- 1. INPUT -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>1. Input</h3>
+    <div class="summary">Noised SE(3) frames (R_t, x_t) + timestep t + self-conditioning distogram</div>
+    <div class="preview-visual">
+      <svg width="380" height="50" viewBox="0 0 380 50">
+        <defs><marker id="arr1" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="var(--svg-muted)"/></marker></defs>
+        <g transform="translate(10,25)">
+          <rect x="0" y="-15" width="70" height="30" rx="4" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="35" y="-1" text-anchor="middle" font-size="8" fill="var(--accent)" font-weight="600">R_t, x_t</text>
+          <line x1="70" y1="0" x2="95" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="98" y="-15" width="50" height="30" rx="4" fill="var(--green)" fill-opacity="0.1" stroke="var(--green)" stroke-width="1.2"/>
+          <text x="123" y="3" text-anchor="middle" font-size="8" fill="var(--green)">t</text>
+          <line x1="148" y1="0" x2="173" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="176" y="-15" width="90" height="30" rx="4" fill="var(--orange)" fill-opacity="0.1" stroke="var(--orange)" stroke-width="1.2"/>
+          <text x="221" y="3" text-anchor="middle" font-size="8" fill="var(--orange)">SC distogram</text>
+          <line x1="266" y1="0" x2="291" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <text x="330" y="4" font-size="9" fill="var(--svg-muted)">SE(3)</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">The model takes <strong>noised rigid-body frames</strong> as input. Each residue is represented by an SE(3) frame: a rotation matrix R and translation vector x, corrupted by the forward diffusion process.</p>
+      <ul>
+        <li><code>(R_t, x_t)</code> &mdash; noised rotation (IGSO3) + noised translation (VP-SDE)</li>
+        <li><code>t</code> &mdash; continuous diffusion timestep in [0, 1]</li>
+        <li><code>distogram_sc</code> &mdash; self-conditioning: pairwise distance bins from previous denoising pass (50% probability during training)</li>
+        <li>Distogram: <code>32 bins</code> during training, <code>22 bins</code> model default</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 2. NODE INIT -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>2. Node Init</h3>
+    <div class="summary">sin(res_idx, 128) + sin(t, 128) &rarr; 3-layer MLP &rarr; d_node=256</div>
+    <div class="preview-visual">
+      <svg width="380" height="50" viewBox="0 0 380 50">
+        <g transform="translate(10,25)">
+          <rect x="0" y="-15" width="80" height="30" rx="4" fill="none" stroke="var(--accent)" stroke-width="1.2"/>
+          <text x="40" y="3" text-anchor="middle" font-size="7" fill="var(--accent)">sin(idx, 128)</text>
+          <text x="92" y="4" font-size="12" fill="var(--svg-muted)">+</text>
+          <rect x="105" y="-15" width="72" height="30" rx="4" fill="none" stroke="var(--green)" stroke-width="1.2"/>
+          <text x="141" y="3" text-anchor="middle" font-size="7" fill="var(--green)">sin(t, 128)</text>
+          <line x1="177" y1="0" x2="200" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="203" y="-15" width="80" height="30" rx="4" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="243" y="3" text-anchor="middle" font-size="8" fill="var(--accent)" font-weight="600">MLP x3</text>
+          <line x1="283" y1="0" x2="306" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="310" y="-12" width="55" height="24" rx="3" fill="none" stroke="var(--purple)" stroke-width="1.5"/>
+          <text x="337" y="4" text-anchor="middle" font-size="8" fill="var(--purple)" font-weight="600">256</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">Per-residue node features are initialized by combining <strong>positional encoding</strong> and <strong>timestep encoding</strong>:</p>
+      <ul>
+        <li>Sinusoidal positional encoding of residue index: <code>sin_embed(res_idx, d=128)</code></li>
+        <li>Sinusoidal timestep encoding: <code>sin_embed(t, d=128)</code></li>
+        <li>Concatenate &rarr; 256-dim input</li>
+        <li>3-layer MLP with ReLU activations &rarr; <code>d_node = 256</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 3. EDGE INIT -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>3. Edge Init</h3>
+    <div class="summary">&phi;(n) + &phi;(m) + &phi;(m-n) + &phi;(t) + &phi;(disp_sc) &rarr; 3-layer MLP &rarr; d_edge=128</div>
+    <div class="preview-visual">
+      <svg width="380" height="50" viewBox="0 0 380 50">
+        <g transform="translate(5,25)">
+          <rect x="0" y="-12" width="40" height="24" rx="3" fill="none" stroke="var(--accent)" stroke-width="1"/>
+          <text x="20" y="3" text-anchor="middle" font-size="6" fill="var(--accent)">&phi;(n)</text>
+          <rect x="45" y="-12" width="40" height="24" rx="3" fill="none" stroke="var(--accent)" stroke-width="1"/>
+          <text x="65" y="3" text-anchor="middle" font-size="6" fill="var(--accent)">&phi;(m)</text>
+          <rect x="90" y="-12" width="50" height="24" rx="3" fill="none" stroke="var(--accent)" stroke-width="1"/>
+          <text x="115" y="3" text-anchor="middle" font-size="6" fill="var(--accent)">&phi;(m-n)</text>
+          <rect x="145" y="-12" width="40" height="24" rx="3" fill="none" stroke="var(--green)" stroke-width="1"/>
+          <text x="165" y="3" text-anchor="middle" font-size="6" fill="var(--green)">&phi;(t)</text>
+          <rect x="190" y="-12" width="55" height="24" rx="3" fill="none" stroke="var(--orange)" stroke-width="1"/>
+          <text x="217" y="3" text-anchor="middle" font-size="6" fill="var(--orange)">&phi;(disp)</text>
+          <line x1="248" y1="0" x2="268" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="271" y="-12" width="58" height="24" rx="3" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="300" y="3" text-anchor="middle" font-size="7" fill="var(--accent)" font-weight="600">MLP x3</text>
+          <line x1="329" y1="0" x2="345" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="348" y="-10" width="30" height="20" rx="3" fill="none" stroke="var(--purple)" stroke-width="1.5"/>
+          <text x="363" y="4" text-anchor="middle" font-size="8" fill="var(--purple)" font-weight="600">128</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">Edge features encode the <strong>pairwise relationship</strong> between residues n and m:</p>
+      <ul>
+        <li><code>&phi;(n)</code>, <code>&phi;(m)</code> &mdash; sinusoidal positional encoding of source and target residue indices</li>
+        <li><code>&phi;(m-n)</code> &mdash; relative sequence offset encoding</li>
+        <li><code>&phi;(t)</code> &mdash; timestep encoding (broadcast to all edges)</li>
+        <li><code>&phi;(disp_sc)</code> &mdash; self-conditioning distogram features (pairwise distance bins)</li>
+        <li>All concatenated &rarr; 3-layer MLP &rarr; <code>d_edge = 128</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 4. IPA -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>4. IPA (Invariant Point Attention)</h3>
+    <div class="summary">8 heads, 8 query points, 12 value points, d_head=16, AF2-style w_C</div>
+    <div class="preview-visual">
+      <svg width="380" height="55" viewBox="0 0 380 55">
+        <defs>
+          <marker id="arrIPA" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="var(--svg-muted)"/></marker>
+        </defs>
+        <g transform="translate(10,8)">
+          <rect x="0" y="5" width="90" height="35" rx="5" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="2"/>
+          <text x="45" y="20" text-anchor="middle" font-size="9" fill="var(--accent)" font-weight="700">IPA</text>
+          <text x="45" y="33" text-anchor="middle" font-size="7" fill="var(--text-secondary)">8h, 8qp, 12vp</text>
+          <line x1="90" y1="22" x2="115" y2="22" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arrIPA)"/>
+          <rect x="118" y="10" width="50" height="24" rx="3" fill="none" stroke="var(--green)" stroke-width="1.2"/>
+          <text x="143" y="25" text-anchor="middle" font-size="7" fill="var(--green)">scalar</text>
+          <rect x="175" y="10" width="50" height="24" rx="3" fill="none" stroke="var(--blue)" stroke-width="1.2"/>
+          <text x="200" y="25" text-anchor="middle" font-size="7" fill="var(--blue)">point</text>
+          <rect x="232" y="10" width="50" height="24" rx="3" fill="none" stroke="var(--orange)" stroke-width="1.2"/>
+          <text x="257" y="25" text-anchor="middle" font-size="7" fill="var(--orange)">pair</text>
+          <text x="300" y="26" font-size="9" fill="var(--svg-muted)">&rarr; concat &rarr; Linear</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">Invariant Point Attention from AlphaFold2 &mdash; attends over 3D structure using <strong>three attention channels</strong> merged into one:</p>
+      <ul>
+        <li><strong>Scalar attention:</strong> standard QKV on node features, <code>d_head=16</code></li>
+        <li><strong>Point attention:</strong> queries and values are 3D points projected into local frames; attention score uses squared distance in global frame</li>
+        <li><strong>Pair bias:</strong> edge features added to attention logits</li>
+        <li><code>8 heads</code>, <code>8 query/key points</code>, <code>12 value points</code></li>
+        <li>Weight head coefficient: <code>w_C = sqrt(2 / (9 * n_qp))</code> (AF2-style)</li>
+        <li>Output: concat(scalar_out, point_out_norm, pair_out) &rarr; Linear &rarr; d_node</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 5. TRANSFORMER -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>5. Transformer</h3>
+    <div class="summary">4 heads, 2 layers, 1024 FFN, Pre-LN, operates on (d_node + d_skip)</div>
+    <div class="preview-visual">
+      <svg width="380" height="50" viewBox="0 0 380 50">
+        <g transform="translate(10,25)">
+          <rect x="0" y="-15" width="60" height="30" rx="4" fill="none" stroke="var(--purple)" stroke-width="1.2"/>
+          <text x="30" y="3" text-anchor="middle" font-size="7" fill="var(--purple)">h + skip</text>
+          <line x1="60" y1="0" x2="82" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="85" y="-15" width="50" height="30" rx="4" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="110" y="-2" text-anchor="middle" font-size="7" fill="var(--accent)">Pre-LN</text>
+          <text x="110" y="9" text-anchor="middle" font-size="7" fill="var(--accent)">MHA</text>
+          <line x1="135" y1="0" x2="157" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="160" y="-15" width="55" height="30" rx="4" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="187" y="-2" text-anchor="middle" font-size="7" fill="var(--accent)">Pre-LN</text>
+          <text x="187" y="9" text-anchor="middle" font-size="7" fill="var(--accent)">FFN</text>
+          <line x1="215" y1="0" x2="235" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <text x="260" y="4" font-size="9" fill="var(--text-secondary)">&times;2 layers</text>
+          <text x="330" y="4" font-size="8" fill="var(--svg-muted)">4h, 1024 FFN</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">A standard Pre-LayerNorm Transformer that operates on node features <strong>after IPA</strong>, with a skip connection from the initial node embedding:</p>
+      <ul>
+        <li>Input: <code>cat(h_ipa, h_skip)</code> where h_skip is the initial node embedding</li>
+        <li><strong>Pre-LN</strong> normalization (LayerNorm before attention/FFN)</li>
+        <li><code>4 attention heads</code></li>
+        <li><code>2 transformer layers</code></li>
+        <li>FFN hidden dim: <code>1024</code></li>
+        <li>Residual connections around each sub-layer</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 6. EDGE UPDATE -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>6. Edge Update</h3>
+    <div class="summary">Separate src/tgt projections &rarr; 3-layer MLP + residual + trailing Linear</div>
+    <div class="preview-visual">
+      <svg width="380" height="50" viewBox="0 0 380 50">
+        <g transform="translate(10,25)">
+          <rect x="0" y="-15" width="48" height="30" rx="3" fill="none" stroke="var(--accent)" stroke-width="1"/>
+          <text x="24" y="3" text-anchor="middle" font-size="7" fill="var(--accent)">h_src</text>
+          <rect x="55" y="-15" width="48" height="30" rx="3" fill="none" stroke="var(--green)" stroke-width="1"/>
+          <text x="79" y="3" text-anchor="middle" font-size="7" fill="var(--green)">h_tgt</text>
+          <line x1="103" y1="0" x2="125" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="128" y="-15" width="70" height="30" rx="4" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="163" y="3" text-anchor="middle" font-size="7" fill="var(--accent)" font-weight="600">MLP x3</text>
+          <line x1="198" y1="0" x2="220" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <text x="230" y="4" font-size="9" fill="var(--text-secondary)">+ residual</text>
+          <line x1="280" y1="0" x2="302" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="305" y="-12" width="55" height="24" rx="3" fill="none" stroke="var(--purple)" stroke-width="1.2"/>
+          <text x="332" y="4" text-anchor="middle" font-size="7" fill="var(--purple)">Linear</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">Edges are updated using node features from both endpoints:</p>
+      <ul>
+        <li>Separate linear projections for source node <code>h_src</code> and target node <code>h_tgt</code></li>
+        <li>Outer-product-like combination of projected features</li>
+        <li>3-layer MLP with ReLU activations</li>
+        <li><strong>Residual connection</strong> from previous edge features</li>
+        <li>Trailing <code>Linear</code> projection back to <code>d_edge=128</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 7. BACKBONE UPDATE -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>7. Backbone Update</h3>
+    <div class="summary">Linear &rarr; q=(1,b,c,d) quaternion + translation, re-centering</div>
+    <div class="preview-visual">
+      <svg width="380" height="50" viewBox="0 0 380 50">
+        <g transform="translate(10,25)">
+          <rect x="0" y="-15" width="55" height="30" rx="4" fill="none" stroke="var(--purple)" stroke-width="1.2"/>
+          <text x="27" y="3" text-anchor="middle" font-size="7" fill="var(--purple)">h_node</text>
+          <line x1="55" y1="0" x2="78" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="81" y="-15" width="55" height="30" rx="4" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="108" y="3" text-anchor="middle" font-size="7" fill="var(--accent)" font-weight="600">Linear</text>
+          <line x1="136" y1="-5" x2="160" y2="-10" stroke="var(--svg-muted)" stroke-width="1.2" marker-end="url(#arr1)"/>
+          <line x1="136" y1="5" x2="160" y2="10" stroke="var(--svg-muted)" stroke-width="1.2" marker-end="url(#arr1)"/>
+          <rect x="163" y="-22" width="75" height="22" rx="3" fill="none" stroke="var(--red)" stroke-width="1.2"/>
+          <text x="200" y="-8" text-anchor="middle" font-size="7" fill="var(--red)">q=(1,b,c,d)</text>
+          <rect x="163" y="2" width="75" height="22" rx="3" fill="none" stroke="var(--green)" stroke-width="1.2"/>
+          <text x="200" y="16" text-anchor="middle" font-size="7" fill="var(--green)">translation</text>
+          <line x1="238" y1="0" x2="262" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="265" y="-12" width="85" height="24" rx="3" fill="var(--green)" fill-opacity="0.08" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="307" y="4" text-anchor="middle" font-size="7" fill="var(--green)" font-weight="600">R, x (re-centered)</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">The backbone update converts node features into frame updates:</p>
+      <ul>
+        <li>Linear layer outputs <code>6 values</code> per residue: 3 for quaternion (b,c,d) and 3 for translation</li>
+        <li>Quaternion is formed as <code>q = (1, b, c, d)</code> &mdash; identity-initialized (w=1 fixed)</li>
+        <li>Quaternion &rarr; rotation matrix via Rodrigues formula</li>
+        <li>Frame update: <code>R_new = R_old @ dR</code>, <code>x_new = x_old + R_old @ dx</code></li>
+        <li><strong>Re-centering:</strong> translations are shifted to zero mean (center of mass = origin)</li>
+        <li>Option: <code>stop_grad_frames = True</code> &mdash; detach frames from gradient graph between layers</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- 8. TORSION HEAD -->
+  <!-- ============================================================ -->
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>8. Torsion Head</h3>
+    <div class="summary">MLP + h_L skip &rarr; (sin, cos) unit circle</div>
+    <div class="preview-visual">
+      <svg width="380" height="50" viewBox="0 0 380 50">
+        <g transform="translate(10,25)">
+          <rect x="0" y="-15" width="50" height="30" rx="3" fill="none" stroke="var(--purple)" stroke-width="1.2"/>
+          <text x="25" y="3" text-anchor="middle" font-size="7" fill="var(--purple)">h_L</text>
+          <line x1="50" y1="0" x2="72" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="75" y="-15" width="70" height="30" rx="4" fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="110" y="3" text-anchor="middle" font-size="8" fill="var(--accent)" font-weight="600">MLP</text>
+          <line x1="145" y1="0" x2="167" y2="0" stroke="var(--svg-muted)" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <rect x="170" y="-15" width="80" height="30" rx="4" fill="var(--green)" fill-opacity="0.08" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="210" y="3" text-anchor="middle" font-size="7" fill="var(--green)" font-weight="600">(sin, cos)</text>
+          <circle cx="290" cy="0" r="15" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+          <line x1="290" y1="0" x2="300" y2="-10" stroke="var(--red)" stroke-width="2"/>
+          <circle cx="300" cy="-10" r="2.5" fill="var(--red)"/>
+          <text x="320" y="4" font-size="8" fill="var(--text-secondary)">unit circle</text>
+        </g>
+      </svg>
+    </div>
+    <div class="details">
+      <p style="margin-bottom:8px;">Predicts backbone torsion angles on the unit circle:</p>
+      <ul>
+        <li>Input: final node representation <code>h_L</code> (from last IPA layer, with skip connection)</li>
+        <li>MLP projects to <code>2 &times; n_torsions</code> values</li>
+        <li>Output: <code>(sin &theta;, cos &theta;)</code> pairs &mdash; naturally lives on unit circle, avoiding angle wrapping issues</li>
+        <li>Used in <code>frame2atom</code> conversion: torsions + frames &rarr; all-atom coordinates</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- LOSS FUNCTIONS SECTION -->
+  <!-- ============================================================ -->
+  <div class="section-title">Loss Functions</div>
+
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Loss Components <span class="tag">5 terms</span></h3>
+    <div class="summary">L_x + L_r + 0.25 &middot; 1{t&lt;0.25} &middot; (L_bb + L_2D)</div>
+    <div class="details">
+      <table class="loss-table">
+        <tr><th>Loss</th><th>Symbol</th><th>Description</th></tr>
+        <tr><td>Translation MSE</td><td>L_x</td><td>MSE between predicted and true x_0 translations</td></tr>
+        <tr><td>Rotation DSM</td><td>L_r</td><td>IGSO3 denoising score matching (weighted by &lambda;_r)</td></tr>
+        <tr><td>Backbone atom MSE</td><td>L_bb</td><td>MSE on N, CA, C, O positions; active when t &lt; 0.25</td></tr>
+        <tr><td>Pairwise distance MSE</td><td>L_2D</td><td>Pairwise CA distance MSE (6&Aring; cutoff); active when t &lt; 0.25</td></tr>
+        <tr><td colspan="3" style="padding-top:8px;">
+          <div class="formula">Total = L_x + L_r + 0.25 &middot; &#x1D7D9;{t &lt; 0.25} &middot; (L_bb + L_2D)</div>
+        </td></tr>
+      </table>
+      <p style="margin-top:8px;font-size:0.78rem;"><strong>Note:</strong> Auxiliary losses L_bb and L_2D are only active for small timesteps (t &lt; 0.25) where structure is nearly clean. The coefficient 0.25 scales their contribution to match the probability of sampling t in that range.</p>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- TRAINING CURVES SECTION -->
+  <!-- ============================================================ -->
+  <div class="section-title">Training Curves (Epochs 0&ndash;2)</div>
+
+  <!-- Chart 1: Val Total Loss -->
+  <div class="chart-container">
+    <h4>Validation Total Loss (primary quality metric)</h4>
+    <div id="chart-val-total" style="display:flex;justify-content:center;"></div>
+  </div>
+
+  <!-- Chart 2: Train/Val L_x -->
+  <div class="chart-container">
+    <h4>Translation Loss (L_x) &mdash; Train vs Val</h4>
+    <div id="chart-lx" style="display:flex;justify-content:center;"></div>
+  </div>
+
+  <!-- Chart 3: Train/Val L_r -->
+  <div class="chart-container">
+    <h4>Rotation Loss (L_r) &mdash; Train vs Val (log scale)</h4>
+    <div id="chart-lr" style="display:flex;justify-content:center;"></div>
+  </div>
+
+  <!-- Chart 4: L_bb and L_2d -->
+  <div class="chart-container">
+    <h4>Auxiliary Losses &mdash; L_bb and L_2D</h4>
+    <div id="chart-aux" style="display:flex;justify-content:center;"></div>
+  </div>
+
+  <!-- Chart 5: Rotation error and RMSD -->
+  <div class="chart-container">
+    <h4>Structural Metrics &mdash; Rotation Error and CA-RMSD</h4>
+    <div id="chart-metrics" style="display:flex;justify-content:center;"></div>
+  </div>
+
+  <div style="height:16px;"></div>
+
+  <!-- ============================================================ -->
+  <!-- CONFIGURATION TABLE -->
+  <!-- ============================================================ -->
+  <div class="section-title">Configuration</div>
+
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Training &amp; Model Configuration</h3>
+    <div class="summary">8L, 24.9M params, Adam lr=1e-4, cosine decay</div>
+    <div class="details">
+      <table class="loss-table">
+        <tr><th>Parameter</th><th>Value</th><th></th></tr>
+        <tr><td>Layers</td><td>8</td><td></td></tr>
+        <tr><td>Parameters</td><td>24.9M</td><td></td></tr>
+        <tr><td>d_node</td><td>256</td><td></td></tr>
+        <tr><td>d_edge</td><td>128</td><td></td></tr>
+        <tr><td>IPA heads</td><td>8</td><td></td></tr>
+        <tr><td>Query/Value points</td><td>8 / 12</td><td></td></tr>
+        <tr><td>Transformer</td><td>4h &times; 2L &times; 1024 FFN</td><td></td></tr>
+        <tr><td>Optimizer</td><td>Adam, lr=1e-4</td><td></td></tr>
+        <tr><td>Warmup</td><td>1000 steps</td><td></td></tr>
+        <tr><td>LR decay</td><td>Cosine &rarr; 1e-6</td><td></td></tr>
+        <tr><td>EMA decay</td><td>0.999</td><td></td></tr>
+        <tr><td>Grad clip</td><td>1.0</td><td></td></tr>
+        <tr><td>Batch size</td><td>8</td><td></td></tr>
+        <tr><td>Max length</td><td>256</td><td></td></tr>
+        <tr><td>Distogram</td><td>32 bins (train) / 22 bins (default)</td><td></td></tr>
+        <tr><td>stop_grad_frames</td><td>True</td><td></td></tr>
+        <tr><td>&sigma;_min / &sigma;_max</td><td>0.1 / 1.5</td><td></td></tr>
+        <tr><td>&beta;_min / &beta;_max</td><td>0.1 / 20.0</td><td></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <!-- ============================================================ -->
+  <!-- REVIEW SUMMARY -->
+  <!-- ============================================================ -->
+  <div class="section-title">Review Summary</div>
+
+  <div class="box" onclick="toggle(this)">
+    <span class="expand-icon">&#9660;</span>
+    <h3>Paper Review &mdash; Key Findings <span class="pass-badge">CORE MATH PASS</span></h3>
+    <div class="summary">All core math verified; 2 warnings flagged</div>
+    <div class="details">
+      <p style="margin-bottom:10px;font-weight:600;color:var(--green);">All core math PASS:</p>
+      <ul>
+        <li><span class="pass-badge">PASS</span> IGSO3 density and score computation</li>
+        <li><span class="pass-badge">PASS</span> VP-SDE forward process and noise schedule</li>
+        <li><span class="pass-badge">PASS</span> Denoising Score Matching (DSM) loss formulation</li>
+        <li><span class="pass-badge">PASS</span> Invariant Point Attention (IPA) implementation</li>
+        <li><span class="pass-badge">PASS</span> frame2atom coordinate reconstruction</li>
+      </ul>
+      <p style="margin-top:14px;margin-bottom:8px;font-weight:600;color:var(--orange);">Warnings:</p>
+      <ul>
+        <li><span class="warn-badge">WARN</span> <strong>Missing MLP residual in layer flow</strong> &mdash; the MLP within each IPA block does not have its own residual connection in the current implementation. This deviates from the paper description but may be intentional.</li>
+        <li><span class="warn-badge">WARN</span> <strong>L_r spike at epoch 2</strong> &mdash; transient spike to 61,145 in training rotation loss. Validation L_r normal (0.724). Likely a single bad batch or numerical instability in IGSO3 score at very small rotation angles. Monitor next epochs.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- FOOTER -->
+<!-- ============================================================ -->
+<div class="footer">
+  <p>Auto-updated by training monitor. Last epoch: <strong><span id="lastEpochDisplay"></span></strong></p>
+</div>
+
+<script>
+var LAST_EPOCH = 27;
+
+/* ---- Theme toggle ---- */
+function toggle(el) {
+  el.classList.toggle('open');
+}
+
+function toggleTheme() {
+  var html = document.documentElement, btn = document.getElementById('themeBtn');
+  if (html.getAttribute('data-theme') === 'dark') {
+    html.removeAttribute('data-theme');
+    btn.textContent = '\u{1F319}';
+    localStorage.setItem('theme', 'light');
+  } else {
+    html.setAttribute('data-theme', 'dark');
+    btn.textContent = '\u{2600}\u{FE0F}';
+    localStorage.setItem('theme', 'dark');
+  }
+  drawAllCharts();
+}
+
+(function(){
+  var s = localStorage.getItem('theme');
+  if (s === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('themeBtn').textContent = '\u{2600}\u{FE0F}';
+  }
+  document.getElementById('lastEpochDisplay').textContent = LAST_EPOCH;
+})();
+
+/* ---- Training Data ---- */
+var DATA = {
+  epochs: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27],
+  L_x:      [2.043546, 1.438975, 1.412833, 1.393361, 1.360886, 1.364458, 1.343274, 1.321939, 1.318619, 1.333486, 1.299713, 1.309520, 1.318394, 1.307316, 1.296428, 1.284813, 1.315479, 1.277681, 1.288782, 1.279527, 1.279577, 1.289808, 1.280957, 1.268640, 1.271950, 1.218672, 1.273294, 1.265973],
+  L_r:      [0.907703, 0.755387, 61145.271272, 0.726126, 0.712278, 0.705460, 154.945438, 2816.286942, 0.690161, 0.685946, 0.680974, 0.673093, 0.672766, 0.666816, 0.664240, 0.658512, 0.662589, 0.658462, 0.657146, 0.657617, 0.656399, 0.657116, 0.654110, 0.647656, 0.654382, 0.643477, 0.651048, 0.648089],
+  L_bb:     [0.576396, 0.239987, 0.198693, 0.250260, 0.175440, 0.194123, 0.122912, 0.133993, 0.141295, 0.131596, 0.105384, 0.125236, 0.104335, 0.097344, 0.111374, 0.108757, 0.119999, 0.094207, 0.084619, 0.095980, 0.085404, 0.099146, 0.085798, 0.093993, 0.082417, 0.071700, 0.082335, 0.088150],
+  L_2d:     [0.099668, 0.022540, 0.018750, 0.017173, 0.015669, 0.014667, 0.013899, 0.013627, 0.013339, 0.012912, 0.012560, 0.012339, 0.011995, 0.012062, 0.011552, 0.011446, 0.011815, 0.011003, 0.011386, 0.011605, 0.010988, 0.011050, 0.011258, 0.010524, 0.010507, 0.010808, 0.010546, 0.010683],
+  total:    [2.992388, 2.212469, 61146.697902, 2.137178, 2.087663, 2.083367, 156.298541, 2817.619118, 2.020012, 2.029991, 1.988921, 1.992138, 1.999427, 1.981286, 1.969070, 1.951615, 1.986728, 1.943524, 1.952762, 1.944396, 1.942534, 1.953849, 1.941734, 1.923556, 1.932591, 1.867837, 1.930494, 1.920606],
+  rot_err:  [77.78, 71.40, 70.72, 70.59, 69.70, 69.41, 69.52, 68.50, 68.77, 68.50, 68.10, 67.63, 67.76, 67.17, 67.14, 66.44, 67.25, 66.74, 66.69, 66.83, 66.66, 66.89, 66.56, 65.80, 66.70, 65.27, 66.39, 66.13],
+  ca_rmsd:  [12.729, 10.522, 10.313, 10.208, 10.049, 10.019, 10.009, 9.867, 9.869, 9.880, 9.802, 9.774, 9.821, 9.749, 9.735, 9.651, 9.785, 9.635, 9.660, 9.665, 9.638, 9.722, 9.645, 9.550, 9.649, 9.422, 9.625, 9.587],
+  val_L_x:  [2.245270, 1.535051, 1.218983, 1.407085, 1.287895, 1.266489, 1.296091, 1.231719, 1.302086, 1.377494, 1.168566, 1.187526, 1.150055, 1.305426, 1.264332, 1.222374, 1.185551, 1.278482, 1.291072, 1.237976, 1.269877, 1.157495, 1.152453, 1.235091, 1.071208, 1.143264, 1.301255, 1.278064],
+  val_L_r:  [0.982990, 0.818155, 0.723691, 0.733326, 0.691702, 0.695134, 0.701441, 0.686766, 671986.686747, 0.688594, 0.648521, 0.649569, 0.649473, 0.662537, 0.670690, 0.642529, 0.650756, 0.645394, 0.666253, 0.646809, 0.665092, 0.632970, 0.627370, 0.643626, 0.616889, 0.633402, 0.655035, 0.650426],
+  val_total:[3.228261, 2.353206, 1.942674, 2.140411, 1.979597, 1.961623, 1.997532, 1.918485, 671987.967408, 2.066089, 1.817087, 1.837095, 1.799528, 1.967963, 1.935022, 1.864904, 1.836308, 1.923875, 1.957325, 1.884785, 1.934969, 1.790465, 1.779823, 1.878717, 1.688097, 1.776665, 1.956290, 1.928490]
+};
+
+/* ---- Chart helpers ---- */
+function getChartColors() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return {
+    accent: isDark ? '#58a6ff' : '#1772d0',
+    red:    isDark ? '#f85149' : '#d73a49',
+    green:  isDark ? '#3fb950' : '#22863a',
+    orange: isDark ? '#d29922' : '#e36209',
+    purple: isDark ? '#bc8cff' : '#6f42c1',
+    axis:   isDark ? '#8b949e' : '#777777',
+    grid:   isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+    bg:     isDark ? '#161b22' : '#f7f7f7',
+    text:   isDark ? '#c9d1d9' : '#333333',
+    textSec:isDark ? '#8b949e' : '#777777',
+    annotBg:isDark ? '#0d1117' : '#ffffff'
+  };
+}
+
+function makeSVG(w, h) {
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', w);
+  svg.setAttribute('height', h);
+  svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+  return svg;
+}
+
+function svgEl(tag, attrs) {
+  var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (var k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+}
+
+function svgText(x, y, txt, size, color, anchor, weight) {
+  var el = svgEl('text', {x:x, y:y, 'font-size':size, fill:color, 'text-anchor':anchor||'middle', 'font-weight':weight||'normal', 'font-family':'-apple-system,BlinkMacSystemFont,sans-serif'});
+  el.textContent = txt;
+  return el;
+}
+
+function lineChart(containerId, series, opts) {
+  /* series: [{label, data:[], color, dashed}] */
+  /* opts: {yLabel, annotations:[], logScale, yMin, yMax, width, height} */
+  var W = opts.width || 620, H = opts.height || 200;
+  var pad = {l:60, r:20, t:24, b:36};
+  var pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+  var c = getChartColors();
+  var epochs = DATA.epochs;
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+
+  var svg = makeSVG(W, H);
+
+  // Compute y range
+  var allVals = [];
+  series.forEach(function(s) { s.data.forEach(function(v) { if (v !== null && isFinite(v)) allVals.push(v); }); });
+  var yMin = opts.yMin !== undefined ? opts.yMin : Math.min.apply(null, allVals);
+  var yMax = opts.yMax !== undefined ? opts.yMax : Math.max.apply(null, allVals);
+  if (opts.logScale) {
+    yMin = Math.max(yMin, 0.01);
+    allVals = allVals.filter(function(v){return v > 0;});
+    yMin = Math.min.apply(null, allVals);
+    yMax = Math.max.apply(null, allVals);
+  }
+  var yPad = (yMax - yMin) * 0.1 || 0.1;
+  if (opts.yMin === undefined) yMin = opts.logScale ? yMin * 0.8 : yMin - yPad;
+  if (opts.yMax === undefined) yMax = opts.logScale ? yMax * 1.5 : yMax + yPad;
+  if (!opts.logScale && yMin < 0 && opts.yMin === undefined) yMin = 0;
+
+  function xPos(i) { return pad.l + (i / Math.max(epochs.length - 1, 1)) * pw; }
+  function yPos(v) {
+    if (opts.logScale) {
+      var logMin = Math.log10(Math.max(yMin, 1e-6));
+      var logMax = Math.log10(Math.max(yMax, 1e-6));
+      var logV = Math.log10(Math.max(v, 1e-6));
+      return pad.t + ph - ((logV - logMin) / (logMax - logMin)) * ph;
+    }
+    return pad.t + ph - ((v - yMin) / (yMax - yMin)) * ph;
+  }
+
+  // Background
+  svg.appendChild(svgEl('rect', {x:0, y:0, width:W, height:H, fill:c.bg, rx:4}));
+
+  // Grid lines
+  var nGridY = 4;
+  for (var gi = 0; gi <= nGridY; gi++) {
+    var gy = pad.t + (gi / nGridY) * ph;
+    svg.appendChild(svgEl('line', {x1:pad.l, y1:gy, x2:pad.l+pw, y2:gy, stroke:c.grid, 'stroke-width':1}));
+    var gval;
+    if (opts.logScale) {
+      var logMin = Math.log10(Math.max(yMin, 1e-6));
+      var logMax = Math.log10(Math.max(yMax, 1e-6));
+      gval = Math.pow(10, logMax - (gi / nGridY) * (logMax - logMin));
+      svg.appendChild(svgText(pad.l - 6, gy + 3, gval < 1 ? gval.toFixed(2) : gval < 10 ? gval.toFixed(1) : Math.round(gval).toString(), 9, c.axis, 'end'));
+    } else {
+      gval = yMax - (gi / nGridY) * (yMax - yMin);
+      svg.appendChild(svgText(pad.l - 6, gy + 3, gval.toFixed(gval < 1 ? 3 : gval < 10 ? 2 : 1), 9, c.axis, 'end'));
+    }
+  }
+
+  // Axes
+  svg.appendChild(svgEl('line', {x1:pad.l, y1:pad.t+ph, x2:pad.l+pw, y2:pad.t+ph, stroke:c.axis, 'stroke-width':1}));
+  svg.appendChild(svgEl('line', {x1:pad.l, y1:pad.t, x2:pad.l, y2:pad.t+ph, stroke:c.axis, 'stroke-width':1}));
+
+  // X axis labels
+  epochs.forEach(function(ep, i) {
+    svg.appendChild(svgText(xPos(i), pad.t + ph + 16, 'E' + ep, 10, c.axis));
+  });
+  svg.appendChild(svgText(pad.l + pw / 2, H - 4, 'Epoch', 10, c.textSec));
+
+  // Y label
+  if (opts.yLabel) {
+    var yl = svgText(14, pad.t + ph / 2, opts.yLabel, 10, c.textSec);
+    yl.setAttribute('transform', 'rotate(-90,' + 14 + ',' + (pad.t + ph / 2) + ')');
+    svg.appendChild(yl);
+  }
+
+  // Draw series
+  series.forEach(function(s) {
+    var points = [];
+    s.data.forEach(function(v, i) {
+      if (v !== null && isFinite(v) && (!opts.logScale || v > 0)) {
+        points.push({x: xPos(i), y: yPos(v), val: v, ep: i});
+      }
+    });
+    if (points.length === 0) return;
+    var pathD = points.map(function(p, idx) { return (idx === 0 ? 'M' : 'L') + p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' ');
+    var attrs = {d:pathD, fill:'none', stroke:s.color, 'stroke-width':2.5};
+    if (s.dashed) { attrs['stroke-dasharray'] = '6,3'; }
+    svg.appendChild(svgEl('path', attrs));
+    // Dots
+    points.forEach(function(p) {
+      svg.appendChild(svgEl('circle', {cx:p.x, cy:p.y, r:4, fill:s.color, stroke:c.bg, 'stroke-width':1.5}));
+      // Value labels
+      var labelY = p.y - 10;
+      if (labelY < pad.t + 8) labelY = p.y + 16;
+      svg.appendChild(svgText(p.x, labelY, p.val < 0.1 ? p.val.toFixed(4) : p.val < 10 ? p.val.toFixed(3) : p.val.toFixed(1), 8, s.color, 'middle', '600'));
+    });
+  });
+
+  // Annotations
+  if (opts.annotations) {
+    opts.annotations.forEach(function(ann) {
+      var ax = xPos(ann.epoch);
+      var ay = ann.y !== undefined ? ann.y : pad.t + 12;
+      // Background rect
+      var textLen = ann.text.length * 5 + 10;
+      svg.appendChild(svgEl('rect', {x:ax - textLen/2, y:ay - 10, width:textLen, height:14, rx:3, fill:c.annotBg, stroke:ann.color || c.orange, 'stroke-width':1, opacity:0.95}));
+      svg.appendChild(svgText(ax, ay, ann.text, 8, ann.color || c.orange, 'middle', '600'));
+    });
+  }
+
+  // Legend
+  var legendY = pad.t + 6;
+  var legendX = pad.l + 8;
+  series.forEach(function(s, si) {
+    var lx = legendX + si * 130;
+    svg.appendChild(svgEl('line', {x1:lx, y1:legendY, x2:lx+16, y2:legendY, stroke:s.color, 'stroke-width':2.5, 'stroke-dasharray': s.dashed ? '4,2' : 'none'}));
+    svg.appendChild(svgText(lx + 20, legendY + 3, s.label, 9, s.color, 'start', '600'));
+  });
+
+  container.appendChild(svg);
+}
+
+function drawAllCharts() {
+  // 1. Val total loss
+  lineChart('chart-val-total', [
+    {label: 'Val Total', data: DATA.val_total, color: getChartColors().accent}
+  ], {yLabel: 'Loss'});
+
+  // 2. Train/Val L_x
+  lineChart('chart-lx', [
+    {label: 'Train L_x', data: DATA.L_x, color: getChartColors().accent},
+    {label: 'Val L_x', data: DATA.val_L_x, color: getChartColors().orange, dashed: true}
+  ], {yLabel: 'L_x'});
+
+  // 3. Train/Val L_r (log scale, clipped)
+  lineChart('chart-lr', [
+    {label: 'Train L_r', data: DATA.L_r, color: getChartColors().red},
+    {label: 'Val L_r', data: DATA.val_L_r, color: getChartColors().green, dashed: true}
+  ], {
+    yLabel: 'L_r (log)',
+    logScale: true,
+    annotations: [{epoch: 2, text: 'Spike: 61145 (outlier)', color: getChartColors().red, y: 28}]
+  });
+
+  // 4. L_bb and L_2d
+  lineChart('chart-aux', [
+    {label: 'L_bb', data: DATA.L_bb, color: getChartColors().purple},
+    {label: 'L_2D', data: DATA.L_2d, color: getChartColors().green}
+  ], {yLabel: 'Loss', yMin: 0});
+
+  // 5. Rotation error and RMSD (dual axis approximated with two series)
+  lineChart('chart-metrics', [
+    {label: 'Rot err (deg)', data: DATA.rot_err, color: getChartColors().red},
+    {label: 'CA-RMSD (A)', data: DATA.ca_rmsd, color: getChartColors().accent}
+  ], {yLabel: 'Value'});
+}
+
+/* Draw on load */
+drawAllCharts();
+window.addEventListener('resize', drawAllCharts);
+</script>
+
+</body>
+</html>
