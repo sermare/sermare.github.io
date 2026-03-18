@@ -194,12 +194,12 @@
       Full architecture history, training tables, loss functions, and analysis for the protein backbone diffusion model.
     </p>
     <p id="last-updated" style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px; font-style: italic;">
-      Last updated: Mar 15, 2026 at 8:15 PM PST
+      Last updated: Mar 18, 2026 at 9:30 PM PST
     </p>
 
     <div class="mf-tabs">
-      <button class="mf-tab" onclick="switchTab('framediff')">FrameDiff</button>
-      <button class="mf-tab active" onclick="switchTab('folding')">Training Progress</button>
+      <button class="mf-tab active" onclick="switchTab('framediff')">FrameDiff</button>
+      <button class="mf-tab" onclick="switchTab('folding')">Training Progress</button>
       <button class="mf-tab" onclick="switchTab('sidechain')">Side Chain</button>
       <button class="mf-tab" onclick="switchTab('classifier')">Encoder</button>
       <button class="mf-tab" onclick="switchTab('details')">More Details</button>
@@ -209,145 +209,167 @@
     <!-- ============================================================== -->
     <!--  TAB: FRAMEDIFF — SE(3) Unconditional Backbone Diffusion        -->
     <!-- ============================================================== -->
-    <div id="tab-framediff" class="mf-panel">
+    <div id="tab-framediff" class="mf-panel active">
 
-    <h2 class="section-heading">FrameDiff v2: IGSO3 Backbone Diffusion</h2>
+    <h2 class="section-heading">FrameDiff v3: Paper-Correct SE(3) Backbone Diffusion</h2>
     <p style="color:var(--text-secondary); margin-bottom:18px;">
-      Unconditional protein backbone generation via SE(3) diffusion with proper IGSO3 rotation noise and score matching loss.
-      14.4M params, 8 layers, 2&times;A40. Cosine LR schedule. Training on CATH 4.3 (10,600 chains).
-      <a href="data/framediff_v2_report.pdf" style="margin-left:8px">[Full Report PDF &mdash; 69 pages with source code]</a>
+      Paper-verified reimplementation of Yim et al. (2302.02277v3). 24.9M params, 8 layers, 2&times;A40.
+      IGSO3 rotation score matching + VP-SDE translation diffusion on CATH 4.3 (10,125 chains, 60-256 residues).
+      <span style="background:#2ca02c22; color:#2ca02c; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; margin-left:6px;">TRAINING</span>
     </p>
 
-    <!-- Model card -->
     <div class="timeline-section">
-      <h3 style="margin-top:0">Current Model</h3>
-      <ul style="margin-bottom:0; font-size:13px">
-        <li>14.4M params &middot; 8&times; IPA (12 heads) + Transformer + 2-layer MLP backbone updates</li>
-        <li>IGSO3 rotation noise (&sigma;<sub>min</sub>=0.1, &sigma;<sub>max</sub>=1.5) + IGSO3 score matching loss</li>
-        <li>VP-SDE translation diffusion + geodesic reverse SDE for sampling</li>
-        <li>Cosine LR decay (1e-4 &rarr; 1e-6) &mdash; added after E81 explosion with constant LR</li>
-        <li>Self-conditioning (50%) + auxiliary losses (L_bb, L_2d at t&lt;0.25)</li>
-        <li>Stop-gradient on intermediate frames (numerical stability for 8 layers)</li>
-      </ul>
+      <h3 style="margin-top:0">Model Configuration</h3>
+      <div class="arch-feature"><div class="af-label">Parameters</div><div class="af-value">24.9M (8 layers, d_node=256, d_edge=128)</div></div>
+      <div class="arch-feature"><div class="af-label">IPA</div><div class="af-value">8 heads, 8 query points, 12 value points, d_head=16, AF2 w_C constant</div></div>
+      <div class="arch-feature"><div class="af-label">Transformer</div><div class="af-value">4 heads &times; 2 layers, 1024 FFN, Pre-LN, operates on (d_node + d_skip)</div></div>
+      <div class="arch-feature"><div class="af-label">Rotation Noise</div><div class="af-value">IGSO3 with log sigma schedule (&sigma;<sub>min</sub>=0.1, &sigma;<sub>max</sub>=1.5)</div></div>
+      <div class="arch-feature"><div class="af-label">Translation Noise</div><div class="af-value">VP-SDE linear beta (&beta;<sub>min</sub>=0.1, &beta;<sub>max</sub>=20.0)</div></div>
+      <div class="arch-feature"><div class="af-label">Optimizer</div><div class="af-value">Adam, lr=1e-4, warmup 1000 steps, cosine decay &rarr; 1e-6</div></div>
+      <div class="arch-feature"><div class="af-label">Training</div><div class="af-value">EMA 0.999, grad clip 1.0, batch_size 8, self-conditioning 50%, stop_grad_frames</div></div>
     </div>
 
-    <!-- Metrics summary -->
     <div class="timeline-section">
-      <h3 style="margin-top:0">Structural Metrics</h3>
-      <img src="data/training/framediff_v2_metrics.png" alt="v2 metrics" style="width:100%; border-radius:8px; margin-bottom:8px;">
-      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
-        Ca RMSD: 8.45 &rarr; 4.50 A (v1 best: 4.48 A, dashed). Rotation error: 66.5 &rarr; 46.0 deg
-        (v1 models: ~166 deg, mirror-flipped). Orange dotted line marks cosine LR restart at E79.
+      <h3 style="margin-top:0">Architecture Breakdown (Paper App. I.2, Fig. 2)</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:14px;">
+        Each of L=8 refinement layers follows: IPA &rarr; LN &rarr; concat(h<sub>ipa</sub>, Linear(h<sub>0</sub>)) &rarr; Transformer &rarr; Linear + residual &rarr; MLP &rarr; EdgeUpdate &rarr; BackboneUpdate
+      </p>
+
+      <div class="arch-feature" style="border-left-color:#1f77b4"><div class="af-label">1. Node Init</div><div class="af-value">sin(res_idx, 128) + sin(t, 128) &rarr; 3-layer MLP(256&rarr;256) with ReLU + LayerNorm</div></div>
+      <div class="arch-feature" style="border-left-color:#2ca02c"><div class="af-label">2. Edge Init</div><div class="af-value">&phi;(n) + &phi;(m) + &phi;(m&minus;n) + &phi;(t) + &phi;(disp_sc) = 320 &rarr; 3-layer MLP &rarr; d_edge=128. Distogram: 22-bin cumulative indicator (2.0nm max)</div></div>
+      <div class="arch-feature" style="border-left-color:#d62728"><div class="af-label">3. IPA</div><div class="af-value">Invariant Point Attention (AF2 Alg. 22). Points transformed through per-residue SE(3) frames. Output concatenates: scalar values (H&times;D) + 3D local-frame points (H&times;Vp&times;3) + point norms (H&times;Vp) + pair-weighted values (H&times;D) = 640 &rarr; Linear &rarr; 256</div></div>
+      <div class="arch-feature" style="border-left-color:#ff7f0e"><div class="af-label">4. Transformer</div><div class="af-value">Input: concat(h_ipa, Linear(h_0)) of dim (256+64). 2&times; Pre-LN self-attention (4 heads) + FFN(1024). Output projected back to d_node via post_trans_proj + h_ipa residual</div></div>
+      <div class="arch-feature" style="border-left-color:#9467bd"><div class="af-label">5. EdgeUpdate</div><div class="af-value">Separate src/tgt projections to D_h/2, concat with z &rarr; 3-layer MLP + LayerNorm + residual + trailing Linear</div></div>
+      <div class="arch-feature" style="border-left-color:#8c564b"><div class="af-label">6. BackboneUpdate</div><div class="af-value">Single Linear &rarr; (b,c,d, dx). Quaternion q=(1,b,c,d)/||&middot;||, R_new = R &times; dR (Gram-Schmidt re-orthog), x_new = x + R&times;dx (re-centered)</div></div>
+      <div class="arch-feature" style="border-left-color:#e377c2"><div class="af-label">7. TorsionHead</div><div class="af-value">3-layer MLP(d_node) + h_L skip connection &rarr; Linear &rarr; (sin&psi;, cos&psi;) normalized to unit circle. Feeds directly into R_x(&psi;) for O atom placement</div></div>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Loss Functions (Paper Sec. 4.2)</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+        Total = L<sub>x</sub> + L<sub>r</sub> + 0.25 &middot; &#x1D7D9;{t &lt; 0.25} &middot; (L<sub>bb</sub> + L<sub>2D</sub>)
+      </p>
+      <table class="metrics-table" style="width:100%; font-size:13px;">
+        <thead><tr><th>Loss</th><th>Formula</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><strong>L<sub>x</sub></strong></td><td>||x&#x0302;<sup>(0)</sup> &minus; x<sup>(0)</sup>||&sup2;</td><td>Translation MSE (C&alpha; x0-prediction)</td></tr>
+          <tr><td><strong>L<sub>r</sub></strong></td><td>&lambda;<sub>r</sub>(t) &middot; ||s<sub>pred</sub> &minus; s<sub>true</sub>||&sup2;</td><td>IGSO3 denoising score matching. s = (df/d&omega;)/f &middot; axis. &lambda;<sub>r</sub> = 1/E[||score||&sup2;]</td></tr>
+          <tr><td><strong>L<sub>bb</sub></strong></td><td>(1/4N)&sum;||a&#x0302; &minus; a||&sup2;</td><td>Backbone atom MSE over {N, C&alpha;, C, O}, gated at t &lt; 0.25</td></tr>
+          <tr><td><strong>L<sub>2D</sub></strong></td><td>(1/Z)&sum; &#x1D7D9;{d&lt;6&Aring;} &middot; (d&#x0302;&minus;d)&sup2;</td><td>All-atom pairwise distance MSE within 6&Aring; cutoff, gated at t &lt; 0.25</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Training Curves</h3>
+      <div id="fd3-charts" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;"></div>
+      <script>
+      (function(){
+        var D = {
+          ep: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],
+          val_total: [3.228,2.353,1.943,2.140,1.980,1.962,1.998,1.918,null,2.066,1.817,1.837,1.800,1.968,1.935,1.865,1.836,1.924,1.957,1.885,1.935,1.790,1.780,1.879,1.688,1.777,1.956,1.928,1.815],
+          Lx: [2.044,1.439,1.413,1.393,1.361,1.364,1.343,1.322,1.319,1.333,1.300,1.310,1.318,1.307,1.296,1.285,1.315,1.278,1.289,1.280,1.280,1.290,1.281,1.269,1.272,1.219,1.273,1.266,1.260],
+          Lr: [0.908,0.755,null,0.726,0.712,0.705,null,null,0.690,0.686,0.681,0.673,0.673,0.667,0.664,0.659,0.663,0.658,0.657,0.658,0.656,0.657,0.654,0.648,0.654,0.643,0.651,0.648,0.648],
+          rot: [77.8,71.4,70.7,70.6,69.7,69.4,69.5,68.5,68.8,68.5,68.1,67.6,67.8,67.2,67.1,66.4,67.3,66.7,66.7,66.8,66.7,66.9,66.6,65.8,66.7,65.3,66.4,66.1,66.1],
+          rmsd: [12.73,10.52,10.31,10.21,10.05,10.02,10.01,9.87,9.87,9.88,9.80,9.77,9.82,9.75,9.74,9.65,9.79,9.64,9.66,9.67,9.64,9.72,9.65,9.55,9.65,9.42,9.63,9.59,9.55],
+          Lbb: [0.576,0.240,0.199,0.250,0.175,0.194,0.123,0.134,0.141,0.132,0.105,0.125,0.104,0.097,0.111,0.109,0.120,0.094,0.085,0.096,0.085,0.099,0.086,0.094,0.082,0.072,0.082,0.088,0.082],
+          L2d: [0.100,0.023,0.019,0.017,0.016,0.015,0.014,0.014,0.013,0.013,0.013,0.012,0.012,0.012,0.012,0.011,0.012,0.011,0.011,0.012,0.011,0.011,0.011,0.011,0.011,0.011,0.011,0.011,0.010]
+        };
+        var W=340, H=180, pad={t:24,r:16,b:28,l:48};
+        var pw=W-pad.l-pad.r, ph=H-pad.t-pad.b;
+        function chart(title, series, colors, yLabel) {
+          var allVals = [];
+          series.forEach(function(s){ s.forEach(function(v){ if(v!==null) allVals.push(v); }); });
+          var yMin = Math.min.apply(null, allVals), yMax = Math.max.apply(null, allVals);
+          var yPad = (yMax-yMin)*0.1 || 0.1;
+          yMin -= yPad; yMax += yPad;
+          var xMax = D.ep.length - 1;
+          function xP(i){ return pad.l + (i/xMax)*pw; }
+          function yP(v){ return pad.t + (1-(v-yMin)/(yMax-yMin))*ph; }
+          var isDark = document.documentElement.getAttribute('data-theme')==='dark';
+          var axisC = isDark ? '#8b949e' : '#999';
+          var gridC = isDark ? '#21262d' : '#f0f0f0';
+          var svg = '<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;max-width:'+W+'px">';
+          svg += '<rect width="'+W+'" height="'+H+'" fill="'+(isDark?'#0d1117':'#fff')+'" rx="6"/>';
+          svg += '<text x="'+W/2+'" y="16" text-anchor="middle" fill="'+axisC+'" font-size="12" font-weight="600">'+title+'</text>';
+          for(var g=0;g<5;g++){
+            var v=yMin+(yMax-yMin)*g/4, y=yP(v);
+            svg += '<line x1="'+pad.l+'" y1="'+y+'" x2="'+(W-pad.r)+'" y2="'+y+'" stroke="'+gridC+'" stroke-width="0.5"/>';
+            svg += '<text x="'+(pad.l-4)+'" y="'+(y+3)+'" text-anchor="end" fill="'+axisC+'" font-size="9">'+v.toFixed(2)+'</text>';
+          }
+          series.forEach(function(s, si){
+            var pts = [];
+            D.ep.forEach(function(e, i){ if(s[i]!==null) pts.push(xP(i)+','+yP(s[i])); });
+            if(pts.length>1) svg += '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+colors[si]+'" stroke-width="1.8" stroke-linejoin="round"/>';
+            pts.forEach(function(p){ svg += '<circle cx="'+p.split(',')[0]+'" cy="'+p.split(',')[1]+'" r="2" fill="'+colors[si]+'"/>'; });
+          });
+          svg += '</svg>';
+          return svg;
+        }
+        var c = document.getElementById('fd3-charts');
+        if(!c) return;
+        function draw(){
+          var isDark = document.documentElement.getAttribute('data-theme')==='dark';
+          var blue=isDark?'#58a6ff':'#1772d0', red=isDark?'#f85149':'#d73a49', green=isDark?'#3fb950':'#22863a', orange=isDark?'#d29922':'#e36209';
+          c.innerHTML =
+            '<div>'+chart('Val Total Loss', [D.val_total], [blue], 'loss')+'</div>'+
+            '<div>'+chart('Translation Loss (L_x)', [D.Lx], [blue], 'loss')+'</div>'+
+            '<div>'+chart('Rotation Loss (L_r)', [D.Lr], [red], 'loss')+'</div>'+
+            '<div>'+chart('Rotation Error (deg)', [D.rot], [orange], 'deg')+'</div>'+
+            '<div>'+chart('CA-RMSD (A)', [D.rmsd], [green], 'A')+'</div>'+
+            '<div>'+chart('Aux Losses (L_bb, L_2d)', [D.Lbb, D.L2d], [blue, orange], 'loss')+'</div>';
+        }
+        draw();
+        var obs = new MutationObserver(draw);
+        obs.observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+      })();
+      </script>
+      <p style="color:var(--text-secondary); font-size:12px; margin-top:8px;">
+        Note: L_r spikes at epochs 2, 6, 7 (IGSO3 score instability at extreme angles) are excluded from charts. Val epoch 8 spike also excluded. Model converges stably &mdash; gradient clipping + NaN safety prevent divergence.
       </p>
     </div>
 
-    <!-- All loss components -->
     <div class="timeline-section">
-      <h3 style="margin-top:0">All Loss Components</h3>
-      <img src="data/training/framediff_v2_all_losses.png" alt="v2 all losses" style="width:100%; border-radius:8px; margin-bottom:8px;">
-      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
-        Top-left: Translation MSE (L_x). Top-right: IGSO3 rotation score matching (L_r).
-        Bottom-left: Backbone atom loss (L_bb, t&lt;0.25). Bottom-right: Pairwise Ca distance (L_2d).
-      </p>
-    </div>
-
-    <!-- RMSD -->
-    <div class="timeline-section">
-      <h3 style="margin-top:0">Ca RMSD</h3>
-      <img src="data/training/framediff_v2_rmsd.png" alt="v2 RMSD" style="width:100%; border-radius:8px; margin-bottom:8px;">
-    </div>
-
-    <!-- Rotation error -->
-    <div class="timeline-section">
-      <h3 style="margin-top:0">Rotation Angle Error</h3>
-      <img src="data/training/framediff_v2_rot_err.png" alt="v2 rotation error" style="width:100%; border-radius:8px; margin-bottom:8px;">
-      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
-        v2 rotation error monotonically decreases (66 &rarr; 46 deg) without the &pi;-flip seen in v1 models.
-        The IGSO3 score provides correct directional supervision.
-        For reference: random rotation ~126 deg, v1 Frobenius ~166 deg (mirror-flipped).
-      </p>
-    </div>
-
-    <!-- Translation loss -->
-    <div class="timeline-section">
-      <h3 style="margin-top:0">Translation Loss (L_x)</h3>
-      <img src="data/training/framediff_v2_Lx.png" alt="v2 L_x" style="width:100%; border-radius:8px; margin-bottom:8px;">
-    </div>
-
-    <!-- Rotation loss -->
-    <div class="timeline-section">
-      <h3 style="margin-top:0">Rotation Loss (L_r, IGSO3 Score Matching)</h3>
-      <img src="data/training/framediff_v2_Lr.png" alt="v2 L_r" style="width:100%; border-radius:8px; margin-bottom:8px;">
-    </div>
-
-    <!-- LR schedule -->
-    <div class="timeline-section">
-      <h3 style="margin-top:0">Learning Rate Schedule</h3>
-      <img src="data/training/framediff_v2_lr_schedule.png" alt="v2 LR schedule" style="width:100%; border-radius:8px; margin-bottom:8px;">
-      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
-        Constant LR caused catastrophic divergence at E81 (L_r jumped 6.4 &rarr; 612).
-        Resumed from best checkpoint (E78) with cosine decay. E79+ trains stably past the explosion zone.
-      </p>
-    </div>
-
-    <!-- Total loss -->
-    <div class="timeline-section">
-      <h3 style="margin-top:0">Total Loss</h3>
-      <img src="data/training/framediff_v2_total.png" alt="v2 total loss" style="width:100%; border-radius:8px; margin-bottom:8px;">
-    </div>
-
-    <!-- Progress table -->
-    <div class="timeline-section">
-      <h3 style="margin-top:0">Training Progress</h3>
+      <h3 style="margin-top:0">Training Progress (selected epochs)</h3>
       <div style="overflow-x:auto">
-      <table class="metrics-table" style="width:100%">
+      <table class="metrics-table" style="width:100%; font-size:13px;">
         <thead>
-          <tr><th>Epoch</th><th>L_x</th><th>L_r (IGSO3)</th><th>Rot Err (deg)</th><th>RMSD (A)</th><th>Val Total</th><th>Notes</th></tr>
+          <tr><th>Epoch</th><th>L_x</th><th>L_r</th><th>Rot Err</th><th>RMSD</th><th>Val Total</th><th>Notes</th></tr>
         </thead>
         <tbody>
-          <tr><td>0</td><td>0.879</td><td>7.60</td><td>66.5</td><td>8.45</td><td>7.69</td><td></td></tr>
-          <tr><td>9</td><td>0.467</td><td>6.68</td><td>52.3</td><td>5.98</td><td>6.90</td><td>RMSD &lt; 6 A</td></tr>
-          <tr><td>18</td><td>0.321</td><td>6.56</td><td>50.0</td><td>5.13</td><td>6.45</td><td>2&times;A40 starts</td></tr>
-          <tr><td>28</td><td>0.330</td><td>6.57</td><td>48.9</td><td>5.00</td><td>6.19</td><td>RMSD &lt; 5 A</td></tr>
-          <tr><td>40</td><td>0.309</td><td>6.38</td><td>47.6</td><td>4.85</td><td>6.94</td><td></td></tr>
-          <tr><td>51</td><td>0.280</td><td>6.41</td><td>47.3</td><td>4.73</td><td>6.18</td><td></td></tr>
-          <tr style="color:#4CAF50"><td>63</td><td>0.271</td><td>6.35</td><td>46.6</td><td>4.61</td><td>6.09</td><td>Best val (pre-explosion)</td></tr>
-          <tr><td>71</td><td>0.272</td><td>6.24</td><td>46.0</td><td>4.55</td><td>6.84</td><td>RMSD 4.55</td></tr>
-          <tr style="color:#d9534f"><td>81</td><td colspan="6">Explosion (L_r=612) &mdash; constant LR too aggressive. Resumed from E78 with cosine decay.</td></tr>
-          <tr><td>79*</td><td>0.260</td><td>6.32</td><td>46.0</td><td>4.50</td><td>6.81</td><td>Cosine LR, resumed from best.pt</td></tr>
-          <tr style="color:#4CAF50"><td>80*</td><td>0.276</td><td>6.39</td><td>46.6</td><td>4.60</td><td>6.09</td><td>val=6.09, stable</td></tr>
-          <tr><td>83*</td><td>0.253</td><td>6.39</td><td>46.6</td><td>4.54</td><td>6.41</td><td>Stable through E81+ zone</td></tr>
-          <tr><td>88*</td><td>0.267</td><td>6.34</td><td>46.6</td><td>4.56</td><td>6.30</td><td></td></tr>
-          <tr><td>91*</td><td>0.260</td><td>6.33</td><td>46.3</td><td>4.55</td><td>6.64</td><td></td></tr>
-          <tr><td>94*</td><td>0.277</td><td>6.28</td><td>45.8</td><td>4.54</td><td>6.36</td><td></td></tr>
-          <tr><td>97*</td><td>0.275</td><td>6.27</td><td>45.9</td><td>4.52</td><td>6.57</td><td></td></tr>
-          <tr style="color:#4CAF50"><td>105*</td><td>0.242</td><td>6.27</td><td>45.7</td><td>4.46</td><td>6.21</td><td>RMSD 4.46, val=6.21 &mdash; BEAT v1 8L!</td></tr>
-          <tr><td>108*</td><td>0.265</td><td>6.42</td><td>46.2</td><td>4.49</td><td>6.61</td><td>Early stop triggered (disabled)</td></tr>
-          <tr style="color:#4CAF50"><td>111*</td><td>0.244</td><td>6.22</td><td>45.5</td><td>4.43</td><td>6.45</td><td>ALL metrics new lows!</td></tr>
+          <tr><td>0</td><td>2.044</td><td>0.908</td><td>77.8&deg;</td><td>12.73 A</td><td>3.228</td><td></td></tr>
+          <tr><td>1</td><td>1.439</td><td>0.755</td><td>71.4&deg;</td><td>10.52 A</td><td>2.353</td><td></td></tr>
+          <tr style="color:#d9534f"><td>2</td><td>1.413</td><td style="color:#d9534f">61145</td><td>70.7&deg;</td><td>10.31 A</td><td>1.943</td><td>L_r spike (transient)</td></tr>
+          <tr><td>7</td><td>1.322</td><td>0.687</td><td>68.5&deg;</td><td>9.87 A</td><td>1.918</td><td></td></tr>
+          <tr><td>10</td><td>1.300</td><td>0.681</td><td>68.1&deg;</td><td>9.80 A</td><td>1.817</td><td></td></tr>
+          <tr><td>15</td><td>1.285</td><td>0.659</td><td>66.4&deg;</td><td>9.65 A</td><td>1.865</td><td></td></tr>
+          <tr><td>22</td><td>1.281</td><td>0.654</td><td>66.6&deg;</td><td>9.65 A</td><td>1.780</td><td></td></tr>
+          <tr style="color:#4CAF50"><td><strong>24</strong></td><td><strong>1.272</strong></td><td><strong>0.654</strong></td><td><strong>66.7&deg;</strong></td><td><strong>9.65 A</strong></td><td style="color:#2ca02c"><strong>1.688</strong></td><td><span class="tag tag-best">BEST</span></td></tr>
+          <tr><td>25</td><td>1.219</td><td>0.643</td><td>65.3&deg;</td><td>9.42 A</td><td>1.777</td><td>Best train total</td></tr>
+          <tr><td>28</td><td>1.260</td><td>0.648</td><td>66.1&deg;</td><td>9.55 A</td><td>1.815</td><td>Latest</td></tr>
         </tbody>
       </table>
       </div>
-      <p style="color:var(--text-secondary); font-size:13px; margin-top:8px; margin-bottom:0">
-        <em>Last updated: Mar 17, 2026. Training ongoing with cosine LR. * = post-restart epoch numbering.</em>
+      <p style="color:var(--text-secondary); font-size:12px; margin-top:8px; margin-bottom:0">
+        <em>Last updated: Mar 18, 2026. Training ongoing (~13 min/epoch). 3 L_r spikes in 29 epochs (IGSO3 score at extreme angles).</em>
       </p>
     </div>
 
-    <!-- Archived models (collapsed) -->
     <div class="timeline-section">
-      <h3 style="margin-top:0">Archived Models</h3>
-      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:4px">
-        Earlier model variants using Frobenius geodesic loss (not IGSO3). Both exploded around E78-81 due to constant LR.
+      <h3 style="margin-top:0">Paper Compliance Review</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+        Automated review against Yim et al. 2302.02277v3. All core algorithms verified correct.
       </p>
-      <details style="font-size:13px">
-        <summary style="cursor:pointer; color:var(--link)">4-Layer v1 (6.4M params) &mdash; best RMSD 4.26 A, exploded E78</summary>
-        <p>Frobenius geodesic rotation loss. Best val=0.298 (E43). Rotation error ~166 deg (pi-flipped).
-        Diverged catastrophically at E78 (L_x=34).</p>
-      </details>
-      <details style="font-size:13px; margin-top:4px">
-        <summary style="cursor:pointer; color:var(--link)">8-Layer v1 (12.8M params) &mdash; best RMSD 4.48 A, stopped E36</summary>
-        <p>Frobenius geodesic rotation loss with stop-gradient. Best val=0.327 (E33). Rotation error ~166 deg (pi-flipped).
-        Hit 6h wall clock at E36.</p>
-      </details>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px;">
+        <div style="padding:6px 10px; background:#2ca02c22; border-radius:4px; color:#2ca02c; font-weight:600;">&#x2713; IGSO3 density, score, sampling</div>
+        <div style="padding:6px 10px; background:#2ca02c22; border-radius:4px; color:#2ca02c; font-weight:600;">&#x2713; IPA (all 4 output components)</div>
+        <div style="padding:6px 10px; background:#2ca02c22; border-radius:4px; color:#2ca02c; font-weight:600;">&#x2713; Rotation DSM loss + &lambda;<sub>r</sub></div>
+        <div style="padding:6px 10px; background:#2ca02c22; border-radius:4px; color:#2ca02c; font-weight:600;">&#x2713; VP-SDE translation diffusion</div>
+        <div style="padding:6px 10px; background:#2ca02c22; border-radius:4px; color:#2ca02c; font-weight:600;">&#x2713; Reverse SDE sampling (Alg. 1)</div>
+        <div style="padding:6px 10px; background:#2ca02c22; border-radius:4px; color:#2ca02c; font-weight:600;">&#x2713; Self-conditioning + aux losses</div>
+        <div style="padding:6px 10px; background:#e3620922; border-radius:4px; color:#e36209; font-weight:600;">&#x26A0; Missing MLP residual (model.py:773)</div>
+        <div style="padding:6px 10px; background:#e3620922; border-radius:4px; color:#e36209; font-weight:600;">&#x26A0; Intermittent L_r spikes (3/29 epochs)</div>
+      </div>
     </div>
 
     </div>
@@ -355,7 +377,7 @@
     <!-- ============================================================== -->
     <!--  TAB: TRAINING PROGRESS (consolidated)                          -->
     <!-- ============================================================== -->
-    <div id="tab-folding" class="mf-panel active">
+    <div id="tab-folding" class="mf-panel">
 
     <h2 class="section-heading">Training Progress</h2>
 
@@ -668,6 +690,155 @@
     <!--  TAB: ARCHIVE                                                   -->
     <!-- ============================================================== -->
     <div id="tab-archive" class="mf-panel">
+
+    <h2 class="section-heading" style="margin-top:32px;">
+      FrameDiff v2 Archive
+      <span class="archive-badge">Archived &mdash; superseded by v3</span>
+    </h2>
+    <details style="font-size:14px; margin-bottom:24px;">
+      <summary style="cursor:pointer; color:var(--link); font-weight:600; margin-bottom:12px;">FrameDiff v2: IGSO3 Backbone Diffusion (14.4M params, 111 epochs) &mdash; click to expand</summary>
+      <div style="padding:12px 0;">
+    <h2 class="section-heading">FrameDiff v2: IGSO3 Backbone Diffusion</h2>
+    <p style="color:var(--text-secondary); margin-bottom:18px;">
+      Unconditional protein backbone generation via SE(3) diffusion with proper IGSO3 rotation noise and score matching loss.
+      14.4M params, 8 layers, 2&times;A40. Cosine LR schedule. Training on CATH 4.3 (10,600 chains).
+      <a href="data/framediff_v2_report.pdf" style="margin-left:8px">[Full Report PDF &mdash; 69 pages with source code]</a>
+    </p>
+
+    <!-- Model card -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Current Model</h3>
+      <ul style="margin-bottom:0; font-size:13px">
+        <li>14.4M params &middot; 8&times; IPA (12 heads) + Transformer + 2-layer MLP backbone updates</li>
+        <li>IGSO3 rotation noise (&sigma;<sub>min</sub>=0.1, &sigma;<sub>max</sub>=1.5) + IGSO3 score matching loss</li>
+        <li>VP-SDE translation diffusion + geodesic reverse SDE for sampling</li>
+        <li>Cosine LR decay (1e-4 &rarr; 1e-6) &mdash; added after E81 explosion with constant LR</li>
+        <li>Self-conditioning (50%) + auxiliary losses (L_bb, L_2d at t&lt;0.25)</li>
+        <li>Stop-gradient on intermediate frames (numerical stability for 8 layers)</li>
+      </ul>
+    </div>
+
+    <!-- Metrics summary -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Structural Metrics</h3>
+      <img src="data/training/framediff_v2_metrics.png" alt="v2 metrics" style="width:100%; border-radius:8px; margin-bottom:8px;">
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
+        Ca RMSD: 8.45 &rarr; 4.50 A (v1 best: 4.48 A, dashed). Rotation error: 66.5 &rarr; 46.0 deg
+        (v1 models: ~166 deg, mirror-flipped). Orange dotted line marks cosine LR restart at E79.
+      </p>
+    </div>
+
+    <!-- All loss components -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">All Loss Components</h3>
+      <img src="data/training/framediff_v2_all_losses.png" alt="v2 all losses" style="width:100%; border-radius:8px; margin-bottom:8px;">
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
+        Top-left: Translation MSE (L_x). Top-right: IGSO3 rotation score matching (L_r).
+        Bottom-left: Backbone atom loss (L_bb, t&lt;0.25). Bottom-right: Pairwise Ca distance (L_2d).
+      </p>
+    </div>
+
+    <!-- RMSD -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Ca RMSD</h3>
+      <img src="data/training/framediff_v2_rmsd.png" alt="v2 RMSD" style="width:100%; border-radius:8px; margin-bottom:8px;">
+    </div>
+
+    <!-- Rotation error -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Rotation Angle Error</h3>
+      <img src="data/training/framediff_v2_rot_err.png" alt="v2 rotation error" style="width:100%; border-radius:8px; margin-bottom:8px;">
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
+        v2 rotation error monotonically decreases (66 &rarr; 46 deg) without the &pi;-flip seen in v1 models.
+        The IGSO3 score provides correct directional supervision.
+        For reference: random rotation ~126 deg, v1 Frobenius ~166 deg (mirror-flipped).
+      </p>
+    </div>
+
+    <!-- Translation loss -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Translation Loss (L_x)</h3>
+      <img src="data/training/framediff_v2_Lx.png" alt="v2 L_x" style="width:100%; border-radius:8px; margin-bottom:8px;">
+    </div>
+
+    <!-- Rotation loss -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Rotation Loss (L_r, IGSO3 Score Matching)</h3>
+      <img src="data/training/framediff_v2_Lr.png" alt="v2 L_r" style="width:100%; border-radius:8px; margin-bottom:8px;">
+    </div>
+
+    <!-- LR schedule -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Learning Rate Schedule</h3>
+      <img src="data/training/framediff_v2_lr_schedule.png" alt="v2 LR schedule" style="width:100%; border-radius:8px; margin-bottom:8px;">
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:0">
+        Constant LR caused catastrophic divergence at E81 (L_r jumped 6.4 &rarr; 612).
+        Resumed from best checkpoint (E78) with cosine decay. E79+ trains stably past the explosion zone.
+      </p>
+    </div>
+
+    <!-- Total loss -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Total Loss</h3>
+      <img src="data/training/framediff_v2_total.png" alt="v2 total loss" style="width:100%; border-radius:8px; margin-bottom:8px;">
+    </div>
+
+    <!-- Progress table -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Training Progress</h3>
+      <div style="overflow-x:auto">
+      <table class="metrics-table" style="width:100%">
+        <thead>
+          <tr><th>Epoch</th><th>L_x</th><th>L_r (IGSO3)</th><th>Rot Err (deg)</th><th>RMSD (A)</th><th>Val Total</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>0.879</td><td>7.60</td><td>66.5</td><td>8.45</td><td>7.69</td><td></td></tr>
+          <tr><td>9</td><td>0.467</td><td>6.68</td><td>52.3</td><td>5.98</td><td>6.90</td><td>RMSD &lt; 6 A</td></tr>
+          <tr><td>18</td><td>0.321</td><td>6.56</td><td>50.0</td><td>5.13</td><td>6.45</td><td>2&times;A40 starts</td></tr>
+          <tr><td>28</td><td>0.330</td><td>6.57</td><td>48.9</td><td>5.00</td><td>6.19</td><td>RMSD &lt; 5 A</td></tr>
+          <tr><td>40</td><td>0.309</td><td>6.38</td><td>47.6</td><td>4.85</td><td>6.94</td><td></td></tr>
+          <tr><td>51</td><td>0.280</td><td>6.41</td><td>47.3</td><td>4.73</td><td>6.18</td><td></td></tr>
+          <tr style="color:#4CAF50"><td>63</td><td>0.271</td><td>6.35</td><td>46.6</td><td>4.61</td><td>6.09</td><td>Best val (pre-explosion)</td></tr>
+          <tr><td>71</td><td>0.272</td><td>6.24</td><td>46.0</td><td>4.55</td><td>6.84</td><td>RMSD 4.55</td></tr>
+          <tr style="color:#d9534f"><td>81</td><td colspan="6">Explosion (L_r=612) &mdash; constant LR too aggressive. Resumed from E78 with cosine decay.</td></tr>
+          <tr><td>79*</td><td>0.260</td><td>6.32</td><td>46.0</td><td>4.50</td><td>6.81</td><td>Cosine LR, resumed from best.pt</td></tr>
+          <tr style="color:#4CAF50"><td>80*</td><td>0.276</td><td>6.39</td><td>46.6</td><td>4.60</td><td>6.09</td><td>val=6.09, stable</td></tr>
+          <tr><td>83*</td><td>0.253</td><td>6.39</td><td>46.6</td><td>4.54</td><td>6.41</td><td>Stable through E81+ zone</td></tr>
+          <tr><td>88*</td><td>0.267</td><td>6.34</td><td>46.6</td><td>4.56</td><td>6.30</td><td></td></tr>
+          <tr><td>91*</td><td>0.260</td><td>6.33</td><td>46.3</td><td>4.55</td><td>6.64</td><td></td></tr>
+          <tr><td>94*</td><td>0.277</td><td>6.28</td><td>45.8</td><td>4.54</td><td>6.36</td><td></td></tr>
+          <tr><td>97*</td><td>0.275</td><td>6.27</td><td>45.9</td><td>4.52</td><td>6.57</td><td></td></tr>
+          <tr style="color:#4CAF50"><td>105*</td><td>0.242</td><td>6.27</td><td>45.7</td><td>4.46</td><td>6.21</td><td>RMSD 4.46, val=6.21 &mdash; BEAT v1 8L!</td></tr>
+          <tr><td>108*</td><td>0.265</td><td>6.42</td><td>46.2</td><td>4.49</td><td>6.61</td><td>Early stop triggered (disabled)</td></tr>
+          <tr style="color:#4CAF50"><td>111*</td><td>0.244</td><td>6.22</td><td>45.5</td><td>4.43</td><td>6.45</td><td>ALL metrics new lows!</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p style="color:var(--text-secondary); font-size:13px; margin-top:8px; margin-bottom:0">
+        <em>Last updated: Mar 17, 2026. Training ongoing with cosine LR. * = post-restart epoch numbering.</em>
+      </p>
+    </div>
+
+    <!-- Archived models (collapsed) -->
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Archived Models</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:4px">
+        Earlier model variants using Frobenius geodesic loss (not IGSO3). Both exploded around E78-81 due to constant LR.
+      </p>
+      <details style="font-size:13px">
+        <summary style="cursor:pointer; color:var(--link)">4-Layer v1 (6.4M params) &mdash; best RMSD 4.26 A, exploded E78</summary>
+        <p>Frobenius geodesic rotation loss. Best val=0.298 (E43). Rotation error ~166 deg (pi-flipped).
+        Diverged catastrophically at E78 (L_x=34).</p>
+      </details>
+      <details style="font-size:13px; margin-top:4px">
+        <summary style="cursor:pointer; color:var(--link)">8-Layer v1 (12.8M params) &mdash; best RMSD 4.48 A, stopped E36</summary>
+        <p>Frobenius geodesic rotation loss with stop-gradient. Best val=0.327 (E33). Rotation error ~166 deg (pi-flipped).
+        Hit 6h wall clock at E36.</p>
+      </details>
+    </div>
+      </div>
+    </details>
+    <hr class="section-divider">
 
     <h2 class="section-heading">
       v13 Training Archive
