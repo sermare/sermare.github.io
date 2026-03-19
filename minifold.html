@@ -445,6 +445,69 @@
       </script>
     </div>
 
+
+    <!-- HOURLY_START:v3 -->
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Hourly Tracking (auto-generated)</h3>
+      <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">
+        Auto-generated every hour. Showing 2 of 2 total runs. One random sample per run, ProteinMPNN &rarr; AF2 designability.
+        <strong>Top:</strong> backbone. <strong>Bottom:</strong> AF2 best.
+      </p>
+
+      <div style="overflow-x:auto; margin-bottom:12px;">
+      <table class="metrics-table" style="width:100%; font-size:11px;">
+        <thead><tr><th>Time</th><th>MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD</th></tr></thead>
+        <tbody>
+          <tr><td>mar 18 10:23pm</td><td>1.311</td><td style="color:#2ca02c">0.823</td><td style="color:#2ca02c">0.532</td><td>9.7</td><td>29.0</td></tr>
+          <tr><td>mar 18 11:23pm</td><td>0.769</td><td>0.383</td><td>0.201</td><td>19.9</td><td>16.3</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px;">
+        <div>
+          <div id="v3-hourly-bb-0" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">mar 18 10:23pm</p>
+        </div>
+        <div>
+          <div id="v3-hourly-bb-1" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">mar 18 11:23pm</p>
+        </div>
+        <div>
+          <div id="v3-hourly-af-0" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2</p>
+        </div>
+        <div>
+          <div id="v3-hourly-af-1" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2</p>
+        </div>
+      </div>
+
+      <script>
+      (function(){
+        var bbFiles = ['data/training/pdbs/v3_hourly_20260318_2223.pdb', 'data/training/pdbs/v3_hourly_20260318_2323.pdb'];
+        var afFiles = ['data/training/pdbs/v3_hourly_20260318_2223_af2.pdb', 'data/training/pdbs/v3_hourly_20260318_2323_af2.pdb'];
+        bbFiles.forEach(function(f,i){
+          var el = document.getElementById("v3-hourly-bb-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+        afFiles.forEach(function(f,i){
+          var el = document.getElementById("v3-hourly-af-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+      })();
+      </script>
+    </div>
+    <!-- HOURLY_END:v3 -->
     </div>
 
     <!-- ============================================================== -->
@@ -665,6 +728,69 @@
       </script>
     </div>
 
+
+    <!-- HOURLY_START:v4 -->
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Hourly Tracking (auto-generated)</h3>
+      <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">
+        Auto-generated every hour. Showing 2 of 2 total runs. One random sample per run, ProteinMPNN &rarr; AF2 designability.
+        <strong>Top:</strong> backbone. <strong>Bottom:</strong> AF2 best.
+      </p>
+
+      <div style="overflow-x:auto; margin-bottom:12px;">
+      <table class="metrics-table" style="width:100%; font-size:11px;">
+        <thead><tr><th>Time</th><th>MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD</th></tr></thead>
+        <tbody>
+          <tr><td>mar 18 10:23pm</td><td>0.880</td><td>0.401</td><td>0.159</td><td>20.6</td><td>15.3</td></tr>
+          <tr><td>mar 18 11:23pm</td><td>1.688</td><td>0.497</td><td>0.267</td><td>18.4</td><td style="color:#2ca02c">13.2</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px;">
+        <div>
+          <div id="v4-hourly-bb-0" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">mar 18 10:23pm</p>
+        </div>
+        <div>
+          <div id="v4-hourly-bb-1" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">mar 18 11:23pm</p>
+        </div>
+        <div>
+          <div id="v4-hourly-af-0" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2</p>
+        </div>
+        <div>
+          <div id="v4-hourly-af-1" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2</p>
+        </div>
+      </div>
+
+      <script>
+      (function(){
+        var bbFiles = ['data/training/pdbs/v4_hourly_20260318_2223.pdb', 'data/training/pdbs/v4_hourly_20260318_2323.pdb'];
+        var afFiles = ['data/training/pdbs/v4_hourly_20260318_2223_af2.pdb', 'data/training/pdbs/v4_hourly_20260318_2323_af2.pdb'];
+        bbFiles.forEach(function(f,i){
+          var el = document.getElementById("v4-hourly-bb-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+        afFiles.forEach(function(f,i){
+          var el = document.getElementById("v4-hourly-af-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+      })();
+      </script>
+    </div>
+    <!-- HOURLY_END:v4 -->
     </div>
 
     <!-- ============================================================== -->
@@ -842,6 +968,69 @@
       </script>
     </div>
 
+
+    <!-- HOURLY_START:mini -->
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Hourly Tracking (auto-generated)</h3>
+      <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">
+        Auto-generated every hour. Showing 2 of 2 total runs. One random sample per run, ProteinMPNN &rarr; AF2 designability.
+        <strong>Top:</strong> backbone. <strong>Bottom:</strong> AF2 best.
+      </p>
+
+      <div style="overflow-x:auto; margin-bottom:12px;">
+      <table class="metrics-table" style="width:100%; font-size:11px;">
+        <thead><tr><th>Time</th><th>MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD</th></tr></thead>
+        <tbody>
+          <tr><td>mar 18 10:23pm</td><td>0.757</td><td>0.384</td><td>0.199</td><td>21.4</td><td>19.2</td></tr>
+          <tr><td>mar 18 11:23pm</td><td>0.833</td><td>0.404</td><td>0.241</td><td>18.7</td><td>16.5</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px;">
+        <div>
+          <div id="mini-hourly-bb-0" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">mar 18 10:23pm</p>
+        </div>
+        <div>
+          <div id="mini-hourly-bb-1" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">mar 18 11:23pm</p>
+        </div>
+        <div>
+          <div id="mini-hourly-af-0" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2</p>
+        </div>
+        <div>
+          <div id="mini-hourly-af-1" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2</p>
+        </div>
+      </div>
+
+      <script>
+      (function(){
+        var bbFiles = ['data/training/pdbs/mini_hourly_20260318_2223.pdb', 'data/training/pdbs/mini_hourly_20260318_2323.pdb'];
+        var afFiles = ['data/training/pdbs/mini_hourly_20260318_2223_af2.pdb', 'data/training/pdbs/mini_hourly_20260318_2323_af2.pdb'];
+        bbFiles.forEach(function(f,i){
+          var el = document.getElementById("mini-hourly-bb-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+        afFiles.forEach(function(f,i){
+          var el = document.getElementById("mini-hourly-af-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+      })();
+      </script>
+    </div>
+    <!-- HOURLY_END:mini -->
     </div>
 
     <!-- ============================================================== -->
@@ -1054,6 +1243,69 @@
       </script>
     </div>
 
+
+    <!-- HOURLY_START:tiny -->
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Hourly Tracking (auto-generated)</h3>
+      <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">
+        Auto-generated every hour. Showing 2 of 2 total runs. One random sample per run, ProteinMPNN &rarr; AF2 designability.
+        <strong>Top:</strong> backbone. <strong>Bottom:</strong> AF2 best.
+      </p>
+
+      <div style="overflow-x:auto; margin-bottom:12px;">
+      <table class="metrics-table" style="width:100%; font-size:11px;">
+        <thead><tr><th>Time</th><th>MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD</th></tr></thead>
+        <tbody>
+          <tr><td>mar 18 10:23pm</td><td>0.111</td><td>0.332</td><td>0.148</td><td>21.2</td><td>21.4</td></tr>
+          <tr><td>mar 18 11:23pm</td><td>0.107</td><td>0.332</td><td>0.148</td><td>21.2</td><td>21.5</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px;">
+        <div>
+          <div id="tiny-hourly-bb-0" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">mar 18 10:23pm</p>
+        </div>
+        <div>
+          <div id="tiny-hourly-bb-1" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">mar 18 11:23pm</p>
+        </div>
+        <div>
+          <div id="tiny-hourly-af-0" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2</p>
+        </div>
+        <div>
+          <div id="tiny-hourly-af-1" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2</p>
+        </div>
+      </div>
+
+      <script>
+      (function(){
+        var bbFiles = ['data/training/pdbs/tiny_hourly_20260318_2223.pdb', 'data/training/pdbs/tiny_hourly_20260318_2323.pdb'];
+        var afFiles = ['data/training/pdbs/tiny_hourly_20260318_2223_af2.pdb', 'data/training/pdbs/tiny_hourly_20260318_2323_af2.pdb'];
+        bbFiles.forEach(function(f,i){
+          var el = document.getElementById("tiny-hourly-bb-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+        afFiles.forEach(function(f,i){
+          var el = document.getElementById("tiny-hourly-af-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+      })();
+      </script>
+    </div>
+    <!-- HOURLY_END:tiny -->
     </div>
 
     <!-- ============================================================== -->
