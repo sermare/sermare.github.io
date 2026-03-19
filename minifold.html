@@ -382,49 +382,84 @@
     </div>
 
     <div class="timeline-section">
-      <h3 style="margin-top:0">Generated Structures &amp; Designability (epoch 24 checkpoint)</h3>
+      <h3 style="margin-top:0">Designability Evaluation (100 backbones)</h3>
       <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
-        100-residue backbones sampled with 500 reverse SDE steps, &zeta;=0.1.
-        ProteinMPNN (8 seqs, temp=0.1) &rarr; AlphaFold2 (model_1_ptm, 3 recycles).
-        <strong>Top row:</strong> generated backbone. <strong>Bottom row:</strong> AF2 prediction of best MPNN sequence.
+        100&times; L=100 backbones, 500 reverse SDE steps, &zeta;=0.1.
+        Each backbone sequence-designed with ProteinMPNN (8 seqs, temp=0.1, rm_aa=C) then validated with AlphaFold2 (model_1_ptm, 3 recycles).
+        Metrics computed on best-of-8 AF2 predictions per backbone.
       </p>
 
-      <div style="overflow-x:auto; margin-bottom:16px;">
+      <!-- Aggregate metrics -->
+      <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; margin-bottom:16px;">
+        <div style="background:var(--bg-secondary); padding:12px; border-radius:8px; text-align:center;">
+          <div style="font-size:24px; font-weight:700; color:#d73a49;">0.0%</div>
+          <div style="font-size:11px; color:var(--text-secondary);">scRMSD &lt; 2&Aring;</div>
+        </div>
+        <div style="background:var(--bg-secondary); padding:12px; border-radius:8px; text-align:center;">
+          <div style="font-size:24px; font-weight:700; color:#e36209;">1.0%</div>
+          <div style="font-size:11px; color:var(--text-secondary);">scRMSD &lt; 5&Aring;</div>
+        </div>
+        <div style="background:var(--bg-secondary); padding:12px; border-radius:8px; text-align:center;">
+          <div style="font-size:24px; font-weight:700; color:#2ca02c;">37.0%</div>
+          <div style="font-size:11px; color:var(--text-secondary);">scTM &gt; 0.5</div>
+        </div>
+        <div style="background:var(--bg-secondary); padding:12px; border-radius:8px; text-align:center;">
+          <div style="font-size:24px; font-weight:700; color:#1772d0;">26.0%</div>
+          <div style="font-size:11px; color:var(--text-secondary);">pLDDT &gt; 0.7</div>
+        </div>
+        <div style="background:var(--bg-secondary); padding:12px; border-radius:8px; text-align:center;">
+          <div style="font-size:24px; font-weight:700;">15.4&Aring;</div>
+          <div style="font-size:11px; color:var(--text-secondary);">Median scRMSD</div>
+        </div>
+      </div>
+
+      <!-- scRMSD histogram -->
+      <div style="text-align:center; margin-bottom:16px;">
+        <img src="data/training/v3_eval_rmsd_hist.png" alt="scRMSD distribution" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+
+      <!-- Best 2 structures table -->
+      <h4 style="margin-top:20px; margin-bottom:8px;">Best Designable Backbones (scRMSD &lt; 10&Aring;)</h4>
+      <div style="overflow-x:auto; margin-bottom:12px;">
       <table class="metrics-table" style="width:100%; font-size:12px;">
         <thead>
-          <tr><th>Sample</th><th>Best MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD (&Aring;)</th><th>Best Sequence</th></tr>
+          <tr><th>Rank</th><th>MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>scRMSD (&Aring;)</th><th>Best Sequence</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>0</strong></td><td>1.387</td><td>0.753</td><td>0.488</td><td>9.92</td><td>17.76</td><td style="font-family:monospace;font-size:10px;word-break:break-all">EPEALLLGLGLAGLLLLSLLSEALLAALLLGGGGGGVGGGGVLLLLLLLLGLLLSQLLLALEALEGLGLLGLPLLLGAGLGGLLLLLEELLKQLGLVALL</td></tr>
-          <tr><td><strong>1</strong></td><td>1.443</td><td style="color:#2ca02c"><strong>0.844</strong></td><td style="color:#2ca02c"><strong>0.508</strong></td><td>10.45</td><td style="color:#2ca02c"><strong>9.55</strong></td><td style="font-family:monospace;font-size:10px;word-break:break-all">EEKKKKKLKELKKKKKLELKLSKLLQQLQLQLLLKLLLLLLKLQLLLLQQLLLLLLLALLLLAALLGLLSSPLLAEELLPLLLLLLLLLLALPLDLLAEL</td></tr>
+          <tr style="color:#2ca02c"><td><strong>1</strong></td><td>0.916</td><td style="color:#2ca02c"><strong>0.948</strong></td><td>0.536</td><td>8.6</td><td style="color:#2ca02c"><strong>4.04</strong></td><td style="font-family:monospace;font-size:10px;word-break:break-all">LSGLLLLLLELLLLLLLLLLLELLLLLLLLLQLLLELLQLLLLLELLLLLLLLQLLLLLLLLLLLLLLLQLLLQLLLLLLLLQQQQLQQLLQLQLLLQLE</td></tr>
+          <tr><td><strong>2</strong></td><td>1.452</td><td>0.875</td><td style="color:#2ca02c"><strong>0.649</strong></td><td style="color:#2ca02c"><strong>5.5</strong></td><td>8.70</td><td style="font-family:monospace;font-size:10px;word-break:break-all">LLAGLLGLLLLLLLPLLLLLLLLLLAALLPELLLELLLLAALLLLLLLLLPLLLLLALLLLLLLLGLLLLLDPALALLLLLPLLLLLLLALLLLLELLLL</td></tr>
         </tbody>
       </table>
       </div>
 
+      <!-- 3D viewers: 2 columns, backbone + AF2 -->
+      <p style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">
+        <strong>Top:</strong> Generated backbone (poly-GLY). <strong>Bottom:</strong> AF2 prediction of best MPNN sequence. Drag to rotate, scroll to zoom.
+      </p>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div>
-          <div id="v3-viewer-0" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 0</p>
+          <div id="v3-eval-bb-0" style="height:260px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone &mdash; scRMSD=4.04&Aring;</p>
         </div>
         <div>
-          <div id="v3-viewer-1" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 1</p>
+          <div id="v3-eval-bb-1" style="height:260px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone &mdash; scRMSD=8.70&Aring;</p>
         </div>
         <div>
-          <div id="v3-af-0" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 0</p>
+          <div id="v3-eval-af-0" style="height:260px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 prediction &mdash; pLDDT=0.948</p>
         </div>
         <div>
-          <div id="v3-af-1" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 1</p>
+          <div id="v3-eval-af-1" style="height:260px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 prediction &mdash; pLDDT=0.875</p>
         </div>
       </div>
       <script>
       (function(){
-        var bbFiles = ['data/training/pdbs/v3_000_L100.pdb','data/training/pdbs/v3_001_L100.pdb'];
-        var afFiles = ['data/training/pdbs/v3_000_af2_best.pdb','data/training/pdbs/v3_001_af2_best.pdb'];
+        var bbFiles = ['data/training/pdbs/v3_eval_best1_backbone.pdb','data/training/pdbs/v3_eval_best2_backbone.pdb'];
+        var afFiles = ['data/training/pdbs/v3_eval_best1_af2.pdb','data/training/pdbs/v3_eval_best2_af2.pdb'];
         bbFiles.forEach(function(f,i){
-          var el = document.getElementById('v3-viewer-'+i);
+          var el = document.getElementById('v3-eval-bb-'+i);
           if(!el) return;
           var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
           fetch(f).then(function(r){return r.text()}).then(function(pdb){
@@ -435,7 +470,7 @@
           });
         });
         afFiles.forEach(function(f,i){
-          var el = document.getElementById('v3-af-'+i);
+          var el = document.getElementById('v3-eval-af-'+i);
           if(!el) return;
           var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
           fetch(f).then(function(r){return r.text()}).then(function(pdb){
@@ -447,8 +482,20 @@
         });
       })();
       </script>
-    </div>
 
+      <!-- Sequence logos -->
+      <h4 style="margin-top:20px; margin-bottom:8px;">Sequence Logos (MPNN-designed sequences)</h4>
+      <div style="margin-bottom:8px;">
+        <img src="data/training/v3_eval_best1_logo.png" alt="Sequence logo best 1" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <div style="margin-bottom:8px;">
+        <img src="data/training/v3_eval_best2_logo.png" alt="Sequence logo best 2" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <p style="font-size:11px; color:var(--text-secondary);">
+        Both backbones show strong leucine dominance with positional conservation of charged residues (E, K, Q).
+        The best design (4.04&Aring;) is almost entirely helical (L-rich), while the 2nd (8.70&Aring;) shows more structural diversity with proline kinks and glycine turns.
+      </p>
+    </div>
 
     <!-- HOURLY_START:v3 -->
 
