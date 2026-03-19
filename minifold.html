@@ -201,6 +201,7 @@
 
     <div class="mf-tabs">
       <button class="mf-tab active" onclick="switchTab('framediff')">FrameDiff</button>
+      <button class="mf-tab" onclick="switchTab('fdv4')">FD-v4</button>
       <button class="mf-tab" onclick="switchTab('fdmini')">FD-Mini</button>
       <button class="mf-tab" onclick="switchTab('fdtiny')">FD-Tiny</button>
       <button class="mf-tab" onclick="switchTab('folding')">Training Progress</button>
@@ -404,6 +405,116 @@
             viewer.render();
           });
         });
+      })();
+      </script>
+    </div>
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!--  TAB: FD-V4 — Same model, expanded data (17.5K chains)         -->
+    <!-- ============================================================== -->
+    <div id="tab-fdv4" class="mf-panel">
+
+    <h2 class="section-heading">FrameDiff v4: Expanded Data Ablation</h2>
+    <p style="color:var(--text-secondary); margin-bottom:18px;">
+      Same 24.9M model as v3, same schedule. max_len=512 &rarr; 17,547 train chains (vs v3's 10,125). Tests whether data size is the bottleneck.
+      <span style="background:#e3620922; color:#e36209; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; margin-left:6px;">PENDING</span>
+    </p>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Comparison: v3 vs v4</h3>
+      <table class="metrics-table" style="width:100%; font-size:13px;">
+        <thead><tr><th></th><th>v3</th><th>v4</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Model</strong></td><td>8L, 24.9M, d=256</td><td>8L, 24.9M, d=256 (identical)</td></tr>
+          <tr><td><strong>Noise</strong></td><td>&sigma;<sub>max</sub>=1.5, &beta;<sub>max</sub>=20</td><td>&sigma;<sub>max</sub>=1.5, &beta;<sub>max</sub>=20 (identical)</td></tr>
+          <tr><td><strong>Max length</strong></td><td>256</td><td style="color:#2ca02c"><strong>512</strong></td></tr>
+          <tr><td><strong>Train chains</strong></td><td>10,125</td><td style="color:#2ca02c"><strong>17,547 (+73%)</strong></td></tr>
+          <tr><td><strong>Val chains</strong></td><td>448</td><td style="color:#2ca02c"><strong>580</strong></td></tr>
+          <tr><td><strong>Hardware</strong></td><td>2&times; A40</td><td>2&times; A40</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Training Progress</h3>
+      <div style="overflow-x:auto">
+      <table id="fdv4-table" class="metrics-table" style="width:100%; font-size:13px;">
+        <thead>
+          <tr><th>Epoch</th><th>L_x</th><th>L_r</th><th>Rot Err</th><th>RMSD</th><th>Val Total</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="7" style="text-align:center; color:var(--text-secondary); font-style:italic;">Waiting for resources&hellip; V3 finishes in ~2h, then V4 starts.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p style="color:var(--text-secondary); font-size:12px; margin-top:8px; margin-bottom:0">
+        <em id="fdv4-updated">Queued. Will start when V3's A40 allocation frees up.</em>
+      </p>
+    </div>
+
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Training Curves</h3>
+      <div id="fdv4-charts" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <p style="color:var(--text-secondary); font-style:italic; grid-column:1/-1; text-align:center;">Charts will appear once training starts.</p>
+      </div>
+      <script>
+      (function(){
+        var D = {
+          ep: [],
+          val_total: [],
+          Lx: [],
+          Lr: [],
+          rot: [],
+          rmsd: []
+        };
+        if(D.ep.length === 0) return;
+        var W=340, H=180, pad={t:24,r:16,b:28,l:48};
+        var pw=W-pad.l-pad.r, ph=H-pad.t-pad.b;
+        function chart(title, series, colors) {
+          var allVals = [];
+          series.forEach(function(s){ s.forEach(function(v){ if(v!==null) allVals.push(v); }); });
+          var yMin = Math.min.apply(null, allVals), yMax = Math.max.apply(null, allVals);
+          var yPad = (yMax-yMin)*0.1 || 0.1;
+          yMin -= yPad; yMax += yPad;
+          var xMax = Math.max(D.ep.length - 1, 1);
+          function xP(i){ return pad.l + (i/xMax)*pw; }
+          function yP(v){ return pad.t + (1-(v-yMin)/(yMax-yMin))*ph; }
+          var isDark = document.documentElement.getAttribute('data-theme')==='dark';
+          var axisC = isDark ? '#8b949e' : '#999';
+          var gridC = isDark ? '#21262d' : '#f0f0f0';
+          var svg = '<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;max-width:'+W+'px">';
+          svg += '<rect width="'+W+'" height="'+H+'" fill="'+(isDark?'#0d1117':'#fff')+'" rx="6"/>';
+          svg += '<text x="'+W/2+'" y="16" text-anchor="middle" fill="'+axisC+'" font-size="12" font-weight="600">'+title+'</text>';
+          for(var g=0;g<5;g++){
+            var v=yMin+(yMax-yMin)*g/4, y=yP(v);
+            svg += '<line x1="'+pad.l+'" y1="'+y+'" x2="'+(W-pad.r)+'" y2="'+y+'" stroke="'+gridC+'" stroke-width="0.5"/>';
+            svg += '<text x="'+(pad.l-4)+'" y="'+(y+3)+'" text-anchor="end" fill="'+axisC+'" font-size="9">'+v.toFixed(2)+'</text>';
+          }
+          series.forEach(function(s, si){
+            var pts = [];
+            D.ep.forEach(function(e, i){ if(s[i]!==null) pts.push(xP(i)+','+yP(s[i])); });
+            if(pts.length>1) svg += '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+colors[si]+'" stroke-width="1.8" stroke-linejoin="round"/>';
+            pts.forEach(function(p){ svg += '<circle cx="'+p.split(',')[0]+'" cy="'+p.split(',')[1]+'" r="2.5" fill="'+colors[si]+'"/>'; });
+          });
+          svg += '</svg>';
+          return svg;
+        }
+        var c = document.getElementById('fdv4-charts');
+        if(!c) return;
+        function draw(){
+          var isDark = document.documentElement.getAttribute('data-theme')==='dark';
+          var blue=isDark?'#58a6ff':'#1772d0', red=isDark?'#f85149':'#d73a49', green=isDark?'#3fb950':'#22863a', orange=isDark?'#d29922':'#e36209';
+          c.innerHTML =
+            '<div>'+chart('Val Total Loss', [D.val_total], [blue])+'</div>'+
+            '<div>'+chart('Translation Loss (L_x)', [D.Lx], [blue])+'</div>'+
+            '<div>'+chart('Rotation Loss (L_r)', [D.Lr], [red])+'</div>'+
+            '<div>'+chart('Rotation Error (deg)', [D.rot], [orange])+'</div>';
+        }
+        draw();
+        var obs = new MutationObserver(draw);
+        obs.observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
       })();
       </script>
     </div>
