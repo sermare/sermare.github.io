@@ -378,25 +378,60 @@
     </div>
 
     <div class="timeline-section">
-      <h3 style="margin-top:0">Generated Structures (epoch 24 checkpoint)</h3>
+      <h3 style="margin-top:0">Generated Structures &amp; Designability (epoch 24 checkpoint)</h3>
       <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
-        100-residue backbones sampled with 500 reverse SDE steps, &zeta;=0.1. Drag to rotate, scroll to zoom.
+        100-residue backbones sampled with 500 reverse SDE steps, &zeta;=0.1.
+        ProteinMPNN (8 seqs, temp=0.1) &rarr; AlphaFold2 (model_1_ptm, 3 recycles).
+        <strong>Top row:</strong> generated backbone. <strong>Bottom row:</strong> AF2 prediction of best MPNN sequence.
       </p>
+
+      <div style="overflow-x:auto; margin-bottom:16px;">
+      <table class="metrics-table" style="width:100%; font-size:12px;">
+        <thead>
+          <tr><th>Sample</th><th>Best MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD (&Aring;)</th><th>Best Sequence</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>0</strong></td><td>1.387</td><td>0.753</td><td>0.488</td><td>9.92</td><td>17.76</td><td style="font-family:monospace;font-size:10px;word-break:break-all">EPEALLLGLGLAGLLLLSLLSEALLAALLLGGGGGGVGGGGVLLLLLLLLGLLLSQLLLALEALEGLGLLGLPLLLGAGLGGLLLLLEELLKQLGLVALL</td></tr>
+          <tr><td><strong>1</strong></td><td>1.443</td><td style="color:#2ca02c"><strong>0.844</strong></td><td style="color:#2ca02c"><strong>0.508</strong></td><td>10.45</td><td style="color:#2ca02c"><strong>9.55</strong></td><td style="font-family:monospace;font-size:10px;word-break:break-all">EEKKKKKLKELKKKKKLELKLSKLLQQLQLQLLLKLLLLLLKLQLLLLQQLLLLLLLALLLLAALLGLLSSPLLAEELLPLLLLLLLLLLALPLDLLAEL</td></tr>
+        </tbody>
+      </table>
+      </div>
+
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div>
-          <div id="v3-viewer-0" style="height:280px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 0</p>
+          <div id="v3-viewer-0" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 0</p>
         </div>
         <div>
-          <div id="v3-viewer-1" style="height:280px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 1</p>
+          <div id="v3-viewer-1" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 1</p>
+        </div>
+        <div>
+          <div id="v3-af-0" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 0</p>
+        </div>
+        <div>
+          <div id="v3-af-1" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 1</p>
         </div>
       </div>
       <script>
       (function(){
-        var files = ['data/training/pdbs/v3_000_L100.pdb','data/training/pdbs/v3_001_L100.pdb'];
-        files.forEach(function(f,i){
+        var bbFiles = ['data/training/pdbs/v3_000_L100.pdb','data/training/pdbs/v3_001_L100.pdb'];
+        var afFiles = ['data/training/pdbs/v3_000_af2_best.pdb','data/training/pdbs/v3_001_af2_best.pdb'];
+        bbFiles.forEach(function(f,i){
           var el = document.getElementById('v3-viewer-'+i);
+          if(!el) return;
+          var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            viewer.addModel(pdb,'pdb');
+            viewer.setStyle({},{cartoon:{color:'spectrum'}});
+            viewer.zoomTo();
+            viewer.render();
+          });
+        });
+        afFiles.forEach(function(f,i){
+          var el = document.getElementById('v3-af-'+i);
           if(!el) return;
           var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
           fetch(f).then(function(r){return r.text()}).then(function(pdb){
@@ -738,25 +773,60 @@
     </div>
 
     <div class="timeline-section">
-      <h3 style="margin-top:0">Generated Structures (epoch 21 checkpoint)</h3>
+      <h3 style="margin-top:0">Generated Structures &amp; Designability (epoch 21 checkpoint)</h3>
       <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
-        100-residue backbones, 500 steps, &zeta;=0.1. Drag to rotate, scroll to zoom.
+        100-residue backbones, 500 steps, &zeta;=0.1.
+        ProteinMPNN (8 seqs, temp=0.1) &rarr; AlphaFold2 (model_1_ptm, 3 recycles).
+        <strong>Top row:</strong> generated backbone. <strong>Bottom row:</strong> AF2 prediction of best MPNN sequence.
       </p>
+
+      <div style="overflow-x:auto; margin-bottom:16px;">
+      <table class="metrics-table" style="width:100%; font-size:12px;">
+        <thead>
+          <tr><th>Sample</th><th>Best MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD (&Aring;)</th><th>Best Sequence</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>0</strong></td><td>1.572</td><td>0.857</td><td style="color:#2ca02c"><strong>0.593</strong></td><td style="color:#2ca02c"><strong>8.48</strong></td><td>21.12</td><td style="font-family:monospace;font-size:10px;word-break:break-all">ALGLLLLLLGLLALLLLLLLLPLLEGAELLEAAGLRLLAALLLLHRLLALLELLLELLLLALLLLGGLLLLLALAAALGELGLLLLLLPLLALLLLLLLG</td></tr>
+          <tr><td><strong>1</strong></td><td>1.035</td><td>0.463</td><td>0.270</td><td>18.72</td><td style="color:#2ca02c"><strong>15.24</strong></td><td style="font-family:monospace;font-size:10px;word-break:break-all">AEALAAGAGGGLALGAALELLAAAGALGGGGGAAAAAGAGGGGGGGAAAGGGLAGGGGGGGAGGSLGAGTGGLGGGAAGAAGGGGGLGGLLGGAAAGAAG</td></tr>
+        </tbody>
+      </table>
+      </div>
+
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div>
-          <div id="mini-viewer-0" style="height:280px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 0</p>
+          <div id="mini-viewer-0" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 0</p>
         </div>
         <div>
-          <div id="mini-viewer-1" style="height:280px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 1</p>
+          <div id="mini-viewer-1" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 1</p>
+        </div>
+        <div>
+          <div id="mini-af-0" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 0</p>
+        </div>
+        <div>
+          <div id="mini-af-1" style="height:240px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 1</p>
         </div>
       </div>
       <script>
       (function(){
-        var files = ['data/training/pdbs/mini_000_L100.pdb','data/training/pdbs/mini_001_L100.pdb'];
-        files.forEach(function(f,i){
+        var bbFiles = ['data/training/pdbs/mini_000_L100.pdb','data/training/pdbs/mini_001_L100.pdb'];
+        var afFiles = ['data/training/pdbs/mini_000_af2_best.pdb','data/training/pdbs/mini_001_af2_best.pdb'];
+        bbFiles.forEach(function(f,i){
           var el = document.getElementById('mini-viewer-'+i);
+          if(!el) return;
+          var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            viewer.addModel(pdb,'pdb');
+            viewer.setStyle({},{cartoon:{color:'spectrum'}});
+            viewer.zoomTo();
+            viewer.render();
+          });
+        });
+        afFiles.forEach(function(f,i){
+          var el = document.getElementById('mini-af-'+i);
           if(!el) return;
           var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
           fetch(f).then(function(r){return r.text()}).then(function(pdb){
@@ -880,39 +950,95 @@
     </div>
 
     <div class="timeline-section">
-      <h3 style="margin-top:0">Generated Structures (best checkpoint)</h3>
+      <h3 style="margin-top:0">Generated Structures &amp; Designability (best checkpoint)</h3>
       <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
-        100-residue backbones, 500 steps, &zeta;=0.1. Drag to rotate, scroll to zoom.
+        100-residue backbones, 500 steps, &zeta;=0.1.
+        ProteinMPNN (8 seqs, temp=0.1) &rarr; AlphaFold2 (model_1_ptm, 3 recycles).
+        <strong>Top row:</strong> generated backbone. <strong>Bottom row:</strong> AF2 prediction of best MPNN sequence.
       </p>
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+
+      <div style="overflow-x:auto; margin-bottom:16px;">
+      <table class="metrics-table" style="width:100%; font-size:12px;">
+        <thead>
+          <tr><th>Sample</th><th>Best MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD (&Aring;)</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>0</strong></td><td>0.191</td><td>0.344</td><td>0.156</td><td>21.38</td><td>22.19</td><td style="color:#d9534f">&gt;95% Glycine &mdash; failed</td></tr>
+          <tr><td><strong>1</strong></td><td>0.298</td><td>0.369</td><td>0.149</td><td>21.95</td><td>20.48</td><td style="color:#d9534f">&gt;95% Glycine &mdash; failed</td></tr>
+          <tr><td><strong>2</strong></td><td>0.217</td><td>0.385</td><td>0.166</td><td>22.25</td><td>20.56</td><td style="color:#d9534f">&gt;95% Glycine &mdash; failed</td></tr>
+          <tr><td><strong>3</strong></td><td>0.184</td><td>0.359</td><td>0.154</td><td>21.33</td><td>20.91</td><td style="color:#d9534f">&gt;95% Glycine &mdash; failed</td></tr>
+          <tr><td><strong>4</strong></td><td>0.243</td><td>0.361</td><td>0.151</td><td>21.39</td><td>19.80</td><td style="color:#d9534f">&gt;95% Glycine &mdash; failed</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p style="font-size:12px; color:#d9534f; margin-bottom:16px;">
+        All 5 samples produce &gt;95% glycine sequences. MPNN cannot find valid sequences for these backbones &mdash; the geometry is not protein-like.
+        AF2 predicts random coil (pLDDT ~0.35, pTM ~0.15).
+      </p>
+
+      <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px;">
         <div>
-          <div id="tiny-viewer-0" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 0</p>
+          <div id="tiny-viewer-0" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 0</p>
         </div>
         <div>
-          <div id="tiny-viewer-1" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 1</p>
+          <div id="tiny-viewer-1" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 1</p>
         </div>
         <div>
-          <div id="tiny-viewer-2" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 2</p>
+          <div id="tiny-viewer-2" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 2</p>
         </div>
         <div>
-          <div id="tiny-viewer-3" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 3</p>
+          <div id="tiny-viewer-3" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 3</p>
         </div>
         <div>
-          <div id="tiny-viewer-4" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
-          <p style="font-size:11px; color:var(--text-secondary); text-align:center; margin-top:4px;">Sample 4</p>
+          <div id="tiny-viewer-4" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 4</p>
+        </div>
+        <div>
+          <div id="tiny-af-0" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 0</p>
+        </div>
+        <div>
+          <div id="tiny-af-1" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 1</p>
+        </div>
+        <div>
+          <div id="tiny-af-2" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 2</p>
+        </div>
+        <div>
+          <div id="tiny-af-3" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 3</p>
+        </div>
+        <div>
+          <div id="tiny-af-4" style="height:180px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 4</p>
         </div>
       </div>
       <script>
       (function(){
-        var files = ['data/training/pdbs/tiny_000_L100.pdb','data/training/pdbs/tiny_001_L100.pdb',
+        var bbFiles = ['data/training/pdbs/tiny_000_L100.pdb','data/training/pdbs/tiny_001_L100.pdb',
                      'data/training/pdbs/tiny_002_L100.pdb','data/training/pdbs/tiny_003_L100.pdb',
                      'data/training/pdbs/tiny_004_L100.pdb'];
-        files.forEach(function(f,i){
+        var afFiles = ['data/training/pdbs/tiny_000_af2_best.pdb','data/training/pdbs/tiny_001_af2_best.pdb',
+                     'data/training/pdbs/tiny_002_af2_best.pdb','data/training/pdbs/tiny_003_af2_best.pdb',
+                     'data/training/pdbs/tiny_004_af2_best.pdb'];
+        bbFiles.forEach(function(f,i){
           var el = document.getElementById('tiny-viewer-'+i);
+          if(!el) return;
+          var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            viewer.addModel(pdb,'pdb');
+            viewer.setStyle({},{cartoon:{color:'spectrum'}});
+            viewer.zoomTo();
+            viewer.render();
+          });
+        });
+        afFiles.forEach(function(f,i){
+          var el = document.getElementById('tiny-af-'+i);
           if(!el) return;
           var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
           fetch(f).then(function(r){return r.text()}).then(function(pdb){
