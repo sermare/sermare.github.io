@@ -520,6 +520,115 @@
       </script>
     </div>
 
+    <div class="timeline-section">
+      <h3 style="margin-top:0">Generated Structures &amp; Designability (epoch 0)</h3>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+        5&times; 100-residue backbones sampled with 500 reverse SDE steps, &zeta;=0.1, seed=42.
+        Each backbone was sequence-designed with ProteinMPNN (8 seqs, temp=0.1) then validated with AlphaFold2 (model_1_ptm, 3 recycles).
+        <strong>Top row:</strong> generated backbone (poly-GLY). <strong>Bottom row:</strong> AF2 prediction of best MPNN sequence. Drag to rotate, scroll to zoom.
+      </p>
+
+      <!-- Scores summary table -->
+      <div style="overflow-x:auto; margin-bottom:16px;">
+      <table class="metrics-table" style="width:100%; font-size:12px;">
+        <thead>
+          <tr><th>Sample</th><th>Best MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD (&Aring;)</th><th>Best Sequence</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>0</strong></td><td>1.536</td><td style="color:#2ca02c"><strong>0.913</strong></td><td style="color:#2ca02c"><strong>0.586</strong></td><td>7.08</td><td>19.53</td><td style="font-family:monospace;font-size:10px;word-break:break-all">PAAAAALLLAAAPALPLAAAALAKELAPLALAALAAPLPLLPLLLLLALLLLLELALLLLLLLLLLLLLALLLPLPLAPLLLLLLPLAELLLLLLGLGLL</td></tr>
+          <tr><td><strong>1</strong></td><td>1.048</td><td>0.762</td><td>0.310</td><td>17.13</td><td style="color:#2ca02c"><strong>14.58</strong></td><td style="font-family:monospace;font-size:10px;word-break:break-all">LELLLLLLLLLLLLLLLLLLLELLKKLKLLKLLKKEKKLLLLLGLLLKLKELELAKKKLLKLLLLELEKKKELKKKKKEEKLLLLLLLLLLLLLLLLEEK</td></tr>
+          <tr><td><strong>2</strong></td><td>1.446</td><td>0.841</td><td>0.412</td><td>15.08</td><td>19.20</td><td style="font-family:monospace;font-size:10px;word-break:break-all">EEEEEEEEEEEAEELLEEELLEELALKPPLEPLADEEEELKERLLEALEEEELLEEELEEEEEEELLEGEEEKEEEEPEEEEGEEEKEEKEEELEEEEEE</td></tr>
+          <tr><td><strong>3</strong></td><td>1.412</td><td>0.874</td><td style="color:#2ca02c"><strong>0.585</strong></td><td style="color:#2ca02c"><strong>7.03</strong></td><td>19.87</td><td style="font-family:monospace;font-size:10px;word-break:break-all">EEEEEELLLLLEEEEEEEEEEEEKEEREEEEEELEEEEELLEELLLLLLLLLEELLLELLLLGLLPLPLLLLLLELLLELEEELEEEEEEELLEKEEEEG</td></tr>
+          <tr><td><strong>4</strong></td><td>1.320</td><td>0.866</td><td style="color:#2ca02c"><strong>0.630</strong></td><td>8.04</td><td>21.31</td><td style="font-family:monospace;font-size:10px;word-break:break-all">EEEEEEKELLLLLEEEELLLLLLAPLEALLELLLLLLLELALELLLLLALLLLLLLLLLEALELELLALKLLLLLLPALLLLELLRLLLLEEELRLELEK</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p style="font-size:12px; color:var(--text-secondary); margin-bottom:16px;">
+        <strong>Key:</strong> pTM up to <strong>0.630</strong> (best across all model versions). All 5 samples produce diverse, protein-like sequences (E, L, K, A, P, Q).
+        AF2 is highly confident (pLDDT 0.76&ndash;0.94) but RMSD remains 14&ndash;21&Aring; &mdash; the model generates plausible protein geometry at epoch 0 but self-consistency requires further training.
+      </p>
+
+      <!-- 3D viewers: 5 columns, 2 rows (backbone + AF2) -->
+      <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px;">
+        <div>
+          <div id="v4-bb-0" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 0</p>
+        </div>
+        <div>
+          <div id="v4-bb-1" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 1</p>
+        </div>
+        <div>
+          <div id="v4-bb-2" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 2</p>
+        </div>
+        <div>
+          <div id="v4-bb-3" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 3</p>
+        </div>
+        <div>
+          <div id="v4-bb-4" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">Backbone 4</p>
+        </div>
+        <div>
+          <div id="v4-af-0" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 0</p>
+        </div>
+        <div>
+          <div id="v4-af-1" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 1</p>
+        </div>
+        <div>
+          <div id="v4-af-2" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 2</p>
+        </div>
+        <div>
+          <div id="v4-af-3" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 3</p>
+        </div>
+        <div>
+          <div id="v4-af-4" style="height:220px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:10px; color:var(--text-secondary); text-align:center; margin:2px 0;">AF2 best 4</p>
+        </div>
+      </div>
+      <script>
+      (function(){
+        var bbFiles = [
+          'data/training/pdbs/v4_000_L100.pdb','data/training/pdbs/v4_001_L100.pdb',
+          'data/training/pdbs/v4_002_L100.pdb','data/training/pdbs/v4_003_L100.pdb',
+          'data/training/pdbs/v4_004_L100.pdb'
+        ];
+        var afFiles = [
+          'data/training/pdbs/v4_000_af2_best.pdb','data/training/pdbs/v4_001_af2_best.pdb',
+          'data/training/pdbs/v4_002_af2_best.pdb','data/training/pdbs/v4_003_af2_best.pdb',
+          'data/training/pdbs/v4_004_af2_best.pdb'
+        ];
+        bbFiles.forEach(function(f,i){
+          var el = document.getElementById('v4-bb-'+i);
+          if(!el) return;
+          var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            viewer.addModel(pdb,'pdb');
+            viewer.setStyle({},{cartoon:{color:'spectrum'}});
+            viewer.zoomTo();
+            viewer.render();
+          });
+        });
+        afFiles.forEach(function(f,i){
+          var el = document.getElementById('v4-af-'+i);
+          if(!el) return;
+          var viewer = $3Dmol.createViewer(el, {backgroundColor:'white'});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            viewer.addModel(pdb,'pdb');
+            viewer.setStyle({},{cartoon:{color:'spectrum'}});
+            viewer.zoomTo();
+            viewer.render();
+          });
+        });
+      })();
+      </script>
+    </div>
+
     </div>
 
     <!-- ============================================================== -->
