@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FrameDiff Structures Gallery</title>
+  <meta name="author" content="Sergio E. Mares">
+  <meta name="description" content="Generated protein structures from FrameDiff models with designability metrics">
+  <link rel="stylesheet" href="stylesheet.css">
+  <link rel="icon" type="image/png" href="data/avatar.png">
+  <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+  <style>
+    .metrics-table { border-collapse: collapse; }
+    .metrics-table th, .metrics-table td { padding: 4px 8px; border-bottom: 1px solid var(--border); text-align: center; }
+    .metrics-table th { font-weight: 600; font-size: 11px; color: var(--text-secondary); }
+    .model-nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    .model-nav a { padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 13px; color: white; }
+  </style>
+</head>
+<body>
+  <div class="content" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+
+    <h1 style="margin-bottom:8px;">FrameDiff Structures Gallery</h1>
+    <p style="color:var(--text-secondary); margin-bottom:24px;">
+      All generated protein backbones with ProteinMPNN sequence design and AlphaFold2 structure validation.
+      Organized by model. Updated automatically every hour.
+      <a href="minifold.html" style="margin-left:8px;">&larr; Back to Mini-Fold</a>
+    </p>
+
+    <!-- Model navigation -->
+    <div class="model-nav">
+      <a href="#model-v4" style="background:#e36209;">V4</a>
+      <a href="#model-v3" style="background:#1772d0;">V3</a>
+      <a href="#model-mini" style="background:#2ca02c;">MINI</a>
+      <a href="#model-tiny" style="background:#6f42c1;">TINY</a>
+    </div>
+
+    <div style="margin-bottom:32px;">
+      <h2>Cross-Model Comparison</h2>
+      <div style="text-align:center;">
+        <img src="data/training/all_models_comparison.png" alt="Cross-model comparison" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+    </div>
+
+    <div id="model-v4" style="margin-bottom:40px;">
+      <h2 style="border-left:4px solid #e36209; padding-left:12px; margin-top:32px;">FrameDiff v4 (24.9M, expanded data)</h2>
+      <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; margin-bottom:16px;">
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">16</div><div style="font-size:10px; color:var(--text-secondary);">Samples</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">?</div><div style="font-size:10px; color:var(--text-secondary);">Epochs</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">17.2Å</div><div style="font-size:10px; color:var(--text-secondary);">Med RMSD</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">13.2Å</div><div style="font-size:10px; color:var(--text-secondary);">Best RMSD</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.667</div><div style="font-size:10px; color:var(--text-secondary);">Med pLDDT</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.819</div><div style="font-size:10px; color:var(--text-secondary);">Best pLDDT</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.642</div><div style="font-size:10px; color:var(--text-secondary);">Best pTM</div></div>
+      </div>
+
+      <div style="text-align:center; margin-bottom:20px;">
+        <img src="data/training/v4_hourly_trends.png" alt="v4 metrics trends" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <h3 style="margin-top:24px;">100-Backbone Evaluation</h3>
+      <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:6px; margin-bottom:16px;">
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;">
+          <div style="font-size:18px; font-weight:700;">0.0%</div>
+          <div style="font-size:10px; color:var(--text-secondary);">scRMSD &lt; 5Å</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;">
+          <div style="font-size:18px; font-weight:700;">11.5%</div>
+          <div style="font-size:10px; color:var(--text-secondary);">scTM &gt; 0.5</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;">
+          <div style="font-size:18px; font-weight:700;">18.0Å</div>
+          <div style="font-size:10px; color:var(--text-secondary);">Med scRMSD</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;">
+          <div style="font-size:18px; font-weight:700;">0.685</div>
+          <div style="font-size:10px; color:var(--text-secondary);">Med pLDDT</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;">
+          <div style="font-size:18px; font-weight:700;">10.8Å</div>
+          <div style="font-size:10px; color:var(--text-secondary);">Best scRMSD</div></div>
+      </div>
+      <div style="text-align:center; margin-bottom:16px;">
+        <img src="data/training/v4_eval_rmsd_hist.png" alt="scRMSD histogram" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <div style="margin-bottom:8px;">
+        <img src="data/training/v4_eval_best1_logo.png" alt="Sequence logo 1" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <div style="margin-bottom:8px;">
+        <img src="data/training/v4_eval_best2_logo.png" alt="Sequence logo 2" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <h3 style="margin-top:24px;">All Hourly Samples (sorted by scRMSD)</h3>
+      <div style="overflow-x:auto; max-height:400px; overflow-y:auto; margin-bottom:16px;">
+      <table class="metrics-table" style="width:100%; font-size:11px;">
+        <thead style="position:sticky; top:0; background:var(--bg-primary);"><tr><th>#</th><th>Time</th><th>Epoch</th><th>MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Mar 18 23:23</td><td>?</td><td>1.688</td><td>0.497</td><td>0.267</td><td>18.4</td><td style="color:#2ca02c;font-weight:bold">13.2</td></tr>
+          <tr><td>2</td><td>Mar 19 02:30</td><td>?</td><td>1.534</td><td style="color:#2ca02c;font-weight:bold">0.754</td><td>0.397</td><td>16.6</td><td style="color:#2ca02c;font-weight:bold">13.7</td></tr>
+          <tr><td>3</td><td>Mar 19 15:22</td><td>?</td><td>1.819</td><td style="color:#2ca02c;font-weight:bold">0.707</td><td>0.458</td><td>15.7</td><td style="color:#2ca02c;font-weight:bold">14.7</td></tr>
+          <tr><td>4</td><td>Mar 19 10:25</td><td>?</td><td>1.459</td><td>0.697</td><td style="color:#2ca02c;font-weight:bold">0.642</td><td>6.7</td><td>15.1</td></tr>
+          <tr><td>5</td><td>Mar 18 22:23</td><td>?</td><td>0.880</td><td>0.401</td><td>0.159</td><td>20.6</td><td>15.3</td></tr>
+          <tr><td>6</td><td>Mar 19 00:23</td><td>?</td><td>1.522</td><td>0.697</td><td>0.343</td><td>15.8</td><td>15.5</td></tr>
+          <tr><td>7</td><td>Mar 19 03:29</td><td>?</td><td>1.576</td><td>0.653</td><td>0.232</td><td>21.6</td><td>16.7</td></tr>
+          <tr><td>8</td><td>Mar 19 04:34</td><td>?</td><td>1.598</td><td>0.646</td><td>0.304</td><td>19.6</td><td>16.9</td></tr>
+          <tr><td>9</td><td>Mar 19 08:29</td><td>?</td><td>1.540</td><td style="color:#2ca02c;font-weight:bold">0.819</td><td>0.436</td><td>12.3</td><td>17.5</td></tr>
+          <tr><td>10</td><td>Mar 19 05:31</td><td>?</td><td>1.979</td><td>0.574</td><td>0.339</td><td>17.3</td><td>18.6</td></tr>
+          <tr><td>11</td><td>Mar 19 07:29</td><td>?</td><td>1.206</td><td>0.629</td><td>0.260</td><td>18.5</td><td>19.2</td></tr>
+          <tr><td>12</td><td>Mar 19 12:28</td><td>?</td><td>1.668</td><td>0.681</td><td>0.444</td><td>14.0</td><td>20.4</td></tr>
+          <tr><td>13</td><td>Mar 19 06:29</td><td>?</td><td>1.691</td><td style="color:#2ca02c;font-weight:bold">0.796</td><td style="color:#2ca02c;font-weight:bold">0.550</td><td>9.5</td><td>20.5</td></tr>
+          <tr><td>14</td><td>Mar 19 14:17</td><td>?</td><td>1.722</td><td style="color:#2ca02c;font-weight:bold">0.816</td><td>0.427</td><td>15.6</td><td>21.8</td></tr>
+          <tr><td>15</td><td>Mar 19 01:33</td><td>?</td><td>1.826</td><td>0.629</td><td>0.230</td><td>20.4</td><td>22.5</td></tr>
+          <tr><td>16</td><td>Mar 19 16:22</td><td>?</td><td>1.763</td><td>0.618</td><td>0.330</td><td>18.5</td><td>25.6</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Top 4 Structures (by scRMSD)</h3>
+      <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;"><strong>Top:</strong> Generated backbone. <strong>Bottom:</strong> AF2 prediction.</p>
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;">
+        <div>
+          <div id="v4-all-bb-0" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=13.2Å — Mar 18 23:23</p>
+        </div>
+        <div>
+          <div id="v4-all-bb-1" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=13.7Å — Mar 19 02:30</p>
+        </div>
+        <div>
+          <div id="v4-all-bb-2" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=14.7Å — Mar 19 15:22</p>
+        </div>
+        <div>
+          <div id="v4-all-bb-3" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=15.1Å — Mar 19 10:25</p>
+        </div>
+        <div>
+          <div id="v4-all-af-0" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.497</p>
+        </div>
+        <div>
+          <div id="v4-all-af-1" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.754</p>
+        </div>
+        <div>
+          <div id="v4-all-af-2" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.707</p>
+        </div>
+        <div>
+          <div id="v4-all-af-3" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.697</p>
+        </div>
+      </div>
+      <script>
+      (function(){
+        var bb = ['data/training/pdbs/v4_hourly_20260318_2323.pdb', 'data/training/pdbs/v4_hourly_20260319_0230.pdb', 'data/training/pdbs/v4_hourly_20260319_1522.pdb', 'data/training/pdbs/v4_hourly_20260319_1025.pdb'];
+        var af = ['data/training/pdbs/v4_hourly_20260318_2323_af2.pdb', 'data/training/pdbs/v4_hourly_20260319_0230_af2.pdb', 'data/training/pdbs/v4_hourly_20260319_1522_af2.pdb', 'data/training/pdbs/v4_hourly_20260319_1025_af2.pdb'];
+        bb.forEach(function(f,i){
+          var el = document.getElementById("v4-all-bb-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+        af.forEach(function(f,i){
+          var el = document.getElementById("v4-all-af-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+      })();
+      </script>
+    </div>
+
+    <div id="model-v3" style="margin-bottom:40px;">
+      <h2 style="border-left:4px solid #1772d0; padding-left:12px; margin-top:32px;">FrameDiff v3 (24.9M)</h2>
+      <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; margin-bottom:16px;">
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">16</div><div style="font-size:10px; color:var(--text-secondary);">Samples</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">?</div><div style="font-size:10px; color:var(--text-secondary);">Epochs</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">16.4Å</div><div style="font-size:10px; color:var(--text-secondary);">Med RMSD</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">10.9Å</div><div style="font-size:10px; color:var(--text-secondary);">Best RMSD</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.400</div><div style="font-size:10px; color:var(--text-secondary);">Med pLDDT</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.823</div><div style="font-size:10px; color:var(--text-secondary);">Best pLDDT</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.532</div><div style="font-size:10px; color:var(--text-secondary);">Best pTM</div></div>
+      </div>
+
+      <div style="text-align:center; margin-bottom:20px;">
+        <img src="data/training/v3_hourly_trends.png" alt="v3 metrics trends" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <h3 style="margin-top:24px;">100-Backbone Evaluation</h3>
+      <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:6px; margin-bottom:16px;">
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;">
+          <div style="font-size:18px; font-weight:700;">0.0%</div>
+          <div style="font-size:10px; color:var(--text-secondary);">scRMSD &lt; 5Å</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;">
+          <div style="font-size:18px; font-weight:700;">49.0%</div>
+          <div style="font-size:10px; color:var(--text-secondary);">scTM &gt; 0.5</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;">
+          <div style="font-size:18px; font-weight:700;">18.0Å</div>
+          <div style="font-size:10px; color:var(--text-secondary);">Med scRMSD</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;">
+          <div style="font-size:18px; font-weight:700;">0.685</div>
+          <div style="font-size:10px; color:var(--text-secondary);">Med pLDDT</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;">
+          <div style="font-size:18px; font-weight:700;">10.8Å</div>
+          <div style="font-size:10px; color:var(--text-secondary);">Best scRMSD</div></div>
+      </div>
+      <div style="text-align:center; margin-bottom:16px;">
+        <img src="data/training/v3_eval_rmsd_hist.png" alt="scRMSD histogram" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <div style="margin-bottom:8px;">
+        <img src="data/training/v3_eval_best1_logo.png" alt="Sequence logo 1" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <div style="margin-bottom:8px;">
+        <img src="data/training/v3_eval_best2_logo.png" alt="Sequence logo 2" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <h3 style="margin-top:24px;">All Hourly Samples (sorted by scRMSD)</h3>
+      <div style="overflow-x:auto; max-height:400px; overflow-y:auto; margin-bottom:16px;">
+      <table class="metrics-table" style="width:100%; font-size:11px;">
+        <thead style="position:sticky; top:0; background:var(--bg-primary);"><tr><th>#</th><th>Time</th><th>Epoch</th><th>MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Mar 19 06:29</td><td>?</td><td>1.245</td><td style="color:#2ca02c;font-weight:bold">0.728</td><td style="color:#2ca02c;font-weight:bold">0.532</td><td>11.0</td><td style="color:#2ca02c;font-weight:bold">10.9</td></tr>
+          <tr><td>2</td><td>Mar 19 07:29</td><td>?</td><td>1.371</td><td>0.522</td><td>0.291</td><td>17.1</td><td style="color:#2ca02c;font-weight:bold">12.9</td></tr>
+          <tr><td>3</td><td>Mar 19 04:34</td><td>?</td><td>1.214</td><td>0.450</td><td>0.230</td><td>18.7</td><td style="color:#2ca02c;font-weight:bold">14.3</td></tr>
+          <tr><td>4</td><td>Mar 19 00:23</td><td>?</td><td>0.833</td><td>0.391</td><td>0.224</td><td>18.0</td><td style="color:#2ca02c;font-weight:bold">14.4</td></tr>
+          <tr><td>5</td><td>Mar 19 08:29</td><td>?</td><td>1.162</td><td>0.446</td><td>0.257</td><td>17.7</td><td style="color:#2ca02c;font-weight:bold">14.9</td></tr>
+          <tr><td>6</td><td>Mar 19 03:29</td><td>?</td><td>0.748</td><td>0.357</td><td>0.176</td><td>19.8</td><td>15.1</td></tr>
+          <tr><td>7</td><td>Mar 19 01:33</td><td>?</td><td>0.967</td><td>0.428</td><td>0.305</td><td>16.7</td><td>15.2</td></tr>
+          <tr><td>8</td><td>Mar 18 23:23</td><td>?</td><td>0.769</td><td>0.383</td><td>0.201</td><td>19.9</td><td>16.3</td></tr>
+          <tr><td>9</td><td>Mar 19 05:31</td><td>?</td><td>0.940</td><td>0.649</td><td>0.420</td><td>14.4</td><td>16.5</td></tr>
+          <tr><td>10</td><td>Mar 19 02:30</td><td>?</td><td>0.685</td><td>0.410</td><td>0.201</td><td>21.5</td><td>19.0</td></tr>
+          <tr><td>11</td><td>Mar 19 14:17</td><td>?</td><td>0.177</td><td>0.337</td><td>0.158</td><td>22.0</td><td>20.5</td></tr>
+          <tr><td>12</td><td>Mar 19 15:22</td><td>?</td><td>0.114</td><td>0.332</td><td>0.148</td><td>21.2</td><td>21.2</td></tr>
+          <tr><td>13</td><td>Mar 19 12:28</td><td>?</td><td>0.162</td><td>0.354</td><td>0.148</td><td>22.1</td><td>21.6</td></tr>
+          <tr><td>14</td><td>Mar 19 16:22</td><td>?</td><td>0.146</td><td>0.338</td><td>0.148</td><td>21.4</td><td>21.7</td></tr>
+          <tr><td>15</td><td>Mar 19 10:25</td><td>?</td><td>0.158</td><td>0.356</td><td>0.147</td><td>22.5</td><td>22.1</td></tr>
+          <tr><td>16</td><td>Mar 18 22:23</td><td>?</td><td>1.311</td><td style="color:#2ca02c;font-weight:bold">0.823</td><td style="color:#2ca02c;font-weight:bold">0.532</td><td>9.7</td><td>29.0</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Top 4 Structures (by scRMSD)</h3>
+      <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;"><strong>Top:</strong> Generated backbone. <strong>Bottom:</strong> AF2 prediction.</p>
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;">
+        <div>
+          <div id="v3-all-bb-0" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=10.9Å — Mar 19 06:29</p>
+        </div>
+        <div>
+          <div id="v3-all-bb-1" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=12.9Å — Mar 19 07:29</p>
+        </div>
+        <div>
+          <div id="v3-all-bb-2" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=14.3Å — Mar 19 04:34</p>
+        </div>
+        <div>
+          <div id="v3-all-bb-3" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=14.4Å — Mar 19 00:23</p>
+        </div>
+        <div>
+          <div id="v3-all-af-0" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.728</p>
+        </div>
+        <div>
+          <div id="v3-all-af-1" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.522</p>
+        </div>
+        <div>
+          <div id="v3-all-af-2" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.450</p>
+        </div>
+        <div>
+          <div id="v3-all-af-3" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.391</p>
+        </div>
+      </div>
+      <script>
+      (function(){
+        var bb = ['data/training/pdbs/v3_hourly_20260319_0629.pdb', 'data/training/pdbs/v3_hourly_20260319_0729.pdb', 'data/training/pdbs/v3_hourly_20260319_0434.pdb', 'data/training/pdbs/v3_hourly_20260319_0023.pdb'];
+        var af = ['data/training/pdbs/v3_hourly_20260319_0629_af2.pdb', 'data/training/pdbs/v3_hourly_20260319_0729_af2.pdb', 'data/training/pdbs/v3_hourly_20260319_0434_af2.pdb', 'data/training/pdbs/v3_hourly_20260319_0023_af2.pdb'];
+        bb.forEach(function(f,i){
+          var el = document.getElementById("v3-all-bb-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+        af.forEach(function(f,i){
+          var el = document.getElementById("v3-all-af-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+      })();
+      </script>
+    </div>
+
+    <div id="model-mini" style="margin-bottom:40px;">
+      <h2 style="border-left:4px solid #2ca02c; padding-left:12px; margin-top:32px;">FrameDiff-Mini (11.1M)</h2>
+      <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; margin-bottom:16px;">
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">16</div><div style="font-size:10px; color:var(--text-secondary);">Samples</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">?</div><div style="font-size:10px; color:var(--text-secondary);">Epochs</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">20.2Å</div><div style="font-size:10px; color:var(--text-secondary);">Med RMSD</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">13.7Å</div><div style="font-size:10px; color:var(--text-secondary);">Best RMSD</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.362</div><div style="font-size:10px; color:var(--text-secondary);">Med pLDDT</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.527</div><div style="font-size:10px; color:var(--text-secondary);">Best pLDDT</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.314</div><div style="font-size:10px; color:var(--text-secondary);">Best pTM</div></div>
+      </div>
+
+      <div style="text-align:center; margin-bottom:20px;">
+        <img src="data/training/mini_hourly_trends.png" alt="mini metrics trends" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <h3 style="margin-top:24px;">All Hourly Samples (sorted by scRMSD)</h3>
+      <div style="overflow-x:auto; max-height:400px; overflow-y:auto; margin-bottom:16px;">
+      <table class="metrics-table" style="width:100%; font-size:11px;">
+        <thead style="position:sticky; top:0; background:var(--bg-primary);"><tr><th>#</th><th>Time</th><th>Epoch</th><th>MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Mar 19 00:23</td><td>?</td><td>1.226</td><td>0.527</td><td>0.314</td><td>16.8</td><td style="color:#2ca02c;font-weight:bold">13.7</td></tr>
+          <tr><td>2</td><td>Mar 19 03:29</td><td>?</td><td>0.839</td><td>0.399</td><td>0.167</td><td>20.2</td><td>15.8</td></tr>
+          <tr><td>3</td><td>Mar 19 04:34</td><td>?</td><td>0.675</td><td>0.371</td><td>0.187</td><td>20.8</td><td>16.2</td></tr>
+          <tr><td>4</td><td>Mar 19 01:33</td><td>?</td><td>0.801</td><td>0.375</td><td>0.200</td><td>20.2</td><td>16.2</td></tr>
+          <tr><td>5</td><td>Mar 18 23:23</td><td>?</td><td>0.833</td><td>0.404</td><td>0.241</td><td>18.7</td><td>16.5</td></tr>
+          <tr><td>6</td><td>Mar 19 02:30</td><td>?</td><td>0.632</td><td>0.354</td><td>0.199</td><td>21.0</td><td>16.9</td></tr>
+          <tr><td>7</td><td>Mar 19 05:31</td><td>?</td><td>0.798</td><td>0.453</td><td>0.278</td><td>21.1</td><td>17.3</td></tr>
+          <tr><td>8</td><td>Mar 18 22:23</td><td>?</td><td>0.757</td><td>0.384</td><td>0.199</td><td>21.4</td><td>19.2</td></tr>
+          <tr><td>9</td><td>Mar 19 15:22</td><td>?</td><td>0.138</td><td>0.332</td><td>0.148</td><td>21.2</td><td>21.2</td></tr>
+          <tr><td>10</td><td>Mar 19 12:28</td><td>?</td><td>0.095</td><td>0.332</td><td>0.148</td><td>21.2</td><td>21.7</td></tr>
+          <tr><td>11</td><td>Mar 19 06:29</td><td>?</td><td>0.329</td><td>0.295</td><td>0.137</td><td>22.5</td><td>21.7</td></tr>
+          <tr><td>12</td><td>Mar 19 08:29</td><td>?</td><td>0.274</td><td>0.358</td><td>0.141</td><td>22.1</td><td>21.8</td></tr>
+          <tr><td>13</td><td>Mar 19 07:29</td><td>?</td><td>0.131</td><td>0.338</td><td>0.148</td><td>21.4</td><td>22.3</td></tr>
+          <tr><td>14</td><td>Mar 19 16:22</td><td>?</td><td>0.335</td><td>0.350</td><td>0.147</td><td>21.5</td><td>22.4</td></tr>
+          <tr><td>15</td><td>Mar 19 14:17</td><td>?</td><td>0.125</td><td>0.345</td><td>0.147</td><td>21.3</td><td>22.8</td></tr>
+          <tr><td>16</td><td>Mar 19 10:25</td><td>?</td><td>0.359</td><td>0.367</td><td>0.156</td><td>21.9</td><td>23.6</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Top 4 Structures (by scRMSD)</h3>
+      <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;"><strong>Top:</strong> Generated backbone. <strong>Bottom:</strong> AF2 prediction.</p>
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;">
+        <div>
+          <div id="mini-all-bb-0" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=13.7Å — Mar 19 00:23</p>
+        </div>
+        <div>
+          <div id="mini-all-bb-1" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=15.8Å — Mar 19 03:29</p>
+        </div>
+        <div>
+          <div id="mini-all-bb-2" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=16.2Å — Mar 19 04:34</p>
+        </div>
+        <div>
+          <div id="mini-all-bb-3" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=16.2Å — Mar 19 01:33</p>
+        </div>
+        <div>
+          <div id="mini-all-af-0" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.527</p>
+        </div>
+        <div>
+          <div id="mini-all-af-1" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.399</p>
+        </div>
+        <div>
+          <div id="mini-all-af-2" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.371</p>
+        </div>
+        <div>
+          <div id="mini-all-af-3" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.375</p>
+        </div>
+      </div>
+      <script>
+      (function(){
+        var bb = ['data/training/pdbs/mini_hourly_20260319_0023.pdb', 'data/training/pdbs/mini_hourly_20260319_0329.pdb', 'data/training/pdbs/mini_hourly_20260319_0434.pdb', 'data/training/pdbs/mini_hourly_20260319_0133.pdb'];
+        var af = ['data/training/pdbs/mini_hourly_20260319_0023_af2.pdb', 'data/training/pdbs/mini_hourly_20260319_0329_af2.pdb', 'data/training/pdbs/mini_hourly_20260319_0434_af2.pdb', 'data/training/pdbs/mini_hourly_20260319_0133_af2.pdb'];
+        bb.forEach(function(f,i){
+          var el = document.getElementById("mini-all-bb-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+        af.forEach(function(f,i){
+          var el = document.getElementById("mini-all-af-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+      })();
+      </script>
+    </div>
+
+    <div id="model-tiny" style="margin-bottom:40px;">
+      <h2 style="border-left:4px solid #6f42c1; padding-left:12px; margin-top:32px;">FrameDiff-Tiny (3.7M)</h2>
+      <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; margin-bottom:16px;">
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">16</div><div style="font-size:10px; color:var(--text-secondary);">Samples</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">?</div><div style="font-size:10px; color:var(--text-secondary);">Epochs</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">21.5Å</div><div style="font-size:10px; color:var(--text-secondary);">Med RMSD</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">20.3Å</div><div style="font-size:10px; color:var(--text-secondary);">Best RMSD</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.338</div><div style="font-size:10px; color:var(--text-secondary);">Med pLDDT</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.362</div><div style="font-size:10px; color:var(--text-secondary);">Best pLDDT</div></div>
+        <div style="background:var(--bg-secondary); padding:10px; border-radius:6px; text-align:center;"><div style="font-size:18px; font-weight:700;">0.149</div><div style="font-size:10px; color:var(--text-secondary);">Best pTM</div></div>
+      </div>
+
+      <div style="text-align:center; margin-bottom:20px;">
+        <img src="data/training/tiny_hourly_trends.png" alt="tiny metrics trends" style="max-width:100%; border-radius:8px; border:1px solid var(--border);">
+      </div>
+      <h3 style="margin-top:24px;">All Hourly Samples (sorted by scRMSD)</h3>
+      <div style="overflow-x:auto; max-height:400px; overflow-y:auto; margin-bottom:16px;">
+      <table class="metrics-table" style="width:100%; font-size:11px;">
+        <thead style="position:sticky; top:0; background:var(--bg-primary);"><tr><th>#</th><th>Time</th><th>Epoch</th><th>MPNN</th><th>pLDDT</th><th>pTM</th><th>PAE</th><th>RMSD</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Mar 19 08:29</td><td>?</td><td>0.108</td><td>0.362</td><td>0.147</td><td>21.3</td><td>20.3</td></tr>
+          <tr><td>2</td><td>Mar 19 00:23</td><td>?</td><td>0.135</td><td>0.332</td><td>0.148</td><td>21.2</td><td>21.2</td></tr>
+          <tr><td>3</td><td>Mar 19 01:33</td><td>?</td><td>0.180</td><td>0.345</td><td>0.147</td><td>21.3</td><td>21.2</td></tr>
+          <tr><td>4</td><td>Mar 19 12:28</td><td>?</td><td>0.148</td><td>0.345</td><td>0.147</td><td>21.3</td><td>21.3</td></tr>
+          <tr><td>5</td><td>Mar 19 03:29</td><td>?</td><td>0.124</td><td>0.332</td><td>0.148</td><td>21.2</td><td>21.3</td></tr>
+          <tr><td>6</td><td>Mar 18 22:23</td><td>?</td><td>0.111</td><td>0.332</td><td>0.148</td><td>21.2</td><td>21.4</td></tr>
+          <tr><td>7</td><td>Mar 19 05:31</td><td>?</td><td>0.095</td><td>0.346</td><td>0.149</td><td>21.3</td><td>21.5</td></tr>
+          <tr><td>8</td><td>Mar 19 15:22</td><td>?</td><td>0.195</td><td>0.332</td><td>0.148</td><td>21.2</td><td>21.5</td></tr>
+          <tr><td>9</td><td>Mar 19 06:29</td><td>?</td><td>0.115</td><td>0.332</td><td>0.148</td><td>21.2</td><td>21.5</td></tr>
+          <tr><td>10</td><td>Mar 18 23:23</td><td>?</td><td>0.107</td><td>0.332</td><td>0.148</td><td>21.2</td><td>21.5</td></tr>
+          <tr><td>11</td><td>Mar 19 14:17</td><td>?</td><td>0.174</td><td>0.344</td><td>0.149</td><td>21.8</td><td>21.7</td></tr>
+          <tr><td>12</td><td>Mar 19 10:25</td><td>?</td><td>0.155</td><td>0.338</td><td>0.148</td><td>21.4</td><td>22.0</td></tr>
+          <tr><td>13</td><td>Mar 19 02:30</td><td>?</td><td>0.093</td><td>0.338</td><td>0.148</td><td>21.4</td><td>22.1</td></tr>
+          <tr><td>14</td><td>Mar 19 16:22</td><td>?</td><td>0.114</td><td>0.338</td><td>0.148</td><td>21.4</td><td>22.2</td></tr>
+          <tr><td>15</td><td>Mar 19 07:29</td><td>?</td><td>0.082</td><td>0.345</td><td>0.147</td><td>21.3</td><td>22.5</td></tr>
+          <tr><td>16</td><td>Mar 19 04:34</td><td>?</td><td>0.118</td><td>0.343</td><td>0.149</td><td>21.8</td><td>23.7</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Top 4 Structures (by scRMSD)</h3>
+      <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;"><strong>Top:</strong> Generated backbone. <strong>Bottom:</strong> AF2 prediction.</p>
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;">
+        <div>
+          <div id="tiny-all-bb-0" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=20.3Å — Mar 19 08:29</p>
+        </div>
+        <div>
+          <div id="tiny-all-bb-1" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=21.2Å — Mar 19 00:23</p>
+        </div>
+        <div>
+          <div id="tiny-all-bb-2" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=21.2Å — Mar 19 01:33</p>
+        </div>
+        <div>
+          <div id="tiny-all-bb-3" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">RMSD=21.3Å — Mar 19 12:28</p>
+        </div>
+        <div>
+          <div id="tiny-all-af-0" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.362</p>
+        </div>
+        <div>
+          <div id="tiny-all-af-1" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.332</p>
+        </div>
+        <div>
+          <div id="tiny-all-af-2" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.345</p>
+        </div>
+        <div>
+          <div id="tiny-all-af-3" style="height:200px; width:100%; position:relative; border:1px solid var(--border); border-radius:8px;"></div>
+          <p style="font-size:9px; color:var(--text-secondary); text-align:center; margin:1px 0;">AF2 pLDDT=0.345</p>
+        </div>
+      </div>
+      <script>
+      (function(){
+        var bb = ['data/training/pdbs/tiny_hourly_20260319_0829.pdb', 'data/training/pdbs/tiny_hourly_20260319_0023.pdb', 'data/training/pdbs/tiny_hourly_20260319_0133.pdb', 'data/training/pdbs/tiny_hourly_20260319_1228.pdb'];
+        var af = ['data/training/pdbs/tiny_hourly_20260319_0829_af2.pdb', 'data/training/pdbs/tiny_hourly_20260319_0023_af2.pdb', 'data/training/pdbs/tiny_hourly_20260319_0133_af2.pdb', 'data/training/pdbs/tiny_hourly_20260319_1228_af2.pdb'];
+        bb.forEach(function(f,i){
+          var el = document.getElementById("tiny-all-bb-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+        af.forEach(function(f,i){
+          var el = document.getElementById("tiny-all-af-"+i);
+          if(!el) return;
+          var v = $3Dmol.createViewer(el, {backgroundColor:"white"});
+          fetch(f).then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        });
+      })();
+      </script>
+    </div>
+
+    <p style="color:var(--text-secondary); font-size:11px; margin-top:32px; text-align:center;">
+      Last updated: Mar 19, 2026 at 05:22 PM
+    </p>
+
+  </div>
+</body>
+</html>
