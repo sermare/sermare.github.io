@@ -4156,6 +4156,420 @@
     <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;padding:12px;background:var(--bg-secondary);border-radius:8px;border-left:4px solid #2ca02c;">
       <span style="font-size:14px;font-weight:700;">Epoch 76</span>
       <span style="font-size:12px;color:var(--text-secondary);">5 samples</span>
+      <span style="font-size:12px;color:#2ca02c;font-weight:600;">0 designable</span>
+      <span style="font-size:12px;color:#d9534f;">5 failed</span>
+    </div>
+
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 4</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="mini-r1-card-0-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">17.9<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.420</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.251</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">17.8</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.451</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">WWWWGGGWWGGGPWGGFWGDGGWGWGWGWHWFWWWDGWWWGGGGGWWGAGGGGWWSWWWWWGPGGGGGGWWWWGGGGGWWWWWGWGGWWSGWWWWWGGWG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="mini-r1-card-0-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("mini-r1-card-0-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_mini_20260320_0015_4.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("mini-r1-card-0-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_mini_20260320_0015_4_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 1</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="mini-r1-card-1-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">20.2<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.362</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.147</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.3</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.140</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="mini-r1-card-1-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("mini-r1-card-1-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_mini_20260320_0015_1.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("mini-r1-card-1-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_mini_20260320_0015_1_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 3</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="mini-r1-card-2-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">20.8<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.346</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.144</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.6</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.134</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGIGGGGGGGGGGGGGGGSGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="mini-r1-card-2-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("mini-r1-card-2-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_mini_20260320_0015_3.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("mini-r1-card-2-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_mini_20260320_0015_3_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 2</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="mini-r1-card-3-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">22.1<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.338</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.4</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.119</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="mini-r1-card-3-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("mini-r1-card-3-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_mini_20260320_0015_2.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("mini-r1-card-3-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_mini_20260320_0015_2_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 0</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="mini-r1-card-4-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">27.1<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.348</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.153</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.3</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.088</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGAGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="mini-r1-card-4-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("mini-r1-card-4-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_mini_20260320_0015_0.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("mini-r1-card-4-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_mini_20260320_0015_0_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+    <hr style="border:none;border-top:1px dashed var(--border);margin:24px 0;">
+
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;padding:12px;background:var(--bg-secondary);border-radius:8px;border-left:4px solid #2ca02c;">
+      <span style="font-size:14px;font-weight:700;">Epoch 76</span>
+      <span style="font-size:12px;color:var(--text-secondary);">5 samples</span>
       <span style="font-size:12px;color:#2ca02c;font-weight:600;">1 designable</span>
       <span style="font-size:12px;color:#d9534f;">4 failed</span>
     </div>
@@ -4173,7 +4587,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="mini-r1-card-0-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="mini-r2-card-0-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -4209,14 +4623,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="mini-r1-card-0-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="mini-r2-card-0-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("mini-r1-card-0-bb");
+        var bbEl = document.getElementById("mini-r2-card-0-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_mini_20260320_0011_4.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -4229,7 +4643,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("mini-r1-card-0-af");
+            var afEl = document.getElementById("mini-r2-card-0-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_mini_20260320_0011_4_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -4254,7 +4668,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="mini-r1-card-1-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="mini-r2-card-1-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -4290,14 +4704,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="mini-r1-card-1-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="mini-r2-card-1-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("mini-r1-card-1-bb");
+        var bbEl = document.getElementById("mini-r2-card-1-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_mini_20260320_0011_3.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -4310,7 +4724,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("mini-r1-card-1-af");
+            var afEl = document.getElementById("mini-r2-card-1-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_mini_20260320_0011_3_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -4335,7 +4749,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="mini-r1-card-2-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="mini-r2-card-2-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -4371,14 +4785,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="mini-r1-card-2-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="mini-r2-card-2-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("mini-r1-card-2-bb");
+        var bbEl = document.getElementById("mini-r2-card-2-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_mini_20260320_0011_0.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -4391,7 +4805,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("mini-r1-card-2-af");
+            var afEl = document.getElementById("mini-r2-card-2-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_mini_20260320_0011_0_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -4416,7 +4830,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="mini-r1-card-3-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="mini-r2-card-3-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -4452,14 +4866,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="mini-r1-card-3-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="mini-r2-card-3-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("mini-r1-card-3-bb");
+        var bbEl = document.getElementById("mini-r2-card-3-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_mini_20260320_0011_1.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -4472,7 +4886,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("mini-r1-card-3-af");
+            var afEl = document.getElementById("mini-r2-card-3-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_mini_20260320_0011_1_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -4497,7 +4911,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="mini-r1-card-4-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="mini-r2-card-4-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -4533,14 +4947,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="mini-r1-card-4-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="mini-r2-card-4-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("mini-r1-card-4-bb");
+        var bbEl = document.getElementById("mini-r2-card-4-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_mini_20260320_0011_2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -4553,7 +4967,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("mini-r1-card-4-af");
+            var afEl = document.getElementById("mini-r2-card-4-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_mini_20260320_0011_2_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -5417,6 +5831,420 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">20.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.362</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.147</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.3</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.150</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="tiny-r1-card-0-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("tiny-r1-card-0-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_tiny_20260320_0015_2.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("tiny-r1-card-0-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_tiny_20260320_0015_2_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 0</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="tiny-r1-card-1-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.1<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.344</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.141</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">22.1</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.138</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGSGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGGGGGGGGGGGGGGGGSGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="tiny-r1-card-1-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("tiny-r1-card-1-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_tiny_20260320_0015_0.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("tiny-r1-card-1-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_tiny_20260320_0015_0_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 1</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="tiny-r1-card-2-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.332</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.2</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.109</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="tiny-r1-card-2-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("tiny-r1-card-2-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_tiny_20260320_0015_1.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("tiny-r1-card-2-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_tiny_20260320_0015_1_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 3</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="tiny-r1-card-3-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.332</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.2</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.089</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="tiny-r1-card-3-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("tiny-r1-card-3-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_tiny_20260320_0015_3.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("tiny-r1-card-3-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_tiny_20260320_0015_3_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 4</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="tiny-r1-card-4-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">22.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.345</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.147</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.3</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.117</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="tiny-r1-card-4-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("tiny-r1-card-4-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_tiny_20260320_0015_4.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("tiny-r1-card-4-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_tiny_20260320_0015_4_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+    <hr style="border:none;border-top:1px dashed var(--border);margin:24px 0;">
+
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;padding:12px;background:var(--bg-secondary);border-radius:8px;border-left:4px solid #6f42c1;">
+      <span style="font-size:14px;font-weight:700;">Epoch 163</span>
+      <span style="font-size:12px;color:var(--text-secondary);">5 samples</span>
+      <span style="font-size:12px;color:#2ca02c;font-weight:600;">0 designable</span>
+      <span style="font-size:12px;color:#d9534f;">5 failed</span>
+    </div>
+
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 2</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="tiny-r2-card-0-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
               <div style="font-size:22px;font-weight:700;color:#d9534f">19.8<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
@@ -5445,14 +6273,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="tiny-r1-card-0-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="tiny-r2-card-0-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("tiny-r1-card-0-bb");
+        var bbEl = document.getElementById("tiny-r2-card-0-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_tiny_20260320_0011_2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -5465,7 +6293,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("tiny-r1-card-0-af");
+            var afEl = document.getElementById("tiny-r2-card-0-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_tiny_20260320_0011_2_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -5490,7 +6318,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="tiny-r1-card-1-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="tiny-r2-card-1-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -5526,14 +6354,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="tiny-r1-card-1-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="tiny-r2-card-1-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("tiny-r1-card-1-bb");
+        var bbEl = document.getElementById("tiny-r2-card-1-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_tiny_20260320_0011_1.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -5546,7 +6374,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("tiny-r1-card-1-af");
+            var afEl = document.getElementById("tiny-r2-card-1-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_tiny_20260320_0011_1_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -5571,7 +6399,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="tiny-r1-card-2-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="tiny-r2-card-2-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -5607,14 +6435,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="tiny-r1-card-2-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="tiny-r2-card-2-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("tiny-r1-card-2-bb");
+        var bbEl = document.getElementById("tiny-r2-card-2-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_tiny_20260320_0011_4.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -5627,7 +6455,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("tiny-r1-card-2-af");
+            var afEl = document.getElementById("tiny-r2-card-2-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_tiny_20260320_0011_4_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -5652,7 +6480,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="tiny-r1-card-3-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="tiny-r2-card-3-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -5688,14 +6516,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="tiny-r1-card-3-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="tiny-r2-card-3-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("tiny-r1-card-3-bb");
+        var bbEl = document.getElementById("tiny-r2-card-3-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_tiny_20260320_0011_0.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -5708,7 +6536,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("tiny-r1-card-3-af");
+            var afEl = document.getElementById("tiny-r2-card-3-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_tiny_20260320_0011_0_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -5733,7 +6561,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="tiny-r1-card-4-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="tiny-r2-card-4-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -5769,14 +6597,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="tiny-r1-card-4-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="tiny-r2-card-4-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("tiny-r1-card-4-bb");
+        var bbEl = document.getElementById("tiny-r2-card-4-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_tiny_20260320_0011_3.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -5789,7 +6617,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("tiny-r1-card-4-af");
+            var afEl = document.getElementById("tiny-r2-card-4-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_tiny_20260320_0011_3_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -5804,7 +6632,7 @@
   </div>
 
 
-  <p style="color:var(--text-secondary);font-size:11px;margin-top:32px;text-align:center;">Last updated: Mar 20, 2026 at 12:27 AM</p>
+  <p style="color:var(--text-secondary);font-size:11px;margin-top:32px;text-align:center;">Last updated: Mar 20, 2026 at 12:32 AM</p>
 
   <script>
   function switchModel(id) {
