@@ -38,15 +38,15 @@
     <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">24.9M params, 8 layers, expanded data (17.5K chains)</p>
     <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;padding:12px;background:var(--bg-secondary);border-radius:8px;">
       <span style="font-size:13px;"><strong>Epoch 12</strong></span>
-      <span style="font-size:12px;color:var(--text-secondary);">5 samples</span>
-      <span style="font-size:12px;color:#2ca02c;font-weight:600;">5 designable</span>
+      <span style="font-size:12px;color:var(--text-secondary);">10 samples</span>
+      <span style="font-size:12px;color:#2ca02c;font-weight:600;">10 designable</span>
     </div>
 
 
     <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
-          <span style="font-size:16px;font-weight:700;">Sample 2</span>
+          <span style="font-size:16px;font-weight:700;">Sample 7</span>
           <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 12</span>
         </div>
         <span style="background:#e3620922;color:#e36209;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">PROTEIN-LIKE</span>
@@ -63,25 +63,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#e36209">14.0<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#e36209">14.9<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#2ca02c">0.778</div>
+              <div style="font-size:22px;font-weight:700;color:#2ca02c">0.762</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#e36209">0.496</div>
+              <div style="font-size:22px;font-weight:700;color:#e36209">0.433</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">10.1</div>
+              <div style="font-size:22px;font-weight:700;">14.2</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.806</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">PLSLKEELQLLLGLLKLLLGGLLGPEPELLLETLEELLKQLLEELLEKLPLPLELLELLEELLRLLLELLLLALLLLGLLLPLLLLALLLLPLLLLLLLA</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.597</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">AEAAEEEAEEEEEEALEEEEEEEGESEEAAALAELAEALELAPPEAAAAAAAEALAAAALALLAAAALPAPAPPEGPALPLAAGLPLPALAAALLAALAA</div>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@
         var bbEl = document.getElementById("v4-card-0-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_v4_2.pdb").then(function(r){return r.text()}).then(function(pdb){
+          fetch("data/training/pdbs/fresh_v4_7.pdb").then(function(r){return r.text()}).then(function(pdb){
             v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
           });
         }
@@ -112,6 +112,249 @@
           if(details.open && !afLoaded){
             afLoaded = true;
             var afEl = document.getElementById("v4-card-0-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_v4_7_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 9</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 12</span>
+        </div>
+        <span style="background:#88888822;color:#888;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">LOW QUALITY</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="v4-card-1-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#e36209">14.9<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#e36209">0.565</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.252</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.5</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.496</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">PPGGGPPGPEEEAALELGGGAGGGGGGGGGGGGGGGGGGGGGAGGGGGGGGAGAEEAGGALPGGGPGGGGGGGAAPGGPLGLLLALAGLPAALAEALLAE</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="v4-card-1-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("v4-card-1-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_v4_9.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("v4-card-1-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_v4_9_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 8</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 12</span>
+        </div>
+        <span style="background:#e3620922;color:#e36209;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">PROTEIN-LIKE</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="v4-card-2-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#e36209">15.0<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#2ca02c">0.703</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#e36209">0.325</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">19.0</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.838</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">EEERKEEEELEKEELLLEKEEERELEELLEELLKDPLELEELALPLALLPGLLGRPRRPLREEEELRLESEELEEELLGRAPGLPDELEELERERRLLEP</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="v4-card-2-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("v4-card-2-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_v4_8.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("v4-card-2-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_v4_8_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 2</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 12</span>
+        </div>
+        <span style="background:#e3620922;color:#e36209;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">PROTEIN-LIKE</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="v4-card-3-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">15.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#2ca02c">0.743</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#e36209">0.482</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">9.9</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.869</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">ELPLLLLLLLLALLLLLLLGGLLGLLPPLALEDLEEALLKLLELLLELLPLLELLLEEELEELLEALLELLALLALLLLLLPLALLEALLAPEELLLLAL</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="v4-card-3-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("v4-card-3-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_v4_2.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("v4-card-3-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_v4_2_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -136,7 +379,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="v4-card-1-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="v4-card-4-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -144,25 +387,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">16.0<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">17.7<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#e36209">0.607</div>
+              <div style="font-size:22px;font-weight:700;color:#e36209">0.594</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.283</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.252</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">21.1</div>
+              <div style="font-size:22px;font-weight:700;">20.9</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.557</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">AGGGAGAGGGGGGGGAGALAGALGGAGLEALGPAEGEEELALPGSGPLGGGGGGGLPGGGGGGGGAGGGGGGEGEEEEEEEEEEKEKEELEEEEEEEKKE</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.718</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGEGGGGGGRGGGRRARRRRRRRRRRRRRRGRRRPRRRRRPPRRGRRRRRRRGPPPGRGARGGGRPGRGGGPGRAPRLRRRRRLLARLRRLRRRLREEE</div>
           </div>
         </div>
       </div>
@@ -172,14 +415,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="v4-card-1-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="v4-card-4-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("v4-card-1-bb");
+        var bbEl = document.getElementById("v4-card-4-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_v4_4.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -192,10 +435,91 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("v4-card-1-af");
+            var afEl = document.getElementById("v4-card-4-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_v4_4_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 6</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 12</span>
+        </div>
+        <span style="background:#88888822;color:#888;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">LOW QUALITY</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="v4-card-5-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">19.4<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#e36209">0.522</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.210</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">20.7</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.531</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">PGAKKPGKKRKGKRGGGGGGGPGGGGGGGGAGALGRGGGGGGGGGGLLPARGGSGGKGGEALGGRGGPGGGPRGGKRRRGGRGGSGGGLAGPLLAGLLLG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="v4-card-5-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("v4-card-5-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_v4_6.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("v4-card-5-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_v4_6_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -217,7 +541,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="v4-card-2-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="v4-card-6-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -225,25 +549,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">16.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">19.8<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.450</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.376</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.174</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.156</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">20.0</div>
+              <div style="font-size:22px;font-weight:700;">21.4</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.493</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">EGGEEEEGEEGGGGGGGGGGGPLGSGGGGAGGGEGEGAGGEGGAGGGAGGGGSGGGLLSGELGKEEKKEKAKKGKVGGGGGLGGGGGEGGAAGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.013</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">EGGELEGGAGGGGGGGGGGGGGSGGGAGGGGGGGGSGSGGVGGGAGGGGGGGGGGGSGGGAGGLLAAAGGGAGGGGGGGGGGGGGSGGGGGLGGGGAGGG</div>
           </div>
         </div>
       </div>
@@ -253,14 +577,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="v4-card-2-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="v4-card-6-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("v4-card-2-bb");
+        var bbEl = document.getElementById("v4-card-6-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_v4_1.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -273,7 +597,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("v4-card-2-af");
+            var afEl = document.getElementById("v4-card-6-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_v4_1_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -298,7 +622,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="v4-card-3-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="v4-card-7-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -306,25 +630,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">21.3<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.6<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#e36209">0.688</div>
+              <div style="font-size:22px;font-weight:700;color:#e36209">0.692</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#e36209">0.348</div>
+              <div style="font-size:22px;font-weight:700;color:#e36209">0.310</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">18.5</div>
+              <div style="font-size:22px;font-weight:700;">19.8</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.721</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">KKALGGEAEEEEELEEKEEKKKEKKGKGKGKLKKPKLKSKELGKLLKELEKLLKELLEKLKELLKAAAGGPKGAAGKGGKGKGAAAAAAAAELAAAAAAA</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.652</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">EGEEEGEEDEEEEEEEELLELEEEEGEEEGELESPEELSEEEGKELEEELLEKEEEKKEEEKKKKLKKEGPEGKKLEGGEKEGKPKKKKKKELKKKKKKK</div>
           </div>
         </div>
       </div>
@@ -334,14 +658,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="v4-card-3-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="v4-card-7-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("v4-card-3-bb");
+        var bbEl = document.getElementById("v4-card-7-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_v4_3.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -354,10 +678,91 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("v4-card-3-af");
+            var afEl = document.getElementById("v4-card-7-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_v4_3_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 5</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 12</span>
+        </div>
+        <span style="background:#88888822;color:#888;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">LOW QUALITY</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="v4-card-8-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">30.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.444</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.171</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.3</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.147</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">APAAGAPALAAPPAGGGAGAAAGGPAGGGGAAGAGAGAAGGAAPAAGGGGGAAAAGGGAGLAAAGGAAGAEEAAAEEEAAGGGGEGGAAAGAAGGGGGAG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="v4-card-8-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("v4-card-8-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_v4_5.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("v4-card-8-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_v4_5_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -379,7 +784,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <!-- Backbone viewer -->
         <div>
-          <div id="v4-card-4-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="v4-card-9-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -391,21 +796,21 @@
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#2ca02c">0.758</div>
+              <div style="font-size:22px;font-weight:700;color:#2ca02c">0.751</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#e36209">0.397</div>
+              <div style="font-size:22px;font-weight:700;color:#e36209">0.378</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">13.7</div>
+              <div style="font-size:22px;font-weight:700;">14.0</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.367</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">EEKKEELLEKLLKELVKEKKEKKEKKEKEEEKKKKELEEELELKKEGKKEEEEEEEEEEEEEEEELEEEEKEEKEEKELKEQLLEKYLKELLEEKLLKEK</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 1.299</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">EEEVEELVEELVEELVKKLEKLKKKKKKKEEKEKKKEEEEKKKKEEGKKEEEKEEKKRKKKKEEELKEEERRREEKEEVEEELVKELVEELLEEEKKKKK</div>
           </div>
         </div>
       </div>
@@ -415,14 +820,14 @@
           Show AF2 Prediction
         </summary>
         <div style="margin-top:8px;">
-          <div id="v4-card-4-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <div id="v4-card-9-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
         </div>
       </details>
 
       <script>
       (function(){
-        var bbEl = document.getElementById("v4-card-4-bb");
+        var bbEl = document.getElementById("v4-card-9-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
           fetch("data/training/pdbs/fresh_v4_0.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -435,7 +840,7 @@
         details.addEventListener("toggle", function(){
           if(details.open && !afLoaded){
             afLoaded = true;
-            var afEl = document.getElementById("v4-card-4-af");
+            var afEl = document.getElementById("v4-card-9-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_v4_0_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
@@ -453,9 +858,9 @@
     <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">24.9M params, 8 layers, CATH 4.3 (10.1K chains)</p>
     <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;padding:12px;background:var(--bg-secondary);border-radius:8px;">
       <span style="font-size:13px;"><strong>Epoch 152</strong></span>
-      <span style="font-size:12px;color:var(--text-secondary);">5 samples</span>
+      <span style="font-size:12px;color:var(--text-secondary);">10 samples</span>
       <span style="font-size:12px;color:#2ca02c;font-weight:600;">1 designable</span>
-      <span style="font-size:12px;color:#d9534f;">4 failed (all-glycine)</span>
+      <span style="font-size:12px;color:#d9534f;">9 failed (all-glycine)</span>
     </div>
 
 
@@ -479,25 +884,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">20.0<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">18.7<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#e36209">0.669</div>
+              <div style="font-size:22px;font-weight:700;color:#e36209">0.617</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#e36209">0.408</div>
+              <div style="font-size:22px;font-weight:700;color:#e36209">0.359</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">17.8</div>
+              <div style="font-size:22px;font-weight:700;">19.2</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.972</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">EELLLLELLLLALLLALLLLGALLLGLLGLLLLLLLLAELLLLAEAGAAAGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.920</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">AEALLEEEELLLAAAALLRRARLLAGEEARAAAAALGAEEAAAAAAAAAAGGGYGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
       </div>
@@ -543,7 +948,7 @@
     <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
-          <span style="font-size:16px;font-weight:700;">Sample 3</span>
+          <span style="font-size:16px;font-weight:700;">Sample 5</span>
           <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 152</span>
         </div>
         <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
@@ -560,25 +965,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">20.6<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.1<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.336</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.345</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.140</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.147</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">22.2</div>
+              <div style="font-size:22px;font-weight:700;">21.3</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.206</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGIGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGGGGGGGGSGGGGGGGGGGGGGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.115</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
       </div>
@@ -598,7 +1003,7 @@
         var bbEl = document.getElementById("v3-card-1-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_v3_3.pdb").then(function(r){return r.text()}).then(function(pdb){
+          fetch("data/training/pdbs/fresh_v3_5.pdb").then(function(r){return r.text()}).then(function(pdb){
             v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
           });
         }
@@ -611,7 +1016,7 @@
             var afEl = document.getElementById("v3-card-1-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
-              fetch("data/training/pdbs/fresh_v3_3_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+              fetch("data/training/pdbs/fresh_v3_5_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -624,7 +1029,7 @@
     <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
-          <span style="font-size:16px;font-weight:700;">Sample 4</span>
+          <span style="font-size:16px;font-weight:700;">Sample 7</span>
           <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 152</span>
         </div>
         <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
@@ -641,25 +1046,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">22.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.1<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.354</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.332</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.145</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">21.9</div>
+              <div style="font-size:22px;font-weight:700;">21.2</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.141</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGIGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.135</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
       </div>
@@ -679,7 +1084,7 @@
         var bbEl = document.getElementById("v3-card-2-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_v3_4.pdb").then(function(r){return r.text()}).then(function(pdb){
+          fetch("data/training/pdbs/fresh_v3_7.pdb").then(function(r){return r.text()}).then(function(pdb){
             v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
           });
         }
@@ -692,7 +1097,7 @@
             var afEl = document.getElementById("v3-card-2-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
-              fetch("data/training/pdbs/fresh_v3_4_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+              fetch("data/training/pdbs/fresh_v3_7_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -705,7 +1110,7 @@
     <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
-          <span style="font-size:16px;font-weight:700;">Sample 2</span>
+          <span style="font-size:16px;font-weight:700;">Sample 8</span>
           <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 152</span>
         </div>
         <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
@@ -722,25 +1127,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">22.6<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.1<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.355</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.332</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.142</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">22.3</div>
+              <div style="font-size:22px;font-weight:700;">21.2</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.198</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGIGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGIGGGGGGGGGGGGGGGGGGGGGIGGGGGGGGGGGGGGGGGGGGGGGGGGGGIGGGGGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.139</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
       </div>
@@ -760,7 +1165,7 @@
         var bbEl = document.getElementById("v3-card-3-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_v3_2.pdb").then(function(r){return r.text()}).then(function(pdb){
+          fetch("data/training/pdbs/fresh_v3_8.pdb").then(function(r){return r.text()}).then(function(pdb){
             v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
           });
         }
@@ -773,7 +1178,7 @@
             var afEl = document.getElementById("v3-card-3-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
-              fetch("data/training/pdbs/fresh_v3_2_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+              fetch("data/training/pdbs/fresh_v3_8_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -803,7 +1208,7 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">23.2<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.3<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
@@ -811,17 +1216,17 @@
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.141</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.143</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">22.0</div>
+              <div style="font-size:22px;font-weight:700;">22.1</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.168</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGGGGGGGIGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.182</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGGGGGGGIGGGGGGIGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
       </div>
@@ -863,25 +1268,430 @@
       })();
       </script>
     </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 3</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 152</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="v3-card-5-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.3<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.345</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.147</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.3</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.181</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="v3-card-5-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("v3-card-5-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_v3_3.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("v3-card-5-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_v3_3_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 2</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 152</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="v3-card-6-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.336</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.138</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">22.5</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.259</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGIGGGGGGGIGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGIGGGGGGGGGGGGGGGGGVGGGGGGGGGGGGGGGGGIGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="v3-card-6-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("v3-card-6-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_v3_2.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("v3-card-6-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_v3_2_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 6</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 152</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="v3-card-7-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.6<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.377</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.144</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">22.1</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.229</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGIGGGGGGGGIGGGGGGGGGGGGGGGGGGGGGGGGGIGGGGGLGGIGGGGGLGGIGIGGGGGGGGGGGGGGGIGGGGGGGGGGGLLIGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="v3-card-7-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("v3-card-7-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_v3_6.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("v3-card-7-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_v3_6_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 4</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 152</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="v3-card-8-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">22.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.354</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.145</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.9</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.165</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGIGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="v3-card-8-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("v3-card-8-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_v3_4.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("v3-card-8-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_v3_4_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 9</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 152</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="v3-card-9-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">23.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.352</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.142</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.7</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.152</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGIGGGGVGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="v3-card-9-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("v3-card-9-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_v3_9.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("v3-card-9-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_v3_9_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
   </div>
 
   <div id="panel-mini" class="model-panel">
     <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">11.1M params, 6 layers</p>
     <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;padding:12px;background:var(--bg-secondary);border-radius:8px;">
       <span style="font-size:13px;"><strong>Epoch 76</strong></span>
-      <span style="font-size:12px;color:var(--text-secondary);">5 samples</span>
-      <span style="font-size:12px;color:#2ca02c;font-weight:600;">0 designable</span>
-      <span style="font-size:12px;color:#d9534f;">5 failed (all-glycine)</span>
+      <span style="font-size:12px;color:var(--text-secondary);">10 samples</span>
+      <span style="font-size:12px;color:#2ca02c;font-weight:600;">1 designable</span>
+      <span style="font-size:12px;color:#d9534f;">9 failed (all-glycine)</span>
     </div>
 
 
     <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
-          <span style="font-size:16px;font-weight:700;">Sample 1</span>
+          <span style="font-size:16px;font-weight:700;">Sample 5</span>
           <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
         </div>
-        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+        <span style="background:#88888822;color:#888;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">LOW QUALITY</span>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
@@ -895,25 +1705,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">19.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">42.9<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.321</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.404</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.152</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.154</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">21.6</div>
+              <div style="font-size:22px;font-weight:700;">21.4</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.244</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">AGAGAGGGYYGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.720</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGAAAGRAGAAPGGGLLPGGGGGRGGGGGAGPPGGEEGGGGAGGGGGGGGGGGGGGGGGAGGGGGGGGEGGGGGGGGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
       </div>
@@ -933,7 +1743,7 @@
         var bbEl = document.getElementById("mini-card-0-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_mini_1.pdb").then(function(r){return r.text()}).then(function(pdb){
+          fetch("data/training/pdbs/fresh_mini_5.pdb").then(function(r){return r.text()}).then(function(pdb){
             v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
           });
         }
@@ -946,7 +1756,7 @@
             var afEl = document.getElementById("mini-card-0-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
-              fetch("data/training/pdbs/fresh_mini_1_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+              fetch("data/training/pdbs/fresh_mini_5_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -959,7 +1769,7 @@
     <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
-          <span style="font-size:16px;font-weight:700;">Sample 3</span>
+          <span style="font-size:16px;font-weight:700;">Sample 1</span>
           <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
         </div>
         <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
@@ -976,25 +1786,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">20.9<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">18.8<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.332</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.348</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.157</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">21.2</div>
+              <div style="font-size:22px;font-weight:700;">21.1</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.145</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.284</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">AAGAAGGAGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
       </div>
@@ -1014,7 +1824,7 @@
         var bbEl = document.getElementById("mini-card-1-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_mini_3.pdb").then(function(r){return r.text()}).then(function(pdb){
+          fetch("data/training/pdbs/fresh_mini_1.pdb").then(function(r){return r.text()}).then(function(pdb){
             v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
           });
         }
@@ -1027,7 +1837,7 @@
             var afEl = document.getElementById("mini-card-1-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
-              fetch("data/training/pdbs/fresh_mini_3_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+              fetch("data/training/pdbs/fresh_mini_1_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -1040,7 +1850,7 @@
     <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
-          <span style="font-size:16px;font-weight:700;">Sample 2</span>
+          <span style="font-size:16px;font-weight:700;">Sample 6</span>
           <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
         </div>
         <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
@@ -1057,25 +1867,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">22.0<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">20.0<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.343</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.344</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.149</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.151</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">21.5</div>
+              <div style="font-size:22px;font-weight:700;">21.3</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.297</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGAGGGAGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGAGGGGGGGGGGGGGGGGAGGGGGGGGGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.153</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGAGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
       </div>
@@ -1095,7 +1905,7 @@
         var bbEl = document.getElementById("mini-card-2-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_mini_2.pdb").then(function(r){return r.text()}).then(function(pdb){
+          fetch("data/training/pdbs/fresh_mini_6.pdb").then(function(r){return r.text()}).then(function(pdb){
             v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
           });
         }
@@ -1108,7 +1918,7 @@
             var afEl = document.getElementById("mini-card-2-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
-              fetch("data/training/pdbs/fresh_mini_2_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+              fetch("data/training/pdbs/fresh_mini_6_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -1121,7 +1931,7 @@
     <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
-          <span style="font-size:16px;font-weight:700;">Sample 0</span>
+          <span style="font-size:16px;font-weight:700;">Sample 8</span>
           <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
         </div>
         <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
@@ -1138,25 +1948,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">22.3<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">20.0<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.338</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.346</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.145</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">21.4</div>
+              <div style="font-size:22px;font-weight:700;">20.6</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.096</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.310</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGNNNNNNGGNGNGNGNGNGGGNGNNNGNGNGGNNHGGGNGGGNGGNGNNNNGGGGGNNGGGNGLGNNNNGNGNGNNGNGGNNGNNNNNGNGGNGNGNN</div>
           </div>
         </div>
       </div>
@@ -1176,7 +1986,7 @@
         var bbEl = document.getElementById("mini-card-3-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_mini_0.pdb").then(function(r){return r.text()}).then(function(pdb){
+          fetch("data/training/pdbs/fresh_mini_8.pdb").then(function(r){return r.text()}).then(function(pdb){
             v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
           });
         }
@@ -1189,7 +1999,7 @@
             var afEl = document.getElementById("mini-card-3-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
-              fetch("data/training/pdbs/fresh_mini_0_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+              fetch("data/training/pdbs/fresh_mini_8_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -1219,7 +2029,7 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">22.7<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.5<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
@@ -1236,7 +2046,7 @@
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.131</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.133</div>
             <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
@@ -1279,23 +2089,428 @@
       })();
       </script>
     </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 0</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="mini-card-5-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.6<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.332</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.2</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.101</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="mini-card-5-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("mini-card-5-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_mini_0.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("mini-card-5-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_mini_0_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 3</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="mini-card-6-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.8<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.338</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.4</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.146</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="mini-card-6-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("mini-card-6-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_mini_3.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("mini-card-6-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_mini_3_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 9</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="mini-card-7-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.9<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.343</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.149</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.6</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.175</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGNGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="mini-card-7-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("mini-card-7-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_mini_9.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("mini-card-7-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_mini_9_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 7</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="mini-card-8-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">22.1<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.338</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.4</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.104</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="mini-card-8-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("mini-card-8-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_mini_7.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("mini-card-8-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_mini_7_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 2</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 76</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="mini-card-9-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">22.2<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.338</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.4</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.232</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="mini-card-9-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("mini-card-9-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_mini_2.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("mini-card-9-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_mini_2_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
   </div>
 
   <div id="panel-tiny" class="model-panel">
     <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">3.7M params, 4 layers, reduced noise</p>
     <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;padding:12px;background:var(--bg-secondary);border-radius:8px;">
-      <span style="font-size:13px;"><strong>Epoch 128</strong></span>
-      <span style="font-size:12px;color:var(--text-secondary);">5 samples</span>
+      <span style="font-size:13px;"><strong>Epoch 163</strong></span>
+      <span style="font-size:12px;color:var(--text-secondary);">10 samples</span>
       <span style="font-size:12px;color:#2ca02c;font-weight:600;">0 designable</span>
-      <span style="font-size:12px;color:#d9534f;">5 failed (all-glycine)</span>
+      <span style="font-size:12px;color:#d9534f;">10 failed (all-glycine)</span>
     </div>
 
 
     <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
-          <span style="font-size:16px;font-weight:700;">Sample 0</span>
-          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 128</span>
+          <span style="font-size:16px;font-weight:700;">Sample 4</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
         </div>
         <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
       </div>
@@ -1311,25 +2526,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">20.7<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">20.9<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.362</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.334</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.147</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.144</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">21.3</div>
+              <div style="font-size:22px;font-weight:700;">22.1</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.168</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.197</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGSGGGGGGGGGGGGGGHGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGGSGSGGGGGGGGGGGGGGGGGHGGGGGGGGGGGGGGGGGGGGGS</div>
           </div>
         </div>
       </div>
@@ -1349,7 +2564,7 @@
         var bbEl = document.getElementById("tiny-card-0-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_tiny_0.pdb").then(function(r){return r.text()}).then(function(pdb){
+          fetch("data/training/pdbs/fresh_tiny_4.pdb").then(function(r){return r.text()}).then(function(pdb){
             v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
           });
         }
@@ -1362,7 +2577,7 @@
             var afEl = document.getElementById("tiny-card-0-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
-              fetch("data/training/pdbs/fresh_tiny_0_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+              fetch("data/training/pdbs/fresh_tiny_4_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -1376,7 +2591,7 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
           <span style="font-size:16px;font-weight:700;">Sample 1</span>
-          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 128</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
         </div>
         <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
       </div>
@@ -1392,25 +2607,25 @@
         <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">21.4<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.2<span style="font-size:12px;font-weight:400;">Å</span></div>
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.345</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.330</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.147</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.142</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">21.3</div>
+              <div style="font-size:22px;font-weight:700;">22.1</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.102</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.163</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGTGGGGGGGGGGTGTGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGTGGGGGGGGGGGGGGGGGGGGGGGGGYGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
       </div>
@@ -1456,8 +2671,8 @@
     <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
-          <span style="font-size:16px;font-weight:700;">Sample 4</span>
-          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 128</span>
+          <span style="font-size:16px;font-weight:700;">Sample 6</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
         </div>
         <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
       </div>
@@ -1477,20 +2692,20 @@
               <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.332</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.345</div>
               <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.147</div>
               <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
             </div>
             <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">21.2</div>
+              <div style="font-size:22px;font-weight:700;">21.3</div>
               <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.134</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.133</div>
             <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
@@ -1511,7 +2726,7 @@
         var bbEl = document.getElementById("tiny-card-2-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_tiny_4.pdb").then(function(r){return r.text()}).then(function(pdb){
+          fetch("data/training/pdbs/fresh_tiny_6.pdb").then(function(r){return r.text()}).then(function(pdb){
             v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
           });
         }
@@ -1524,7 +2739,7 @@
             var afEl = document.getElementById("tiny-card-2-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
-              fetch("data/training/pdbs/fresh_tiny_4_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+              fetch("data/training/pdbs/fresh_tiny_6_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -1537,8 +2752,8 @@
     <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div>
-          <span style="font-size:16px;font-weight:700;">Sample 3</span>
-          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 128</span>
+          <span style="font-size:16px;font-weight:700;">Sample 7</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
         </div>
         <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
       </div>
@@ -1547,6 +2762,87 @@
         <!-- Backbone viewer -->
         <div>
           <div id="tiny-card-3-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.5<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.332</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.2</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.116</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="tiny-card-3-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("tiny-card-3-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_tiny_7.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("tiny-card-3-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_tiny_7_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 8</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="tiny-card-4-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
           <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
         </div>
 
@@ -1571,88 +2867,7 @@
             </div>
           </div>
           <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.121</div>
-            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
-          </div>
-        </div>
-      </div>
-
-      <details style="margin-top:12px;">
-        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
-          Show AF2 Prediction
-        </summary>
-        <div style="margin-top:8px;">
-          <div id="tiny-card-3-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
-          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
-        </div>
-      </details>
-
-      <script>
-      (function(){
-        var bbEl = document.getElementById("tiny-card-3-bb");
-        if(bbEl){
-          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_tiny_3.pdb").then(function(r){return r.text()}).then(function(pdb){
-            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
-          });
-        }
-        // Lazy-load AF2 on toggle open
-        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
-        var afLoaded = false;
-        details.addEventListener("toggle", function(){
-          if(details.open && !afLoaded){
-            afLoaded = true;
-            var afEl = document.getElementById("tiny-card-3-af");
-            if(afEl){
-              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
-              fetch("data/training/pdbs/fresh_tiny_3_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
-                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
-              });
-            }
-          }
-        });
-      })();
-      </script>
-    </div>
-
-    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <div>
-          <span style="font-size:16px;font-weight:700;">Sample 2</span>
-          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 128</span>
-        </div>
-        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-        <!-- Backbone viewer -->
-        <div>
-          <div id="tiny-card-4-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
-          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
-        </div>
-
-        <!-- Metrics -->
-        <div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">22.2<span style="font-size:12px;font-weight:400;">Å</span></div>
-              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
-            </div>
-            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.338</div>
-              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
-            </div>
-            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
-              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
-            </div>
-            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
-              <div style="font-size:22px;font-weight:700;">21.4</div>
-              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
-            </div>
-          </div>
-          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
-            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.097</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.148</div>
             <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
           </div>
         </div>
@@ -1673,7 +2888,7 @@
         var bbEl = document.getElementById("tiny-card-4-bb");
         if(bbEl){
           var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
-          fetch("data/training/pdbs/fresh_tiny_2.pdb").then(function(r){return r.text()}).then(function(pdb){
+          fetch("data/training/pdbs/fresh_tiny_8.pdb").then(function(r){return r.text()}).then(function(pdb){
             v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
           });
         }
@@ -1686,7 +2901,412 @@
             var afEl = document.getElementById("tiny-card-4-af");
             if(afEl){
               var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_tiny_8_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 0</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="tiny-card-5-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">21.9<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.350</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.145</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">22.3</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.188</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGIGGGIGGGGGGGGGGGGGGGGIGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGIGGGGGGGGGIGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="tiny-card-5-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("tiny-card-5-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_tiny_0.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("tiny-card-5-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_tiny_0_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 2</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="tiny-card-6-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">22.1<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.364</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.147</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.3</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.109</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="tiny-card-6-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("tiny-card-6-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_tiny_2.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("tiny-card-6-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
               fetch("data/training/pdbs/fresh_tiny_2_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 5</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="tiny-card-7-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">22.1<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.364</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.147</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.3</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.126</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="tiny-card-7-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("tiny-card-7-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_tiny_5.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("tiny-card-7-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_tiny_5_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 3</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="tiny-card-8-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">22.4<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.338</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.4</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.130</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="tiny-card-8-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("tiny-card-8-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_tiny_3.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("tiny-card-8-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_tiny_3_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
+                v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+              });
+            }
+          }
+        });
+      })();
+      </script>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;background:var(--bg-primary);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <span style="font-size:16px;font-weight:700;">Sample 9</span>
+          <span style="font-size:12px;color:var(--text-secondary);margin-left:8px;">Epoch 163</span>
+        </div>
+        <span style="background:#d9534f22;color:#d9534f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">FAILED</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Backbone viewer -->
+        <div>
+          <div id="tiny-card-9-bb" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">Generated Backbone</p>
+        </div>
+
+        <!-- Metrics -->
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">22.4<span style="font-size:12px;font-weight:400;">Å</span></div>
+              <div style="font-size:10px;color:var(--text-secondary);">scRMSD</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.338</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pLDDT</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#d9534f">0.148</div>
+              <div style="font-size:10px;color:var(--text-secondary);">pTM</div>
+            </div>
+            <div style="background:var(--bg-secondary);padding:10px;border-radius:8px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">21.4</div>
+              <div style="font-size:10px;color:var(--text-secondary);">PAE</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--bg-secondary);padding:8px;border-radius:8px;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:2px;">MPNN Score: 0.116</div>
+            <div style="font-family:monospace;font-size:9px;word-break:break-all;color:var(--text-primary);line-height:1.4;">GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG</div>
+          </div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary);user-select:none;">
+          Show AF2 Prediction
+        </summary>
+        <div style="margin-top:8px;">
+          <div id="tiny-card-9-af" style="height:280px;width:100%;position:relative;border:1px solid var(--border);border-radius:8px;"></div>
+          <p style="font-size:10px;color:var(--text-secondary);text-align:center;margin:4px 0 0;">AlphaFold2 Prediction (best of 8 MPNN sequences)</p>
+        </div>
+      </details>
+
+      <script>
+      (function(){
+        var bbEl = document.getElementById("tiny-card-9-bb");
+        if(bbEl){
+          var v = $3Dmol.createViewer(bbEl, {backgroundColor:"white"});
+          fetch("data/training/pdbs/fresh_tiny_9.pdb").then(function(r){return r.text()}).then(function(pdb){
+            v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
+          });
+        }
+        // Lazy-load AF2 on toggle open
+        var details = bbEl.closest("div[style]").parentElement.querySelector("details");
+        var afLoaded = false;
+        details.addEventListener("toggle", function(){
+          if(details.open && !afLoaded){
+            afLoaded = true;
+            var afEl = document.getElementById("tiny-card-9-af");
+            if(afEl){
+              var v = $3Dmol.createViewer(afEl, {backgroundColor:"white"});
+              fetch("data/training/pdbs/fresh_tiny_9_af2.pdb").then(function(r){return r.text()}).then(function(pdb){
                 v.addModel(pdb,"pdb"); v.setStyle({},{cartoon:{color:"spectrum"}}); v.zoomTo(); v.render();
               });
             }
@@ -1698,7 +3318,7 @@
   </div>
 
 
-  <p style="color:var(--text-secondary);font-size:11px;margin-top:32px;text-align:center;">Last updated: Mar 19, 2026 at 11:20 PM</p>
+  <p style="color:var(--text-secondary);font-size:11px;margin-top:32px;text-align:center;">Last updated: Mar 20, 2026 at 12:03 AM</p>
 
   <script>
   function switchModel(id) {
