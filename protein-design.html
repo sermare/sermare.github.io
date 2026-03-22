@@ -401,6 +401,129 @@
       color: var(--heading-color);
     }
 
+    /* Distribution plots section */
+    .dist-section {
+      margin-bottom: 32px;
+    }
+
+    .dist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .dist-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .dist-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--heading-color);
+      margin: 0 0 4px 0;
+    }
+
+    .dist-card .caption {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .dist-card canvas {
+      width: 100%;
+      height: 220px;
+      display: block;
+    }
+
+    .no-data-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 220px;
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-style: italic;
+    }
+
+    /* Analysis notebook section */
+    .analysis-section {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-left: 4px solid #7c4dff;
+      border-radius: 0 10px 10px 0;
+      padding: 22px 24px;
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+
+    [data-theme="dark"] .analysis-section {
+      border-left-color: #b388ff;
+    }
+
+    .analysis-section h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--heading-color);
+      margin: 0 0 6px 0;
+    }
+
+    .analysis-section h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--heading-color);
+      margin: 16px 0 4px 0;
+    }
+
+    .analysis-section p {
+      font-size: 14px;
+      color: var(--text);
+      margin: 4px 0 8px 0;
+    }
+
+    .analysis-section .red-flag {
+      color: #c62828;
+      font-weight: 600;
+    }
+
+    [data-theme="dark"] .analysis-section .red-flag {
+      color: #ef9a9a;
+    }
+
+    .analysis-section .rec {
+      color: #2e7d32;
+      font-weight: 600;
+    }
+
+    [data-theme="dark"] .analysis-section .rec {
+      color: #81c784;
+    }
+
+    .progress-bar-container {
+      background: var(--border);
+      border-radius: 6px;
+      height: 12px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #7c4dff, #448aff);
+      transition: width 0.5s ease;
+    }
+
+    [data-theme="dark"] .progress-bar-fill {
+      background: linear-gradient(90deg, #b388ff, #82b1ff);
+    }
+
     /* Responsive */
     @media (max-width: 700px) {
       .structure-grid {
@@ -413,6 +536,9 @@
         grid-template-columns: repeat(2, 1fr);
       }
       .pipeline-grid {
+        grid-template-columns: 1fr;
+      }
+      .dist-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -428,7 +554,7 @@
 
     <div class="page-title">RBX1 Binder Design Dashboard</div>
     <div class="page-subtitle">De novo protein binder design for RBX1 (RING Box Protein 1, 108 AA) &mdash; GEM Workshop / ICLR 2026</div>
-    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026</div>
+    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 19:10 UTC</div>
 
     <!-- ===== Tabs ===== -->
     <div class="tabs">
@@ -444,24 +570,32 @@
       <!-- Summary Stats -->
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-value" id="statTotal">8</div>
+          <div class="stat-value" id="statTotal">20</div>
           <div class="stat-label">Total Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statE2">4</div>
-          <div class="stat-label">E2 Face</div>
+          <div class="stat-value" id="statE2">5</div>
+          <div class="stat-label">E2 Face (RFdiff)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statCullin">4</div>
-          <div class="stat-label">Cullin Face</div>
+          <div class="stat-value" id="statCullin">5</div>
+          <div class="stat-label">Cullin Face (RFdiff)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statScored">0</div>
+          <div class="stat-value" id="statBoltzGen">10</div>
+          <div class="stat-label">BoltzGen Designs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statScored">10</div>
           <div class="stat-label">Scored (Boltz-2)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statBestIpSAE">&mdash;</div>
-          <div class="stat-label">Best ipSAE</div>
+          <div class="stat-value" id="statBestIpTM">0.493</div>
+          <div class="stat-label">Best ipTM</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statBestPAE">2.49</div>
+          <div class="stat-label">Best min PAE</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" id="statPhase">Pilot</div>
@@ -471,9 +605,10 @@
 
       <!-- Info Banner -->
       <div class="info-banner">
-        <strong>Pipeline Status:</strong> Pilot phase &mdash; 8 backbone structures generated via RFdiffusion.
-        Awaiting ProteinMPNN sequence design and Boltz-2 structure prediction to obtain confidence metrics
-        (pLDDT, ipTM, ipSAE, pAE). BoltzGen pipeline blocked on mmCIF parsing &mdash; needs format fix.
+        <strong>Pipeline Status:</strong> Pilot phase &mdash; 10 RFdiffusion backbone structures generated (5 E2, 5 Cullin).
+        ProteinMPNN sequence design <strong>complete</strong> for all 10 RFdiffusion backbones.
+        BoltzGen pipeline <strong>fully operational</strong> &mdash; 5 small-pilot + 5 medium-pilot designs generated with full Boltz-2 scoring.
+        RFdiffusion designs still awaiting Boltz-2 complex prediction for confidence metrics.
       </div>
 
       <!-- Pipeline Status -->
@@ -485,20 +620,30 @@
               <span class="pipeline-name">Pipeline A: RFdiffusion &rarr; ProteinMPNN</span>
               <span class="tag tag-reading">IN PROGRESS</span>
             </div>
-            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (8 designs)</div>
-            <div class="pipeline-step step-pending">&#9675; ProteinMPNN sequence design</div>
+            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (10 designs)</div>
+            <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (10 designs, 4 samples each)</div>
             <div class="pipeline-step step-pending">&#9675; Boltz-2 complex prediction</div>
             <div class="pipeline-step step-pending">&#9675; Score extraction (ipSAE, ipTM, pLDDT)</div>
           </div>
           <div class="pipeline-card">
             <div class="pipeline-card-header">
-              <span class="pipeline-name">Pipeline B: BoltzGen</span>
-              <span class="tag meta-stage">BLOCKED</span>
+              <span class="pipeline-name">Pipeline B: BoltzGen (Small)</span>
+              <span class="tag tag-finished">COMPLETE</span>
             </div>
-            <div class="pipeline-step step-failed">&#10007; mmCIF parsing error on 2LGV.cif</div>
-            <div class="pipeline-step step-pending">&#9675; Small pilot (40-65 AA)</div>
-            <div class="pipeline-step step-pending">&#9675; Medium pilot (90-120 AA)</div>
-            <div class="pipeline-step step-pending">&#9675; Scoring</div>
+            <div class="pipeline-step step-done">&#10003; Structure generation (5 designs)</div>
+            <div class="pipeline-step step-done">&#10003; Inverse folding &amp; sequence design</div>
+            <div class="pipeline-step step-done">&#10003; Boltz-2 scoring &amp; refolding</div>
+            <div class="pipeline-step step-done">&#10003; Final ranking (5 designs ranked)</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-header">
+              <span class="pipeline-name">Pipeline B: BoltzGen (Medium)</span>
+              <span class="tag tag-finished">COMPLETE</span>
+            </div>
+            <div class="pipeline-step step-done">&#10003; Structure generation (5 designs)</div>
+            <div class="pipeline-step step-done">&#10003; Inverse folding &amp; sequence design</div>
+            <div class="pipeline-step step-done">&#10003; Boltz-2 scoring &amp; refolding</div>
+            <div class="pipeline-step step-done">&#10003; Final ranking (5 designs ranked)</div>
           </div>
           <div class="pipeline-card">
             <div class="pipeline-card-header">
@@ -520,10 +665,139 @@
         </div>
       </div>
 
-      <!-- Top 5 Structures (by RFdiffusion confidence) -->
+      <!-- ===== Distribution Analysis ===== -->
+      <div class="dist-section">
+        <div class="section-heading">Distribution Analysis</div>
+
+        <div class="dist-grid">
+          <!-- 1. Binder Length Histogram -->
+          <div class="dist-card">
+            <h3>Binder Length Histogram</h3>
+            <canvas id="canvasBinderLen" width="460" height="220"></canvas>
+            <div class="caption">Distribution of binder lengths across all 20 designs, colored by pipeline. RFdiffusion designs (blue/red by campaign) cluster in the 42-64 AA range. BoltzGen small pilot (teal) at 44-64 AA, medium pilot (orange) at 92-120 AA.</div>
+          </div>
+
+          <!-- 2. RFdiffusion Confidence Distribution -->
+          <div class="dist-card">
+            <h3>RFdiffusion Confidence Distribution</h3>
+            <canvas id="canvasRFdiffConf" width="460" height="220"></canvas>
+            <div class="caption">Strip plot of mean binder B-factor confidence for 10 RFdiffusion designs. All values are very high (0.979-0.992), with Cullin face designs (red) showing marginally higher confidence than E2 face (blue).</div>
+          </div>
+
+          <!-- 3. Campaign Comparison -->
+          <div class="dist-card">
+            <h3>Campaign Comparison (RFdiffusion)</h3>
+            <canvas id="canvasCampaign" width="460" height="220"></canvas>
+            <div class="caption">Grouped bars comparing E2 vs Cullin face campaigns across RFdiffusion designs: average confidence, average binder length, and design count.</div>
+          </div>
+
+          <!-- 4. ipTM Distribution (BoltzGen) -->
+          <div class="dist-card">
+            <h3>ipTM Distribution (BoltzGen Designs)</h3>
+            <canvas id="canvasIpTM" width="460" height="220"></canvas>
+            <div class="caption">Boltz-2 ipTM scores for 10 BoltzGen designs. Small pilot designs (teal) show higher ipTM than medium pilot (orange). Best: rbx1_small_3 at 0.493.</div>
+          </div>
+
+          <!-- 5. ipTM vs min PAE Scatter -->
+          <div class="dist-card">
+            <h3>ipTM vs min interaction PAE</h3>
+            <canvas id="canvasScatter" width="460" height="220"></canvas>
+            <div class="caption">Scatter of ipTM vs minimum interaction PAE for BoltzGen designs. Ideal designs appear in upper-left (high ipTM, low PAE). Small pilot designs (teal circles) show better separation than medium pilot (orange squares).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Analysis & Interpretation ===== -->
+      <div class="analysis-section" id="analysisSection">
+        <h2>Analysis &mdash; March 22, 2026 [12:10 PDT]</h2>
+
+        <h3>Summary</h3>
+        <p>
+          <strong>20 total designs</strong> across two pipelines.
+          <strong>RFdiffusion pipeline:</strong> 10 backbone designs (5 E2 face, 5 Cullin face), all with ProteinMPNN sequences (4 samples each = 40 candidate sequences total).
+          <strong>BoltzGen pipeline:</strong> 10 designs (5 small pilot, 44-64 AA; 5 medium pilot, 92-120 AA), all with full Boltz-2 scoring including refolding, PLIP contact analysis, and liability assessment.
+        </p>
+
+        <h3>Confidence Analysis (RFdiffusion)</h3>
+        <p>
+          All 10 RFdiffusion designs exhibit extremely high self-confidence B-factor values, with means ranging from 0.979 to 0.992.
+          The distribution is tightly clustered near 1.0, indicating the diffusion model is very confident in all generated backbones.
+          <strong>Cullin face designs</strong> show slightly higher mean confidence (avg 0.988) compared to <strong>E2 face designs</strong> (avg 0.985).
+          The minimum B-factor across all designs is 0.90 (Cullin Pilot Design 1), suggesting no major structural uncertainty in any region.
+          However, high RFdiffusion confidence does not guarantee binding &mdash; these are backbone-only metrics and do not reflect sequence-level or interface quality.
+        </p>
+
+        <h3>Binder Length Analysis</h3>
+        <p>
+          RFdiffusion binder lengths range from 42 to 64 AA, well within the specified 40-65 AA target range for the small pilot.
+          The E2 face designs show more length variation (42-64 AA, mean 50.4) compared to Cullin face (44-63 AA, mean 53.4).
+          BoltzGen small pilot designs are similar (44-64 AA), while the medium pilot designs are much larger (92-120 AA), representing a distinct design regime.
+          The bimodal distribution reflects the intentional two-tier size strategy.
+        </p>
+
+        <h3>Scoring Status (BoltzGen Designs)</h3>
+        <p>
+          All 10 BoltzGen designs have complete Boltz-2 scoring. Key findings:
+        </p>
+        <p>
+          <strong>Small pilot top performer:</strong> rbx1_small_3 achieves the best ipTM of 0.493 with design_ptm 0.766 and min interaction PAE of 3.48.
+          rbx1_small_4 (rank 1 by composite score) shows ipTM 0.461, design_ptm 0.723, and the best min PAE of 2.95 with 8 PLIP H-bonds.
+          rbx1_small_0 has the most H-bonds (27) and best delta SASA (2030 A^2) but lower ipTM (0.445).
+        </p>
+        <p>
+          <strong>Medium pilot:</strong> Scores are generally lower. Best ipTM is rbx1_medium_0 at 0.350, with high backbone RMSD values (1.59-14.8 A) suggesting many designs fail to refold correctly.
+          rbx1_medium_2 shows a very low design_ptm of 0.415, indicating poor intrinsic stability.
+        </p>
+
+        <h3 class="red-flag">Red Flags</h3>
+        <p>
+          <span class="red-flag">1. RFdiffusion designs have no Boltz-2 scores yet.</span> These 10 designs (with 40 MPNN sequences) represent a critical scoring gap.
+          The Boltz-2 scoring script exists at 03_scoring/scripts/score_with_boltz2.py but has not been run on the RFdiffusion+MPNN outputs.
+        </p>
+        <p>
+          <span class="red-flag">2. BoltzGen ipTM values are weak.</span> The best ipTM across all BoltzGen designs is 0.493 (small_3), which is below the typical 0.6+ threshold for confident binding.
+          All design_to_target_iptm values are in the 0.17-0.49 range, suggesting the binder-target interactions are not confidently predicted.
+        </p>
+        <p>
+          <span class="red-flag">3. Medium pilot designs show poor refolding.</span> Backbone RMSDs of 12-15 A for medium designs 1, 2 indicate these structures do not refold to their designed conformations.
+          Only rbx1_medium_0 and rbx1_medium_4 show reasonable RMSD (&lt;3 A).
+        </p>
+        <p>
+          <span class="red-flag">4. ESM3 pipeline not started.</span> This remains a stretch goal with no progress.
+        </p>
+        <p>
+          <span class="red-flag">5. No designs in 04_filtered or 05_submission yet.</span> Filtering and submission preparation have not begun.
+        </p>
+
+        <h3 class="rec">Recommendations</h3>
+        <p>
+          <span class="rec">1. Priority: Run Boltz-2 scoring on RFdiffusion+MPNN designs.</span> Use the existing score_with_boltz2.py script. The 40 MPNN sequences are the most likely source of competitive designs given the structural diversity.
+        </p>
+        <p>
+          <span class="rec">2. Scale up RFdiffusion generation.</span> The pilot (5+5 designs) is very small. Generating 50-100 backbones per campaign with varied hotspot constraints would dramatically improve chances of finding a high-confidence binder.
+        </p>
+        <p>
+          <span class="rec">3. Focus on BoltzGen small pilot designs.</span> Small pilot outperforms medium pilot across all metrics. Consider generating more small designs (40-65 AA) rather than medium.
+        </p>
+        <p>
+          <span class="rec">4. Begin filtering pipeline.</span> Apply ipTM > 0.4, design_ptm > 0.7, RMSD &lt; 3 A thresholds to identify candidates for 05_submission.
+        </p>
+
+        <h3>Pipeline Progress</h3>
+        <p>
+          Estimated overall completion: <strong>35%</strong>.
+          Evolutionary analysis (100%), RFdiffusion generation (100% for pilot), ProteinMPNN (100% for pilot), BoltzGen small (100%), BoltzGen medium (100%).
+          Remaining: RFdiffusion scoring (0%), scale-up generation (0%), filtering (0%), submission (0%).
+        </p>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" style="width: 35%;"></div>
+        </div>
+      </div>
+
+      <!-- Top 5 Structures (by scoring) -->
       <div class="section-heading">Top 5 Structures</div>
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;">
-        Ranked by RFdiffusion self-confidence (B-factor). Full scoring metrics (ipSAE, ipTM, pLDDT) pending Boltz-2 prediction.
+        Ranked by Boltz-2 ipTM (BoltzGen designs) and RFdiffusion confidence (backbone-only designs). Full scoring metrics shown where available.
       </p>
       <div class="structure-grid" id="topStructures">
         <!-- Populated by JS -->
@@ -562,14 +836,15 @@
       <div class="table-controls">
         <label for="sortSelect">Sort by:</label>
         <select id="sortSelect" onchange="sortTable()">
-          <option value="rank">Rank (RFdiff Confidence)</option>
+          <option value="rank">Rank (Composite)</option>
           <option value="name">Name</option>
           <option value="campaign">Campaign</option>
+          <option value="pipeline">Pipeline</option>
           <option value="binder_length">Binder Length</option>
           <option value="rfdiff_conf">RFdiff Confidence</option>
-          <option value="ipSAE">ipSAE</option>
           <option value="ipTM">ipTM</option>
-          <option value="pLDDT">pLDDT</option>
+          <option value="design_ptm">Design pTM</option>
+          <option value="min_pae">Min PAE</option>
         </select>
 
         <label for="filterCampaign">Campaign:</label>
@@ -577,6 +852,8 @@
           <option value="all">All</option>
           <option value="E2 Face">E2 Face</option>
           <option value="Cullin Face">Cullin Face</option>
+          <option value="BoltzGen Small">BoltzGen Small</option>
+          <option value="BoltzGen Medium">BoltzGen Medium</option>
         </select>
 
         <input type="text" id="searchInput" placeholder="Search designs..." oninput="filterTable()">
@@ -591,10 +868,10 @@
               <th onclick="sortByColumn('campaign')">Campaign <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('binder_length')">Binder Len <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('rfdiff_conf')">RFdiff Conf <span class="sort-arrow"></span></th>
-              <th onclick="sortByColumn('ipSAE')">ipSAE <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('ipTM')">ipTM <span class="sort-arrow"></span></th>
-              <th onclick="sortByColumn('pLDDT')">pLDDT <span class="sort-arrow"></span></th>
-              <th onclick="sortByColumn('pTM')">pTM <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('design_ptm')">Design pTM <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('min_pae')">Min PAE <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('hbonds')">H-Bonds <span class="sort-arrow"></span></th>
               <th>Pipeline</th>
               <th>Stage</th>
             </tr>
@@ -623,130 +900,204 @@
 <script>
 // ===== Design Data =====
 const designs = [
+  // ---- RFdiffusion E2 Face ----
   {
-    id: "e2_small_pilot_design_0",
-    name: "E2 Pilot Design 0",
-    campaign: "E2 Face",
-    binder_length: 50,
-    target_length: 100,
-    rfdiff_conf: 0.979,
-    rfdiff_min: 0.95,
-    rfdiff_max: 1.0,
-    pipeline: "RFdiffusion",
-    stage: "Backbone Only",
-    size_class: "Small (40-65 AA)",
-    ipSAE: null,
-    ipTM: null,
-    pLDDT: null,
-    pTM: null,
-    pAE: null,
-    bsa: null,
-    contacts: null,
-    sequence: null
+    id: "e2_small_pilot_design_0", name: "E2 Pilot Design 0", campaign: "E2 Face",
+    binder_length: 50, target_length: 100,
+    rfdiff_conf: 0.979, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
+    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null, sequence: null
   },
   {
-    id: "e2_small_pilot_design_1",
-    name: "E2 Pilot Design 1",
-    campaign: "E2 Face",
-    binder_length: 42,
-    target_length: 100,
-    rfdiff_conf: 0.987,
-    rfdiff_min: 0.92,
-    rfdiff_max: 1.0,
-    pipeline: "RFdiffusion",
-    stage: "Backbone Only",
-    size_class: "Small (40-65 AA)",
-    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+    id: "e2_small_pilot_design_1", name: "E2 Pilot Design 1", campaign: "E2 Face",
+    binder_length: 42, target_length: 100,
+    rfdiff_conf: 0.987, rfdiff_min: 0.92, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
+    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null, sequence: null
   },
   {
-    id: "e2_small_pilot_design_2",
-    name: "E2 Pilot Design 2",
-    campaign: "E2 Face",
-    binder_length: 48,
-    target_length: 100,
-    rfdiff_conf: 0.985,
-    rfdiff_min: 0.95,
-    rfdiff_max: 1.0,
-    pipeline: "RFdiffusion",
-    stage: "Backbone Only",
-    size_class: "Small (40-65 AA)",
-    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+    id: "e2_small_pilot_design_2", name: "E2 Pilot Design 2", campaign: "E2 Face",
+    binder_length: 48, target_length: 100,
+    rfdiff_conf: 0.985, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
+    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null, sequence: null
   },
   {
-    id: "e2_small_pilot_design_3",
-    name: "E2 Pilot Design 3",
-    campaign: "E2 Face",
-    binder_length: 64,
-    target_length: 100,
-    rfdiff_conf: 0.989,
-    rfdiff_min: 0.98,
-    rfdiff_max: 1.0,
-    pipeline: "RFdiffusion",
-    stage: "Backbone Only",
-    size_class: "Small (40-65 AA)",
-    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+    id: "e2_small_pilot_design_3", name: "E2 Pilot Design 3", campaign: "E2 Face",
+    binder_length: 64, target_length: 100,
+    rfdiff_conf: 0.989, rfdiff_min: 0.98, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
+    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null, sequence: null
   },
   {
-    id: "cullin_small_pilot_design_0",
-    name: "Cullin Pilot Design 0",
-    campaign: "Cullin Face",
-    binder_length: 63,
-    target_length: 100,
-    rfdiff_conf: 0.992,
-    rfdiff_min: 0.98,
-    rfdiff_max: 1.0,
-    pipeline: "RFdiffusion",
-    stage: "Backbone Only",
-    size_class: "Small (40-65 AA)",
-    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+    id: "e2_small_pilot_design_4", name: "E2 Pilot Design 4", campaign: "E2 Face",
+    binder_length: 48, target_length: 100,
+    rfdiff_conf: 0.983, rfdiff_min: 0.93, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
+    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null, sequence: null
+  },
+  // ---- RFdiffusion Cullin Face ----
+  {
+    id: "cullin_small_pilot_design_0", name: "Cullin Pilot Design 0", campaign: "Cullin Face",
+    binder_length: 63, target_length: 100,
+    rfdiff_conf: 0.992, rfdiff_min: 0.98, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
+    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null, sequence: null
   },
   {
-    id: "cullin_small_pilot_design_1",
-    name: "Cullin Pilot Design 1",
-    campaign: "Cullin Face",
-    binder_length: 53,
-    target_length: 100,
-    rfdiff_conf: 0.987,
-    rfdiff_min: 0.90,
-    rfdiff_max: 1.0,
-    pipeline: "RFdiffusion",
-    stage: "Backbone Only",
-    size_class: "Small (40-65 AA)",
-    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+    id: "cullin_small_pilot_design_1", name: "Cullin Pilot Design 1", campaign: "Cullin Face",
+    binder_length: 53, target_length: 100,
+    rfdiff_conf: 0.987, rfdiff_min: 0.90, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
+    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null, sequence: null
   },
   {
-    id: "cullin_small_pilot_design_2",
-    name: "Cullin Pilot Design 2",
-    campaign: "Cullin Face",
-    binder_length: 44,
-    target_length: 100,
-    rfdiff_conf: 0.988,
-    rfdiff_min: 0.95,
-    rfdiff_max: 1.0,
-    pipeline: "RFdiffusion",
-    stage: "Backbone Only",
-    size_class: "Small (40-65 AA)",
-    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+    id: "cullin_small_pilot_design_2", name: "Cullin Pilot Design 2", campaign: "Cullin Face",
+    binder_length: 44, target_length: 100,
+    rfdiff_conf: 0.988, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
+    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null, sequence: null
   },
   {
-    id: "cullin_small_pilot_design_3",
-    name: "Cullin Pilot Design 3",
-    campaign: "Cullin Face",
-    binder_length: 61,
-    target_length: 100,
-    rfdiff_conf: 0.988,
-    rfdiff_min: 0.95,
-    rfdiff_max: 1.0,
-    pipeline: "RFdiffusion",
-    stage: "Backbone Only",
-    size_class: "Small (40-65 AA)",
-    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+    id: "cullin_small_pilot_design_3", name: "Cullin Pilot Design 3", campaign: "Cullin Face",
+    binder_length: 61, target_length: 100,
+    rfdiff_conf: 0.988, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
+    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null, sequence: null
+  },
+  {
+    id: "cullin_small_pilot_design_4", name: "Cullin Pilot Design 4", campaign: "Cullin Face",
+    binder_length: 46, target_length: 100,
+    rfdiff_conf: 0.984, rfdiff_min: 0.96, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
+    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null, sequence: null
+  },
+  // ---- BoltzGen Small Pilot ----
+  {
+    id: "rbx1_small_0", name: "BG Small 0", campaign: "BoltzGen Small",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.445, design_ptm: 0.680, pLDDT: null, pTM: 0.508, pAE: 12.34, min_pae: 2.49,
+    bsa: 2030, contacts: null, hbonds: 27,
+    sequence: "AGAAAGVSRKVTADELPGVARELWERAQRLLGRKPDKARLTFYW",
+    bb_rmsd: 2.78, delta_sasa: 2030
+  },
+  {
+    id: "rbx1_small_1", name: "BG Small 1", campaign: "BoltzGen Small",
+    binder_length: 62, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.325, design_ptm: 0.735, pLDDT: null, pTM: 0.464, pAE: 15.74, min_pae: 5.91,
+    bsa: 977, contacts: null, hbonds: 6,
+    sequence: "KTEEEIAEELSKKFGISLTAARAAVEAVRRILERHPDITAEELAERTGASLEEVEHLLELLK",
+    bb_rmsd: 7.60, delta_sasa: 977
+  },
+  {
+    id: "rbx1_small_2", name: "BG Small 2", campaign: "BoltzGen Small",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.403, design_ptm: 0.741, pLDDT: null, pTM: 0.499, pAE: 14.73, min_pae: 4.24,
+    bsa: 980, contacts: null, hbonds: 5,
+    sequence: "GAKVVKSVTVEISPDDTFEEIVEKIKAENPELSDEEAEALAKELQRAASRGIAGEFTVAVVEE",
+    bb_rmsd: 1.70, delta_sasa: 980
+  },
+  {
+    id: "rbx1_small_3", name: "BG Small 3", campaign: "BoltzGen Small",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.493, design_ptm: 0.766, pLDDT: null, pTM: 0.556, pAE: 12.56, min_pae: 3.48,
+    bsa: 1415, contacts: null, hbonds: 3,
+    sequence: "SAAAAAGEKAAAAAEAGASTDELAKLWVEAAKLAAASSDPAAANAAFIGIAKAIVIRMKRLLGL",
+    bb_rmsd: 3.50, delta_sasa: 1415
+  },
+  {
+    id: "rbx1_small_4", name: "BG Small 4", campaign: "BoltzGen Small",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.461, design_ptm: 0.723, pLDDT: null, pTM: 0.530, pAE: 12.02, min_pae: 2.95,
+    bsa: 1831, contacts: null, hbonds: 8,
+    sequence: "SNLERLERIARGAAEFLLSLVEANAAGDVEGARALLKAAEAGAA",
+    bb_rmsd: 1.40, delta_sasa: 1831
+  },
+  // ---- BoltzGen Medium Pilot ----
+  {
+    id: "rbx1_medium_0", name: "BG Medium 0", campaign: "BoltzGen Medium",
+    binder_length: 120, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Medium (90-120 AA)",
+    ipTM: 0.350, design_ptm: 0.715, pLDDT: null, pTM: 0.528, pAE: 16.34, min_pae: 6.90,
+    bsa: 1114, contacts: null, hbonds: 5,
+    sequence: "EVQLVESGGGLVQAGGSLRLSEAASGFTFSSYAMGWYRQAPGKEREFVAAISSSGGYTAYADSVKGRFTISRDNAKNTLYLQMNSLKPEDTAVYYEARAAGDNALVFDYWGQGTQVTVSS",
+    bb_rmsd: 1.59, delta_sasa: 1114
+  },
+  {
+    id: "rbx1_medium_1", name: "BG Medium 1", campaign: "BoltzGen Medium",
+    binder_length: 101, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Medium (90-120 AA)",
+    ipTM: 0.168, design_ptm: 0.508, pLDDT: null, pTM: 0.334, pAE: 22.46, min_pae: 16.11,
+    bsa: 2298, contacts: null, hbonds: 8,
+    sequence: "MAASGDVATAKELIEKYRAFTITVEFPPDVKIEKDPIDGELITEVSKEGKELGLGPTDPRNLILYGLDNIAYHFLSAAKWYNTKPVSPANGKPFVPRFAEM",
+    bb_rmsd: 12.96, delta_sasa: 2298
+  },
+  {
+    id: "rbx1_medium_2", name: "BG Medium 2", campaign: "BoltzGen Medium",
+    binder_length: 92, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Medium (90-120 AA)",
+    ipTM: 0.330, design_ptm: 0.415, pLDDT: null, pTM: 0.384, pAE: 20.21, min_pae: 8.30,
+    bsa: 1672, contacts: null, hbonds: 4,
+    sequence: "SKEGEEVVRDNQAAALDALNAQSELDPIDKAPLFEPSPEAKEQGLSLNHPDNLVVISTSKISSWYGSLEKWLKTNKTDPVNGKPFNILKYEP",
+    bb_rmsd: 12.75, delta_sasa: 1672
+  },
+  {
+    id: "rbx1_medium_3", name: "BG Medium 3", campaign: "BoltzGen Medium",
+    binder_length: 108, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Medium (90-120 AA)",
+    ipTM: 0.216, design_ptm: 0.728, pLDDT: null, pTM: 0.466, pAE: 19.68, min_pae: 9.35,
+    bsa: 1236, contacts: null, hbonds: 3,
+    sequence: "SAVEAAREAAEAAAKLTGEAGRRAAALAGVLAVAAEEIFANDPAAMEAALPLAKRALEAAKAGDARGAAVAFAEANHALHFAAVARYRETGELPPVNEKKYEFVGRGV",
+    bb_rmsd: 14.76, delta_sasa: 1236
+  },
+  {
+    id: "rbx1_medium_4", name: "BG Medium 4", campaign: "BoltzGen Medium",
+    binder_length: 117, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Medium (90-120 AA)",
+    ipTM: 0.204, design_ptm: 0.723, pLDDT: null, pTM: 0.466, pAE: 21.38, min_pae: 13.09,
+    bsa: 1427, contacts: null, hbonds: 9,
+    sequence: "EVQLVESGGGLVQAGGSLRLSEAASGFTFSDSVMGWVRQAPGKGREFVAAISSTGTLKLYADSVKGRFTISRDTAKNTLYLQMNSLKAEDTAVYYAVAYDVSTNKVYWGQGTQVTVS",
+    bb_rmsd: 3.03, delta_sasa: 1427
   }
 ];
 
-// ===== Rank designs by rfdiff confidence =====
+// ===== Rank designs by composite score =====
 function rankDesigns(arr) {
-  const sorted = [...arr].sort((a, b) => b.rfdiff_conf - a.rfdiff_conf);
+  const sorted = [...arr].sort((a, b) => {
+    // Scored designs first, ranked by ipTM descending
+    const aScored = a.ipTM !== null;
+    const bScored = b.ipTM !== null;
+    if (aScored && !bScored) return -1;
+    if (!aScored && bScored) return 1;
+    if (aScored && bScored) return b.ipTM - a.ipTM;
+    // Both unscored: rank by rfdiff_conf
+    return (b.rfdiff_conf || 0) - (a.rfdiff_conf || 0);
+  });
   sorted.forEach((d, i) => d.rank = i + 1);
   return sorted;
 }
@@ -755,14 +1106,39 @@ let rankedDesigns = rankDesigns(designs);
 
 // ===== Render a structure card =====
 function renderCard(d, showRank) {
-  const campaignClass = d.campaign === 'E2 Face' ? 'meta-campaign-e2' : 'meta-campaign-cullin';
-  const confPct = Math.round(d.rfdiff_conf * 100);
-  const barClass = confPct >= 95 ? 'bar-good' : confPct >= 80 ? 'bar-ok' : 'bar-bad';
+  const campaignClassMap = {
+    'E2 Face': 'meta-campaign-e2',
+    'Cullin Face': 'meta-campaign-cullin',
+    'BoltzGen Small': 'meta-pipeline',
+    'BoltzGen Medium': 'meta-pipeline'
+  };
+  const campaignClass = campaignClassMap[d.campaign] || 'meta-pipeline';
 
   const fmtMetric = (val, name) => {
-    if (val === null) return `<div class="metric-item"><div class="metric-value pending">Pending</div><div class="metric-label">${name}</div></div>`;
+    if (val === null || val === undefined) return `<div class="metric-item"><div class="metric-value pending">Pending</div><div class="metric-label">${name}</div></div>`;
+    return `<div class="metric-item"><div class="metric-value">${typeof val === 'number' ? val.toFixed(3) : val}</div><div class="metric-label">${name}</div></div>`;
+  };
+
+  const fmtInt = (val, name) => {
+    if (val === null || val === undefined) return `<div class="metric-item"><div class="metric-value pending">Pending</div><div class="metric-label">${name}</div></div>`;
     return `<div class="metric-item"><div class="metric-value">${val}</div><div class="metric-label">${name}</div></div>`;
   };
+
+  let confBar = '';
+  if (d.rfdiff_conf !== null) {
+    const confPct = Math.round(d.rfdiff_conf * 100);
+    const barClass = confPct >= 95 ? 'bar-good' : confPct >= 80 ? 'bar-ok' : 'bar-bad';
+    confBar = `
+      <div class="confidence-bar-wrap">
+        <div class="confidence-bar-label">
+          <span>RFdiff Confidence</span>
+          <span>${d.rfdiff_conf.toFixed(3)} (${d.rfdiff_min.toFixed(2)}&ndash;${d.rfdiff_max.toFixed(2)})</span>
+        </div>
+        <div class="confidence-bar">
+          <div class="confidence-bar-fill ${barClass}" style="width:${confPct}%"></div>
+        </div>
+      </div>`;
+  }
 
   return `
     <div class="structure-card">
@@ -776,25 +1152,18 @@ function renderCard(d, showRank) {
         <span class="meta-tag meta-stage">${d.stage}</span>
         <span class="meta-tag" style="background:var(--bg);color:var(--text-secondary);border:1px solid var(--border);">${d.binder_length} AA</span>
       </div>
-      <div class="confidence-bar-wrap">
-        <div class="confidence-bar-label">
-          <span>RFdiff Confidence</span>
-          <span>${d.rfdiff_conf.toFixed(3)} (${d.rfdiff_min.toFixed(2)}&ndash;${d.rfdiff_max.toFixed(2)})</span>
-        </div>
-        <div class="confidence-bar">
-          <div class="confidence-bar-fill ${barClass}" style="width:${confPct}%"></div>
-        </div>
-      </div>
+      ${confBar}
       <div class="metrics-grid">
-        ${fmtMetric(d.ipSAE, 'ipSAE')}
         ${fmtMetric(d.ipTM, 'ipTM')}
-        ${fmtMetric(d.pLDDT, 'pLDDT')}
+        ${fmtMetric(d.design_ptm, 'Design pTM')}
+        ${fmtMetric(d.min_pae, 'Min PAE')}
         ${fmtMetric(d.pTM, 'pTM')}
-        ${fmtMetric(d.bsa, 'BSA')}
-        ${fmtMetric(d.contacts, 'Contacts')}
+        ${fmtInt(d.hbonds, 'H-Bonds')}
+        ${fmtInt(d.bsa, 'Delta SASA')}
       </div>
       <div style="font-size:12px;color:var(--text-secondary);">
         Size class: ${d.size_class} &middot; Target: ${d.target_length} res
+        ${d.bb_rmsd !== undefined && d.bb_rmsd !== null ? ' &middot; BB RMSD: ' + d.bb_rmsd.toFixed(2) + ' A' : ''}
       </div>
     </div>
   `;
@@ -817,21 +1186,29 @@ let sortAsc = true;
 
 function renderTable(data) {
   const tbody = document.getElementById('allStructuresBody');
-  tbody.innerHTML = data.map(d => `
+  tbody.innerHTML = data.map(d => {
+    const fmtVal = (v) => v !== null && v !== undefined ? (typeof v === 'number' ? v.toFixed(3) : v) : '<span style="color:var(--text-secondary);font-style:italic;">Pending</span>';
+    const fmtConf = (v) => v !== null ? v.toFixed(3) : '<span style="color:var(--text-secondary);font-style:italic;">N/A</span>';
+    const campaignClassMap = {
+      'E2 Face': 'meta-campaign-e2', 'Cullin Face': 'meta-campaign-cullin',
+      'BoltzGen Small': 'meta-pipeline', 'BoltzGen Medium': 'meta-pipeline'
+    };
+    return `
     <tr>
       <td><strong>#${d.rank}</strong></td>
       <td>${d.name}</td>
-      <td><span class="meta-tag ${d.campaign === 'E2 Face' ? 'meta-campaign-e2' : 'meta-campaign-cullin'}" style="font-size:11px;">${d.campaign}</span></td>
+      <td><span class="meta-tag ${campaignClassMap[d.campaign] || 'meta-pipeline'}" style="font-size:11px;">${d.campaign}</span></td>
       <td>${d.binder_length}</td>
-      <td>${d.rfdiff_conf.toFixed(3)}</td>
-      <td style="color:var(--text-secondary);font-style:italic;">${d.ipSAE !== null ? d.ipSAE : 'Pending'}</td>
-      <td style="color:var(--text-secondary);font-style:italic;">${d.ipTM !== null ? d.ipTM : 'Pending'}</td>
-      <td style="color:var(--text-secondary);font-style:italic;">${d.pLDDT !== null ? d.pLDDT : 'Pending'}</td>
-      <td style="color:var(--text-secondary);font-style:italic;">${d.pTM !== null ? d.pTM : 'Pending'}</td>
+      <td>${fmtConf(d.rfdiff_conf)}</td>
+      <td>${fmtVal(d.ipTM)}</td>
+      <td>${fmtVal(d.design_ptm)}</td>
+      <td>${fmtVal(d.min_pae)}</td>
+      <td>${d.hbonds !== null && d.hbonds !== undefined ? d.hbonds : '<span style="color:var(--text-secondary);font-style:italic;">Pending</span>'}</td>
       <td>${d.pipeline}</td>
       <td><span class="meta-tag meta-stage" style="font-size:11px;">${d.stage}</span></td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function getFilteredData() {
@@ -846,7 +1223,8 @@ function getFilteredData() {
     data = data.filter(d =>
       d.name.toLowerCase().includes(search) ||
       d.id.toLowerCase().includes(search) ||
-      d.campaign.toLowerCase().includes(search)
+      d.campaign.toLowerCase().includes(search) ||
+      d.pipeline.toLowerCase().includes(search)
     );
   }
   return data;
@@ -860,14 +1238,16 @@ function sortTable() {
     rank: d => d.rank,
     name: d => d.name,
     campaign: d => d.campaign,
+    pipeline: d => d.pipeline,
     binder_length: d => d.binder_length,
-    rfdiff_conf: d => d.rfdiff_conf,
-    ipSAE: d => d.ipSAE !== null ? d.ipSAE : Infinity,
+    rfdiff_conf: d => d.rfdiff_conf !== null ? d.rfdiff_conf : -Infinity,
     ipTM: d => d.ipTM !== null ? d.ipTM : -Infinity,
-    pLDDT: d => d.pLDDT !== null ? d.pLDDT : -Infinity,
+    design_ptm: d => d.design_ptm !== null ? d.design_ptm : -Infinity,
+    min_pae: d => d.min_pae !== null ? d.min_pae : Infinity,
+    hbonds: d => d.hbonds !== null ? d.hbonds : -Infinity,
   };
 
-  const descMetrics = ['rfdiff_conf', 'ipTM', 'pLDDT'];
+  const descMetrics = ['rfdiff_conf', 'ipTM', 'design_ptm', 'hbonds'];
   const ascending = !descMetrics.includes(sortBy);
 
   let data = getFilteredData();
@@ -906,6 +1286,8 @@ function toggleTheme() {
   html.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
   updateThemeBtn(next);
+  // Redraw canvases on theme change
+  setTimeout(drawAllPlots, 50);
 }
 
 function updateThemeBtn(theme) {
@@ -924,10 +1306,476 @@ function updateThemeBtn(theme) {
   }
 })();
 
+// ===== Canvas Plot Utilities =====
+function getThemeColors() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return {
+    text: isDark ? '#b0b0b0' : '#444',
+    axis: isDark ? '#555' : '#ccc',
+    bg: isDark ? '#1a1a2e' : '#ffffff',
+    e2: isDark ? '#64b5f6' : '#1565c0',
+    cullin: isDark ? '#ef9a9a' : '#c62828',
+    boltzSmall: isDark ? '#80cbc4' : '#00796b',
+    boltzMedium: isDark ? '#ffcc80' : '#e65100',
+    grid: isDark ? '#333' : '#eee',
+  };
+}
+
+function setupCanvas(canvasId) {
+  const canvas = document.getElementById(canvasId);
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, rect.width, rect.height);
+  return { ctx, w: rect.width, h: rect.height };
+}
+
+// ===== Plot 1: Binder Length Histogram =====
+function drawBinderLenHist() {
+  const { ctx, w, h } = setupCanvas('canvasBinderLen');
+  const tc = getThemeColors();
+  const pad = { l: 50, r: 20, t: 10, b: 40 };
+  const pw = w - pad.l - pad.r;
+  const ph = h - pad.t - pad.b;
+
+  // Bin data
+  const bins = [
+    { label: '40-49', min: 40, max: 49 },
+    { label: '50-59', min: 50, max: 59 },
+    { label: '60-69', min: 60, max: 69 },
+    { label: '90-99', min: 90, max: 99 },
+    { label: '100-109', min: 100, max: 109 },
+    { label: '110-120', min: 110, max: 120 },
+  ];
+
+  const cats = ['E2 Face', 'Cullin Face', 'BoltzGen Small', 'BoltzGen Medium'];
+  const colorMap = { 'E2 Face': tc.e2, 'Cullin Face': tc.cullin, 'BoltzGen Small': tc.boltzSmall, 'BoltzGen Medium': tc.boltzMedium };
+
+  const counts = bins.map(bin => {
+    const c = {};
+    cats.forEach(cat => {
+      c[cat] = designs.filter(d => d.campaign === cat && d.binder_length >= bin.min && d.binder_length <= bin.max).length;
+    });
+    c.total = cats.reduce((s, cat) => s + c[cat], 0);
+    return c;
+  });
+
+  const maxCount = Math.max(...counts.map(c => c.total), 1);
+  const barW = pw / bins.length;
+
+  // Axes
+  ctx.strokeStyle = tc.axis;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad.l, pad.t);
+  ctx.lineTo(pad.l, pad.t + ph);
+  ctx.lineTo(pad.l + pw, pad.t + ph);
+  ctx.stroke();
+
+  // Y-axis labels
+  ctx.fillStyle = tc.text;
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= maxCount; i++) {
+    const y = pad.t + ph - (i / maxCount) * ph;
+    ctx.fillText(i, pad.l - 6, y + 4);
+    ctx.strokeStyle = tc.grid;
+    ctx.beginPath();
+    ctx.moveTo(pad.l, y);
+    ctx.lineTo(pad.l + pw, y);
+    ctx.stroke();
+  }
+
+  // Bars (stacked)
+  bins.forEach((bin, bi) => {
+    const x = pad.l + bi * barW + barW * 0.1;
+    const bw = barW * 0.8;
+    let yOff = 0;
+    cats.forEach(cat => {
+      const cnt = counts[bi][cat];
+      if (cnt > 0) {
+        const barH = (cnt / maxCount) * ph;
+        ctx.fillStyle = colorMap[cat];
+        ctx.fillRect(x, pad.t + ph - yOff - barH, bw, barH);
+        yOff += barH;
+      }
+    });
+    // X label
+    ctx.fillStyle = tc.text;
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(bin.label, pad.l + bi * barW + barW / 2, pad.t + ph + 16);
+  });
+
+  // Axis labels
+  ctx.fillStyle = tc.text;
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Binder Length (AA)', pad.l + pw / 2, h - 4);
+  ctx.save();
+  ctx.translate(12, pad.t + ph / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('Count', 0, 0);
+  ctx.restore();
+
+  // Legend
+  const legendY = pad.t + 4;
+  let lx = pad.l + 8;
+  const legendItems = [
+    ['E2', tc.e2], ['Cullin', tc.cullin], ['BG Small', tc.boltzSmall], ['BG Medium', tc.boltzMedium]
+  ];
+  ctx.font = '10px sans-serif';
+  legendItems.forEach(([label, color]) => {
+    ctx.fillStyle = color;
+    ctx.fillRect(lx, legendY, 10, 10);
+    ctx.fillStyle = tc.text;
+    ctx.textAlign = 'left';
+    ctx.fillText(label, lx + 13, legendY + 9);
+    lx += ctx.measureText(label).width + 26;
+  });
+}
+
+// ===== Plot 2: RFdiffusion Confidence Strip =====
+function drawRFdiffConf() {
+  const { ctx, w, h } = setupCanvas('canvasRFdiffConf');
+  const tc = getThemeColors();
+  const pad = { l: 50, r: 20, t: 15, b: 40 };
+  const pw = w - pad.l - pad.r;
+  const ph = h - pad.t - pad.b;
+
+  const rfdDesigns = designs.filter(d => d.rfdiff_conf !== null);
+  const minConf = 0.975;
+  const maxConf = 0.995;
+
+  // Axes
+  ctx.strokeStyle = tc.axis;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad.l, pad.t + ph);
+  ctx.lineTo(pad.l + pw, pad.t + ph);
+  ctx.stroke();
+
+  // X-axis ticks
+  ctx.fillStyle = tc.text;
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'center';
+  for (let v = 0.975; v <= 0.995; v += 0.005) {
+    const x = pad.l + ((v - minConf) / (maxConf - minConf)) * pw;
+    ctx.fillText(v.toFixed(3), x, pad.t + ph + 18);
+    ctx.strokeStyle = tc.grid;
+    ctx.beginPath();
+    ctx.moveTo(x, pad.t);
+    ctx.lineTo(x, pad.t + ph);
+    ctx.stroke();
+  }
+
+  ctx.fillText('Mean B-factor Confidence', pad.l + pw / 2, h - 4);
+
+  // Points
+  const e2Y = pad.t + ph * 0.3;
+  const cullinY = pad.t + ph * 0.7;
+
+  ctx.fillStyle = tc.text;
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('E2 Face', pad.l - 6, e2Y + 4);
+  ctx.fillText('Cullin Face', pad.l - 6, cullinY + 4);
+
+  rfdDesigns.forEach(d => {
+    const x = pad.l + ((d.rfdiff_conf - minConf) / (maxConf - minConf)) * pw;
+    const y = d.campaign === 'E2 Face' ? e2Y : cullinY;
+    const jitter = (Math.random() - 0.5) * 16;
+    ctx.beginPath();
+    ctx.arc(x, y + jitter, 6, 0, Math.PI * 2);
+    ctx.fillStyle = d.campaign === 'E2 Face' ? tc.e2 : tc.cullin;
+    ctx.fill();
+    ctx.strokeStyle = tc.bg;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+}
+
+// ===== Plot 3: Campaign Comparison =====
+function drawCampaignComparison() {
+  const { ctx, w, h } = setupCanvas('canvasCampaign');
+  const tc = getThemeColors();
+  const pad = { l: 50, r: 20, t: 15, b: 50 };
+  const pw = w - pad.l - pad.r;
+  const ph = h - pad.t - pad.b;
+
+  const e2 = designs.filter(d => d.campaign === 'E2 Face');
+  const cullin = designs.filter(d => d.campaign === 'Cullin Face');
+
+  const e2AvgConf = e2.reduce((s, d) => s + d.rfdiff_conf, 0) / e2.length;
+  const cullinAvgConf = cullin.reduce((s, d) => s + d.rfdiff_conf, 0) / cullin.length;
+  const e2AvgLen = e2.reduce((s, d) => s + d.binder_length, 0) / e2.length;
+  const cullinAvgLen = cullin.reduce((s, d) => s + d.binder_length, 0) / cullin.length;
+
+  const groups = [
+    { label: 'Avg Confidence', e2: e2AvgConf, cullin: cullinAvgConf, max: 1.0, fmt: v => v.toFixed(3) },
+    { label: 'Avg Length / 100', e2: e2AvgLen / 100, cullin: cullinAvgLen / 100, max: 1.0, fmt: v => (v * 100).toFixed(0) + ' AA' },
+    { label: 'Count / 10', e2: e2.length / 10, cullin: cullin.length / 10, max: 1.0, fmt: v => Math.round(v * 10) },
+  ];
+
+  const groupW = pw / groups.length;
+  const barW = groupW * 0.3;
+
+  // Axes
+  ctx.strokeStyle = tc.axis;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad.l, pad.t);
+  ctx.lineTo(pad.l, pad.t + ph);
+  ctx.lineTo(pad.l + pw, pad.t + ph);
+  ctx.stroke();
+
+  groups.forEach((g, gi) => {
+    const gx = pad.l + gi * groupW + groupW / 2;
+
+    // E2 bar
+    const e2H = (g.e2 / g.max) * ph;
+    ctx.fillStyle = tc.e2;
+    ctx.fillRect(gx - barW - 2, pad.t + ph - e2H, barW, e2H);
+
+    // Cullin bar
+    const cH = (g.cullin / g.max) * ph;
+    ctx.fillStyle = tc.cullin;
+    ctx.fillRect(gx + 2, pad.t + ph - cH, barW, cH);
+
+    // Values on bars
+    ctx.fillStyle = tc.text;
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(g.fmt(g.e2), gx - barW / 2 - 2, pad.t + ph - e2H - 4);
+    ctx.fillText(g.fmt(g.cullin), gx + barW / 2 + 2, pad.t + ph - cH - 4);
+
+    // X label
+    ctx.fillText(g.label, gx, pad.t + ph + 16);
+  });
+
+  // Legend
+  ctx.fillStyle = tc.e2;
+  ctx.fillRect(pad.l + 8, pad.t + 2, 10, 10);
+  ctx.fillStyle = tc.text;
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('E2 Face', pad.l + 22, pad.t + 11);
+  ctx.fillStyle = tc.cullin;
+  ctx.fillRect(pad.l + 78, pad.t + 2, 10, 10);
+  ctx.fillStyle = tc.text;
+  ctx.fillText('Cullin Face', pad.l + 92, pad.t + 11);
+}
+
+// ===== Plot 4: ipTM Distribution =====
+function drawIpTMDist() {
+  const { ctx, w, h } = setupCanvas('canvasIpTM');
+  const tc = getThemeColors();
+  const pad = { l: 50, r: 20, t: 15, b: 40 };
+  const pw = w - pad.l - pad.r;
+  const ph = h - pad.t - pad.b;
+
+  const scored = designs.filter(d => d.ipTM !== null);
+  const small = scored.filter(d => d.campaign === 'BoltzGen Small');
+  const medium = scored.filter(d => d.campaign === 'BoltzGen Medium');
+
+  const all = [...small, ...medium].sort((a, b) => b.ipTM - a.ipTM);
+  const barW = pw / all.length;
+
+  // Axes
+  ctx.strokeStyle = tc.axis;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad.l, pad.t);
+  ctx.lineTo(pad.l, pad.t + ph);
+  ctx.lineTo(pad.l + pw, pad.t + ph);
+  ctx.stroke();
+
+  // Y-axis
+  ctx.fillStyle = tc.text;
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'right';
+  for (let v = 0; v <= 0.5; v += 0.1) {
+    const y = pad.t + ph - (v / 0.55) * ph;
+    ctx.fillText(v.toFixed(1), pad.l - 6, y + 4);
+    ctx.strokeStyle = tc.grid;
+    ctx.beginPath();
+    ctx.moveTo(pad.l, y);
+    ctx.lineTo(pad.l + pw, y);
+    ctx.stroke();
+  }
+
+  // 0.6 threshold line
+  const threshY = pad.t + ph - (0.6 / 0.55) * ph;
+  if (threshY > pad.t) {
+    ctx.strokeStyle = '#ff5252';
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(pad.l, threshY);
+    ctx.lineTo(pad.l + pw, threshY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Bars
+  all.forEach((d, i) => {
+    const x = pad.l + i * barW + barW * 0.15;
+    const bw = barW * 0.7;
+    const barH = (d.ipTM / 0.55) * ph;
+    ctx.fillStyle = d.campaign === 'BoltzGen Small' ? tc.boltzSmall : tc.boltzMedium;
+    ctx.fillRect(x, pad.t + ph - barH, bw, barH);
+
+    // Label
+    ctx.fillStyle = tc.text;
+    ctx.font = '9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.save();
+    ctx.translate(x + bw / 2, pad.t + ph + 14);
+    ctx.rotate(-0.3);
+    const shortName = d.id.replace('rbx1_', '');
+    ctx.fillText(shortName, 0, 0);
+    ctx.restore();
+  });
+
+  // Axis labels
+  ctx.fillStyle = tc.text;
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.save();
+  ctx.translate(12, pad.t + ph / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('ipTM', 0, 0);
+  ctx.restore();
+
+  // Legend
+  ctx.fillStyle = tc.boltzSmall;
+  ctx.fillRect(pad.l + 8, pad.t + 2, 10, 10);
+  ctx.fillStyle = tc.text;
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Small Pilot', pad.l + 22, pad.t + 11);
+  ctx.fillStyle = tc.boltzMedium;
+  ctx.fillRect(pad.l + 95, pad.t + 2, 10, 10);
+  ctx.fillStyle = tc.text;
+  ctx.fillText('Medium Pilot', pad.l + 109, pad.t + 11);
+}
+
+// ===== Plot 5: ipTM vs min PAE Scatter =====
+function drawScatter() {
+  const { ctx, w, h } = setupCanvas('canvasScatter');
+  const tc = getThemeColors();
+  const pad = { l: 55, r: 20, t: 15, b: 40 };
+  const pw = w - pad.l - pad.r;
+  const ph = h - pad.t - pad.b;
+
+  const scored = designs.filter(d => d.ipTM !== null && d.min_pae !== null);
+  const maxPAE = 18;
+  const maxIpTM = 0.55;
+
+  // Axes
+  ctx.strokeStyle = tc.axis;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad.l, pad.t);
+  ctx.lineTo(pad.l, pad.t + ph);
+  ctx.lineTo(pad.l + pw, pad.t + ph);
+  ctx.stroke();
+
+  // Grid & labels
+  ctx.fillStyle = tc.text;
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'right';
+  for (let v = 0; v <= 0.5; v += 0.1) {
+    const y = pad.t + ph - (v / maxIpTM) * ph;
+    ctx.fillText(v.toFixed(1), pad.l - 6, y + 4);
+    ctx.strokeStyle = tc.grid;
+    ctx.beginPath();
+    ctx.moveTo(pad.l, y);
+    ctx.lineTo(pad.l + pw, y);
+    ctx.stroke();
+  }
+  ctx.textAlign = 'center';
+  for (let v = 0; v <= maxPAE; v += 4) {
+    const x = pad.l + (v / maxPAE) * pw;
+    ctx.fillText(v, x, pad.t + ph + 16);
+    ctx.strokeStyle = tc.grid;
+    ctx.beginPath();
+    ctx.moveTo(x, pad.t);
+    ctx.lineTo(x, pad.t + ph);
+    ctx.stroke();
+  }
+
+  // Axis labels
+  ctx.fillText('Min Interaction PAE', pad.l + pw / 2, h - 4);
+  ctx.save();
+  ctx.translate(12, pad.t + ph / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('ipTM', 0, 0);
+  ctx.restore();
+
+  // Points
+  scored.forEach(d => {
+    const x = pad.l + (d.min_pae / maxPAE) * pw;
+    const y = pad.t + ph - (d.ipTM / maxIpTM) * ph;
+    const isSmall = d.campaign === 'BoltzGen Small';
+    ctx.fillStyle = isSmall ? tc.boltzSmall : tc.boltzMedium;
+    ctx.beginPath();
+    if (isSmall) {
+      ctx.arc(x, y, 7, 0, Math.PI * 2);
+    } else {
+      ctx.rect(x - 5, y - 5, 10, 10);
+    }
+    ctx.fill();
+    ctx.strokeStyle = tc.bg;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Label
+    ctx.fillStyle = tc.text;
+    ctx.font = '9px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(d.id.replace('rbx1_', ''), x + 9, y + 3);
+  });
+
+  // Legend
+  ctx.fillStyle = tc.boltzSmall;
+  ctx.beginPath();
+  ctx.arc(pad.l + 14, pad.t + 7, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = tc.text;
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Small Pilot', pad.l + 24, pad.t + 11);
+  ctx.fillStyle = tc.boltzMedium;
+  ctx.fillRect(pad.l + 93, pad.t + 2, 10, 10);
+  ctx.fillStyle = tc.text;
+  ctx.fillText('Medium Pilot', pad.l + 107, pad.t + 11);
+}
+
+// ===== Draw all plots =====
+function drawAllPlots() {
+  drawBinderLenHist();
+  drawRFdiffConf();
+  drawCampaignComparison();
+  drawIpTMDist();
+  drawScatter();
+}
+
 // ===== Init =====
 renderTop5();
 renderAllCards();
 sortTable();
+
+// Draw plots after DOM is ready
+if (document.readyState === 'complete') {
+  drawAllPlots();
+} else {
+  window.addEventListener('load', drawAllPlots);
+}
+// Redraw on resize
+window.addEventListener('resize', drawAllPlots);
 </script>
 
 </body>
