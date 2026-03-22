@@ -11818,17 +11818,38 @@ function rankDesigns(arr) {
 
 let rankedDesigns = rankDesigns(designs);
 
+// ===== FASTA Download =====
+function downloadFasta(designId) {
+  const d = designs.find(x => x.id === designId);
+  if (!d || !d.sequence) return;
+  const header = '>' + d.id + ' | ' + (d.name || '') + ' | ' + (d.campaign || '') + ' | ' + d.binder_length + ' AA | ipTM=' + (d.ipTM != null ? d.ipTM.toFixed(3) : 'N/A');
+  const content = header + '\n' + d.sequence + '\n';
+  const blob = new Blob([content], {type: 'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = d.id + '.fasta'; a.click();
+  URL.revokeObjectURL(url);
+}
+
 // ===== Render a structure card =====
 function renderStructureViewer(d) {
-  if (!d.pdb_file) return '';
-  const isCif = d.pdb_file.indexOf('.cif') !== -1;
-  const ext = isCif ? '.cif' : '.pdb';
-  const label = isCif ? 'CIF' : 'PDB';
-  return '<div>' +
-    '<button class="viewer3d-toggle" onclick="toggle3DViewer(this, \'' + d.id + '\', \'' + d.pdb_file + '\', \'' + d.pipeline + '\')" style="font-size:12px;padding:4px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--link);cursor:pointer;font-family:inherit;font-weight:400;transition:background 0.2s;">Show 3D Structure</button>' +
-    '<a href="' + d.pdb_file + '" download="' + d.id + ext + '" style="font-size:12px;padding:4px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--link);cursor:pointer;font-family:inherit;font-weight:400;text-decoration:none;display:inline-block;margin-left:6px;transition:background 0.2s;">Download ' + label + '</a>' +
-    '<div id="viewer3d_' + d.id + '" class="viewer3d-container" style="display:none;margin-top:8px;border-radius:6px;overflow:hidden;border:1px solid var(--border);"></div>' +
-    '</div>';
+  var btnStyle = 'font-size:12px;padding:4px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--link);cursor:pointer;font-family:inherit;font-weight:400;text-decoration:none;display:inline-block;margin-right:6px;transition:background 0.2s;';
+  var html = '<div style="margin-top:4px;">';
+  if (d.pdb_file) {
+    var isCif = d.pdb_file.indexOf('.cif') !== -1;
+    var ext = isCif ? '.cif' : '.pdb';
+    var label = isCif ? 'CIF' : 'PDB';
+    html += '<button onclick="toggle3DViewer(this, \'' + d.id + '\', \'' + d.pdb_file + '\', \'' + d.pipeline + '\')" style="' + btnStyle + '">Show 3D</button>';
+    html += '<a href="' + d.pdb_file + '" download="' + d.id + ext + '" style="' + btnStyle + '">Download ' + label + '</a>';
+  }
+  if (d.sequence) {
+    html += '<button onclick="downloadFasta(\'' + d.id + '\')" style="' + btnStyle + '">Download FASTA</button>';
+  }
+  if (d.pdb_file) {
+    html += '<div id="viewer3d_' + d.id + '" class="viewer3d-container" style="display:none;margin-top:8px;border-radius:6px;overflow:hidden;border:1px solid var(--border);"></div>';
+  }
+  html += '</div>';
+  return html;
 }
 
 function renderCard(d, showRank) {
@@ -11891,7 +11912,7 @@ function renderCard(d, showRank) {
         'Size class: ' + d.size_class + ' &middot; Target: ' + d.target_length + ' res' +
         (d.bb_rmsd != null ? ' &middot; BB RMSD: ' + d.bb_rmsd.toFixed(2) + ' &Aring;' : '') +
       '</div>' +
-      (d.pdb_file ? renderStructureViewer(d) : '') +
+      renderStructureViewer(d) +
     '</div>';
 }
 
@@ -11936,13 +11957,17 @@ function renderTable(data) {
       'E2 Face': 'meta-campaign-e2', 'Cullin Face': 'meta-campaign-cullin',
       'BoltzGen Small': 'meta-pipeline', 'BoltzGen Medium': 'meta-pipeline'
     };
-    var downloadCell = '-';
+    var downloadLinks = [];
     if (d.pdb_file) {
       var isCif = d.pdb_file.indexOf('.cif') !== -1;
       var ext = isCif ? '.cif' : '.pdb';
       var label = isCif ? 'CIF' : 'PDB';
-      downloadCell = '<a href="' + d.pdb_file + '" download="' + d.id + ext + '" style="color:var(--link);text-decoration:none;font-weight:400;">' + label + '</a>';
+      downloadLinks.push('<a href="' + d.pdb_file + '" download="' + d.id + ext + '" style="color:var(--link);text-decoration:none;font-weight:400;">' + label + '</a>');
     }
+    if (d.sequence) {
+      downloadLinks.push('<a href="#" onclick="event.preventDefault();downloadFasta(\'' + d.id + '\')" style="color:var(--link);text-decoration:none;font-weight:400;">FASTA</a>');
+    }
+    var downloadCell = downloadLinks.length > 0 ? downloadLinks.join(' ') : '-';
     return '<tr>' +
       '<td>#' + d.rank + '</td>' +
       '<td>' + d.name + '</td>' +
