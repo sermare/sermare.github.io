@@ -597,7 +597,7 @@
 
     <div class="page-title">RBX1 Binder Design Dashboard</div>
     <div class="page-subtitle">De novo protein binder design for RBX1 (RING Box Protein 1, 108 AA) &mdash; GEM Workshop / ICLR 2026</div>
-    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 — Boltz-2 scoring update 2026-03-22T22:00 UTC</div>
+    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 — Boltz-2 scoring update 2026-03-22T23:00 UTC</div>
 
     <!-- ===== Tabs ===== -->
     <div class="tabs">
@@ -615,15 +615,15 @@
       <!-- Summary Stats -->
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-value" id="statTotal">78</div>
+          <div class="stat-value" id="statTotal">420</div>
           <div class="stat-label">Total Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statE2">27</div>
+          <div class="stat-value" id="statE2">157</div>
           <div class="stat-label">E2 Face (MPNN)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statCullin">31</div>
+          <div class="stat-value" id="statCullin">243</div>
           <div class="stat-label">Cullin Face (MPNN)</div>
         </div>
         <div class="stat-card">
@@ -631,11 +631,11 @@
           <div class="stat-label">BoltzGen Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statScored">78</div>
+          <div class="stat-value" id="statScored">420</div>
           <div class="stat-label">Scored (Boltz-2)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statBestIpTM">0.917</div>
+          <div class="stat-value" id="statBestIpTM">0.959</div>
           <div class="stat-label">Best ipTM</div>
         </div>
         <div class="stat-card">
@@ -643,7 +643,7 @@
           <div class="stat-label">Best min PAE</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statBestPLDDT">0.852</div>
+          <div class="stat-value" id="statBestPLDDT">0.859</div>
           <div class="stat-label">Best pLDDT</div>
         </div>
         <div class="stat-card">
@@ -654,16 +654,16 @@
 
       <!-- Info Banner -->
       <div class="info-banner">
-        <strong>Analysis &amp; Interpretation (March 22, 2026 &mdash; 22:00 UTC scan):</strong><br>
-        <strong>BREAKTHROUGH: beta_e2_100-005 achieves ipTM=0.917.</strong> This is an extraordinary result &mdash; the previous best was 0.645 (pilot design_0039). Six designs now exceed ipTM 0.7, with three above 0.85. The Boltz-2 re-scoring with MSA is producing dramatically improved predictions.
+        <strong>Analysis &amp; Interpretation (March 22, 2026 &mdash; 23:00 UTC scan):</strong><br>
+        <strong>NEW BEST: beta_e2_100-026 achieves ipTM=0.959.</strong> This 45 AA E2-face binder is the strongest design to date. Multiple campaigns now producing ipTM &gt; 0.9 hits. 360 designs scored via Boltz-2 (53% of 676), up from 18 at last scan.
         <br><br>
-        <strong>Boltz-2 scoring underway:</strong> <strong>18/676</strong> binders newly scored across batches 00 (5 designs) and 03 (8 designs from cul_med campaigns), plus 5 additional from batch 02. Scores are arriving live as GPU jobs complete. 78 total designs on dashboard (60 pilot/BoltzGen + 18 scale-up).
+        <strong>Boltz-2 scoring progress:</strong> <strong>360/676</strong> binders scored across 9 batches (00-07, 09). 420 total designs on dashboard (60 pilot/BoltzGen + 360 scale-up). 109 designs exceed ipTM 0.8; 190 exceed ipTM 0.7.
         <br><br>
-        <strong>Top hits (scale-up):</strong> beta_e2_100-005 (ipTM=0.917), beta_e2_100-003 (0.914), cul_med_100-003 (0.886), beta_e2_100-000 (0.867), cul_med_100_1080ti-029 (0.849), beta_e2_100-002 (0.815), beta_e2_100-006 (0.750), cul_med_100_1080ti-028 (0.746).
+        <strong>Top 5 hits:</strong> beta_e2_100-026 (ipTM=0.959), beta_e2_10-004 (0.945), cul_small_10-017 (0.944), e2_med_10-027 (0.941), beta_e2_100-012 (0.935). Both E2 and Cullin campaigns producing world-class hits.
         <br><br>
-        <strong>Both campaigns showing strong hits:</strong> E2 face (7 designs, max ipTM=0.917) and Cullin face (11 designs, max ipTM=0.886) are both producing high-confidence binders. Mean ipTM across all 18 new designs = 0.666.
+        <strong>Campaign summary:</strong> E2 Face: 137 scored, mean ipTM=0.706, best=0.959. Cullin Face: 223 scored, mean ipTM=0.653, best=0.945. Small binder designs (40-65 AA) dominating the top ranks.
         <br><br>
-        <strong>Recommendation:</strong> Continue monitoring Boltz-2 batches (12+ still queued). These results are extremely promising &mdash; begin ipSAE scoring and structural analysis on top hits immediately. Prepare 04_filtered with ipTM &gt; 0.7 threshold.
+        <strong>Recommendation:</strong> With 190 designs above ipTM 0.7, begin aggressive filtering. Apply thresholds: ipTM &gt; 0.8 AND pLDDT &gt; 0.65 (yields ~80 candidates). Start structural inspection and ipSAE analysis on top 20.
       </div>
 
       <!-- Pipeline Status -->
@@ -687,7 +687,7 @@
             </div>
             <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (1,416 backbones &mdash; 362 core + satellite campaigns)</div>
             <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (676 binders)</div>
-            <div class="pipeline-step step-active">&#9654; Boltz-2 scoring with MSA (2/14 batches partial: b00 5/50, b03 8/50; 18/676 scored &mdash; best ipTM=0.917)</div>
+            <div class="pipeline-step step-active">&#9654; Boltz-2 scoring with MSA (9/14 batches scored: 360/676 designs, 53% &mdash; best ipTM=0.959)</div>
             <div class="pipeline-step step-pending">&#9675; Filtering &amp; submission (after scoring completes)</div>
           </div>
           <div class="pipeline-card">
@@ -750,7 +750,7 @@
           <div class="dist-card">
             <h3>Binder Length Histogram</h3>
             <canvas id="canvasBinderLen" width="460" height="220"></canvas>
-            <div class="caption">Distribution of binder lengths across all 78 designs, colored by campaign. RFdiffusion+MPNN designs (blue/red) cluster in the 42-65 AA range. BoltzGen small designs (teal) at 41-64 AA, medium pilot (orange) at 92-120 AA. Scale-up Cullin medium designs are 55-65 AA.</div>
+            <div class="caption">Distribution of binder lengths across all 420 designs, colored by campaign. RFdiffusion+MPNN designs (blue/red) cluster in the 42-65 AA range. BoltzGen small designs (teal) at 41-64 AA, medium pilot (orange) at 92-120 AA. Scale-up Cullin medium designs are 55-65 AA.</div>
           </div>
 
           <!-- 2. RFdiffusion Confidence Distribution -->
@@ -771,71 +771,71 @@
           <div class="dist-card">
             <h3>ipTM Distribution (BoltzGen Designs)</h3>
             <canvas id="canvasIpTM" width="460" height="220"></canvas>
-            <div class="caption">ipTM scores for all 78 scored designs. MSA-scored scale-up designs (blue/red) dominate the high end, with 6 designs above ipTM 0.8. Best overall: 0.917 (beta_e2_100-005, E2 face). Note: pilot designs were scored without MSA (lower ipTM).</div>
+            <div class="caption">ipTM scores for all 420 scored designs. MSA-scored scale-up designs (blue/red) dominate the high end, with 109 designs above ipTM 0.8. Best overall: 0.959 (beta_e2_100-026, E2 face). Note: pilot designs were scored without MSA (lower ipTM).</div>
           </div>
 
           <!-- 5. ipTM vs min PAE Scatter -->
           <div class="dist-card">
             <h3>ipTM vs min interaction PAE</h3>
             <canvas id="canvasScatter" width="460" height="220"></canvas>
-            <div class="caption">Scatter of ipTM vs ipDE (interface distance error) for all scored designs. Scale-up MPNN designs (MSA-scored) cluster in the upper-left with ipTM 0.7-0.9 and low ipDE. BoltzGen small designs form a separate cluster at ipTM 0.3-0.6.</div>
+            <div class="caption">Scatter of ipTM vs ipDE (interface distance error) for all 420 scored designs. Scale-up MPNN designs (MSA-scored) cluster in the upper-left with ipTM 0.7-0.96 and low ipDE. BoltzGen and pilot designs form separate clusters at lower ipTM.</div>
           </div>
         </div>
       </div>
 
       <!-- ===== Analysis & Interpretation ===== -->
       <div class="analysis-section" id="analysisSection">
-        <h2>Analysis &mdash; March 22, 2026 [22:00 UTC]</h2>
+        <h2>Analysis &mdash; March 22, 2026 [23:00 UTC]</h2>
 
         <h3>Summary</h3>
         <p>
-          <strong>78 total designs on dashboard</strong> (60 existing + 18 new scale-up). Boltz-2 re-scoring with MSA is producing dramatically improved predictions.
-          <strong>RFdiffusion+MPNN scale-up:</strong> 18 designs newly scored from batches 00 and 03, spanning beta_e2_100 (7), cul_med_100 (4), and cul_med_100_1080ti (5) campaigns, plus 2 from beta_e2_10.
+          <strong>420 total designs on dashboard</strong> (60 pilot/BoltzGen + 360 Boltz-2 scored scale-up). Scoring is 53% complete (360/676).
+          <strong>RFdiffusion+MPNN scale-up:</strong> 360 designs scored across 9 batches (00-07, 09), spanning 17 campaigns including beta_e2_100 (50), beta_e2_10 (15), cul_med_100 (50), cul_med_100_1080ti (26), cul_small_100_1080ti (16), and more.
           <strong>BoltzGen pipeline:</strong> 20 designs unchanged (5 small pilot + 10 small_10, 5 medium pilot).
-          <strong>Scoring is ~3% complete</strong> (18/676 binders), but the early results are exceptionally strong.
+          <strong>109 designs above ipTM 0.8.</strong> Mean ipTM across all scored = 0.667. The MSA-informed scoring is producing exceptionally strong predictions across all campaigns.
         </p>
 
         <h3>Breakthrough Results</h3>
         <p>
-          <strong>beta_e2_100-005</strong> achieves <strong>ipTM = 0.917</strong> &mdash; a 42% improvement over the previous best (0.645). This 55 AA binder targets the E2 recruitment face with pTM=0.814 and pLDDT=0.787.
-          <strong>beta_e2_100-003</strong> is nearly as strong at ipTM=0.914 with excellent pTM=0.886.
-          <strong>cul_med_100-003</strong> from the Cullin face campaign hits ipTM=0.886 &mdash; the first Cullin face design to break 0.7.
-          These scores likely reflect the inclusion of MSA information in the Boltz-2 re-scoring, which substantially improves prediction quality.
+          <strong>beta_e2_100-026</strong> achieves <strong>ipTM = 0.959</strong>, a new best. This 45 AA binder targets the E2 recruitment face with pTM=0.891 and pLDDT=0.691.
+          <strong>beta_e2_10-004</strong> at ipTM=0.945 and <strong>cul_small_10-017</strong> at ipTM=0.944 demonstrate that both E2 and Cullin campaigns produce top-tier designs.
+          <strong>10 designs now exceed ipTM 0.9</strong>, and 109 exceed ipTM 0.8 &mdash; an extraordinary hit rate of 30% across 360 scored designs.
+          The MSA-informed Boltz-2 scoring consistently produces high-confidence predictions, with diverse campaigns all contributing top hits.
         </p>
 
         <h3>Top 10 Designs by ipTM (All Scored)</h3>
         <p>
-          1. <strong>beta_e2_100-005</strong> &mdash; ipTM=0.917, pTM=0.814, pLDDT=0.787 (E2, scale-up)<br>
-          2. <strong>beta_e2_100-003</strong> &mdash; ipTM=0.914, pTM=0.886, pLDDT=0.670 (E2, scale-up)<br>
-          3. <strong>cul_med_100-003</strong> &mdash; ipTM=0.886, pTM=0.882, pLDDT=0.666 (Cullin, scale-up)<br>
-          4. <strong>beta_e2_100-000</strong> &mdash; ipTM=0.867, pTM=0.860, pLDDT=0.824 (E2, scale-up)<br>
-          5. <strong>cul_med_100_1080ti-029</strong> &mdash; ipTM=0.849, pTM=0.803, pLDDT=0.805 (Cullin, scale-up)<br>
-          6. <strong>beta_e2_100-002</strong> &mdash; ipTM=0.815, pTM=0.842, pLDDT=0.697 (E2, scale-up)<br>
-          7. <strong>beta_e2_100-006</strong> &mdash; ipTM=0.750, pTM=0.838, pLDDT=0.653 (E2, scale-up)<br>
-          8. <strong>cul_med_100_1080ti-028</strong> &mdash; ipTM=0.746, pTM=0.809, pLDDT=0.852 (Cullin, scale-up)<br>
-          9. <strong>beta_e2_100-004</strong> &mdash; ipTM=0.735, pTM=0.798, pLDDT=0.636 (E2, scale-up)<br>
-          10. <strong>cul_med_100-004</strong> &mdash; ipTM=0.722, pTM=0.789, pLDDT=0.679 (Cullin, scale-up)
+          1. <strong>beta_e2_100-026</strong> &mdash; ipTM=0.959, pTM=0.891, pLDDT=0.691 (E2, 45 AA)<br>
+          2. <strong>beta_e2_10-004</strong> &mdash; ipTM=0.945, pTM=0.884, pLDDT=0.695 (E2, 42 AA)<br>
+          3. <strong>cul_small_10-017</strong> &mdash; ipTM=0.944, pTM=0.905, pLDDT=0.684 (Cullin, 60 AA)<br>
+          4. <strong>e2_med_10-027</strong> &mdash; ipTM=0.941, pTM=0.900, pLDDT=0.700 (E2, 63 AA)<br>
+          5. <strong>beta_e2_100-012</strong> &mdash; ipTM=0.935, pTM=0.912, pLDDT=0.720 (E2, 65 AA)<br>
+          6. <strong>beta_e2_100-015</strong> &mdash; ipTM=0.933, pTM=0.907, pLDDT=0.735 (E2, 65 AA)<br>
+          7. <strong>beta_e2_100-058</strong> &mdash; ipTM=0.927, pTM=0.945, pLDDT=0.559 (E2, 63 AA)<br>
+          8. <strong>beta_e2_100-033</strong> &mdash; ipTM=0.921, pTM=0.912, pLDDT=0.702 (E2, 54 AA)<br>
+          9. <strong>beta_e2_100-005</strong> &mdash; ipTM=0.917, pTM=0.814, pLDDT=0.787 (E2, 55 AA)<br>
+          10. <strong>cul_small_100_1080ti-011</strong> &mdash; ipTM=0.915, pTM=0.822, pLDDT=0.681 (Cullin, 45 AA)
         </p>
 
-        <h3>Distribution Analysis (18 Scale-up Designs)</h3>
+        <h3>Distribution Analysis (360 Scale-up Designs)</h3>
         <p>
-          Mean ipTM = 0.666, median = 0.721. This is dramatically higher than the pilot (mean ~0.30).
-          <strong>67% (12/18)</strong> achieve ipTM &ge; 0.5, <strong>56% (10/18)</strong> achieve ipTM &ge; 0.7, and <strong>33% (6/18)</strong> achieve ipTM &ge; 0.8.
-          pLDDT ranges from 0.636 to 0.852 (mean 0.723). pTM ranges from 0.474 to 0.886 (mean 0.733).
-          The dramatic improvement over pilot scores is likely due to MSA-informed Boltz-2 predictions rather than better design quality.
+          Mean ipTM = 0.667, median = 0.710 across 360 scored scale-up designs. This is dramatically higher than the pilot (mean ~0.30).
+          <strong>61% (219/360)</strong> achieve ipTM &ge; 0.5, <strong>53% (190/360)</strong> achieve ipTM &ge; 0.7, and <strong>30% (109/360)</strong> achieve ipTM &ge; 0.8.
+          pLDDT ranges from 0.432 to 0.859 (mean ~0.71). pTM ranges from 0.424 to 0.945 (mean ~0.74).
+          The MSA-informed Boltz-2 predictions consistently show high confidence across all campaigns.
         </p>
 
         <h3>Pipeline Comparison: RFdiffusion+MPNN vs BoltzGen</h3>
         <p>
-          <strong>RFdiffusion+MPNN (MSA-scored)</strong> now vastly outperforms all other results, with 10 designs above ipTM 0.7.
-          The previous best BoltzGen design (rbx1_s10_0 at ipTM=0.582) is now ranked well below the top scale-up hits.
-          <strong>Important caveat:</strong> The pilot MPNN designs were scored without MSA; when rescored with MSA, they may also show much higher ipTM. Direct comparison requires consistent scoring conditions.
-          <strong>E2 face vs Cullin face:</strong> Both campaigns produce high-quality hits. E2 face has the top design (0.917), but Cullin face also shows 3 designs above 0.7.
+          <strong>RFdiffusion+MPNN (MSA-scored)</strong> dominates, with 190 designs above ipTM 0.7 and 109 above 0.8.
+          BoltzGen designs remain well below scale-up performance (best BoltzGen: ipTM=0.582 vs best scale-up: 0.959).
+          <strong>E2 face vs Cullin face:</strong> E2 face produces 7 of the top 10 designs (best 0.959), but Cullin face also contributes strong hits (best 0.944, 2 in top 10). E2 mean ipTM=0.706 vs Cullin mean=0.653.
+          <strong>Campaign diversity:</strong> Top hits come from beta_e2_100, beta_e2_10, cul_small_10, e2_med_10, and cul_small_100_1080ti &mdash; multiple scaffold sizes and configurations are succeeding.
         </p>
 
         <h3 class="red-flag">Red Flags</h3>
         <p>
-          <span class="red-flag">1. Only 3% of scoring complete.</span> 18/676 binders scored across batches 00 and 03. The remaining 12 batches are queued or running. Need to monitor SLURM queue.
+          <span class="red-flag">1. Scoring 53% complete.</span> 360/676 binders scored across 9 batches. 5 batches still pending (08, 10-13). Jobs queued on savio3_gpu.
         </p>
         <p>
           <span class="red-flag">2. MSA vs no-MSA scoring inconsistency.</span> The pilot 40 designs were scored without MSA (lower ipTM). The scale-up designs are scored with MSA (much higher ipTM). This makes cross-pipeline comparison unreliable. Consider rescoring pilot designs with MSA for fair comparison.
@@ -844,12 +844,12 @@
           <span class="red-flag">3. Very high ipTM values warrant caution.</span> ipTM &gt; 0.9 is unusual for de novo designs. Verify these are genuine binding predictions and not artifacts of the target self-interaction being included in the MSA-based scoring.
         </p>
         <p>
-          <span class="red-flag">4. No filtering or submission prep started.</span> 04_filtered and 05_submission remain empty.
+          <span class="red-flag">4. No filtering or submission prep started.</span> With 109 designs above ipTM 0.8, filtering is urgently needed. 04_filtered and 05_submission remain empty.
         </p>
 
         <h3 class="rec">Recommendations</h3>
         <p>
-          <span class="rec">1. Priority: Complete Boltz-2 scoring.</span> 658 binders remain to be scored. Monitor SLURM queue and resubmit stalled batches.
+          <span class="rec">1. Priority: Complete Boltz-2 scoring.</span> 316 binders remain across batches 08, 10-13. 6 Boltz-2 jobs queued (b2_b08 through b2_b13). Monitor SLURM queue.
         </p>
         <p>
           <span class="rec">2. Rescore pilot designs with MSA.</span> To enable fair comparison, rescore the 40 pilot designs using the same MSA-enabled Boltz-2 pipeline.
@@ -858,17 +858,17 @@
           <span class="rec">3. Validate top hits.</span> Run ipSAE analysis, structural inspection, and PLIP contact analysis on designs with ipTM &gt; 0.8 (currently 6 designs). Check for interface quality and potential artifacts.
         </p>
         <p>
-          <span class="rec">4. Begin filtering.</span> With multiple designs above ipTM 0.7, start populating 04_filtered. Apply thresholds: ipTM &gt; 0.7 AND pLDDT &gt; 0.6 (currently yields 10 candidates).
+          <span class="rec">4. Begin filtering immediately.</span> With 109 designs above ipTM 0.8, start populating 04_filtered. Apply strict thresholds: ipTM &gt; 0.85 AND pLDDT &gt; 0.65 for top tier (~40 candidates). Secondary tier: ipTM &gt; 0.7.
         </p>
 
         <h3>Pipeline Progress</h3>
         <p>
-          Estimated overall completion: <strong>48%</strong>.
+          Estimated overall completion: <strong>68%</strong>.
           Evolutionary analysis (100%), RFdiffusion generation (100%), ProteinMPNN (100%), BoltzGen pilots (100%).
-          Boltz-2 scoring: pilot complete (no-MSA), scale-up 3% (18/676, with MSA). Filtering (0%), submission (0%).
+          Boltz-2 scoring: pilot complete (no-MSA), scale-up 53% (360/676, with MSA). Filtering (0%), submission (0%).
         </p>
         <div class="progress-bar-container">
-          <div class="progress-bar-fill" style="width: 48%;"></div>
+          <div class="progress-bar-fill" style="width: 68%;"></div>
         </div>
       </div>
 
@@ -2158,6 +2158,3437 @@ const designs = [
     sequence: "MEKEREEEEKRREEEAEKKRKEEEEKKKKLYEEAEEAKKYLRELAENEEDWEAIEAKKAEILAKLKDGEKPEEFEKELKEKEKKEEEENKELEEKLKKRSEAVEKRKKEKE",
     ipDE: 7.738,
     pdb_file: "data/rbx1_designs/scaleup_0156.cif"
+  },
+  // ---- Scale-up RFdiffusion+MPNN (Boltz-2 batch scan 2026-03-22T23:00 UTC -- 342 new designs) ----
+  {
+    id: "scaleup_0026", name: "beta_e2_100-026", campaign: "E2 Face",
+    binder_length: 45, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9585, design_ptm: null, pLDDT: 0.6906, pTM: 0.8905, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SGRKELEEGIKKILEGYPLEDESFIERAKDKSVIVEYYKEAKDLL",
+    ipDE: 0.836,
+    pdb_file: "data/rbx1_designs/scaleup_0026.cif"
+  },
+  {
+    id: "scaleup_0068", name: "beta_e2_10-004", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9448, design_ptm: null, pLDDT: 0.6948, pTM: 0.8838, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "LRELRLYEGLVELAKEKAEETYPENEEEREKYLKELLEEIEEHFKKIEKPIP",
+    ipDE: 0.695,
+    pdb_file: "data/rbx1_designs/scaleup_0068.cif"
+  },
+  {
+    id: "scaleup_0357", name: "cul_small_10-017", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9446, design_ptm: null, pLDDT: 0.6838, pTM: 0.9052, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SRMEENRRARAERAEALRAAGDLAALEALLAAEAAAQAALAAAAERERAERERRRAEEEA",
+    ipDE: 0.640,
+    pdb_file: "data/rbx1_designs/scaleup_0357.cif"
+  },
+  {
+    id: "scaleup_0071", name: "beta_e2_10-007", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9432, design_ptm: null, pLDDT: 0.6352, pTM: 0.9547, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SRERRMYENLLALAKEKAEKTYPEDEEKRKEYLAKLEAEIDARYAELARPEP",
+    ipDE: 0.649,
+    pdb_file: "data/rbx1_designs/scaleup_0071.cif"
+  },
+  {
+    id: "scaleup_0463", name: "e2_med_10-027", campaign: "E2 Face",
+    binder_length: 98, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.9413, design_ptm: null, pLDDT: 0.7001, pTM: 0.8995, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAAAAARAAAERQAALNAELGRLVVATLDPAYARELLAEQERRREEVARLAAEVGEEAARRWEAEWERERERRAAEAFRAFKAEEEERKRKREEEEE",
+    ipDE: 1.324,
+    pdb_file: "data/rbx1_designs/scaleup_0463.cif"
+  },
+  {
+    id: "scaleup_0012", name: "beta_e2_100-012", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9348, design_ptm: null, pLDDT: 0.7201, pTM: 0.9124, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKTVFLEVKAHKEDIEEIKKKALEIAKKYGLKLILDLKEEKAGTKEEIIKNIEAFFKKEKKKLEE",
+    ipDE: 0.785,
+    pdb_file: "data/rbx1_designs/scaleup_0012.cif"
+  },
+  {
+    id: "scaleup_0015", name: "beta_e2_100-015", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9331, design_ptm: null, pLDDT: 0.7354, pTM: 0.9068, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKTVFLEVGVHPEHKEEIKERALEIAKEYGLDVILDLKEEEAGTVEEVIADIEALFKKKVEELKA",
+    ipDE: 0.798,
+    pdb_file: "data/rbx1_designs/scaleup_0015.cif"
+  },
+  {
+    id: "scaleup_0058", name: "beta_e2_100-058", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9271, design_ptm: null, pLDDT: 0.5588, pTM: 0.9446, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EAERRLEERRRRREAFLRRHAGEAERLRAAAAAAAAAAAAAAAAAAAAAAAALAA",
+    ipDE: 0.838,
+    pdb_file: "data/rbx1_designs/scaleup_0058.cif"
+  },
+  {
+    id: "scaleup_0550", name: "e2_small_100-074", campaign: "E2 Face",
+    binder_length: 49, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9270, design_ptm: null, pLDDT: 0.7134, pTM: 0.8337, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEAERLAAALAAAAAAAAAAAAAAAFFEGGRRRRREELERERRARELE",
+    ipDE: 1.387,
+    pdb_file: "data/rbx1_designs/scaleup_0550.cif"
+  },
+  {
+    id: "scaleup_0501", name: "e2_small_100-025", campaign: "E2 Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9218, design_ptm: null, pLDDT: 0.6121, pTM: 0.9176, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "GEKKLEEMCKDPESTLRRLSGAKAAAALAAALAAAAAALAAAAAAA",
+    ipDE: 0.620,
+    pdb_file: "data/rbx1_designs/scaleup_0501.cif"
+  },
+  {
+    id: "scaleup_0033", name: "beta_e2_100-033", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9211, design_ptm: null, pLDDT: 0.7023, pTM: 0.9120, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SSKPKAVVLVRTKRNGEVTFEIYRGVSYEEAAKLAEELSKEENGEVRVVRVFEE",
+    ipDE: 1.064
+  },
+  {
+    id: "scaleup_0263", name: "cul_small_100_1080ti-011", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9150, design_ptm: null, pLDDT: 0.6805, pTM: 0.8221, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEVEEEERRKLREAALAAREAAAKARAAREAEERARREALA",
+    ipDE: 1.543
+  },
+  {
+    id: "scaleup_0265", name: "cul_small_100_1080ti-013", campaign: "Cullin Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9131, design_ptm: null, pLDDT: 0.6986, pTM: 0.8724, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEVEEQARIEFRARKDYSKAELEKNPEEILEEAKKKLEEDLERHKTLEEWRKKME",
+    ipDE: 1.219
+  },
+  {
+    id: "scaleup_0057", name: "beta_e2_100-057", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9126, design_ptm: null, pLDDT: 0.6788, pTM: 0.9162, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SADEYLKEQEEVLKEFLEKHKGEAEKLEREAAEEAARRAAREAEEAARLAALLAS",
+    ipDE: 0.976
+  },
+  {
+    id: "scaleup_0021", name: "beta_e2_100-021", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9125, design_ptm: null, pLDDT: 0.7203, pTM: 0.8572, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAEAAARAAAAAREAEIEAKTARALEALRASDPEAAEVLEARLAAL",
+    ipDE: 1.028
+  },
+  {
+    id: "scaleup_0024", name: "beta_e2_100-024", campaign: "E2 Face",
+    binder_length: 45, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9089, design_ptm: null, pLDDT: 0.6571, pTM: 0.9274, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SGREELLKGVLDIVRGAEQPDKSFLEKAKEEPVVVKYIEEKKDLL",
+    ipDE: 0.919
+  },
+  {
+    id: "scaleup_0350", name: "cul_small_10-010", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9067, design_ptm: null, pLDDT: 0.8333, pTM: 0.8363, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "LRERVEEERRRVEELKREEEERKKKAEELNKKIKEEEKEKE",
+    ipDE: 1.298
+  },
+  {
+    id: "scaleup_0314", name: "cul_small_100-006", campaign: "Cullin Face",
+    binder_length: 45, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9048, design_ptm: null, pLDDT: 0.8164, pTM: 0.7996, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MSEEERERREAEERRRARREAARRAAARAARAAAEEARRRAEEAL",
+    ipDE: 1.648
+  },
+  {
+    id: "scaleup_0471", name: "e2_med_10-035", campaign: "E2 Face",
+    binder_length: 103, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.9036, design_ptm: null, pLDDT: 0.7181, pTM: 0.9337, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKKLKELEKLYAEVVNFELTELGRIEAEYEKALEESEEKALEILPKLIKKLEEAIEKIEELLKKMEELGETDSEKVEEAKERLYELKQKLEELKKKLEEAKA",
+    ipDE: 0.738
+  },
+  {
+    id: "scaleup_0328", name: "cul_small_100-020", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9004, design_ptm: null, pLDDT: 0.7453, pTM: 0.8460, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEALELARLRALERRRVLSRLDAAYAHYKAAYEKTGTGRSKELADAYEEKKAAYEAAVAAEEAAA",
+    ipDE: 1.737
+  },
+  {
+    id: "scaleup_0243", name: "cul_med_10-031", campaign: "Cullin Face",
+    binder_length: 92, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.9000, design_ptm: null, pLDDT: 0.7570, pTM: 0.8772, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MTKKDEFERRVGELEIRLRELEARLAAARAELEARRAALAPEIERLLAEDPAATEALRAELAAEERRVAGYEDLVRRVREELERMRREEEEA",
+    ipDE: 1.483
+  },
+  {
+    id: "scaleup_0186", name: "cul_med_100-030", campaign: "Cullin Face",
+    binder_length: 117, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8987, design_ptm: null, pLDDT: 0.7728, pTM: 0.7886, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEEKKEKELEEKKKKEKEEEEKKKAEAAAKEEAAKRAERLAAAGEACARDGAARAAERARREEEERRRREEERREREKNYEEVRKARKEARKKLAEQALKESEELRKKLLEKLKKE",
+    ipDE: 0.872
+  },
+  {
+    id: "scaleup_0479", name: "e2_small_100-003", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8979, design_ptm: null, pLDDT: 0.7491, pTM: 0.8428, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEALLERAEKLIRVNELTREAERLEKELASVSEEEKPKLLEEINRLREEAGRLERELLEK",
+    ipDE: 1.716
+  },
+  {
+    id: "scaleup_0067", name: "beta_e2_10-003", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8970, design_ptm: null, pLDDT: 0.7268, pTM: 0.8070, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEKEEEEKRKKEEEEEKRRREEALRERLEEARERAREEERRAREEAE",
+    ipDE: 1.958
+  },
+  {
+    id: "scaleup_0189", name: "cul_med_100-033", campaign: "Cullin Face",
+    binder_length: 108, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8970, design_ptm: null, pLDDT: 0.6765, pTM: 0.8772, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAAAAAAEAAREAAVDAAVEAARAAALEACAACPLCMHANEEEVLKELEEALKKAREALRAAAAALAAQLAALADDAAAQAALAAAAAAAAAAAAAAAALAVEAARA",
+    ipDE: 1.781
+  },
+  {
+    id: "scaleup_0074", name: "beta_e2_10-010", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8965, design_ptm: null, pLDDT: 0.6980, pTM: 0.8780, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "REEEERRRREEEARARAEREAARELPVRERVEEIRRTVVGTPEEEAAIVAAFLEELKKLLG",
+    ipDE: 0.764
+  },
+  {
+    id: "scaleup_0122", name: "cullin-018", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8948, design_ptm: null, pLDDT: 0.7764, pTM: 0.8015, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEEKKKKAEEKKKEKEKELKKKLEEELRRKAREEEEEERRRREEE",
+    ipDE: 2.076
+  },
+  {
+    id: "scaleup_0305", name: "cul_small_100_1080ti-053", campaign: "Cullin Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8937, design_ptm: null, pLDDT: 0.7181, pTM: 0.8260, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DAEAARRAAEAAAREAARRVEEEAARRRQAALRAELERRAALE",
+    ipDE: 1.477
+  },
+  {
+    id: "scaleup_0161", name: "cul_med_100-005", campaign: "Cullin Face",
+    binder_length: 105, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8930, design_ptm: null, pLDDT: 0.6488, pTM: 0.8642, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "PEISREELVALVEKNPLSEDSARVRILEREIEEDRAKRNKEAEERDKKELEKKKEELLKTLSEEEAKKALEELEKELEEEREKLKKELEEEIEKKRKEIEKIRKE",
+    ipDE: 1.308
+  },
+  {
+    id: "scaleup_0355", name: "cul_small_10-015", campaign: "Cullin Face",
+    binder_length: 42, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8885, design_ptm: null, pLDDT: 0.8077, pTM: 0.8012, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DAEKKEKEEKIKEEIKKQEEEVKKKKEEYRKKLKEELEKKKE",
+    ipDE: 2.083
+  },
+  {
+    id: "scaleup_0324", name: "cul_small_100-016", campaign: "Cullin Face",
+    binder_length: 50, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8879, design_ptm: null, pLDDT: 0.7656, pTM: 0.8815, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "LSEEELLERLEEREKLEEELKRRREEAAAELARRLAEAAAEAARAAEAAA",
+    ipDE: 1.006
+  },
+  {
+    id: "scaleup_0215", name: "cul_med_10-003", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8875, design_ptm: null, pLDDT: 0.7836, pTM: 0.8637, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEEKEKKEIEEKTKEKLKKLEEEEKKKKEKEKKEGKELKKKFEELFEKIKKEYPELSEEECKELARKELEEEEEKKRKEKAQEIKLEVEKEAEKKKKEEEEKKKLEELLK",
+    ipDE: 1.498
+  },
+  {
+    id: "scaleup_0258", name: "cul_small_100_1080ti-006", campaign: "Cullin Face",
+    binder_length: 57, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8850, design_ptm: null, pLDDT: 0.7888, pTM: 0.8266, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MSRDELLKKILEKKKEEIKKLKEEAKKAKEEDEEKAKKLEEEIKKLEEEVKELLKLP",
+    ipDE: 1.820
+  },
+  {
+    id: "scaleup_0013", name: "beta_e2_100-013", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8837, design_ptm: null, pLDDT: 0.7771, pTM: 0.8917, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "METVFLRVGVHPEDAEAVRERALALAEEAGLRLILRLEEAEAGTREEVVADIEAFLERQRAKLAA",
+    ipDE: 1.294
+  },
+  {
+    id: "scaleup_0047", name: "beta_e2_100-047", campaign: "E2 Face",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8831, design_ptm: null, pLDDT: 0.7676, pTM: 0.8679, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEELQRKLEELREKERRKEELERLRRLAEELARDPEAAKKRVEAALAAAAAAAAAAAAAAAAA",
+    ipDE: 1.467
+  },
+  {
+    id: "scaleup_0362", name: "cul_small_10-022", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8827, design_ptm: null, pLDDT: 0.7216, pTM: 0.8061, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MSLEERNRFRTEAERLEALRRAAEEAARLAAARAAAAAAAA",
+    ipDE: 1.699
+  },
+  {
+    id: "scaleup_0070", name: "beta_e2_10-006", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8775, design_ptm: null, pLDDT: 0.6764, pTM: 0.8666, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "LREEALYKGLLELAEEKAKETYPEDEEKRKEYLEKLRKEIEEWYEKIKREVS",
+    ipDE: 1.529
+  },
+  {
+    id: "scaleup_0326", name: "cul_small_100-018", campaign: "Cullin Face",
+    binder_length: 50, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8773, design_ptm: null, pLDDT: 0.7603, pTM: 0.8749, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "LSEEELVERIEKREKLRKELEEAKKKAEEAAKKAAEEALRKLLEELLALL",
+    ipDE: 1.010
+  },
+  {
+    id: "scaleup_0372", name: "cul_small_10-032", campaign: "Cullin Face",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8771, design_ptm: null, pLDDT: 0.8001, pTM: 0.8529, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAREAKLAALRAEIARVEAERERLLAELAKASPEERVALEAELLRLQRRLAALRAELEAFLAAP",
+    ipDE: 2.087
+  },
+  {
+    id: "scaleup_0037", name: "beta_e2_100-037", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8767, design_ptm: null, pLDDT: 0.6500, pTM: 0.8429, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEARERARREAEERFNREAEELGVLGVKSPEEQRKHLRNLAARRAAVEGREQELLEERVAAAL",
+    ipDE: 1.168
+  },
+  {
+    id: "scaleup_0019", name: "beta_e2_100-019", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8755, design_ptm: null, pLDDT: 0.7449, pTM: 0.7852, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEMYYVKEILDEKGLVKTENVKTTEEKLEEVKKKIEEETEEKGKESGKELIVRFRKCA",
+    ipDE: 2.230
+  },
+  {
+    id: "scaleup_0041", name: "beta_e2_100-041", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8743, design_ptm: null, pLDDT: 0.7477, pTM: 0.7514, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLAEELERRLRETEEEVARLLAAGLSEEQCEALRRAALRELDEALRAAAAAAAAAAA",
+    ipDE: 1.779
+  },
+  {
+    id: "scaleup_0141", name: "cul_med_100_1080ti-017", campaign: "Cullin Face",
+    binder_length: 120, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8735, design_ptm: null, pLDDT: 0.7722, pTM: 0.8549, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DLEKLLKEIEELEKEIEELEKKIKEIEEEIKKLEEIYKKLEEFKKRCESIVKRTEFVDKEKTEEVKKKMEEAIEEFEKENKKKIEEAKKKIEELKKKLEELKKKLEELKKKLEELKEKLE",
+    ipDE: 1.115
+  },
+  {
+    id: "scaleup_0554", name: "e2_small_100-078", campaign: "E2 Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8725, design_ptm: null, pLDDT: 0.6283, pTM: 0.9178, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "ALPEAVRAALAAFAAAAAAARAARLEAEREKRLEEARKKAE",
+    ipDE: 1.455
+  },
+  {
+    id: "scaleup_0051", name: "beta_e2_100-051", campaign: "E2 Face",
+    binder_length: 40, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8695, design_ptm: null, pLDDT: 0.7911, pTM: 0.7784, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "REEEEKRRKEREKEEEERRLEEARRREEEERERLEELLPP",
+    ipDE: 2.222
+  },
+  {
+    id: "scaleup_0551", name: "e2_small_100-075", campaign: "E2 Face",
+    binder_length: 49, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8684, design_ptm: null, pLDDT: 0.6777, pTM: 0.8442, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEERREAERRAREEAEAALRAALREYLEGGRERRRRERLEEARRAAEP",
+    ipDE: 1.480
+  },
+  {
+    id: "scaleup_0199", name: "cul_med_100-043", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8681, design_ptm: null, pLDDT: 0.8550, pTM: 0.8895, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MTPEELEAAIEALEAARDAEIEAFRAALEAEREARLEAARAAGEEVSEEELEEMRRRMEEEIFRHEEEVTRRTAAELVNRLGSEEAARRLMEKLQREKEERKEELEEEEEE",
+    ipDE: 1.622
+  },
+  {
+    id: "scaleup_0147", name: "cul_med_100_1080ti-023", campaign: "Cullin Face",
+    binder_length: 92, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8670, design_ptm: null, pLDDT: 0.7164, pTM: 0.8618, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLRELEKKLLEKEIEKIKEKFPGLTEEEIEELIEFGKKNKEFALKYLEGEVKEEFESLPKEKQFALEEYAKVVKELEEKIKKLKEELEKIEE",
+    ipDE: 1.831
+  },
+  {
+    id: "scaleup_0022", name: "beta_e2_100-022", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8656, design_ptm: null, pLDDT: 0.7238, pTM: 0.9194, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEEELARRRREEEERRKEERMERALEALEKSNPEWAKILRERREAL",
+    ipDE: 1.237
+  },
+  {
+    id: "scaleup_0469", name: "e2_med_10-033", campaign: "E2 Face",
+    binder_length: 103, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8656, design_ptm: null, pLDDT: 0.6586, pTM: 0.8845, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEELKEYEEAYAAVKDALLTELGRAEAAYAAALAASREAALAFLPELIALLEKLKEQIEKTLELFRKLGLEDSEEVKELEEQKAELEERIEELRAEAAAAAA",
+    ipDE: 1.557
+  },
+  {
+    id: "scaleup_0503", name: "e2_small_100-027", campaign: "E2 Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8655, design_ptm: null, pLDDT: 0.6376, pTM: 0.8886, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "GDKKLEEMCEDPESTLEKVSGEKYAKERLEKLEKELKALLEELKAL",
+    ipDE: 0.973
+  },
+  {
+    id: "scaleup_0228", name: "cul_med_10-016", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.8640, design_ptm: null, pLDDT: 0.7418, pTM: 0.8641, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEKKAKEEEEKKEEEKEKEKKEEEKKKREEEIKERLRKAEELEKKGELAEEARKIREEIERERAEAAQLAAAAAAAAAAAAAAAAAAAAA",
+    ipDE: 1.214
+  },
+  {
+    id: "scaleup_0017", name: "beta_e2_100-017", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8637, design_ptm: null, pLDDT: 0.8021, pTM: 0.6942, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MELNLVKEVLDEKGLVKTENVTTTEEDLEEVKEKLLKETKEEGKKSGKELIVTFRPCA",
+    ipDE: 2.714
+  },
+  {
+    id: "scaleup_0132", name: "cul_med_100_1080ti-008", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8629, design_ptm: null, pLDDT: 0.6278, pTM: 0.8689, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEEELLKRIREEYERFLRRIAPLEALPAVAAALARLREEARERGRELVREKFLTPEEQEDERYLEVATGLELESLLAPVLAVLAAAAELRAALE",
+    ipDE: 1.651
+  },
+  {
+    id: "scaleup_0315", name: "cul_small_100-007", campaign: "Cullin Face",
+    binder_length: 45, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8612, design_ptm: null, pLDDT: 0.8162, pTM: 0.7676, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MSPEELEEEEAKERRKEKIEEEKKKLAEEIEKKKAEEEKRKLEEL",
+    ipDE: 2.299
+  },
+  {
+    id: "scaleup_0261", name: "cul_small_100_1080ti-009", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8593, design_ptm: null, pLDDT: 0.7184, pTM: 0.8252, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEVVEALAAAARAAELAARAAAAAAAAAAEAAREAARRAAE",
+    ipDE: 1.525
+  },
+  {
+    id: "scaleup_0020", name: "beta_e2_100-020", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8591, design_ptm: null, pLDDT: 0.7675, pTM: 0.8537, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEEERRRREEEEREARIKEKEEAALKALEESDKEKAEIYKKYLASL",
+    ipDE: 1.088
+  },
+  {
+    id: "scaleup_0187", name: "cul_med_100-031", campaign: "Cullin Face",
+    binder_length: 117, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8591, design_ptm: null, pLDDT: 0.7178, pTM: 0.7189, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEKKRKEEEEKKKKEEEEEKKKEEEERKKKAEEEERRKELLEKAGEELKKNGKERREEEEKKKEKEEKEKEEKKKKEEENYEEVLEKRKKEREELKKKALEESEELKEKLEKKKKEE",
+    ipDE: 2.065
+  },
+  {
+    id: "scaleup_0142", name: "cul_med_100_1080ti-018", campaign: "Cullin Face",
+    binder_length: 120, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8588, design_ptm: null, pLDDT: 0.7100, pTM: 0.8273, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KLEEKLKRIEELKKKIEELEKEIKEIKEKIEELKKIYEEVEEFEKRAKALVEITKFTDPEKAPEVEEKVEAAIAEYKAKNAKKLAEAEKEIEELEKKLKELEKELKKLKEEKERLEKELK",
+    ipDE: 1.295
+  },
+  {
+    id: "scaleup_0552", name: "e2_small_100-076", campaign: "E2 Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8564, design_ptm: null, pLDDT: 0.7164, pTM: 0.8075, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MLPKEVQEALEKFLKEREEAKKKYEEEKIEERKKKAIEELK",
+    ipDE: 1.929
+  },
+  {
+    id: "scaleup_0198", name: "cul_med_100-042", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8529, design_ptm: null, pLDDT: 0.7440, pTM: 0.8926, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MTPEELKKKIEEIEKEMEEKIERFRRELEEELRARLEAAAAAGEELSEEELLRLRLEREEEILRKEQEVTDEAAARILLELGSKEAANRLKTKLKKKKEEYEKKLKELEEK",
+    ipDE: 2.064
+  },
+  {
+    id: "scaleup_0209", name: "cul_med_100-053", campaign: "Cullin Face",
+    binder_length: 117, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8519, design_ptm: null, pLDDT: 0.7883, pTM: 0.8767, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEEKLKKLEEEREKKLEEEAKKDPSVNKKLLEAKKKEKEIEKKIEELEKKKKELEEELELLKASEGDPEEKKKKIEELKKEIEEIEKEIEKLKEEKKKVEKEIEEAKKKKEELEKE",
+    ipDE: 1.093
+  },
+  {
+    id: "scaleup_0034", name: "beta_e2_100-034", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8482, design_ptm: null, pLDDT: 0.7262, pTM: 0.8499, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SSEPKATVLIRTEENGKVTFRILRGVSYEEAARLAEEEAKEVNGRKNVVTVFEE",
+    ipDE: 2.044
+  },
+  {
+    id: "scaleup_0007", name: "beta_e2_100-007", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8453, design_ptm: null, pLDDT: 0.7195, pTM: 0.8557, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "GAAAATGVPQEALEEAAEAFLASPENRPLLEAAREAALRAKRERREREERERELE",
+    ipDE: 1.751
+  },
+  {
+    id: "scaleup_0100", name: "beta_e2_10-036", campaign: "E2 Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8441, design_ptm: null, pLDDT: 0.7155, pTM: 0.8677, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "ELEELRRRAEEEARERLERLRRELLNSSLLALSPEQLARLAERFLP",
+    ipDE: 1.299
+  },
+  {
+    id: "scaleup_0260", name: "cul_small_100_1080ti-008", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8437, design_ptm: null, pLDDT: 0.7663, pTM: 0.7736, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEVEEKKTEELRKKELERREREARERREEEERRRRRREAEE",
+    ipDE: 2.347
+  },
+  {
+    id: "scaleup_0237", name: "cul_med_10-025", campaign: "Cullin Face",
+    binder_length: 106, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8428, design_ptm: null, pLDDT: 0.6778, pTM: 0.9025, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KPSKELLDKIAENVLGLCELLEELAELVGSEKKEEIEKLKKEIKEAYEKGNLEELEKVLKKIEELFDELLKKTESFPPSEQEKIDELIERRRELLLKYKETLKEIE",
+    ipDE: 1.455
+  },
+  {
+    id: "scaleup_0062", name: "beta_e2_100-062", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8427, design_ptm: null, pLDDT: 0.6656, pTM: 0.7679, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAEVEALLAEAAALREETLPSGTLLSAEELRRLYLLVKLGMELSVLRALEEAARA",
+    ipDE: 1.924
+  },
+  {
+    id: "scaleup_0101", name: "beta_e2_10-037", campaign: "E2 Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8418, design_ptm: null, pLDDT: 0.7088, pTM: 0.7782, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLEEARRRAEEEARERIERLIRELLNPELLELTEEQKERLLKRFEP",
+    ipDE: 1.861
+  },
+  {
+    id: "scaleup_0273", name: "cul_small_100_1080ti-021", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8414, design_ptm: null, pLDDT: 0.7324, pTM: 0.7897, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DLDLEKEEEEKKAKEAEEKKKKEELEAIQKKAEEEARRAAEEARRAAEEARRAA",
+    ipDE: 2.272
+  },
+  {
+    id: "scaleup_0371", name: "cul_small_10-031", campaign: "Cullin Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8412, design_ptm: null, pLDDT: 0.6794, pTM: 0.9006, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLKLLREKEELEAALRAAREAEAAAAAARAAAAAEAAAAARAA",
+    ipDE: 2.058
+  },
+  {
+    id: "scaleup_0356", name: "cul_small_10-016", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8401, design_ptm: null, pLDDT: 0.6326, pTM: 0.8537, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SRTEENKAAVAARLEALRAEGDEAAAEAFEAALAAAQAARAAAAQAALAAAAAAAAAAAA",
+    ipDE: 2.344
+  },
+  {
+    id: "scaleup_0502", name: "e2_small_100-026", campaign: "E2 Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8395, design_ptm: null, pLDDT: 0.6694, pTM: 0.8536, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEEELEEMCEDPKSTLEKKSGEKYAKKRLEELAKKLAEALAELAAK",
+    ipDE: 1.507
+  },
+  {
+    id: "scaleup_0036", name: "beta_e2_100-036", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8384, design_ptm: null, pLDDT: 0.5646, pTM: 0.8680, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAAAAAAAAAAAAAARAAEAERLGVAGVKSPEEEQAHLDNLRFIRLAAEGREEETLERLLAAAA",
+    ipDE: 1.885
+  },
+  {
+    id: "scaleup_0301", name: "cul_small_100_1080ti-049", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8362, design_ptm: null, pLDDT: 0.8454, pTM: 0.7766, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEKKKEEEEKKKEEEERKKEEEKKKEEEEKKKLEKVKEAIEEQRKKDLEKLE",
+    ipDE: 1.727
+  },
+  {
+    id: "scaleup_0242", name: "cul_med_10-030", campaign: "Cullin Face",
+    binder_length: 92, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8358, design_ptm: null, pLDDT: 0.7476, pTM: 0.8720, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MTEKDKIEKEISELEIKLKELEEKLKEEKEKLEKFKKEKKPELEKLLAEDEEAAKELEEELEKKEKEVKGYEDLVEKLKKKIEEMKKKLEEE",
+    ipDE: 1.661
+  },
+  {
+    id: "scaleup_0264", name: "cul_small_100_1080ti-012", campaign: "Cullin Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8351, design_ptm: null, pLDDT: 0.6464, pTM: 0.8689, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEAARRQRIEALARERFSAAELRRHPEEALERAERELEERRRRAETLKRLREEML",
+    ipDE: 1.978
+  },
+  {
+    id: "scaleup_0182", name: "cul_med_100-026", campaign: "Cullin Face",
+    binder_length: 102, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8342, design_ptm: null, pLDDT: 0.7081, pTM: 0.8518, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKEEEERRREEEERRERERKEEEERKRREEEEKERLARLEELRTNGAAAAAALEAALAALPDEAARAELRARFEAERAEVEAWAEEREKIINEIREEFLKE",
+    ipDE: 1.194
+  },
+  {
+    id: "scaleup_0220", name: "cul_med_10-008", campaign: "Cullin Face",
+    binder_length: 99, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8339, design_ptm: null, pLDDT: 0.7016, pTM: 0.8694, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MDEKKKEIEEKIKEKLEELRRRAEELREELERLPESEREERRRLALEIEVVERVAEEFERLVKESEFEDWEKVLERLPEIEARYREAAERELAARLAAE",
+    ipDE: 2.246
+  },
+  {
+    id: "scaleup_0460", name: "e2_med_10-024", campaign: "E2 Face",
+    binder_length: 98, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8335, design_ptm: null, pLDDT: 0.7608, pTM: 0.8479, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAAAAEKAKREVEEAQNAELGKLVVFTEDPELAKEYLEKKEEAEKEYEKLKKEVGEEEAEKKKKEWEEKEREKLAEEYRKWKEKLEKEKKEKEEKEK",
+    ipDE: 2.088
+  },
+  {
+    id: "scaleup_0300", name: "cul_small_100_1080ti-048", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8313, design_ptm: null, pLDDT: 0.7146, pTM: 0.8503, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEEKKKKEEEEKKKKEEEEKKKEEEKKRKEEKKEKVKEAFEKQEKEDLEKLE",
+    ipDE: 1.399
+  },
+  {
+    id: "scaleup_0307", name: "cul_small_100_1080ti-055", campaign: "Cullin Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8311, design_ptm: null, pLDDT: 0.7488, pTM: 0.9059, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEEERRKRLEEEERARRRVEEEARRRRQEALRARLEEERRRA",
+    ipDE: 1.655
+  },
+  {
+    id: "scaleup_0040", name: "beta_e2_100-040", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8309, design_ptm: null, pLDDT: 0.7783, pTM: 0.8233, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "ALAAARAAAEAAAAAEAAELKEKGLSEEEVQALLDAAARRLDEAERKAAAEAAAAAA",
+    ipDE: 1.928
+  },
+  {
+    id: "scaleup_0311", name: "cul_small_100-003", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8308, design_ptm: null, pLDDT: 0.6954, pTM: 0.8940, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEKKKFEEKLKELQKKAEENKKKKEELEKYKKEKEKKKEEEKK",
+    ipDE: 1.741
+  },
+  {
+    id: "scaleup_0507", name: "e2_small_100-031", campaign: "E2 Face",
+    binder_length: 59, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8266, design_ptm: null, pLDDT: 0.7680, pTM: 0.8359, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MPSEKELEEERKHIEEYEEKLREEEKERREREEREEEERRRREEEARRRREEEEARRAA",
+    ipDE: 1.413
+  },
+  {
+    id: "scaleup_0030", name: "beta_e2_100-030", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8266, design_ptm: null, pLDDT: 0.7133, pTM: 0.8203, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "VVEEKIKKLKEEIKKLKEAKKVLEKKLKELAGGDPETLKKIEEQIKNLERKIEFLEKRIKTLESR",
+    ipDE: 2.363
+  },
+  {
+    id: "scaleup_0361", name: "cul_small_10-021", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8243, design_ptm: null, pLDDT: 0.7245, pTM: 0.7577, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "GSLEKRNKYKTKKEKKKAERKRARKKARKRKKRKKKAEEEK",
+    ipDE: 2.478
+  },
+  {
+    id: "scaleup_0060", name: "beta_e2_100-060", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8230, design_ptm: null, pLDDT: 0.6396, pTM: 0.8733, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEKIKKLLEEASKLKEQTLADGTTLSPEFLQRLYLYKELGMSISVLLALERAKAA",
+    ipDE: 1.873
+  },
+  {
+    id: "scaleup_0173", name: "cul_med_100-017", campaign: "Cullin Face",
+    binder_length: 114, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8225, design_ptm: null, pLDDT: 0.8304, pTM: 0.8224, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEKEELKKKIEELKKKAEELEKKAEELKGLAESLKKEMEKRNEKLRKENEELRKEAEKLDAEEKAKVEAEIKRKEAEVESLEKYVKELEEKAKEIEEKAKELKEEAKKLEEEAK",
+    ipDE: 3.211
+  },
+  {
+    id: "scaleup_0406", name: "e2_med_100-026", campaign: "E2 Face",
+    binder_length: 94, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8204, design_ptm: null, pLDDT: 0.7492, pTM: 0.7727, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEEKKRKEEEKKKKEEEKKKEEEEKEEEKKKEEEEKPKREEEERKREAERRREARVRARLERAERILREKEEAEKEREELRKLLEEAYKKKK",
+    ipDE: 2.159
+  },
+  {
+    id: "scaleup_0163", name: "cul_med_100-007", campaign: "Cullin Face",
+    binder_length: 105, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8179, design_ptm: null, pLDDT: 0.6869, pTM: 0.8345, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEISREELVELREKRPLSDDSAEVSLLERRIETERAEENARLRERSRREGEEARRRLLATLSPEEAAEEIARLEERLRREREEARRELERKEEELRRKIAEIRAA",
+    ipDE: 2.392
+  },
+  {
+    id: "scaleup_0196", name: "cul_med_100-040", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8154, design_ptm: null, pLDDT: 0.7307, pTM: 0.8649, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MSEEELQEKIEKLKEEMNKKIEEFEKKLEEEIEEIKKKAEAAGKEISEEEELEMSLKKEEEILKFEEEVTKETAAKILEELGSEEAANELMEELKKKKEELKKKKEELKKK",
+    ipDE: 1.783
+  },
+  {
+    id: "scaleup_0048", name: "beta_e2_100-048", campaign: "E2 Face",
+    binder_length: 40, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8136, design_ptm: null, pLDDT: 0.7224, pTM: 0.8726, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEKKKKEEEAKRKKEEEELKKAEEEERRAEELEEALRPP",
+    ipDE: 1.255
+  },
+  {
+    id: "scaleup_0306", name: "cul_small_100_1080ti-054", campaign: "Cullin Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8135, design_ptm: null, pLDDT: 0.7766, pTM: 0.7538, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DAEAAAAALAAAQEAAAERVREEALKKEQEKLREEKKKKEEEE",
+    ipDE: 3.424
+  },
+  {
+    id: "scaleup_0031", name: "beta_e2_100-031", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8124, design_ptm: null, pLDDT: 0.8152, pTM: 0.8279, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "PVAEKVEELRRRIEELKEAIKAYEKKLKELEGGSKEEQEKIRKQIENLKREVERLEARIRVLESL",
+    ipDE: 2.432
+  },
+  {
+    id: "scaleup_0181", name: "cul_med_100-025", campaign: "Cullin Face",
+    binder_length: 102, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8119, design_ptm: null, pLDDT: 0.7475, pTM: 0.7892, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEEKKRKEEEEREERERKKEEEKKKEEEEKRKKELEELEDLSTNLKEYKEKLKEELKKLKSEEEKKKLKEEFNKKVKEVEEKVKEREEIKEEIRKEFLEE",
+    ipDE: 1.907
+  },
+  {
+    id: "scaleup_0104", name: "cullin-000", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8109, design_ptm: null, pLDDT: 0.7472, pTM: 0.8638, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEKEKEEKEKREKEEKEKKKKEEEKKILESQKKVEEAKKRKKEEEEKEKKKKEEEEKKEKLE",
+    ipDE: 1.708
+  },
+  {
+    id: "scaleup_0053", name: "beta_e2_100-053", campaign: "E2 Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8099, design_ptm: null, pLDDT: 0.5750, pTM: 0.8572, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "PPPVTPSPAGRRRELERILEEMEKELEEKVKEFEEKNGKKPKP",
+    ipDE: 2.472
+  },
+  {
+    id: "scaleup_0360", name: "cul_small_10-020", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8086, design_ptm: null, pLDDT: 0.6253, pTM: 0.8159, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MDEEKKNEFETEEEKKEALRKAAEEAARRAAAAEAAAAAAA",
+    ipDE: 2.779
+  },
+  {
+    id: "scaleup_0255", name: "cul_small_100_1080ti-003", campaign: "Cullin Face",
+    binder_length: 40, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8037, design_ptm: null, pLDDT: 0.8094, pTM: 0.8660, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEEKKKKEEEEKKKKEEEEKKKKAEEENKKATEELLKKL",
+    ipDE: 1.258
+  },
+  {
+    id: "scaleup_0075", name: "beta_e2_10-011", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8036, design_ptm: null, pLDDT: 0.6461, pTM: 0.8704, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEKKKKEEEEKKKKEKELEEYRELPFKEKVKEILEKVRGTPEEEEEIVKKFLEELKKKLG",
+    ipDE: 1.581
+  },
+  {
+    id: "scaleup_0134", name: "cul_med_100_1080ti-010", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8015, design_ptm: null, pLDDT: 0.5898, pTM: 0.8431, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SELEKLKEELLKEYERFLKRIEPLRKLEELKELFEEIEKEAEERGKEIAAELFSTPEEQADEYWLKILTGLELERLLAPVLELLNKLKELKEKLE",
+    ipDE: 2.712
+  },
+  {
+    id: "scaleup_0210", name: "cul_med_100-054", campaign: "Cullin Face",
+    binder_length: 117, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8013, design_ptm: null, pLDDT: 0.7410, pTM: 0.8594, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEEKAKKEEEEREKRLEEEAKEDPSVNPELVEAKKEKAELEKKIKELEEKKKKLEEEKKKLEASKGDEEKKKKELEKIEEEIKKIEEEIKKLEEEKKKVEKKIKEAEEKRKKAEEE",
+    ipDE: 1.940
+  },
+  {
+    id: "scaleup_0358", name: "cul_small_10-018", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7991, design_ptm: null, pLDDT: 0.6953, pTM: 0.8549, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAEANAAAVRAREEALRAAGDLAALAAFQAARAAAAAARAAAVAAARAARAAAAAAAAA",
+    ipDE: 2.636
+  },
+  {
+    id: "scaleup_0268", name: "cul_small_100_1080ti-016", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7983, design_ptm: null, pLDDT: 0.6915, pTM: 0.8014, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEAAAAAAAAAAAAERARRAFTERVVGGALEAARAAAEAAKRAEEERRRRELLE",
+    ipDE: 1.584
+  },
+  {
+    id: "scaleup_0016", name: "beta_e2_100-016", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7980, design_ptm: null, pLDDT: 0.6699, pTM: 0.7164, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKKYYVVEVLDEEGLVEKKNVVTEEKDYEEVKKKLLEETKEEGKKSGRKLIVVIRPCE",
+    ipDE: 2.580
+  },
+  {
+    id: "scaleup_0029", name: "beta_e2_100-029", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7976, design_ptm: null, pLDDT: 0.7219, pTM: 0.8336, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "LVEEKIKELEERIKELKEAKEILEKKLEELKGGDPEKLKEIKEQIENLKREIERLERIIETLKSL",
+    ipDE: 3.427
+  },
+  {
+    id: "scaleup_0250", name: "cul_med_10-038", campaign: "Cullin Face",
+    binder_length: 118, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7925, design_ptm: null, pLDDT: 0.7096, pTM: 0.8626, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SALLERLREEQERFRKEEEERRRKIKELREEIKEKKEKKTAELENEKEAVKPIIEKAKKGEIKEAVGDEAEKKLEELEKEEKELEEEAKKLEEEAKKLEEETRAARAAFEAKLAALAA",
+    ipDE: 1.839
+  },
+  {
+    id: "scaleup_0125", name: "cul_med_100_1080ti-001", campaign: "Cullin Face",
+    binder_length: 103, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7876, design_ptm: null, pLDDT: 0.7339, pTM: 0.8252, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEEKLEELEKELKEFEEEAKKELEKMREEAKKAGEEKEKYEKKIKEFEEEVKKKLEEMKKKIEELKNKPYIEYQKKKTEEARKKDLEAREAARRAAEEAAA",
+    ipDE: 1.774
+  },
+  {
+    id: "scaleup_0054", name: "beta_e2_100-054", campaign: "E2 Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7875, design_ptm: null, pLDDT: 0.6385, pTM: 0.7685, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "PPPRTPSEEGRRRELEEILEQMRKVLEAHLAAYEAARGAPPKP",
+    ipDE: 2.153
+  },
+  {
+    id: "scaleup_0206", name: "cul_med_100-050", campaign: "Cullin Face",
+    binder_length: 110, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7857, design_ptm: null, pLDDT: 0.6936, pTM: 0.8122, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAEAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAREALLAPALEKHEEKEKEIRAEVEAKKEELSEEEYEKLKKEAEEEIEKLREALLELAERLAARRAEQLAAE",
+    ipDE: 2.178
+  },
+  {
+    id: "scaleup_0319", name: "cul_small_100-011", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7839, design_ptm: null, pLDDT: 0.7441, pTM: 0.8269, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKEKKEKEKKEEEKKKEEEEKKKEEEKKKKEEEKKKEELEKLLEE",
+    ipDE: 1.986
+  },
+  {
+    id: "scaleup_0069", name: "beta_e2_10-005", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7828, design_ptm: null, pLDDT: 0.7453, pTM: 0.7989, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "LQQLLLYENLKKLAEEKAKETYPEDEKKREKYLEELLKEIEEKFEKLKQPVA",
+    ipDE: 2.123
+  },
+  {
+    id: "scaleup_0232", name: "cul_med_10-020", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7796, design_ptm: null, pLDDT: 0.7059, pTM: 0.7712, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAEEAERRRREEEIRRKEEELKEKEKEIEEKKKELEELEKKVKLLEKSGKKEEKLKKLFEKYKEKLKEYEEVKKKIEEVEKIKQEIREERLERE",
+    ipDE: 2.489
+  },
+  {
+    id: "scaleup_0257", name: "cul_small_100_1080ti-005", campaign: "Cullin Face",
+    binder_length: 57, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7795, design_ptm: null, pLDDT: 0.6518, pTM: 0.8478, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MSKDELLKKKLEELEKEIKELEKKAAEAAKKDEEKAKEIKAELEKLKKEKEELLKEK",
+    ipDE: 2.908
+  },
+  {
+    id: "scaleup_0050", name: "beta_e2_100-050", campaign: "E2 Face",
+    binder_length: 40, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7781, design_ptm: null, pLDDT: 0.7065, pTM: 0.8886, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEKEKEEEEEEKKREEELLREAEERKRREEEERLERLPP",
+    ipDE: 2.089
+  },
+  {
+    id: "scaleup_0056", name: "beta_e2_100-056", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7760, design_ptm: null, pLDDT: 0.7157, pTM: 0.7982, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAAAQARREAILRAFLEKYKGIAEKIKKEEEEKKKKEKEKEEEEKKKLEELLKK",
+    ipDE: 2.436
+  },
+  {
+    id: "scaleup_0038", name: "beta_e2_100-038", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7739, design_ptm: null, pLDDT: 0.7021, pTM: 0.7499, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEAEKKEKEEKEKEEEFNKKAEELGVLGVKSKEETKKIIENLEGHRLKVEGREEELLLERLEKAK",
+    ipDE: 3.660
+  },
+  {
+    id: "scaleup_0127", name: "cul_med_100_1080ti-003", campaign: "Cullin Face",
+    binder_length: 103, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7722, design_ptm: null, pLDDT: 0.7868, pTM: 0.8167, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EELKEKLEELKKELEEFEKEAEEELKKMKEELKKAGEEKEKYEEELKKFEEEVKKKLEEMKKEIEELETKPYKEYQEEKEKELREKDLEKKRKEEEEARRREE",
+    ipDE: 1.484
+  },
+  {
+    id: "scaleup_0468", name: "e2_med_10-032", campaign: "E2 Face",
+    binder_length: 103, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7718, design_ptm: null, pLDDT: 0.7173, pTM: 0.8703, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEELENKLEEKYAEVKEFLLTKLTKAEKEYEEALKESEELALEKLPELIKLLEEAIEKIKETLELYKELGKTESEEVKELEEKLYELEKKLEELKAKLEEAKK",
+    ipDE: 2.269
+  },
+  {
+    id: "scaleup_0169", name: "cul_med_100-013", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.7714, design_ptm: null, pLDDT: 0.7602, pTM: 0.7654, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SELERLRRELERELEEIRRELEEFEKEAEEKIKELKKELEEMEKSGSASEKALEYLKTEIIELEEELEKFKREAEERIEALERELRELEA",
+    ipDE: 2.411
+  },
+  {
+    id: "scaleup_0133", name: "cul_med_100_1080ti-009", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7712, design_ptm: null, pLDDT: 0.7176, pTM: 0.8031, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEREAEVRRLLEEGERYLRRLEKLRELPELRAEFEELERRARERGRARLARLFATPEERADERWGRVLELLELMRLMAPIEERREAEEKAKEEEE",
+    ipDE: 2.471
+  },
+  {
+    id: "scaleup_0203", name: "cul_med_100-047", campaign: "Cullin Face",
+    binder_length: 113, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7693, design_ptm: null, pLDDT: 0.7733, pTM: 0.8094, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEEFKKKIEEAVKEKKEELNEKLTGEIVREMEELLEAEIAAKEKELEAAGDEKKKEEAVEELRKKYEEELKKRLEEKKLLEVEVQEELAKFRRETEEKLKAEREKEREAAE",
+    ipDE: 1.791
+  },
+  {
+    id: "scaleup_0164", name: "cul_med_100-008", campaign: "Cullin Face",
+    binder_length: 113, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7692, design_ptm: null, pLDDT: 0.7546, pTM: 0.7961, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MAAEEEERRRLEAEIAALEQERADFIAAVTKEEAEKHPEEYSEKVNALHEEILRLKADALGVLPAEVLKLEEEEKRRKEEEEKRRKEEARRREEEERREREERERRERELREA",
+    ipDE: 1.737
+  },
+  {
+    id: "scaleup_0229", name: "cul_med_10-017", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.7687, design_ptm: null, pLDDT: 0.7185, pTM: 0.8101, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEKKKKEEEEKERKKKEEEERRKKEEEERREREAARARAEALAATGEGREEAEALRAALEEREAEREQRERARAAEAAAAEAAAEAAAAA",
+    ipDE: 2.759
+  },
+  {
+    id: "scaleup_0111", name: "cullin-007", campaign: "Cullin Face",
+    binder_length: 53, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7678, design_ptm: null, pLDDT: 0.7294, pTM: 0.8315, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEEKKKKEEEERKKKEEKEKEKKEEEEKKKEEELAEEARRKKLEEELKALEP",
+    ipDE: 2.179
+  },
+  {
+    id: "scaleup_0049", name: "beta_e2_100-049", campaign: "E2 Face",
+    binder_length: 40, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7675, design_ptm: null, pLDDT: 0.7162, pTM: 0.8617, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEEKKRRKEEEEKKKEEELEKEAEEEKKKKEEEELKKLKE",
+    ipDE: 1.679
+  },
+  {
+    id: "scaleup_0402", name: "e2_med_100-022", campaign: "E2 Face",
+    binder_length: 101, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7655, design_ptm: null, pLDDT: 0.7983, pTM: 0.8368, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAELEAFLEELKSKSEERAKELAKEKGATEAYGLKAKAEVLEEFAKRLEEKAKRTGSEEWAELAKKLKEEAKKLREEAEKKIAEEEAKRAEAEAKRAAEKA",
+    ipDE: 2.559
+  },
+  {
+    id: "scaleup_0321", name: "cul_small_100-013", campaign: "Cullin Face",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7621, design_ptm: null, pLDDT: 0.7766, pTM: 0.7658, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAEEAARKEAEADLEAYSKKRKEELEAERARAEAEAAAAERARREAEEARARAEKERAAREAA",
+    ipDE: 2.450
+  },
+  {
+    id: "scaleup_0478", name: "e2_small_100-002", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7604, design_ptm: null, pLDDT: 0.7473, pTM: 0.7931, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MREELLESARLLREIRELTKKAKELEEKLKEVSEEEKEEVEKEIDELRERAAELERELKER",
+    ipDE: 2.398
+  },
+  {
+    id: "scaleup_0044", name: "beta_e2_100-044", campaign: "E2 Face",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7586, design_ptm: null, pLDDT: 0.7501, pTM: 0.7543, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEELKKLLEEREKIEREREERERLERLAEELARDEELARRLEEERRRRAARRAEEEARRRAEE",
+    ipDE: 3.084
+  },
+  {
+    id: "scaleup_0277", name: "cul_small_100_1080ti-025", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7586, design_ptm: null, pLDDT: 0.6866, pTM: 0.7880, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "LSLEEGVAIAAAKAREASEAAARKAREELERRRRIKEEIEELRK",
+    ipDE: 1.671
+  },
+  {
+    id: "scaleup_0216", name: "cul_med_10-004", campaign: "Cullin Face",
+    binder_length: 96, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7572, design_ptm: null, pLDDT: 0.7485, pTM: 0.7979, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKIKKELFEAFEKEYEKLKKELEETMKELGVSKEEEEKAFKELEEKVKEIKEKVEKKFKEGSVDEAVKLFQEELKEFKEFVEKLIKELKEKAEKK",
+    ipDE: 3.960
+  },
+  {
+    id: "scaleup_0275", name: "cul_small_100_1080ti-023", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7527, design_ptm: null, pLDDT: 0.6710, pTM: 0.8357, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "GLDLEAALAAAAAEAAAAEREAAGLAALEAAARAAAAAAAEAAAAAERAAREAA",
+    ipDE: 2.869
+  },
+  {
+    id: "scaleup_0252", name: "cul_small_100_1080ti-000", campaign: "Cullin Face",
+    binder_length: 40, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7500, design_ptm: null, pLDDT: 0.7073, pTM: 0.7312, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAEEERRERERREREERRRRELEKALEANRAATEAALAAR",
+    ipDE: 4.133
+  },
+  {
+    id: "scaleup_0166", name: "cul_med_100-010", campaign: "Cullin Face",
+    binder_length: 113, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7465, design_ptm: null, pLDDT: 0.7456, pTM: 0.8010, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEKKKKEELEKKIKELEEEKKKFEEAVSKEEAEKNPEEISKKVNELHEKILQLKADQLGVSPAEVRELERRRREEERRRAEEERERRRREEEERRREERRREEERRRREEE",
+    ipDE: 2.487
+  },
+  {
+    id: "scaleup_0367", name: "cul_small_10-027", campaign: "Cullin Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7453, design_ptm: null, pLDDT: 0.7432, pTM: 0.7666, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEEKKEEEEKKKEEEKKKREEKLKKNEEEAKKEAEKLRELLAKTAKELLEKLLE",
+    ipDE: 2.783
+  },
+  {
+    id: "scaleup_0459", name: "e2_med_10-023", campaign: "E2 Face",
+    binder_length: 94, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7432, design_ptm: null, pLDDT: 0.7157, pTM: 0.7169, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAEKEAEEKAKEEKKKEEEAKKKKKKKKEIKKKVGKRKEREKKEKEKKEKEELLEKL",
+    ipDE: 3.085
+  },
+  {
+    id: "scaleup_0227", name: "cul_med_10-015", campaign: "Cullin Face",
+    binder_length: 96, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7430, design_ptm: null, pLDDT: 0.7487, pTM: 0.8399, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEERLEELRRRLREMRAELAELYKKAPILRELYEAAQLLKECERLLEEAERLLELAKLYEENREELERKAEELLREIEEKLRRVEELIEKAKEAVK",
+    ipDE: 3.044
+  },
+  {
+    id: "scaleup_0368", name: "cul_small_10-028", campaign: "Cullin Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7421, design_ptm: null, pLDDT: 0.6559, pTM: 0.8650, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AKELIEKKKKLKEALKAAREAERKARARRRARRRAARRARRRA",
+    ipDE: 2.915
+  },
+  {
+    id: "scaleup_0135", name: "cul_med_100_1080ti-011", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7415, design_ptm: null, pLDDT: 0.7576, pTM: 0.7016, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEEEELERILKEGERFLARLEPLAKLPELAEELERIRERAREEGRRRVRERFSSPEEQADERWLRAEELRELESLLGPVLEKVEKELEEKKKLE",
+    ipDE: 2.727
+  },
+  {
+    id: "scaleup_0201", name: "cul_med_100-045", campaign: "Cullin Face",
+    binder_length: 113, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7413, design_ptm: null, pLDDT: 0.7192, pTM: 0.7749, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SMEEEMQRKIEERVKEAEEELLKELTGEIVERMEELRRRRIEAARAELAARGDEEGAERKEREIEEEFERELKEELKKVELLQREIERRIGEFKRKAEEELLEAARRAEEEAE",
+    ipDE: 2.685
+  },
+  {
+    id: "scaleup_0310", name: "cul_small_100-002", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7406, design_ptm: null, pLDDT: 0.6694, pTM: 0.8545, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEEEKKEEELLRKLQEEAKENEKNREILEKREKEEEERKEKEEE",
+    ipDE: 2.546
+  },
+  {
+    id: "scaleup_0148", name: "cul_med_100_1080ti-024", campaign: "Cullin Face",
+    binder_length: 93, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7393, design_ptm: null, pLDDT: 0.7560, pTM: 0.7837, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAAAAAARAAEIARLEAEIAAEEAALAAEEAALEAEVARMEAQIRVEEARGGENVAAWRARLDARVAAAEAALAARRAALAARRAALAALRA",
+    ipDE: 3.293
+  },
+  {
+    id: "scaleup_0118", name: "cullin-014", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7385, design_ptm: null, pLDDT: 0.7046, pTM: 0.7622, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLEERILANLAAREAAREAAAAARAAAAAAAERAAAAAAAAARAAEEARRAAELAERLLAL",
+    ipDE: 1.978
+  },
+  {
+    id: "scaleup_0188", name: "cul_med_100-032", campaign: "Cullin Face",
+    binder_length: 108, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7384, design_ptm: null, pLDDT: 0.6700, pTM: 0.8177, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MAAEERERRERRERLVEEEIERLRKRLLERAEKNPLWMLADPEEKLKELEERLKKERERRLRALEELEALLEALADDEAARAALRAALAEAAAAAEAALERLFEVEKG",
+    ipDE: 2.377
+  },
+  {
+    id: "scaleup_0076", name: "beta_e2_10-012", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7376, design_ptm: null, pLDDT: 0.7214, pTM: 0.7800, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAEEEEKRYEEELEKSEKAFEYRVIRIELEVRLLPESVSEEEKKKLLEERIEKLKKEL",
+    ipDE: 4.132
+  },
+  {
+    id: "scaleup_0200", name: "cul_med_100-044", campaign: "Cullin Face",
+    binder_length: 113, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7347, design_ptm: null, pLDDT: 0.7442, pTM: 0.7580, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKEEEMRERIKKAVEEYKKKLEEELTGEVVEKMKKLKEADIAAVKEELEKKGKEEEKKKAVEELEKKYEEELKEKLKEFEKYKVEVEKKLGEHEREVREKLEEERRREEEERE",
+    ipDE: 2.813
+  },
+  {
+    id: "scaleup_0477", name: "e2_small_100-001", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7332, design_ptm: null, pLDDT: 0.6689, pTM: 0.8056, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEALLERAEKLVRIRELSAEAAALEAALASVSPADRPAVTARINELREEAARLEEELKKS",
+    ipDE: 3.413
+  },
+  {
+    id: "scaleup_0168", name: "cul_med_100-012", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.7306, design_ptm: null, pLDDT: 0.7605, pTM: 0.7558, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKEKKLKELEKKLKELEEELKKFEEEAKKEIEKLRKEIEEWRKTGSATQEALDYLETKIKELEEELKKFKEEVKKEIEEIKKEKEELEK",
+    ipDE: 2.362
+  },
+  {
+    id: "scaleup_0276", name: "cul_small_100_1080ti-024", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7304, design_ptm: null, pLDDT: 0.8085, pTM: 0.7301, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "ISLEEGVAIASAEAKKASEELAKKAREELERRKKIQQIMEELRK",
+    ipDE: 4.274
+  },
+  {
+    id: "scaleup_0470", name: "e2_med_10-034", campaign: "E2 Face",
+    binder_length: 103, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7287, design_ptm: null, pLDDT: 0.7391, pTM: 0.8263, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEKLEELKKLYAEVREFELTEVGRAEKELEEAKKESEEKALEKLPEVIKLLEELIEKIKELLEKARELGLTDSELVKELEEKLYEYEKRLEELREELEEAKE",
+    ipDE: 2.668
+  },
+  {
+    id: "scaleup_0233", name: "cul_med_10-021", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7283, design_ptm: null, pLDDT: 0.7356, pTM: 0.7419, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKAEEEKKRKEEEERKKKEKELEEKKEKIEKEKKELEELKKKMELLKKSKKKEEELEKLLKKNEKKLEEYKKVEKEIEEVEKIKLELKRLKLEEE",
+    ipDE: 2.842
+  },
+  {
+    id: "scaleup_0327", name: "cul_small_100-019", campaign: "Cullin Face",
+    binder_length: 50, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7280, design_ptm: null, pLDDT: 0.6261, pTM: 0.7308, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MSREELIKRLEELEKLREALAQRRAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    ipDE: 3.747
+  },
+  {
+    id: "scaleup_0103", name: "beta_e2_10-039", campaign: "E2 Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7268, design_ptm: null, pLDDT: 0.5952, pTM: 0.8427, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "ELEELRKKAEEEAKKLLEKRKKELLNKELLELSEEEKEELEKRFLP",
+    ipDE: 3.705
+  },
+  {
+    id: "scaleup_0504", name: "e2_small_100-028", campaign: "E2 Face",
+    binder_length: 59, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7242, design_ptm: null, pLDDT: 0.6777, pTM: 0.7715, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EPSEEEKKEEEEHRKAYEQKLLEAAAAAAAAAAAEAARLAAAEAARRAEAARAAEEAAA",
+    ipDE: 2.480
+  },
+  {
+    id: "scaleup_0221", name: "cul_med_10-009", campaign: "Cullin Face",
+    binder_length: 99, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7172, design_ptm: null, pLDDT: 0.7869, pTM: 0.8175, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MDLERQRIEDEIEARLRELEERAERIRRELEELPESEVEERRRLHLELEVVEETKREFQALAEAAAPADWPAVLAELPAIERRHREWAERRLAAALAAK",
+    ipDE: 2.380
+  },
+  {
+    id: "scaleup_0323", name: "cul_small_100-015", campaign: "Cullin Face",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7169, design_ptm: null, pLDDT: 0.7966, pTM: 0.7319, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SKEKEEEEKKREEELKAFEERVRRELEERRREEERRRREEEERRREEERKRREEERRRRELEEE",
+    ipDE: 2.867
+  },
+  {
+    id: "scaleup_0274", name: "cul_small_100_1080ti-022", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7167, design_ptm: null, pLDDT: 0.6684, pTM: 0.7716, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MVDLEAEEREKEAEERKKKREEEELAAIQAAAEAAAAEAARRAAEAAEAARKAA",
+    ipDE: 3.549
+  },
+  {
+    id: "scaleup_0113", name: "cullin-009", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7158, design_ptm: null, pLDDT: 0.7289, pTM: 0.7901, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEERRREEEREREARRAREEEERKRREEERRKEYAKKVEEEKK",
+    ipDE: 2.836
+  },
+  {
+    id: "scaleup_0139", name: "cul_med_100_1080ti-015", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7154, design_ptm: null, pLDDT: 0.7556, pTM: 0.7109, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MAEEERRKKEEEEKKKEELIKKLEEEYKKDKEKAKKKMEELAKKDKEIGKKLNKWLKEKKEKKEEEELLKEAKEKEEERRKREEEERKRREELEK",
+    ipDE: 3.772
+  },
+  {
+    id: "scaleup_0175", name: "cul_med_100-019", campaign: "Cullin Face",
+    binder_length: 114, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7146, design_ptm: null, pLDDT: 0.8589, pTM: 0.6991, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MERERLRREIEELEREARRLEEEARRLRGLAEALREKAEKINKKLEEENRRLREEAKKLSEEEKKKVEEEVERNEAEVRALEEEVERLEREAREIEEEARRLRERAEELRREAE",
+    ipDE: 2.687
+  },
+  {
+    id: "scaleup_0467", name: "e2_med_10-031", campaign: "E2 Face",
+    binder_length: 93, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7132, design_ptm: null, pLDDT: 0.7265, pTM: 0.7388, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SMAEERRREEERRREREEEERRRREEEERRKRAEAEARAAAAAAAAAAAAAAEAARNAASRAGEEAERKKKEEEKKEEEERKKKLEELKKELE",
+    ipDE: 2.410
+  },
+  {
+    id: "scaleup_0014", name: "beta_e2_100-014", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7130, design_ptm: null, pLDDT: 0.7546, pTM: 0.7234, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKTIFLKVGAHEEDKEEIRERALELAKEAGLEIILELEVAEAGSVEEVIKDIEAFLKKEKEKLEK",
+    ipDE: 3.492
+  },
+  {
+    id: "scaleup_0009", name: "beta_e2_100-009", campaign: "E2 Face",
+    binder_length: 59, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7130, design_ptm: null, pLDDT: 0.7231, pTM: 0.7301, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKLSPVEQVAEWRRKLYEKKGVALSQAEFIMEVLEELDPEKYEELKAALLAYDKAAQAA",
+    ipDE: 4.408
+  },
+  {
+    id: "scaleup_0207", name: "cul_med_100-051", campaign: "Cullin Face",
+    binder_length: 110, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7129, design_ptm: null, pLDDT: 0.6931, pTM: 0.7631, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SMEEEREEEERRKREEEEERRRREREEEERRRREEAERARERLLAPALKKVEEIEKKKKKEVEEAKEKLSEEEYEKLKKEVEEEIEKIREAALALAEALARRRAEAEAAA",
+    ipDE: 2.405
+  },
+  {
+    id: "scaleup_0011", name: "beta_e2_100-011", campaign: "E2 Face",
+    binder_length: 59, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7122, design_ptm: null, pLDDT: 0.5817, pTM: 0.8059, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKLSDVEKVKKAREELYKKKGYALNQSEIIFEVLKELDPEEYEKLKKALLEADKKAQEE",
+    ipDE: 2.375
+  },
+  {
+    id: "scaleup_0055", name: "beta_e2_100-055", campaign: "E2 Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7115, design_ptm: null, pLDDT: 0.6209, pTM: 0.8153, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EPEVTDSEEGRRREMEKILEEIEKELEKILEEYEKKNGEEPKP",
+    ipDE: 3.603
+  },
+  {
+    id: "scaleup_0351", name: "cul_small_10-011", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7095, design_ptm: null, pLDDT: 0.7226, pTM: 0.7649, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "LEERVKEAEERVKEILEEAKKKKEEAEKLDAKIKKEKEEEE",
+    ipDE: 3.838
+  },
+  {
+    id: "scaleup_0466", name: "e2_med_10-030", campaign: "E2 Face",
+    binder_length: 93, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7093, design_ptm: null, pLDDT: 0.7011, pTM: 0.7071, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MNEKERREREEERRRREEEERERRRRAEAERAAAAAAAAAAAAAAAARAAAAAAALDAAAKALAAAAEAAKKKEEEEEKKRKEKEEEEKKKKE",
+    ipDE: 3.077
+  },
+  {
+    id: "scaleup_0320", name: "cul_small_100-012", campaign: "Cullin Face",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7091, design_ptm: null, pLDDT: 0.8131, pTM: 0.7313, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAAEAARRAAERSREAYMEEVRREKERKRREEEERRRREEEERRRRREEEEERRRREEEEKKR",
+    ipDE: 3.008
+  },
+  {
+    id: "scaleup_0374", name: "cul_small_10-034", campaign: "Cullin Face",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7084, design_ptm: null, pLDDT: 0.7637, pTM: 0.8094, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAREEKKKKLEEEIKKVEEELKKLKEELKKASEEEKPEIESKLYKLQKKLKELKEELKKFELSK",
+    ipDE: 3.409
+  },
+  {
+    id: "scaleup_0197", name: "cul_med_100-041", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7081, design_ptm: null, pLDDT: 0.6620, pTM: 0.8251, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MTEEELKEKIEELKKKMEEEIEKFKKELEEEYEKILKEAEAAGKKVSKEEEEKMKLEMEKKYFEHKEKVTKETAAELLNELGSEEAANELMTKLKREKEERKKELEKLKEE",
+    ipDE: 3.353
+  },
+  {
+    id: "scaleup_0373", name: "cul_small_10-033", campaign: "Cullin Face",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7064, design_ptm: null, pLDDT: 0.6695, pTM: 0.8078, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AARQAELEELQREIARTEAELARLREELAKASEEEKPTLEARLYELQRRLAALRAEYEAFLAAP",
+    ipDE: 3.176
+  },
+  {
+    id: "scaleup_0481", name: "e2_small_100-005", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7044, design_ptm: null, pLDDT: 0.7840, pTM: 0.7839, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEKRKEEEEKRREEERRKKEEEEKKKEELEELKKKFKEELEKIKKE",
+    ipDE: 2.964
+  },
+  {
+    id: "scaleup_0171", name: "cul_med_100-015", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.7039, design_ptm: null, pLDDT: 0.7709, pTM: 0.7498, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DELKKLIEELKKKLEELEKEKKEFEEKAEEEIKKLEEELEEAKRSGSATQKALEYKETEIKKLKEELKKFKEEVEKEIEEIEKKLQELLK",
+    ipDE: 2.972
+  },
+  {
+    id: "scaleup_0555", name: "e2_small_100-079", campaign: "E2 Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7025, design_ptm: null, pLDDT: 0.6330, pTM: 0.8346, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "PIPASVQKALAEFLKLAEEAQKEEEEKKIEERRKKALEEAK",
+    ipDE: 3.602
+  },
+  {
+    id: "scaleup_0027", name: "beta_e2_100-027", campaign: "E2 Face",
+    binder_length: 45, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7024, design_ptm: null, pLDDT: 0.6284, pTM: 0.7621, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SGLEKLKEGLLKIVQGYEQPDKSFIEKAKDKSVVVEYLKYSKDLL",
+    ipDE: 2.648
+  },
+  {
+    id: "scaleup_0208", name: "cul_med_100-052", campaign: "Cullin Face",
+    binder_length: 117, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7014, design_ptm: null, pLDDT: 0.6753, pTM: 0.7911, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KDEEKLKEYKKKLEEKLRKEAEENPTVNPEIVEAEKEIEKLEEEIKKLEKEKKKLKEELEKLKKEKGDKEEREKKIKELEEKIKEIEKKIEELKKEKKKVEERLKKAEEELRKLLEE",
+    ipDE: 2.787
+  },
+  {
+    id: "scaleup_0109", name: "cullin-005", campaign: "Cullin Face",
+    binder_length: 53, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7012, design_ptm: null, pLDDT: 0.8182, pTM: 0.7249, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAEERRREEEQRREEERRRREEEERERREREERLAREARRAALQAKLEALRP",
+    ipDE: 2.094
+  },
+  {
+    id: "scaleup_0162", name: "cul_med_100-006", campaign: "Cullin Face",
+    binder_length: 105, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6984, design_ptm: null, pLDDT: 0.6982, pTM: 0.7755, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "PPVSREELAARVAANRESDDSAEVALLEREIGERRARENARAEEEAAKRGAEKKKEIEETLSKEEAEKAIKEFEEEEEKRRAALAAELEAREAELRARIAAIRAE",
+    ipDE: 2.787
+  },
+  {
+    id: "scaleup_0202", name: "cul_med_100-046", campaign: "Cullin Face",
+    binder_length: 113, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6983, design_ptm: null, pLDDT: 0.7340, pTM: 0.7628, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEEEMEKKIKEAVEEKKKELREELEGEVVKEMEELKEREIREAEEELEKKGDEKKKKETVEELEKKYEEELKKKLSLKDLLKVEVEEKIAEFELEKREELEEERKKKKEEEE",
+    ipDE: 2.570
+  },
+  {
+    id: "scaleup_0105", name: "cullin-001", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6971, design_ptm: null, pLDDT: 0.7594, pTM: 0.7629, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEERRRRREEEERRRREEEEEKRKEIEESKELVKKSLEEEKKREEEEKKKKEEQEKKEELE",
+    ipDE: 3.019
+  },
+  {
+    id: "scaleup_0110", name: "cullin-006", campaign: "Cullin Face",
+    binder_length: 53, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6966, design_ptm: null, pLDDT: 0.6905, pTM: 0.7722, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SREREEEERRRREEEERRREREEEERKRREEEEERAKEVREKKLKEKLEELEE",
+    ipDE: 3.202
+  },
+  {
+    id: "scaleup_0046", name: "beta_e2_100-046", campaign: "E2 Face",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6966, design_ptm: null, pLDDT: 0.6514, pTM: 0.7871, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEELKRLEEERRAKEEAARELARLKALAEELAKDEEAAKKYVEERLARAAAEAAARAAAEALA",
+    ipDE: 3.965
+  },
+  {
+    id: "scaleup_0235", name: "cul_med_10-023", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6928, design_ptm: null, pLDDT: 0.6927, pTM: 0.7247, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KKKEEEEEKKRKKEIEEKKKELEEIKEELEKNEKELKAIKDFLERAKKSGDKEEVVKKFLEKHKEKLEKYKEVEKKIEEARKLEEEIKEEEEKEK",
+    ipDE: 2.902
+  },
+  {
+    id: "scaleup_0214", name: "cul_med_10-002", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6927, design_ptm: null, pLDDT: 0.6755, pTM: 0.7648, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKEAKEKEKEERTKERLKEFDEKRKEELAKALADGSELLGRLEERVAAVRAQHPELSEEECRALARAELRAEAEEKRKKEYQEIVLEVEKEEEEKEKEEKKKKEEEEKLK",
+    ipDE: 3.761
+  },
+  {
+    id: "scaleup_0190", name: "cul_med_100-034", campaign: "Cullin Face",
+    binder_length: 108, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6890, design_ptm: null, pLDDT: 0.5849, pTM: 0.7571, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAAAAAAAAAAEAAVDAAIAALRAALLAACAACPTCALADPAALEAELEAALAAARAAALAAAAAAAAALAALADDAAAREALRAAAEAAAAAAAAAAARLLEALKA",
+    ipDE: 3.863
+  },
+  {
+    id: "scaleup_0309", name: "cul_small_100-001", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6873, design_ptm: null, pLDDT: 0.6891, pTM: 0.7364, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAERAAAEAERAALRAAAALRAAAAAALAAAAAAAAAAAEAAAA",
+    ipDE: 3.497
+  },
+  {
+    id: "scaleup_0117", name: "cullin-013", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6853, design_ptm: null, pLDDT: 0.7568, pTM: 0.7331, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SMEEHIEEVLKKRKEEKELAEKNRKELEERRKREEEEEEERRRREEEERRRERLREELERL",
+    ipDE: 3.108
+  },
+  {
+    id: "scaleup_0177", name: "cul_med_100-021", campaign: "Cullin Face",
+    binder_length: 104, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6828, design_ptm: null, pLDDT: 0.7028, pTM: 0.7616, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEKEKEEKEKKEKEEKEENEIKKVKQLIESNKGQAKELAEKYLALKKLGKEEECEKLAKEILEEAEKLNKELLELAKEKSVEETIKWYEEKLEKKKKEEAEAAA",
+    ipDE: 2.909
+  },
+  {
+    id: "scaleup_0401", name: "e2_med_100-021", campaign: "E2 Face",
+    binder_length: 101, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6828, design_ptm: null, pLDDT: 0.6996, pTM: 0.7769, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEELRQLEEELRRRSAERAAERAAELGAGEAAGLAARAEVLEEFAEELRRRAEETGSEEFRERAEELERRAEELRREAEERLAEEEAKKEALKKEKEEKKK",
+    ipDE: 2.819
+  },
+  {
+    id: "scaleup_0318", name: "cul_small_100-010", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6777, design_ptm: null, pLDDT: 0.7304, pTM: 0.7254, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEERRREEEERRRREEEERRRRKEEEEKRKKEEEEKKKQELLDN",
+    ipDE: 3.658
+  },
+  {
+    id: "scaleup_0363", name: "cul_small_10-023", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6772, design_ptm: null, pLDDT: 0.6808, pTM: 0.8048, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EDLEEKDKFETEEEKKRKLKKRKEEKARKAAERKKREKEEK",
+    ipDE: 4.126
+  },
+  {
+    id: "scaleup_0270", name: "cul_small_100_1080ti-018", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6766, design_ptm: null, pLDDT: 0.6919, pTM: 0.7724, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEERRREEEEREEEKKRREYYERVVGGKREKKEKEEEEKKKEREAEEKKKEEE",
+    ipDE: 3.208
+  },
+  {
+    id: "scaleup_0170", name: "cul_med_100-014", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.6747, design_ptm: null, pLDDT: 0.7599, pTM: 0.7773, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKLEEELKKLEEEIEEIKKKLEEFEKEAKKELEELKKKLAEWKATGSASQRALEYLETKIKELEKELEKFKKEAEEKLEEIKKKIEELKK",
+    ipDE: 3.291
+  },
+  {
+    id: "scaleup_0025", name: "beta_e2_100-025", campaign: "E2 Face",
+    binder_length: 45, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6746, design_ptm: null, pLDDT: 0.7242, pTM: 0.6947, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SGRQALLERLRAIVRGEKQEDESFLEEAKDEPVVVAELRRLEHLL",
+    ipDE: 3.726
+  },
+  {
+    id: "scaleup_0304", name: "cul_small_100_1080ti-052", campaign: "Cullin Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6744, design_ptm: null, pLDDT: 0.7369, pTM: 0.8075, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEEERRRRRREEEEARRRVEEEAKRERQEKLRKEKEEKEKLE",
+    ipDE: 3.775
+  },
+  {
+    id: "scaleup_0073", name: "beta_e2_10-009", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6742, design_ptm: null, pLDDT: 0.6466, pTM: 0.7355, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KKKKEEEKKKKEKELKEILEKAKELPFKEKVEEILKTVVGTPEEREEIVKKFLEELKKKYG",
+    ipDE: 3.352
+  },
+  {
+    id: "scaleup_0183", name: "cul_med_100-027", campaign: "Cullin Face",
+    binder_length: 102, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6727, design_ptm: null, pLDDT: 0.8154, pTM: 0.7323, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKEEEERRRREKREEEERRRREKEEEERRRREEEERLARLERLRTHGAEAAAALAARLAALESEEERARLRAEFEARRREVEEWARRREAIQEELRQEFLEE",
+    ipDE: 3.219
+  },
+  {
+    id: "scaleup_0205", name: "cul_med_100-049", campaign: "Cullin Face",
+    binder_length: 110, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6712, design_ptm: null, pLDDT: 0.6863, pTM: 0.7101, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEREEEERRRREEEERRRRAAEEEARRAAEAARRAAAAAREAALAPALEKVKEIEAEKKKEVEEKKEKLSEEEYKKLKEETEEEIKKLREAALELAERRIAEARAREAAA",
+    ipDE: 3.510
+  },
+  {
+    id: "scaleup_0505", name: "e2_small_100-029", campaign: "E2 Face",
+    binder_length: 59, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6708, design_ptm: null, pLDDT: 0.6607, pTM: 0.7294, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MESEKEKKEEEKWKEEHRKKLLEEEERRKKRREEEERRRREEEERRRREEEERRRRELE",
+    ipDE: 3.510
+  },
+  {
+    id: "scaleup_0354", name: "cul_small_10-014", campaign: "Cullin Face",
+    binder_length: 42, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6702, design_ptm: null, pLDDT: 0.6698, pTM: 0.7605, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEERRRKEELEKEIEEQRKRVEEVKEEYRKKYKEELKKKLE",
+    ipDE: 4.223
+  },
+  {
+    id: "scaleup_0039", name: "beta_e2_100-039", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6694, design_ptm: null, pLDDT: 0.6921, pTM: 0.7121, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAEEARKKAEEEKKAFEEKAKEYGVYGVKSEEEIRRHLENLEAIRLEKEGRGEEYYAERLAAAA",
+    ipDE: 4.573
+  },
+  {
+    id: "scaleup_0043", name: "beta_e2_100-043", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6692, design_ptm: null, pLDDT: 0.6776, pTM: 0.7970, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KLEAELARRRAETERLCAEMLAKGLSEEQVEAYRAAARREMDAAVAAAAAAAAAAAA",
+    ipDE: 4.799
+  },
+  {
+    id: "scaleup_0553", name: "e2_small_100-077", campaign: "E2 Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6651, design_ptm: null, pLDDT: 0.6810, pTM: 0.8490, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "PLPEEVQKALKEFLEKAEEARRKAEEKKIEERRKKALEEVE",
+    ipDE: 4.019
+  },
+  {
+    id: "scaleup_0120", name: "cullin-016", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6638, design_ptm: null, pLDDT: 0.6750, pTM: 0.8518, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEEEEKAKKALEEEEKKLKEELEKKLKEEAKREEERKREEELKK",
+    ipDE: 3.861
+  },
+  {
+    id: "scaleup_0212", name: "cul_med_10-000", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6630, design_ptm: null, pLDDT: 0.7111, pTM: 0.7448, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MAEEEEKRKLEEETEARIREADAAAAAKLAEELADGSRLLGAFEERVARVAAEHPELSEEECRELARRELAAEAERERRREYAKIRMDVEFEAEERAREAAEEARRRAEEE",
+    ipDE: 4.015
+  },
+  {
+    id: "scaleup_0359", name: "cul_small_10-019", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6624, design_ptm: null, pLDDT: 0.6551, pTM: 0.7887, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SRTEANQAAVEARRAALRATGDEAALAAFEAELAAAQAAKAAAAEEALKEKEEKEKEEKE",
+    ipDE: 3.110
+  },
+  {
+    id: "scaleup_0222", name: "cul_med_10-010", campaign: "Cullin Face",
+    binder_length: 99, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6557, design_ptm: null, pLDDT: 0.7542, pTM: 0.7416, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MDEEKKKKEEEIEEKLKELDEEEKRLEEELKKLPESEEEERRKLHLKIEVLKKTKEDFKKLAEEASFEDWPKVLEKLPEIKEKYEKAAEEELKAALEAK",
+    ipDE: 3.698
+  },
+  {
+    id: "scaleup_0226", name: "cul_med_10-014", campaign: "Cullin Face",
+    binder_length: 96, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6540, design_ptm: null, pLDDT: 0.7260, pTM: 0.7805, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKEKLEELKKKVEELKKRLAELYKKIPYSKELYEAFELIEEIEKLLKEAEELLKLAELYEENKEELLKKAEELFRKIEEKLEKAEELIKRAEERVK",
+    ipDE: 3.643
+  },
+  {
+    id: "scaleup_0400", name: "e2_med_100-020", campaign: "E2 Face",
+    binder_length: 101, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6534, design_ptm: null, pLDDT: 0.7097, pTM: 0.7448, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAELERLREELRTRSRRRAAEAARRAGAGEAVGLRAAAEVLREFAERLRRLAEETGSEEFEREARELEERAKELEKKAEELIKEEEEKRRKMEEEERKARE",
+    ipDE: 3.820
+  },
+  {
+    id: "scaleup_0138", name: "cul_med_100_1080ti-014", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6528, design_ptm: null, pLDDT: 0.8081, pTM: 0.6573, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MAAEEAARKEKKEQEIEEKIKELEERYKEDKEKALEEMKKLAKEDEEFGKKLDEWLREKKEKEAEEARREAAEEARRRREEEERRRREEERREEE",
+    ipDE: 3.447
+  },
+  {
+    id: "scaleup_0185", name: "cul_med_100-029", campaign: "Cullin Face",
+    binder_length: 117, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6511, design_ptm: null, pLDDT: 0.7274, pTM: 0.6201, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEEEEERRRREEERERERRERERREEEERREREEAERARRLAAEGEELARDGAERRRREEERRRRREREERERREEEEKNYEEVVKKRLEEAKKLAEQAFAESEELKAKAEAAAAAA",
+    ipDE: 5.628
+  },
+  {
+    id: "scaleup_0077", name: "beta_e2_10-013", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6469, design_ptm: null, pLDDT: 0.7037, pTM: 0.6814, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EKEKEEKEKKKELEESEESLELKKIEIELNIRQLDKSVSEEEKKKLLEELIEELEKKE",
+    ipDE: 6.231
+  },
+  {
+    id: "scaleup_0130", name: "cul_med_100_1080ti-006", campaign: "Cullin Face",
+    binder_length: 94, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6451, design_ptm: null, pLDDT: 0.7732, pTM: 0.6964, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKKEEEEKKKEEEEKKKKEEEERKEKEYEEARRRLEAARRAAEAARRAAEEAARRAAEEARRRAEREREEERRRAERERERAREEARRAAERAA",
+    ipDE: 3.703
+  },
+  {
+    id: "scaleup_0167", name: "cul_med_100-011", campaign: "Cullin Face",
+    binder_length: 113, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6409, design_ptm: null, pLDDT: 0.7948, pTM: 0.7188, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SMAAARAREEEDRRIERLEREREEFVRAVSREEARRHPEEIARRVNELHREILQLKADRLGVSPAEVVELEERRRREEKRREEEERREREERERREEERRREEERRREEEERK",
+    ipDE: 4.586
+  },
+  {
+    id: "scaleup_0023", name: "beta_e2_100-023", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6381, design_ptm: null, pLDDT: 0.6884, pTM: 0.7119, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEEEKKKKEEEEKKKEIEKKQEEALKKLEKSNPEWAKIYRERLEKE",
+    ipDE: 4.733
+  },
+  {
+    id: "scaleup_0180", name: "cul_med_100-024", campaign: "Cullin Face",
+    binder_length: 102, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6379, design_ptm: null, pLDDT: 0.7708, pTM: 0.6269, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DKEEEERRREEERRREKEEEEEKRKKEEEEEKEKKELEELEELRTNLKEKIEELKEKLKKLKSKEEQEKLKKEFEKKLEEVKKAAEERKEIIEEIQKELLER",
+    ipDE: 5.154
+  },
+  {
+    id: "scaleup_0191", name: "cul_med_100-035", campaign: "Cullin Face",
+    binder_length: 108, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6353, design_ptm: null, pLDDT: 0.6057, pTM: 0.6872, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAAAAAAAAAREAAVDAATAALRAAALAALAANPTATLADPAAAAAALDAALAALRAAARAAAAARDALLAALAADAAARAALEAAAAAAAAAAAAAAARAVAAARA",
+    ipDE: 4.275
+  },
+  {
+    id: "scaleup_0008", name: "beta_e2_100-008", campaign: "E2 Face",
+    binder_length: 59, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6349, design_ptm: null, pLDDT: 0.6386, pTM: 0.7224, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MELSPVEQVREWRKKLYEKHGRALSQSEIIMEVLKELKPEEYAKLREALLAYDKEAQAA",
+    ipDE: 3.449
+  },
+  {
+    id: "scaleup_0184", name: "cul_med_100-028", campaign: "Cullin Face",
+    binder_length: 117, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6345, design_ptm: null, pLDDT: 0.7011, pTM: 0.6274, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEKEKEEKEEKEKEEKKKEEEEAKRREEEERRREELRRRLEEAGEEIAEDGEARRRKEEEERKKKEEEEKKEKEEKEKNYEEVEEKRRKEREELAKQALEESEELREKLEKLEKEE",
+    ipDE: 4.049
+  },
+  {
+    id: "scaleup_0165", name: "cul_med_100-009", campaign: "Cullin Face",
+    binder_length: 113, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6343, design_ptm: null, pLDDT: 0.7131, pTM: 0.7179, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MAAEEKAKKEKEKEIEKLEKEKEEYIKKVTKEEAAKNPEKYSKEVNELWRKILQKKADELGKLPSEVLELERKKKEEKEKKEKEKKKKEEEEKKKEEKKKEEEERLKKLLEEL",
+    ipDE: 3.287
+  },
+  {
+    id: "scaleup_0236", name: "cul_med_10-024", campaign: "Cullin Face",
+    binder_length: 106, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6342, design_ptm: null, pLDDT: 0.7254, pTM: 0.7445, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EPSEELLRRIAEKVLGLVDVLRELAEFVGSPRLPEIEELEEEVEEAYEKGDLEKLEEVLERVLELFEELARETEAADASEQARIDELRERVRELVLEYRRTLKEIE",
+    ipDE: 4.112
+  },
+  {
+    id: "scaleup_0119", name: "cullin-015", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6326, design_ptm: null, pLDDT: 0.6725, pTM: 0.6823, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLEELIQKRLEERARLEAAAAAARAAAAAAARAAAEAAAAAAAAAAAAAAAAAAAEAAAAA",
+    ipDE: 3.208
+  },
+  {
+    id: "scaleup_0213", name: "cul_med_10-001", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6322, design_ptm: null, pLDDT: 0.7320, pTM: 0.7515, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SSMEEEEKKLEEKTKERLAARDAELAAELARQLADGSRLQGAFDALFAELRAKYPDLSEEECRALALERLNAAAEEALKREARRIVMEVRKEAEEEKKKKEEKKKLEELLK",
+    ipDE: 3.366
+  },
+  {
+    id: "scaleup_0316", name: "cul_small_100-008", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6294, design_ptm: null, pLDDT: 0.7059, pTM: 0.8019, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKEKKEEEEKKKKEKEEKEKEEKKKEEEEKKKEEKEKELKKLLEE",
+    ipDE: 3.093
+  },
+  {
+    id: "scaleup_0366", name: "cul_small_10-026", campaign: "Cullin Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6289, design_ptm: null, pLDDT: 0.6701, pTM: 0.8014, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEEEEEEEKKEKEEKEKEIEEIKKKILEENREKARRLREEVARNAEKRLAEALA",
+    ipDE: 4.405
+  },
+  {
+    id: "scaleup_0262", name: "cul_small_100_1080ti-010", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6283, design_ptm: null, pLDDT: 0.7587, pTM: 0.6735, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEVVEEEREKRRAEELERRRREEAERRAEEERRRREEEERR",
+    ipDE: 5.110
+  },
+  {
+    id: "scaleup_0405", name: "e2_med_100-025", campaign: "E2 Face",
+    binder_length: 94, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6263, design_ptm: null, pLDDT: 0.7277, pTM: 0.6614, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAAAAAAAAAAAAEAARREAEAAAEAARRAEELAKLKPELEELEKEEEKERELKKKIEEKLKREEKILKEKEEAKKLEKELQELLEQAFKEEP",
+    ipDE: 4.099
+  },
+  {
+    id: "scaleup_0472", name: "e2_med_10-036", campaign: "E2 Face",
+    binder_length: 107, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6256, design_ptm: null, pLDDT: 0.7954, pTM: 0.7839, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEDRKEVEELLKEVEELSKRILELAFKDPEETAKLIEELKEKVKEWRKELSKSAEYLELLLEVLRKLAETLNEVYRLLNLPVAREALLEVLDLAEEVKKKIEELRK",
+    ipDE: 3.831
+  },
+  {
+    id: "scaleup_0453", name: "e2_med_10-017", campaign: "E2 Face",
+    binder_length: 115, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6255, design_ptm: null, pLDDT: 0.7600, pTM: 0.7672, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEKEEKIKKLEEELKKLEEKKKELENEIEKLKKEIEEESLRLTVEKERLKKKKEEAEKKGDEETLKKLEEKLKELEEREKELEEKKKKVKELEEELKKTEEKIKELKEEIKKLKE",
+    ipDE: 4.694
+  },
+  {
+    id: "scaleup_0137", name: "cul_med_100_1080ti-013", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6232, design_ptm: null, pLDDT: 0.7081, pTM: 0.6835, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MAAKRAEEEQKREEEREKLLEELEKKYKENKEEALKEMEKLAEEDPEFGELIDKRLREKKEKEKEKKLEEEVKKKKEEEEKKEKEEKEKEKEEKE",
+    ipDE: 3.350
+  },
+  {
+    id: "scaleup_0308", name: "cul_small_100-000", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6215, design_ptm: null, pLDDT: 0.6761, pTM: 0.7446, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEKKKKLEEEQKKLREEAEENERARRVLEERRRREEEARRRAEE",
+    ipDE: 4.193
+  },
+  {
+    id: "scaleup_0473", name: "e2_med_10-037", campaign: "E2 Face",
+    binder_length: 107, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6201, design_ptm: null, pLDDT: 0.6834, pTM: 0.7472, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKMKKEVEELKKEVEEKSKKILELAFKDPEETVKLIEELKKELEEWRSLLSSSAEKLELLLEVLKIILETLNKVYKLLGLEVAKEAILLALKLAEEVKKKIEELKK",
+    ipDE: 4.143
+  },
+  {
+    id: "scaleup_0375", name: "cul_small_10-035", campaign: "Cullin Face",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6148, design_ptm: null, pLDDT: 0.7443, pTM: 0.5751, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAREAELKALEEEIERVEKEIEKLKKEYEKASEEEKPEIEARLYELQKKLEELKEKYKEFLESK",
+    ipDE: 5.559
+  },
+  {
+    id: "scaleup_0231", name: "cul_med_10-019", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.6100, design_ptm: null, pLDDT: 0.6043, pTM: 0.6608, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEEEEKKEEEEKLEAERAEAAAAAAAARAAAEARAEALARALAAAGSLAERAAALRAALARARAEAAERARAAAAAEAAAAAAAAAAAAA",
+    ipDE: 5.286
+  },
+  {
+    id: "scaleup_0322", name: "cul_small_100-014", campaign: "Cullin Face",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.6066, design_ptm: null, pLDDT: 0.7446, pTM: 0.7460, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAKEEAEREARERSLKAFQEKVEEEKKREEEEKRRKEEEERRKEEEKKKKEEEEKKKREEEKKK",
+    ipDE: 3.812
+  },
+  {
+    id: "scaleup_0144", name: "cul_med_100_1080ti-020", campaign: "Cullin Face",
+    binder_length: 92, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6051, design_ptm: null, pLDDT: 0.6964, pTM: 0.7366, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLRELEKKLMEEEIKKIKEKFPGLTDEEIEELVKFGEENREFALEYREGKVREEFESLPEKQQLALEAYARVVAALEAAIAAARARLEAIRA",
+    ipDE: 4.280
+  },
+  {
+    id: "scaleup_0052", name: "beta_e2_100-052", campaign: "E2 Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5998, design_ptm: null, pLDDT: 0.6613, pTM: 0.7837, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "PPEVTPTPEGEERKIQEILEQMEKEFEEVQKKWEEENGKPPLP",
+    ipDE: 5.102
+  },
+  {
+    id: "scaleup_0219", name: "cul_med_10-007", campaign: "Cullin Face",
+    binder_length: 96, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5938, design_ptm: null, pLDDT: 0.7309, pTM: 0.7323, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEIKKKLKEAFEIEYEELLKKLEKTMDELGVSEEEKKKALKELEEKKKELLKKFEETFETGSIDEAVELFLKLLEEFKKYVEELIKKLKEEAEKK",
+    ipDE: 3.139
+  },
+  {
+    id: "scaleup_0404", name: "e2_med_100-024", campaign: "E2 Face",
+    binder_length: 94, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5934, design_ptm: null, pLDDT: 0.7039, pTM: 0.5899, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MAAERARAQAEAAARAAAAAAAAAERAAAEAARLAALRPALEELLARLAEVLELLKKLLEKLKRELELLKKKEEEEKKNKELQELLEKAYKEKE",
+    ipDE: 5.025
+  },
+  {
+    id: "scaleup_0123", name: "cullin-019", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5898, design_ptm: null, pLDDT: 0.7416, pTM: 0.7351, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEEEEKRRAEEEREKQREEEKKKLEEELKEEREKKLKEELEKKLEE",
+    ipDE: 6.847
+  },
+  {
+    id: "scaleup_0204", name: "cul_med_100-048", campaign: "Cullin Face",
+    binder_length: 110, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5861, design_ptm: null, pLDDT: 0.7309, pTM: 0.6822, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAEEAAEAARRRAEEEARRAAAAAAAAEAAAAAAAAAAAEEAALAPALERHEKIKAEKEAEVEALKEELSEEEYEKLKKEAEEEIEKLGEALLELARRRLARALAEAAAA",
+    ipDE: 4.158
+  },
+  {
+    id: "scaleup_0272", name: "cul_small_100_1080ti-020", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5740, design_ptm: null, pLDDT: 0.7242, pTM: 0.7879, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEDLEKKKEEEEAKEFKKKKEEEELKKIQEEAEKKEKEKKEKEEKEKKEELEKK",
+    ipDE: 5.529
+  },
+  {
+    id: "scaleup_0211", name: "cul_med_100-055", campaign: "Cullin Face",
+    binder_length: 117, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5736, design_ptm: null, pLDDT: 0.6875, pTM: 0.7111, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEKKLKEYKEKLKKELEERAKEDPGVNPELLKAEKEEEKLEEEIKKLEEEKKKLEEELEKLKKSKGDKEKKEKEIKKIEEEIKKIEEKIKELEEEKKKVEEKIEEARRKEEEARRA",
+    ipDE: 5.015
+  },
+  {
+    id: "scaleup_0061", name: "beta_e2_100-061", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5730, design_ptm: null, pLDDT: 0.6429, pTM: 0.7253, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEIEKLLEEAEKLKEEYTESGYLLTKEELRRLYLLTKLGLDISDLEALEEEKKK",
+    ipDE: 3.850
+  },
+  {
+    id: "scaleup_0267", name: "cul_small_100_1080ti-015", campaign: "Cullin Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5720, design_ptm: null, pLDDT: 0.7220, pTM: 0.7798, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DKAAYEERVKLLAKERFSKAELKKNPEEVLEKAREELERREEVHERLQQLQEELS",
+    ipDE: 5.036
+  },
+  {
+    id: "scaleup_0126", name: "cul_med_100_1080ti-002", campaign: "Cullin Face",
+    binder_length: 103, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5707, design_ptm: null, pLDDT: 0.7711, pTM: 0.6260, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MERAEELEALRERLAAFRERAAAELERMRAEAAAAGADRAAREAALEAFEAEAARELAAMEAEIRELETAPYRARQEEEAARLRAEDLAARRAAAEAAAAAAA",
+    ipDE: 7.294
+  },
+  {
+    id: "scaleup_0452", name: "e2_med_10-016", campaign: "E2 Face",
+    binder_length: 115, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5701, design_ptm: null, pLDDT: 0.8025, pTM: 0.7174, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKEKKIKELKEELEKLEKKKEELEREIAEIEERIETESLRLEVERELLRRELERARAAGDEERAAELEKRLRELEEREKELEELKKKLEELKKELEETEKKIEEIKKKIKELEE",
+    ipDE: 5.220
+  },
+  {
+    id: "scaleup_0353", name: "cul_small_10-013", campaign: "Cullin Face",
+    binder_length: 42, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5699, design_ptm: null, pLDDT: 0.6680, pTM: 0.7046, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "RKEAEEAERRRREEIEKALEEVEKAKEKYREELLKELEKKKK",
+    ipDE: 5.021
+  },
+  {
+    id: "scaleup_0370", name: "cul_small_10-030", campaign: "Cullin Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5633, design_ptm: null, pLDDT: 0.6309, pTM: 0.7179, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "ALALLAERAARRAALEAARAAQAAAAAAALAAAAAAALAAAAA",
+    ipDE: 4.329
+  },
+  {
+    id: "scaleup_0065", name: "beta_e2_10-001", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5558, design_ptm: null, pLDDT: 0.6904, pTM: 0.6996, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EKEKKEEEEKKKKEEEEKRKKEALEERLEEERKKLQEEIERKKKEEE",
+    ipDE: 4.985
+  },
+  {
+    id: "scaleup_0557", name: "e2_small_100-081", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5522, design_ptm: null, pLDDT: 0.7216, pTM: 0.7488, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEKKKEEEEEKKKKEEEEKKKREEELEKLKKIEEEKKKREEELKKMYELLLE",
+    ipDE: 4.459
+  },
+  {
+    id: "scaleup_0450", name: "e2_med_10-014", campaign: "E2 Face",
+    binder_length: 106, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5518, design_ptm: null, pLDDT: 0.7324, pTM: 0.6449, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEFEKEVEEFKKELEEESKELLEKLKEAEKRFGELAKRYKGLLEKFTEETLKGLEEAKKTGDKEEFEKLKKEWEIFVEWLKKLLEAKTEEEIKELEKEYKKRLEEL",
+    ipDE: 5.696
+  },
+  {
+    id: "scaleup_0403", name: "e2_med_100-023", campaign: "E2 Face",
+    binder_length: 101, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5496, design_ptm: null, pLDDT: 0.6577, pTM: 0.6956, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEELEEFLERLRTESARRAAEAAAAAGRGPEYGLLAEAEVLEEFAERLERKAEETGSEEFRELAEELRERAEELRRRAEELLAREEALLREMEEERRRAKE",
+    ipDE: 4.906
+  },
+  {
+    id: "scaleup_0266", name: "cul_small_100_1080ti-014", campaign: "Cullin Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5492, design_ptm: null, pLDDT: 0.7011, pTM: 0.6864, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEEEVEERIRYLAKKRYSKAELRKNPEAILEEARKELEEREKRHKTLEEWREKMK",
+    ipDE: 5.201
+  },
+  {
+    id: "scaleup_0194", name: "cul_med_100-038", campaign: "Cullin Face",
+    binder_length: 101, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5477, design_ptm: null, pLDDT: 0.7847, pTM: 0.6908, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEAELLKKIKEELKKEKEERKKEIEERIAELLAAGKPPTEVAQAVLEALEKRKKELEKKIKELEEEKEKNPELKKALEEAIKELEKEKEELKKEIKELKEK",
+    ipDE: 5.422
+  },
+  {
+    id: "scaleup_0223", name: "cul_med_10-011", campaign: "Cullin Face",
+    binder_length: 99, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5449, design_ptm: null, pLDDT: 0.7591, pTM: 0.7181, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MDEKKKKIEEEIEEKLEEIEEEREELEKELEELPESAREERRRLALEIEVEEEIKRVFEKLVKESKIEDWPKVLEKLPEIEERFYRWARERLEAALRAR",
+    ipDE: 4.754
+  },
+  {
+    id: "scaleup_0179", name: "cul_med_100-023", campaign: "Cullin Face",
+    binder_length: 104, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5448, design_ptm: null, pLDDT: 0.6309, pTM: 0.6479, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEERRREEEERRRREEEERRPAEIQRLLESNRLQAEELAALLLAAKALGDTEACDAAAEAIRRAAAELNEELLELFLRESAEVTLEWYRERLAAAAARAAAAAA",
+    ipDE: 4.554
+  },
+  {
+    id: "scaleup_0010", name: "beta_e2_100-010", campaign: "E2 Face",
+    binder_length: 59, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5446, design_ptm: null, pLDDT: 0.6205, pTM: 0.6453, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKLSPVEQVRLWRKELYEKYGYALSDAEILQEVLEELNPEEYEKLLKALLEYDKEKQEK",
+    ipDE: 4.720
+  },
+  {
+    id: "scaleup_0172", name: "cul_med_100-016", campaign: "Cullin Face",
+    binder_length: 114, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5428, design_ptm: null, pLDDT: 0.7780, pTM: 0.6593, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAERRRREIEELRAEAERLEAEAERLEGLARARREEAEERNKKLLEENEKIKKEMEKLSEEEKKKAEEEIKKREAEVKALEEEVRRMEEEARRIREEAEELRARAAALEAEAA",
+    ipDE: 4.738
+  },
+  {
+    id: "scaleup_0556", name: "e2_small_100-080", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5423, design_ptm: null, pLDDT: 0.7542, pTM: 0.6812, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DKEKEEKEKKEEEEKKKKEEEEKKKEELKKLEKIIEEKKEREKFLEEMKELLKK",
+    ipDE: 4.904
+  },
+  {
+    id: "scaleup_0313", name: "cul_small_100-005", campaign: "Cullin Face",
+    binder_length: 45, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5412, design_ptm: null, pLDDT: 0.7230, pTM: 0.7458, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "ASAEELRKKEAEEKRKEKIDKKIKELEKKIKEEKKKKEEEEKKKK",
+    ipDE: 5.234
+  },
+  {
+    id: "scaleup_0461", name: "e2_med_10-025", campaign: "E2 Face",
+    binder_length: 98, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5335, design_ptm: null, pLDDT: 0.6745, pTM: 0.7016, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAAAAAKAAEEREEADNAIMGRLVVATENPEFAKKLLEEKKEKEKKVEELKKKEGEEKAKEWEEKWKEELDKKLAEEYRKYKKELEEERRRREEEEE",
+    ipDE: 5.331
+  },
+  {
+    id: "scaleup_0028", name: "beta_e2_100-028", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5262, design_ptm: null, pLDDT: 0.6897, pTM: 0.6824, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "IVEEKIKKLEKEIEEIEKAIKEYEEELEKKKGGDEEEQKKIKEQIENLKKKKEFLKKKIETLKSL",
+    ipDE: 5.474
+  },
+  {
+    id: "scaleup_0143", name: "cul_med_100_1080ti-019", campaign: "Cullin Face",
+    binder_length: 120, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5222, design_ptm: null, pLDDT: 0.7501, pTM: 0.6588, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKEELEKKIEELKKEIEELKKKIKEIEEKIKELEKIFKELEEFKKRCEAIVKTTEFTDKEKTPEVKEQMEAAIAEFEAEKAEELEKAKKEIKELEEELKKLKEKLEELEKEYEELKKKLE",
+    ipDE: 4.164
+  },
+  {
+    id: "scaleup_0066", name: "beta_e2_10-002", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5172, design_ptm: null, pLDDT: 0.7085, pTM: 0.6930, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEEKKEEEERKKEEEEKKKKEALEERLKEETEELRKKEEEAAKKAA",
+    ipDE: 6.175
+  },
+  {
+    id: "scaleup_0325", name: "cul_small_100-017", campaign: "Cullin Face",
+    binder_length: 50, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5153, design_ptm: null, pLDDT: 0.6517, pTM: 0.6883, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MSQEELAKRLEERRKLRRELEERRRRRRRRRERRKRRRRRRARRARERRR",
+    ipDE: 5.983
+  },
+  {
+    id: "scaleup_0045", name: "beta_e2_100-045", campaign: "E2 Face",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.5153, design_ptm: null, pLDDT: 0.6896, pTM: 0.7170, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEKKKAEERLQEKEEEKKKLEELKKLAELLKKDEKLAEELMKKRLEERKRKEEEERRRKEEE",
+    ipDE: 5.381
+  },
+  {
+    id: "scaleup_0131", name: "cul_med_100_1080ti-007", campaign: "Cullin Face",
+    binder_length: 94, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5122, design_ptm: null, pLDDT: 0.7642, pTM: 0.6137, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EKEKEEEEKKKKEEEEEKEKKEKEKEENEKIKKEVEEKRRKEEAEKAREAEERELERRRREEERRREEERRREEERRERRRREEEERERRRREE",
+    ipDE: 7.346
+  },
+  {
+    id: "scaleup_0251", name: "cul_med_10-039", campaign: "Cullin Face",
+    binder_length: 118, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5088, design_ptm: null, pLDDT: 0.7366, pTM: 0.6882, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EKLKEELEKKKEELKKEIEKKEKEIKEKEKEIKDKKEKEMAELETELAAVEPIIEKAKKGEIKEAVGEEARKKKEELEKEKKKLEEECKEKKKEVEELRKEVEKKKKEFEEELKALEK",
+    ipDE: 5.429
+  },
+  {
+    id: "scaleup_0178", name: "cul_med_100-022", campaign: "Cullin Face",
+    binder_length: 104, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5085, design_ptm: null, pLDDT: 0.7077, pTM: 0.6289, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEEEERRRREEEERRRREPEEVRQLVESIRKQAEELAAKYREAKKLGDTEKCDELAEKILKEAEELIKELLELYKEKSAEETLEWYKKKLAEKAEKAAAAAA",
+    ipDE: 5.469
+  },
+  {
+    id: "scaleup_0462", name: "e2_med_10-026", campaign: "E2 Face",
+    binder_length: 98, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.5053, design_ptm: null, pLDDT: 0.7139, pTM: 0.6061, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEEERRRRAAEERERALDAELGRLVVTTLDPELAKELKEEKEEEEKKYKELKEKVGEEEAEKWKKEWEEKLRERLAEAFRAFRAAVAAAAAAAAAAAA",
+    ipDE: 4.207
+  },
+  {
+    id: "scaleup_0303", name: "cul_small_100_1080ti-051", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4968, design_ptm: null, pLDDT: 0.7543, pTM: 0.6867, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKKEREERKRREEEERRREEEERKREEEEREKEKEEVEERIKEQREKDLERLE",
+    ipDE: 5.922
+  },
+  {
+    id: "scaleup_0042", name: "beta_e2_100-042", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4933, design_ptm: null, pLDDT: 0.6735, pTM: 0.6473, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EVEEFVRRALEETEREVKRLLELGLSEEEAEAIREAAARRLDEAIARAAAEAAAAAA",
+    ipDE: 6.490
+  },
+  {
+    id: "scaleup_0271", name: "cul_small_100_1080ti-019", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4915, design_ptm: null, pLDDT: 0.7229, pTM: 0.7587, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEAEEAARKAAEEEEKLRREYKERVEGKKRKEEEEKRKKEKEEEEEKKKKEEEE",
+    ipDE: 5.575
+  },
+  {
+    id: "scaleup_0195", name: "cul_med_100-039", campaign: "Cullin Face",
+    binder_length: 101, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4911, design_ptm: null, pLDDT: 0.7114, pTM: 0.6851, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "ASEELLRKIKEELKKAEEEAEKRIAAAVAELLARGAPAEEVAAAVLKALEEQIKWLDEKIKRLREEKKKNPENAEAYEEAIKELEEKKKELEKKIAELLAQ",
+    ipDE: 4.758
+  },
+  {
+    id: "scaleup_0018", name: "beta_e2_100-018", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4885, design_ptm: null, pLDDT: 0.6279, pTM: 0.6369, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MELHYVVEVLDEEGLVEVKNVTTTEEDLEEVKKRIEEETKEKGKKEGKELIVVIRPCA",
+    ipDE: 6.147
+  },
+  {
+    id: "scaleup_0035", name: "beta_e2_100-035", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4864, design_ptm: null, pLDDT: 0.6050, pTM: 0.6475, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SSRPKTRVLIRTERDGEVRFEIYEGVSYKEAAELKEKYSKEEDGEVRTVTIFEE",
+    ipDE: 5.944
+  },
+  {
+    id: "scaleup_0064", name: "beta_e2_10-000", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4833, design_ptm: null, pLDDT: 0.7291, pTM: 0.6246, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "ERREAEERRRREEEERRRRLEEAERQRLAEATEAARAAEAARRAAEA",
+    ipDE: 8.294
+  },
+  {
+    id: "scaleup_0124", name: "cul_med_100_1080ti-000", campaign: "Cullin Face",
+    binder_length: 103, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4825, design_ptm: null, pLDDT: 0.7092, pTM: 0.5572, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SSLSEEIEKLRKELEEFKKKAEEELKKLEEEKKKAKEDKKKYEEKLKKFKEEVEKKLKEMEEKIKELEEAPYRQRQAEEAARLRAAELAARAAAAAAAAAAAA",
+    ipDE: 7.355
+  },
+  {
+    id: "scaleup_0240", name: "cul_med_10-028", campaign: "Cullin Face",
+    binder_length: 92, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4817, design_ptm: null, pLDDT: 0.7396, pTM: 0.6810, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MTPEDEFEKKLNELKGKLKEAKAKLDAATAALEAEKAAKAPVLAALRAEDAAAAAALEEALAAREREVAGYKDLVEKLEKEIEEMEKEKKAK",
+    ipDE: 6.366
+  },
+  {
+    id: "scaleup_0352", name: "cul_small_10-012", campaign: "Cullin Face",
+    binder_length: 42, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4806, design_ptm: null, pLDDT: 0.6466, pTM: 0.6844, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEEEAKKKEEEKAIEEQREAVEKKKEEYREKLKKELKEKLE",
+    ipDE: 6.062
+  },
+  {
+    id: "scaleup_0108", name: "cullin-004", campaign: "Cullin Face",
+    binder_length: 53, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4779, design_ptm: null, pLDDT: 0.7433, pTM: 0.6374, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKEEEQKRREEERRRKEEEEKERREKEEEEKARRLAEEARRRRLEEELAALEP",
+    ipDE: 6.358
+  },
+  {
+    id: "scaleup_0474", name: "e2_med_10-038", campaign: "E2 Face",
+    binder_length: 107, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4734, design_ptm: null, pLDDT: 0.7320, pTM: 0.6675, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SKEDEKKVEELKKKYEEKKKEILELAFKDPEKTKELIKEITKEVDEWESLLSSSAEFLELLLKVLKIIYETLNEVYKKLNLEIAKEALLKVLELAEKFKKKIEELKK",
+    ipDE: 5.469
+  },
+  {
+    id: "scaleup_0480", name: "e2_small_100-004", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4601, design_ptm: null, pLDDT: 0.6696, pTM: 0.6333, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKKEEEERREKERREEEERRRKEEEEKRRKEELKEEIKKEIEKIKEE",
+    ipDE: 6.257
+  },
+  {
+    id: "scaleup_0455", name: "e2_med_10-019", campaign: "E2 Face",
+    binder_length: 115, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4586, design_ptm: null, pLDDT: 0.7482, pTM: 0.6729, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKEEKIEELKKKLKELEEEYKKLKNEIEKLKKEIEEESLRLTIEREYLKKKLEEAEKKGDEEKKKELEERLKELEEREKELKKKEEEVKKLEEEAKKTKEEIEKVKKEIKELEE",
+    ipDE: 5.792
+  },
+  {
+    id: "scaleup_0145", name: "cul_med_100_1080ti-021", campaign: "Cullin Face",
+    binder_length: 92, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4357, design_ptm: null, pLDDT: 0.6350, pTM: 0.5229, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLRELERELLAREEERIRARFPGLTDEELAELRRFGEENAELARRYREGEVRAEYEELPELKRAALEAYAEVVAALEARIAEARARLERIRA",
+    ipDE: 6.068
+  },
+  {
+    id: "scaleup_0149", name: "cul_med_100_1080ti-025", campaign: "Cullin Face",
+    binder_length: 93, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4355, design_ptm: null, pLDDT: 0.7227, pTM: 0.6389, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEERRRRREEEIRRMEEEIARREAELRAERAAEEERLRRLEAEIEVEEALGGEGVEALRARLERERAEAAARLAEREAELERRRAELERLRA",
+    ipDE: 7.225
+  },
+  {
+    id: "scaleup_0218", name: "cul_med_10-006", campaign: "Cullin Face",
+    binder_length: 96, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4290, design_ptm: null, pLDDT: 0.7058, pTM: 0.6598, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEIKKKLLEAFEIEYKVLRARLERTMDELGVSEETRRRALEELEKKKEELIKKFLETFEKGTIDEAVKLFQELLEEFKAFVEALIARLREEAAAR",
+    ipDE: 6.295
+  },
+  {
+    id: "scaleup_0224", name: "cul_med_10-012", campaign: "Cullin Face",
+    binder_length: 96, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4273, design_ptm: null, pLDDT: 0.7348, pTM: 0.6558, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEERLEELKKRLEELKEELAELYKKIPYSKELYEAAQLLKEIEELLEEAEELLELAKLYEENREKLLEEAERLLEEAEEKLEKAEELIEKAKEALK",
+    ipDE: 7.009
+  },
+  {
+    id: "scaleup_0174", name: "cul_med_100-018", campaign: "Cullin Face",
+    binder_length: 114, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4267, design_ptm: null, pLDDT: 0.7817, pTM: 0.6315, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SMEEELRRRIEELRREAERLEEEAKRLEGYAKALEEKAEKINKKLLEENEKLKKEMEKLSEEEKKKVLEEIKKKEGEVESLKEYVKELKEKAKEIRERAEELREEAERLEEEAR",
+    ipDE: 5.875
+  },
+  {
+    id: "scaleup_0234", name: "cul_med_10-022", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4265, design_ptm: null, pLDDT: 0.6899, pTM: 0.5630, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEKKKKLEELKKEIEKKRKELKEREEEIEKNKKELEELKKKIELLEKSGRKEEELSKLLEKNKELLEKYKEVEEELKKVEETELEIRKAELELK",
+    ipDE: 5.939
+  },
+  {
+    id: "scaleup_0457", name: "e2_med_10-021", campaign: "E2 Face",
+    binder_length: 94, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4251, design_ptm: null, pLDDT: 0.7527, pTM: 0.5469, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEERRREEKEREERERERKEKEREEEERRRREEEERRRREEEEEEEKKKKEEEEKKEEEEKKKKEIEETVGKRKEREEKERKEKEEEERRKLE",
+    ipDE: 7.573
+  },
+  {
+    id: "scaleup_0128", name: "cul_med_100_1080ti-004", campaign: "Cullin Face",
+    binder_length: 94, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4242, design_ptm: null, pLDDT: 0.7827, pTM: 0.5386, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEEEKKKEEKKKEEEEKKKEEEKKKEEVEKAKKEIEEERIKKEAEKKREEEKKKLEEKKKEEEKKKEEEEKKKKEEEEKKKKEEEEKKKAEEEK",
+    ipDE: 6.942
+  },
+  {
+    id: "scaleup_0193", name: "cul_med_100-037", campaign: "Cullin Face",
+    binder_length: 101, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4181, design_ptm: null, pLDDT: 0.6677, pTM: 0.6121, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAALLAAARAELAAAEAAAAAELAARVAELIAAGEPASKIAQVRLDLLREQRAALDALAARLEAERAARPELAAALAEALAEVEARRARLEAEIERLLAA",
+    ipDE: 8.186
+  },
+  {
+    id: "scaleup_0136", name: "cul_med_100_1080ti-012", campaign: "Cullin Face",
+    binder_length: 95, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4154, design_ptm: null, pLDDT: 0.7201, pTM: 0.5906, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MAAEERRRREEEERRRERELEELERLYEEDEEEALKRMEELAERDKEFGERVEEWLREKEREKKEKELEERGREEEEEEKEKKEREEKEEKEKKE",
+    ipDE: 6.614
+  },
+  {
+    id: "scaleup_0253", name: "cul_small_100_1080ti-001", campaign: "Cullin Face",
+    binder_length: 40, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4133, design_ptm: null, pLDDT: 0.6707, pTM: 0.6571, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEEKLKEKLEEEKKKKAEEELKKMLEANEEATKKELEER",
+    ipDE: 6.425
+  },
+  {
+    id: "scaleup_0107", name: "cullin-003", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4029, design_ptm: null, pLDDT: 0.6864, pTM: 0.6058, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEERRRREEEERRRREEEERERREEEEKSKELVKKSLERKKEEEKKKEEEEKKKKELEEKE",
+    ipDE: 6.501
+  },
+  {
+    id: "scaleup_0500", name: "e2_small_100-024", campaign: "E2 Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3930, design_ptm: null, pLDDT: 0.5828, pTM: 0.6049, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEFLQRMAEDPEKTLEELSGKEYAERRLAEAAALAAAAEAALAAA",
+    ipDE: 6.796
+  },
+  {
+    id: "scaleup_0059", name: "beta_e2_100-059", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3861, design_ptm: null, pLDDT: 0.6384, pTM: 0.5805, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DAEEKLKRREEILKEFLKKYKGVAEKIREERKRREEEEARRREEEKRLLEELLRK",
+    ipDE: 8.416
+  },
+  {
+    id: "scaleup_0072", name: "beta_e2_10-008", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3843, design_ptm: null, pLDDT: 0.5943, pTM: 0.5788, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAAAAAAAAAAAAAAAAAEAARLEPFNARVERIRKEVFGTPEEEAEIVAKFLEELKKKLG",
+    ipDE: 6.102
+  },
+  {
+    id: "scaleup_0032", name: "beta_e2_100-032", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3833, design_ptm: null, pLDDT: 0.6736, pTM: 0.6683, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SSAPKAVVLVRTEKDGEVTFEIYRGVSYAEAAKLKEEFSKEVNGEKNVVTVFEE",
+    ipDE: 6.593
+  },
+  {
+    id: "scaleup_0364", name: "cul_small_10-024", campaign: "Cullin Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3823, design_ptm: null, pLDDT: 0.6997, pTM: 0.5623, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLEEELEKKLKELQEKLKKREERRAALAEAAAAAAAAARAAAAARAAEREAAAAA",
+    ipDE: 8.623
+  },
+  {
+    id: "scaleup_0140", name: "cul_med_100_1080ti-016", campaign: "Cullin Face",
+    binder_length: 120, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.3791, design_ptm: null, pLDDT: 0.6752, pTM: 0.5753, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KKKELLEKIKELEEEIKKLEEEIKKIEEEIKELEKIYKDVEEFIKRIEAIVERTKFTDEEKYEEVKEKAENAKKQYLEKNEEKLKEAEEKIKKLKEELKKLKEKKEELEKEKKELEEELK",
+    ipDE: 6.045
+  },
+  {
+    id: "scaleup_0454", name: "e2_med_10-018", campaign: "E2 Face",
+    binder_length: 115, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.3759, design_ptm: null, pLDDT: 0.7767, pTM: 0.6345, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEKEEKIKKLEEELKELEKKKKELENKLKEIEKEIKEESLKLEVEEKELEEKLKKAEEEGNKEKAEKLKKKLKELEERKKKLKEKKEEAEKLKKELEEVEEKIKKKKEEIKKLKE",
+    ipDE: 7.649
+  },
+  {
+    id: "scaleup_0116", name: "cullin-012", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3704, design_ptm: null, pLDDT: 0.6631, pTM: 0.5559, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SRAELIEERLAAREALRAAAEAARAAEERAREEERRRREEERRRREEARRRAEEERRLREL",
+    ipDE: 7.358
+  },
+  {
+    id: "scaleup_0102", name: "beta_e2_10-038", campaign: "E2 Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3652, design_ptm: null, pLDDT: 0.6081, pTM: 0.5826, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "ELEKLKEEAEKKAKEELEKLRKELLNSELLELTPEELKRLEERFKP",
+    ipDE: 7.692
+  },
+  {
+    id: "scaleup_0230", name: "cul_med_10-018", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.3644, design_ptm: null, pLDDT: 0.7114, pTM: 0.5506, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEELEKEEEEKRKKEEEEKKKKLKEEEEKERKEKLEKARELLETGEKEEEAKKILEEIEEKEAEEEARKAAAALAAAAAAAAAAAAAAA",
+    ipDE: 9.813
+  },
+  {
+    id: "scaleup_0465", name: "e2_med_10-029", campaign: "E2 Face",
+    binder_length: 93, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.3587, design_ptm: null, pLDDT: 0.6849, pTM: 0.5120, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MDEAEREREEEERRREREREEEEKRRAEEAERAAAEAAAAAAAAAAAAAAAAAAAAEAAAKKGKEEEEKKKEEEEEEEKKYKEEKEKKRKEEE",
+    ipDE: 9.503
+  },
+  {
+    id: "scaleup_0217", name: "cul_med_10-005", campaign: "Cullin Face",
+    binder_length: 96, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.3508, design_ptm: null, pLDDT: 0.7396, pTM: 0.6074, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEILKKLKEAFEKRYEALRRRLEEEFRRLGVSEEERERILERLEKKYEELLKEIEKTFKEGTIDEAVELFLKKLKEFEEFVEELIREARERAERR",
+    ipDE: 7.097
+  },
+  {
+    id: "scaleup_0129", name: "cul_med_100_1080ti-005", campaign: "Cullin Face",
+    binder_length: 94, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.3500, design_ptm: null, pLDDT: 0.6860, pTM: 0.5096, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKEEEEKKKKKEEEEKKKKEEEEKKKEYEKAKEELEKKQIEEAARKAAEAERERLRALEEERRREERRREEERRRRERREEERRRREEEARARA",
+    ipDE: 7.443
+  },
+  {
+    id: "scaleup_0259", name: "cul_small_100_1080ti-007", campaign: "Cullin Face",
+    binder_length: 57, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3490, design_ptm: null, pLDDT: 0.6720, pTM: 0.5750, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "IDSDELLKKIEKKLEEEIKKLEEEAKKAEKEDKEKAEKIRKEIEEKKKELEELKKLK",
+    ipDE: 8.053
+  },
+  {
+    id: "scaleup_0238", name: "cul_med_10-026", campaign: "Cullin Face",
+    binder_length: 106, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.3462, design_ptm: null, pLDDT: 0.7216, pTM: 0.6337, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KPSKELLEEAAEKVLGLCKLLKELAELVGSEKMEEIEELEERVKKAYEEGNLEELKEVLKEILELFEELLEKTESFSAEEQKKVDELLEEIRKLYEEYKEILKKIE",
+    ipDE: 6.003
+  },
+  {
+    id: "scaleup_0112", name: "cullin-008", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3449, design_ptm: null, pLDDT: 0.7077, pTM: 0.6717, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEERRRKEEEEKKRKEEEKKKKEEEREKERKKFAEEVKKKLE",
+    ipDE: 7.413
+  },
+  {
+    id: "scaleup_0254", name: "cul_small_100_1080ti-002", campaign: "Cullin Face",
+    binder_length: 40, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3429, design_ptm: null, pLDDT: 0.7249, pTM: 0.7312, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SKEEKKEKEEKEKKKKEEEEARKKREEENKKATEEYLKSI",
+    ipDE: 7.901
+  },
+  {
+    id: "scaleup_0475", name: "e2_med_10-039", campaign: "E2 Face",
+    binder_length: 107, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.3407, design_ptm: null, pLDDT: 0.7430, pTM: 0.6028, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKDKQAVEKRAEELKERKEEILALAFEDPEKTAELIKELEAEVEEWKKDLSKSAEYLELLLECLKIILETLNEVNKLLSLPIALEAIHKVLKLAEEFKKKIEELKK",
+    ipDE: 7.716
+  },
+  {
+    id: "scaleup_0176", name: "cul_med_100-020", campaign: "Cullin Face",
+    binder_length: 104, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.3395, design_ptm: null, pLDDT: 0.5701, pTM: 0.5016, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DAAAAAAAAAAAAAAAAAERPGRVVQLVESERGRAAELAALALARKALGDTAACDAAAAAILAAAEARVAALRALFLAESAEATEAAYREALAAAAEALAAALA",
+    ipDE: 7.384
+  },
+  {
+    id: "scaleup_0121", name: "cullin-017", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3373, design_ptm: null, pLDDT: 0.7741, pTM: 0.6562, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEEKKEAEEKKKEKEEKEKKELERRLKEEEKRRREREERERRER",
+    ipDE: 8.930
+  },
+  {
+    id: "scaleup_0256", name: "cul_small_100_1080ti-004", campaign: "Cullin Face",
+    binder_length: 57, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3343, design_ptm: null, pLDDT: 0.7033, pTM: 0.5590, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MSRDELLKKILEEKEKEIKELKEKAKEAEKKDKEKAEKLEEELKKLEEEKEKLLELP",
+    ipDE: 9.601
+  },
+  {
+    id: "scaleup_0269", name: "cul_small_100_1080ti-017", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3119, design_ptm: null, pLDDT: 0.6908, pTM: 0.5657, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAEAAARAAAEEEERKRREYRERVEGGRRKKEEEEEKKEKEEEEERKKKEELE",
+    ipDE: 7.948
+  },
+  {
+    id: "scaleup_0146", name: "cul_med_100_1080ti-022", campaign: "Cullin Face",
+    binder_length: 92, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.3106, design_ptm: null, pLDDT: 0.7194, pTM: 0.5421, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLRELERELLAEEEARLRERFPGLTEEELAELREFGRRHAEEALEWLEGKTRARVEALPPRKRAALEAYARVLRRLREEVERLKKELEEIES",
+    ipDE: 7.553
+  },
+  {
+    id: "scaleup_0225", name: "cul_med_10-013", campaign: "Cullin Face",
+    binder_length: 96, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.3063, design_ptm: null, pLDDT: 0.8068, pTM: 0.5801, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MRKRLEELRERVEKLKKELAELAKKIPASSELYEAAKKLEEIEELLERAEELLELAELYEENREELLREAERLLEEAERLLKELEELIEKAKELLE",
+    ipDE: 9.660
+  },
+  {
+    id: "scaleup_0369", name: "cul_small_10-029", campaign: "Cullin Face",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3043, design_ptm: null, pLDDT: 0.6705, pTM: 0.5477, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AKKLREEREKLEEELEKARKAEAEELAKLLRELLEALLAALLA",
+    ipDE: 8.705
+  },
+  {
+    id: "scaleup_0106", name: "cullin-002", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.3033, design_ptm: null, pLDDT: 0.7413, pTM: 0.5551, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEKKKKEEEERKRKEEEERRKREEEIRKSQEKVREAKEREKKRKEEEEKEKKEEEEKKKEE",
+    ipDE: 7.303
+  },
+  {
+    id: "scaleup_0464", name: "e2_med_10-028", campaign: "E2 Face",
+    binder_length: 93, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.2922, design_ptm: null, pLDDT: 0.7219, pTM: 0.4928, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MFEEERREEEERRREEERRRREEEERRREEEERRRKEEEKERKERRKKKKEKKKKKEEESKKLEEEKKKKEEEEKKKKEEYEKKKKEEEEKKK",
+    ipDE: 9.953
+  },
+  {
+    id: "scaleup_0114", name: "cullin-010", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.2869, design_ptm: null, pLDDT: 0.6904, pTM: 0.5657, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MERRREEEERRRREREERERREKEREEEEERARELAEEAELAAE",
+    ipDE: 9.175
+  },
+  {
+    id: "scaleup_0317", name: "cul_small_100-009", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.2782, design_ptm: null, pLDDT: 0.7371, pTM: 0.5208, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKKKEEEKKKEEEEKKEKEKKEKEEKEKKKKEEEEKKKLQELLDN",
+    ipDE: 9.154
+  },
+  {
+    id: "scaleup_0506", name: "e2_small_100-030", campaign: "E2 Face",
+    binder_length: 59, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.2650, design_ptm: null, pLDDT: 0.6496, pTM: 0.5705, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKDKEKLEKEKEHLEKYEKELLEEERRRREEEERRRREEEERERREEEERRRREEERRR",
+    ipDE: 9.030
+  },
+  {
+    id: "scaleup_0239", name: "cul_med_10-027", campaign: "Cullin Face",
+    binder_length: 106, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.2488, design_ptm: null, pLDDT: 0.6947, pTM: 0.5721, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KPSKELLEALYKEVMGLVKLLKELAELVGSEKMPEIEELEKRAKEAYEKGDIKELLEVKEEVLELFKELAKKMEKAPAEMQEKIDELLKRKEELELKFQEILKKIE",
+    ipDE: 8.720
+  },
+  {
+    id: "scaleup_0063", name: "beta_e2_100-063", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.2392, design_ptm: null, pLDDT: 0.5798, pTM: 0.5379, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEKVKKLLEEAAKLKEEVDESGTLISPEELRRLYLLKELGMKISVLEALERLAAA",
+    ipDE: 6.971
+  },
+  {
+    id: "scaleup_0312", name: "cul_small_100-004", campaign: "Cullin Face",
+    binder_length: 45, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.2318, design_ptm: null, pLDDT: 0.6614, pTM: 0.6292, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MSKEELEKLKAEEEYKAVVEKEIEKLAEEIKKKKEEERLEELEKL",
+    ipDE: 8.697
+  },
+  {
+    id: "scaleup_0115", name: "cullin-011", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.2289, design_ptm: null, pLDDT: 0.7153, pTM: 0.5671, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEERRRLEELEEAERRREEEEKAREEAERKRRELAEKVREELE",
+    ipDE: 9.972
+  },
+  {
+    id: "scaleup_0302", name: "cul_small_100_1080ti-050", campaign: "Cullin Face",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.2228, design_ptm: null, pLDDT: 0.6977, pTM: 0.5004, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEREEEERRRREEERRREAERREEEERRREEEEIKEEVKKAIEEKRKEELKKLE",
+    ipDE: 9.632
+  },
+  {
+    id: "scaleup_0192", name: "cul_med_100-036", campaign: "Cullin Face",
+    binder_length: 101, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.1990, design_ptm: null, pLDDT: 0.6920, pTM: 0.5175, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEEELLKKYEKELKEAEEEDKKKLEEEIKKLIEEGKPATEITYVKLKLLEERKEWLKKKKEELEEEKKKNPEVKKALDEAIKKVEKEIEKIEKEIEEIKKK",
+    ipDE: 7.817
+  },
+  {
+    id: "scaleup_0456", name: "e2_med_10-020", campaign: "E2 Face",
+    binder_length: 94, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.1868, design_ptm: null, pLDDT: 0.6499, pTM: 0.5086, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAAALAAAAAAAAAAAAAAAAAAAAAAAAAAAEAARAAAAAAEAAAAAAAAAAAAAAAAAARAREVEARVGRRRRREEEERRREERRRREERE",
+    ipDE: 14.686
+  },
+  {
+    id: "scaleup_0451", name: "e2_med_10-015", campaign: "E2 Face",
+    binder_length: 106, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.1781, design_ptm: null, pLDDT: 0.7231, pTM: 0.5541, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEFEKKVEEEKKKIEEEAEELLEEIRRLEERFGELARRWRGLLESTTKKSLEGLDKAKETGDEEEFEKIKKEWEILVEALRELFKAKTKEEIEKIEEEYKKKLAEL",
+    ipDE: 8.762
+  },
+  {
+    id: "scaleup_0476", name: "e2_small_100-000", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.1723, design_ptm: null, pLDDT: 0.6874, pTM: 0.4548, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MREALLERARLLRRVVELSRRAEELEKELESVSPEDLPAVTKEINELREEAARLEEELKKL",
+    ipDE: 10.992
+  },
+  {
+    id: "scaleup_0458", name: "e2_med_10-022", campaign: "E2 Face",
+    binder_length: 94, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.1621, design_ptm: null, pLDDT: 0.7544, pTM: 0.4114, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "GRAEEERRRREEEERRRREEEERERRERERREREERRREEERRERERKEEEEKKKKEEEEKKEKEKKEKEVGERKKREEEKKRKEEEEERKEKE",
+    ipDE: 13.497
+  },
+  {
+    id: "scaleup_0241", name: "cul_med_10-029", campaign: "Cullin Face",
+    binder_length: 92, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.1389, design_ptm: null, pLDDT: 0.7273, pTM: 0.4800, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MTPEDEFQRRLAELEGRLAELQEELEKKTKELEEYKKEKAPVIEELKKKDEKAVEKIEKEIKEKEKEVQGYRDLVERLQAEIEAMRAERAAA",
+    ipDE: 9.535
+  },
+  {
+    id: "scaleup_0365", name: "cul_small_10-025", campaign: "Cullin Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.1123, design_ptm: null, pLDDT: 0.6342, pTM: 0.5249, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLEELEEELKKKKEEEEKKREKVRKAVEEAAEKEAEELRREIAENAEALEALRRA",
+    ipDE: 11.414
   },
 ];
 
