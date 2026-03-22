@@ -921,6 +921,7 @@
           <option value="binder_length">Binder Length</option>
           <option value="rfdiff_conf">RFdiff Confidence</option>
           <option value="ipTM">ipTM</option>
+          <option value="ipDE">ipSAE</option>
           <option value="design_ptm">Design pTM</option>
           <option value="pLDDT">pLDDT</option>
           <option value="min_pae">Min PAE</option>
@@ -948,6 +949,7 @@
               <th onclick="sortByColumn('binder_length')">Binder Len <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('rfdiff_conf')">RFdiff Conf <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('ipTM')">ipTM <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('ipDE')">ipSAE <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('design_ptm')">Design pTM <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('pLDDT')">pLDDT <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('min_pae')">Min PAE <span class="sort-arrow"></span></th>
@@ -7672,11 +7674,11 @@ function renderCard(d, showRank) {
       ${confBar}
       <div class="metrics-grid">
         ${fmtMetric(d.ipTM, 'ipTM')}
+        ${fmtMetric(d.ipDE, 'ipSAE')}
         ${fmtMetric(d.pLDDT, 'pLDDT')}
         ${fmtMetric(d.pTM, 'pTM')}
         ${fmtMetric(d.design_ptm, 'Design pTM')}
         ${fmtMetric(d.min_pae, 'Min PAE')}
-        ${d.ipDE !== undefined && d.ipDE !== null ? fmtMetric(d.ipDE, 'ipDE') : fmtInt(d.hbonds, 'H-Bonds')}
       </div>
       <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
         Size class: ${d.size_class} &middot; Target: ${d.target_length} res
@@ -7731,6 +7733,7 @@ function renderTable(data) {
       <td>${d.binder_length}</td>
       <td>${fmtConf(d.rfdiff_conf)}</td>
       <td>${fmtVal(d.ipTM)}</td>
+      <td>${fmtVal(d.ipDE)}</td>
       <td>${fmtVal(d.design_ptm)}</td>
       <td>${fmtVal(d.pLDDT)}</td>
       <td>${fmtVal(d.min_pae)}</td>
@@ -7773,6 +7776,7 @@ function sortTable() {
     binder_length: d => d.binder_length,
     rfdiff_conf: d => d.rfdiff_conf !== null ? d.rfdiff_conf : -Infinity,
     ipTM: d => d.ipTM !== null ? d.ipTM : -Infinity,
+    ipDE: d => d.ipDE !== null && d.ipDE !== undefined ? d.ipDE : Infinity,
     design_ptm: d => d.design_ptm !== null ? d.design_ptm : -Infinity,
     pLDDT: d => d.pLDDT !== null ? d.pLDDT : -Infinity,
     min_pae: d => d.min_pae !== null ? d.min_pae : Infinity,
