@@ -8,7 +8,7 @@
   <meta name="description" content="RBX1 de novo binder design dashboard — metrics, pipeline status, and structure cards">
   <link rel="stylesheet" href="stylesheet.css">
   <link rel="icon" type="image/png" href="data/avatar.png">
-  <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+  <script src="https://3Dmol.org/build/3Dmol-min.js" async></script>
   <style>
     /* ========== Protein Design Page Overrides ========== */
     .container { max-width: 1100px; }
@@ -7819,6 +7819,17 @@ function rankDesigns(arr) {
 let rankedDesigns = rankDesigns(designs);
 
 // ===== Render a structure card =====
+function renderStructureViewer(d) {
+  const isCif = d.pdb_file.endsWith('.cif');
+  const ext = isCif ? '.cif' : '.pdb';
+  const label = isCif ? 'CIF' : 'PDB';
+  return `<div>
+    <button class="viewer3d-toggle" onclick="toggle3DViewer(this, '${d.id}', '${d.pdb_file}', '${d.pipeline}')" style="font-size:12px;padding:4px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--link);cursor:pointer;font-family:inherit;font-weight:500;transition:background 0.2s;">Show 3D Structure</button>
+    <a href="${d.pdb_file}" download="${d.id}${ext}" style="font-size:12px;padding:4px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--link);cursor:pointer;font-family:inherit;font-weight:500;text-decoration:none;display:inline-block;margin-left:6px;transition:background 0.2s;">Download ${label}</a>
+    <div id="viewer3d_${d.id}" class="viewer3d-container" style="display:none;margin-top:8px;border-radius:6px;overflow:hidden;border:1px solid var(--border);"></div>
+  </div>`;
+}
+
 function renderCard(d, showRank) {
   const campaignClassMap = {
     'E2 Face': 'meta-campaign-e2',
@@ -7880,19 +7891,7 @@ function renderCard(d, showRank) {
         Size class: ${d.size_class} &middot; Target: ${d.target_length} res
         ${d.bb_rmsd !== undefined && d.bb_rmsd !== null ? ' &middot; BB RMSD: ' + d.bb_rmsd.toFixed(2) + ' &Aring;' : ''}
       </div>
-      ${d.pdb_file ? `
-      <div>
-        <button class="viewer3d-toggle" onclick="toggle3DViewer(this, '${d.id}', '${d.pdb_file}', '${d.pipeline}')" style="
-          font-size:12px;padding:4px 12px;border:1px solid var(--border);border-radius:6px;
-          background:var(--bg);color:var(--link);cursor:pointer;font-family:inherit;font-weight:500;
-          transition:background 0.2s;">Show 3D Structure</button>
-        <a href="${d.pdb_file}" download="${d.id}${d.pdb_file.endsWith('.cif') ? '.cif' : '.pdb'}" style="
-          font-size:12px;padding:4px 12px;border:1px solid var(--border);border-radius:6px;
-          background:var(--bg);color:var(--link);cursor:pointer;font-family:inherit;font-weight:500;
-          text-decoration:none;display:inline-block;margin-left:6px;
-          transition:background 0.2s;">Download ${d.pdb_file.endsWith('.cif') ? 'CIF' : 'PDB'}</a>
-        <div id="viewer3d_${d.id}" class="viewer3d-container" style="display:none;margin-top:8px;border-radius:6px;overflow:hidden;border:1px solid var(--border);"></div>
-      </div>` : ''}
+      ${d.pdb_file ? renderStructureViewer(d) : ''}
     </div>
   `;
 }
@@ -8512,6 +8511,7 @@ window.addEventListener('resize', drawAllPlots);
 // ===== 3D Structure Viewer =====
 const viewerCache = {};
 function toggle3DViewer(btn, designId, pdbFile, pipeline) {
+  if (typeof $3Dmol === 'undefined') { alert('3D viewer still loading, please try again in a moment.'); return; }
   const container = document.getElementById('viewer3d_' + designId);
   if (container.style.display === 'none') {
     container.style.display = 'block';
