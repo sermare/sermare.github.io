@@ -873,6 +873,7 @@
           <option value="rfdiff_conf">RFdiff Confidence</option>
           <option value="ipTM">ipTM</option>
           <option value="design_ptm">Design pTM</option>
+          <option value="pLDDT">pLDDT</option>
           <option value="min_pae">Min PAE</option>
         </select>
 
@@ -899,6 +900,7 @@
               <th onclick="sortByColumn('rfdiff_conf')">RFdiff Conf <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('ipTM')">ipTM <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('design_ptm')">Design pTM <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('pLDDT')">pLDDT <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('min_pae')">Min PAE <span class="sort-arrow"></span></th>
               <th onclick="sortByColumn('hbonds')">H-Bonds <span class="sort-arrow"></span></th>
               <th>Pipeline</th>
@@ -1243,7 +1245,8 @@ const designs = [
     ipTM: 0.325, design_ptm: 0.735, pLDDT: null, pTM: 0.464, pAE: 15.74, min_pae: 5.91,
     bsa: 977, contacts: null, hbonds: 6,
     sequence: "KTEEEIAEELSKKFGISLTAARAAVEAVRRILERHPDITAEELAERTGASLEEVEHLLELLK",
-    bb_rmsd: 7.60, delta_sasa: 977
+    bb_rmsd: 7.60, delta_sasa: 977,
+    pdb_file: "data/rbx1_designs/rank5_rbx1_small_1.cif"
   },
   {
     id: "rbx1_small_2", name: "BG Small 2", campaign: "BoltzGen Small",
@@ -1253,7 +1256,8 @@ const designs = [
     ipTM: 0.403, design_ptm: 0.741, pLDDT: null, pTM: 0.499, pAE: 14.73, min_pae: 4.24,
     bsa: 980, contacts: null, hbonds: 5,
     sequence: "GAKVVKSVTVEISPDDTFEEIVEKIKAENPELSDEEAEALAKELQRAASRGIAGEFTVAVVEE",
-    bb_rmsd: 1.70, delta_sasa: 980
+    bb_rmsd: 1.70, delta_sasa: 980,
+    pdb_file: "data/rbx1_designs/rank2_rbx1_small_2.cif"
   },
   {
     id: "rbx1_small_3", name: "BG Small 3", campaign: "BoltzGen Small",
@@ -1263,7 +1267,8 @@ const designs = [
     ipTM: 0.493, design_ptm: 0.766, pLDDT: null, pTM: 0.556, pAE: 12.56, min_pae: 3.48,
     bsa: 1415, contacts: null, hbonds: 3,
     sequence: "SAAAAAGEKAAAAAEAGASTDELAKLWVEAAKLAAASSDPAAANAAFIGIAKAIVIRMKRLLGL",
-    bb_rmsd: 3.50, delta_sasa: 1415
+    bb_rmsd: 3.50, delta_sasa: 1415,
+    pdb_file: "data/rbx1_designs/rank3_rbx1_small_3.cif"
   },
   {
     id: "rbx1_small_4", name: "BG Small 4", campaign: "BoltzGen Small",
@@ -1273,6 +1278,7 @@ const designs = [
     ipTM: 0.461, design_ptm: 0.723, pLDDT: null, pTM: 0.530, pAE: 12.02, min_pae: 2.95,
     bsa: 1831, contacts: null, hbonds: 8,
     sequence: "SNLERLERIARGAAEFLLSLVEANAAGDVEGARALLKAAEAGAA",
+    pdb_file: "data/rbx1_designs/rank1_rbx1_small_4.cif",
     bb_rmsd: 1.40, delta_sasa: 1831
   },
   // ---- BoltzGen Medium Pilot ----
@@ -1284,7 +1290,8 @@ const designs = [
     ipTM: 0.350, design_ptm: 0.715, pLDDT: null, pTM: 0.528, pAE: 16.34, min_pae: 6.90,
     bsa: 1114, contacts: null, hbonds: 5,
     sequence: "EVQLVESGGGLVQAGGSLRLSEAASGFTFSSYAMGWYRQAPGKEREFVAAISSSGGYTAYADSVKGRFTISRDNAKNTLYLQMNSLKPEDTAVYYEARAAGDNALVFDYWGQGTQVTVSS",
-    bb_rmsd: 1.59, delta_sasa: 1114
+    bb_rmsd: 1.59, delta_sasa: 1114,
+    pdb_file: "data/rbx1_designs/rank1_rbx1_medium_0.cif"
   },
   {
     id: "rbx1_medium_1", name: "BG Medium 1", campaign: "BoltzGen Medium",
@@ -1294,7 +1301,8 @@ const designs = [
     ipTM: 0.168, design_ptm: 0.508, pLDDT: null, pTM: 0.334, pAE: 22.46, min_pae: 16.11,
     bsa: 2298, contacts: null, hbonds: 8,
     sequence: "MAASGDVATAKELIEKYRAFTITVEFPPDVKIEKDPIDGELITEVSKEGKELGLGPTDPRNLILYGLDNIAYHFLSAAKWYNTKPVSPANGKPFVPRFAEM",
-    bb_rmsd: 12.96, delta_sasa: 2298
+    bb_rmsd: 12.96, delta_sasa: 2298,
+    pdb_file: "data/rbx1_designs/rank5_rbx1_medium_1.cif"
   },
   {
     id: "rbx1_medium_2", name: "BG Medium 2", campaign: "BoltzGen Medium",
@@ -1304,7 +1312,8 @@ const designs = [
     ipTM: 0.330, design_ptm: 0.415, pLDDT: null, pTM: 0.384, pAE: 20.21, min_pae: 8.30,
     bsa: 1672, contacts: null, hbonds: 4,
     sequence: "SKEGEEVVRDNQAAALDALNAQSELDPIDKAPLFEPSPEAKEQGLSLNHPDNLVVISTSKISSWYGSLEKWLKTNKTDPVNGKPFNILKYEP",
-    bb_rmsd: 12.75, delta_sasa: 1672
+    bb_rmsd: 12.75, delta_sasa: 1672,
+    pdb_file: "data/rbx1_designs/rank4_rbx1_medium_2.cif"
   },
   {
     id: "rbx1_medium_3", name: "BG Medium 3", campaign: "BoltzGen Medium",
@@ -1314,7 +1323,8 @@ const designs = [
     ipTM: 0.216, design_ptm: 0.728, pLDDT: null, pTM: 0.466, pAE: 19.68, min_pae: 9.35,
     bsa: 1236, contacts: null, hbonds: 3,
     sequence: "SAVEAAREAAEAAAKLTGEAGRRAAALAGVLAVAAEEIFANDPAAMEAALPLAKRALEAAKAGDARGAAVAFAEANHALHFAAVARYRETGELPPVNEKKYEFVGRGV",
-    bb_rmsd: 14.76, delta_sasa: 1236
+    bb_rmsd: 14.76, delta_sasa: 1236,
+    pdb_file: "data/rbx1_designs/rank2_rbx1_medium_3.cif"
   },
   {
     id: "rbx1_medium_4", name: "BG Medium 4", campaign: "BoltzGen Medium",
@@ -1324,7 +1334,8 @@ const designs = [
     ipTM: 0.204, design_ptm: 0.723, pLDDT: null, pTM: 0.466, pAE: 21.38, min_pae: 13.09,
     bsa: 1427, contacts: null, hbonds: 9,
     sequence: "EVQLVESGGGLVQAGGSLRLSEAASGFTFSDSVMGWVRQAPGKGREFVAAISSTGTLKLYADSVKGRFTISRDTAKNTLYLQMNSLKAEDTAVYYAVAYDVSTNKVYWGQGTQVTVS",
-    bb_rmsd: 3.03, delta_sasa: 1427
+    bb_rmsd: 3.03, delta_sasa: 1427,
+    pdb_file: "data/rbx1_designs/rank3_rbx1_medium_4.cif"
   }
 ];
 
@@ -1403,10 +1414,18 @@ function renderCard(d, showRank) {
         ${fmtInt(d.hbonds, 'H-Bonds')}
         ${fmtInt(d.bsa, 'Delta SASA')}
       </div>
-      <div style="font-size:12px;color:var(--text-secondary);">
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
         Size class: ${d.size_class} &middot; Target: ${d.target_length} res
-        ${d.bb_rmsd !== undefined && d.bb_rmsd !== null ? ' &middot; BB RMSD: ' + d.bb_rmsd.toFixed(2) + ' A' : ''}
+        ${d.bb_rmsd !== undefined && d.bb_rmsd !== null ? ' &middot; BB RMSD: ' + d.bb_rmsd.toFixed(2) + ' &Aring;' : ''}
       </div>
+      ${d.pdb_file ? `
+      <div>
+        <button class="viewer3d-toggle" onclick="toggle3DViewer(this, '${d.id}', '${d.pdb_file}', '${d.pipeline}')" style="
+          font-size:12px;padding:4px 12px;border:1px solid var(--border);border-radius:6px;
+          background:var(--bg);color:var(--link);cursor:pointer;font-family:inherit;font-weight:500;
+          transition:background 0.2s;">Show 3D Structure</button>
+        <div id="viewer3d_${d.id}" class="viewer3d-container" style="display:none;margin-top:8px;border-radius:6px;overflow:hidden;border:1px solid var(--border);"></div>
+      </div>` : ''}
     </div>
   `;
 }
@@ -1444,6 +1463,7 @@ function renderTable(data) {
       <td>${fmtConf(d.rfdiff_conf)}</td>
       <td>${fmtVal(d.ipTM)}</td>
       <td>${fmtVal(d.design_ptm)}</td>
+      <td>${fmtVal(d.pLDDT)}</td>
       <td>${fmtVal(d.min_pae)}</td>
       <td>${d.hbonds !== null && d.hbonds !== undefined ? d.hbonds : '<span style="color:var(--text-secondary);font-style:italic;">Pending</span>'}</td>
       <td>${d.pipeline}</td>
@@ -1485,11 +1505,12 @@ function sortTable() {
     rfdiff_conf: d => d.rfdiff_conf !== null ? d.rfdiff_conf : -Infinity,
     ipTM: d => d.ipTM !== null ? d.ipTM : -Infinity,
     design_ptm: d => d.design_ptm !== null ? d.design_ptm : -Infinity,
+    pLDDT: d => d.pLDDT !== null ? d.pLDDT : -Infinity,
     min_pae: d => d.min_pae !== null ? d.min_pae : Infinity,
     hbonds: d => d.hbonds !== null ? d.hbonds : -Infinity,
   };
 
-  const descMetrics = ['rfdiff_conf', 'ipTM', 'design_ptm', 'hbonds'];
+  const descMetrics = ['rfdiff_conf', 'ipTM', 'design_ptm', 'pLDDT', 'hbonds'];
   const ascending = !descMetrics.includes(sortBy);
 
   let data = getFilteredData();
@@ -2018,6 +2039,470 @@ if (document.readyState === 'complete') {
 }
 // Redraw on resize
 window.addEventListener('resize', drawAllPlots);
+
+// ===== 3D Structure Viewer =====
+const viewerCache = {};
+function toggle3DViewer(btn, designId, pdbFile, pipeline) {
+  const container = document.getElementById('viewer3d_' + designId);
+  if (container.style.display === 'none') {
+    container.style.display = 'block';
+    container.style.width = '100%';
+    container.style.height = '220px';
+    btn.textContent = 'Hide 3D Structure';
+    if (!viewerCache[designId]) {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const bgColor = isDark ? '#0d1117' : '#ffffff';
+      const viewer = $3Dmol.createViewer(container, {backgroundColor: bgColor});
+      const isCif = pdbFile.endsWith('.cif');
+      fetch(pdbFile).then(r => r.text()).then(data => {
+        const fmt = isCif ? 'cif' : 'pdb';
+        viewer.addModel(data, fmt);
+        if (pipeline === 'RFdiffusion') {
+          // Chain A = binder (blue), Chain B = target (gray)
+          viewer.setStyle({chain: 'A'}, {cartoon: {color: '#2196F3'}});
+          viewer.setStyle({chain: 'B'}, {cartoon: {color: '#9e9e9e', opacity: 0.7}});
+        } else {
+          // BoltzGen: color by chain, spectrum for design
+          viewer.setStyle({chain: 'A'}, {cartoon: {color: 'spectrum'}});
+          viewer.setStyle({chain: 'B'}, {cartoon: {color: '#9e9e9e', opacity: 0.7}});
+        }
+        viewer.zoomTo();
+        viewer.render();
+        viewerCache[designId] = viewer;
+      });
+    }
+  } else {
+    container.style.display = 'none';
+    btn.textContent = 'Show 3D Structure';
+  }
+}
+
+// ===== Evolutionary Analysis Data & Plots =====
+const conservationData = [
+  {num:1,aa:'M',cons:0.7851,ent:0.9288,gap:0.2061},{num:2,aa:'A',cons:0.7281,ent:1.175,gap:0.2061},
+  {num:3,aa:'A',cons:0.6482,ent:1.5203,gap:0.2667},{num:4,aa:'A',cons:0.5946,ent:1.7522,gap:0.2424},
+  {num:5,aa:'M',cons:0.668,ent:1.4349,gap:0.1939},{num:6,aa:'D',cons:0.7117,ent:1.2459,gap:0.1455},
+  {num:7,aa:'V',cons:0.6797,ent:1.3841,gap:0.1636},{num:8,aa:'D',cons:0.6824,ent:1.3726,gap:0.1636},
+  {num:9,aa:'T',cons:0.5318,ent:2.0236,gap:0.1636},{num:10,aa:'P',cons:0.7905,ent:0.9055,gap:0.1758},
+  {num:11,aa:'S',cons:0.5784,ent:1.8222,gap:0.1455},{num:12,aa:'G',cons:0.5214,ent:2.0683,gap:0.1394},
+  {num:13,aa:'T',cons:0.4896,ent:2.2057,gap:0.1394},{num:14,aa:'N',cons:0.5823,ent:1.8051,gap:0.1394},
+  {num:15,aa:'S',cons:0.5806,ent:1.8128,gap:0.1394},{num:16,aa:'G',cons:0.5838,ent:1.7989,gap:0.1515},
+  {num:17,aa:'A',cons:0.5213,ent:2.069,gap:0.1515},{num:18,aa:'G',cons:0.5473,ent:1.9566,gap:0.1394},
+  {num:19,aa:'K',cons:0.643,ent:1.543,gap:0.1394},{num:20,aa:'K',cons:0.7389,ent:1.1283,gap:0.0909},
+  {num:21,aa:'R',cons:0.6215,ent:1.6359,gap:0.0788},{num:22,aa:'F',cons:0.7992,ent:0.8681,gap:0.0667},
+  {num:23,aa:'E',cons:0.5893,ent:1.7752,gap:0.0667},{num:24,aa:'V',cons:0.6366,ent:1.5707,gap:0.0909},
+  {num:25,aa:'K',cons:0.779,ent:0.955,gap:0.0788},{num:26,aa:'K',cons:0.7156,ent:1.2293,gap:0.0545},
+  {num:27,aa:'W',cons:0.9872,ent:0.0553,gap:0.0424},{num:28,aa:'N',cons:0.8868,ent:0.4891,gap:0.0424},
+  {num:29,aa:'A',cons:0.9431,ent:0.246,gap:0.0424},{num:30,aa:'V',cons:0.9744,ent:0.1106,gap:0.0424},
+  {num:31,aa:'A',cons:0.9744,ent:0.1106,gap:0.0424},{num:32,aa:'L',cons:0.7751,ent:0.9722,gap:0.0424},
+  {num:33,aa:'W',cons:1.0,ent:0.0,gap:0.0424},{num:34,aa:'A',cons:0.7718,ent:0.9862,gap:0.0485},
+  {num:35,aa:'W',cons:1.0,ent:0.0,gap:0.0424},{num:36,aa:'D',cons:0.9448,ent:0.2386,gap:0.0061},
+  {num:37,aa:'I',cons:0.7916,ent:0.9009,gap:0.0061},{num:38,aa:'V',cons:0.7082,ent:1.261,gap:0.0061},
+  {num:39,aa:'V',cons:0.7594,ent:1.04,gap:0.0061},{num:40,aa:'D',cons:0.923,ent:0.333,gap:0.0061},
+  {num:41,aa:'N',cons:0.793,ent:0.8948,gap:0.0061},{num:42,aa:'C',cons:0.9353,ent:0.2798,gap:0.0061},
+  {num:43,aa:'A',cons:0.8928,ent:0.4634,gap:0.0061},{num:44,aa:'I',cons:0.9476,ent:0.2264,gap:0.0061},
+  {num:45,aa:'C',cons:0.9391,ent:0.263,gap:0.0061},{num:46,aa:'R',cons:1.0,ent:0.0,gap:0.0061},
+  {num:47,aa:'N',cons:0.7618,ent:1.0295,gap:0.0061},{num:48,aa:'H',cons:0.81,ent:0.8212,gap:0.0242},
+  {num:49,aa:'I',cons:0.7765,ent:0.9659,gap:0.0061},{num:50,aa:'M',cons:0.9356,ent:0.2784,gap:0.0},
+  {num:51,aa:'D',cons:0.8487,ent:0.654,gap:0.0},{num:52,aa:'L',cons:0.761,ent:1.0328,gap:0.0},
+  {num:53,aa:'C',cons:0.911,ent:0.3844,gap:0.0},{num:54,aa:'I',cons:0.7864,ent:0.923,gap:0.0},
+  {num:55,aa:'E',cons:0.7713,ent:0.9885,gap:0.0},{num:56,aa:'C',cons:0.9658,ent:0.1478,gap:0.0},
+  {num:57,aa:'Q',cons:0.8634,ent:0.5905,gap:0.0},{num:58,aa:'A',cons:0.8381,ent:0.6995,gap:0.0},
+  {num:59,aa:'N',cons:0.7107,ent:1.2501,gap:0.0},{num:60,aa:'Q',cons:0.7439,ent:1.1068,gap:0.0061},
+  {num:61,aa:'A',cons:0.7884,ent:0.9146,gap:0.0364},{num:62,aa:'S',cons:0.7427,ent:1.1121,gap:0.0364},
+  {num:63,aa:'A',cons:0.7941,ent:0.8901,gap:0.1091},{num:64,aa:'T',cons:0.8202,ent:0.777,gap:0.1091},
+  {num:65,aa:'S',cons:0.7998,ent:0.8652,gap:0.1091},{num:66,aa:'E',cons:0.7927,ent:0.8958,gap:0.0061},
+  {num:67,aa:'E',cons:0.8246,ent:0.7579,gap:0.0061},{num:68,aa:'C',cons:0.9658,ent:0.1478,gap:0.0},
+  {num:69,aa:'T',cons:0.7993,ent:0.8675,gap:0.0},{num:70,aa:'V',cons:0.8653,ent:0.582,gap:0.0},
+  {num:71,aa:'A',cons:0.8042,ent:0.8462,gap:0.0},{num:72,aa:'W',cons:0.8962,ent:0.4487,gap:0.0},
+  {num:73,aa:'G',cons:1.0,ent:0.0,gap:0.0},{num:74,aa:'V',cons:0.7121,ent:1.2445,gap:0.0},
+  {num:75,aa:'C',cons:0.9528,ent:0.2041,gap:0.0182},{num:76,aa:'N',cons:0.895,ent:0.4539,gap:0.0},
+  {num:77,aa:'H',cons:0.9268,ent:0.3163,gap:0.0061},{num:78,aa:'A',cons:0.8131,ent:0.8077,gap:0.0061},
+  {num:79,aa:'F',cons:0.9229,ent:0.3331,gap:0.0061},{num:80,aa:'H',cons:0.9533,ent:0.202,gap:0.0061},
+  {num:81,aa:'F',cons:0.7187,ent:1.2159,gap:0.0061},{num:82,aa:'H',cons:0.805,ent:0.8427,gap:0.0061},
+  {num:83,aa:'C',cons:0.9448,ent:0.2386,gap:0.0061},{num:84,aa:'I',cons:0.8022,ent:0.8549,gap:0.0061},
+  {num:85,aa:'S',cons:0.8223,ent:0.7678,gap:0.0061},{num:86,aa:'R',cons:0.7611,ent:1.0327,gap:0.0},
+  {num:87,aa:'W',cons:0.9272,ent:0.3148,gap:0.0},{num:88,aa:'L',cons:0.7695,ent:0.9962,gap:0.0},
+  {num:89,aa:'K',cons:0.8529,ent:0.636,gap:0.0},{num:90,aa:'T',cons:0.7485,ent:1.087,gap:0.0},
+  {num:91,aa:'R',cons:0.7656,ent:1.013,gap:0.0},{num:92,aa:'Q',cons:0.7413,ent:1.1182,gap:0.0},
+  {num:93,aa:'V',cons:0.7327,ent:1.1552,gap:0.0182},{num:94,aa:'C',cons:0.9875,ent:0.0542,gap:0.0182},
+  {num:95,aa:'P',cons:0.9471,ent:0.2287,gap:0.0182},{num:96,aa:'L',cons:0.9071,ent:0.4016,gap:0.0182},
+  {num:97,aa:'D',cons:0.8016,ent:0.8574,gap:0.0242},{num:98,aa:'N',cons:0.739,ent:1.1282,gap:0.0061},
+  {num:99,aa:'R',cons:0.7214,ent:1.2041,gap:0.0061},{num:100,aa:'E',cons:0.8017,ent:0.8569,gap:0.0061},
+  {num:101,aa:'W',cons:0.9877,ent:0.0534,gap:0.0},{num:102,aa:'E',cons:0.6552,ent:1.4902,gap:0.0},
+  {num:103,aa:'F',cons:0.7425,ent:1.113,gap:0.0},{num:104,aa:'Q',cons:0.8153,ent:0.7984,gap:0.0},
+  {num:105,aa:'K',cons:0.7408,ent:1.1202,gap:0.0},{num:106,aa:'Y',cons:0.6695,ent:1.4286,gap:0.1636},
+  {num:107,aa:'G',cons:0.7256,ent:1.1859,gap:0.2061},{num:108,aa:'H',cons:0.5409,ent:1.9842,gap:0.2061}
+];
+
+const e2Interface = new Set([41,42,43,44,45,46,47,48,51,52,53,54,55,56,57,58,59,79,81,82,83,84,85,86,87,88,90,91,93,94,95,96,97,98,99]);
+const cullinInterface = new Set([23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,72,73,74,75,76,89,90,91,92,93,99,100,101,102,103,104]);
+const zincResidues = new Set([42,45,53,56,68,75,77,80,82,83,94]);
+
+function getResidueRole(num) {
+  if (zincResidues.has(num)) return 'Zinc';
+  if (e2Interface.has(num) && cullinInterface.has(num)) return 'Both';
+  if (e2Interface.has(num)) return 'E2';
+  if (cullinInterface.has(num)) return 'Cullin';
+  return 'Other';
+}
+
+function getRoleColor(role, isDark) {
+  const colors = {
+    E2: isDark ? '#64b5f6' : '#1565c0',
+    Cullin: isDark ? '#ef9a9a' : '#c62828',
+    Zinc: isDark ? '#ffb74d' : '#ff8f00',
+    Both: isDark ? '#ce93d8' : '#7b1fa2',
+    Other: isDark ? '#616161' : '#bdbdbd'
+  };
+  return colors[role] || colors.Other;
+}
+
+function drawEvoConservation() {
+  const canvas = document.getElementById('evoConservationCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const tc = {
+    text: isDark ? '#c9d1d9' : '#333',
+    grid: isDark ? '#30363d' : '#e4e4e4',
+    bg: isDark ? '#0d1117' : '#fff',
+    dash: isDark ? '#8b949e' : '#999'
+  };
+
+  const w = canvas.width, h = canvas.height;
+  const pad = {t: 30, r: 20, b: 45, l: 45};
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const barW = plotW / conservationData.length;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = tc.bg;
+  ctx.fillRect(0, 0, w, h);
+
+  // Grid
+  ctx.strokeStyle = tc.grid;
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 10; i++) {
+    const y = pad.t + plotH - (i / 10) * plotH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
+  }
+
+  // 0.9 threshold dashed line
+  ctx.setLineDash([4, 4]);
+  ctx.strokeStyle = tc.dash;
+  ctx.lineWidth = 1.5;
+  const y90 = pad.t + plotH - 0.9 * plotH;
+  ctx.beginPath(); ctx.moveTo(pad.l, y90); ctx.lineTo(w - pad.r, y90); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = tc.dash;
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('0.9', pad.l - 4, y90 + 3);
+
+  // Bars
+  conservationData.forEach((d, i) => {
+    const role = getResidueRole(d.num);
+    ctx.fillStyle = getRoleColor(role, isDark);
+    const x = pad.l + i * barW;
+    const barH = d.cons * plotH;
+    ctx.fillRect(x + 1, pad.t + plotH - barH, barW - 2, barH);
+  });
+
+  // X-axis labels
+  ctx.fillStyle = tc.text;
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'center';
+  conservationData.forEach((d, i) => {
+    if (d.num % 10 === 0 || d.num === 1) {
+      ctx.fillText(d.num, pad.l + i * barW + barW / 2, h - pad.b + 14);
+    }
+  });
+
+  // Y-axis
+  ctx.textAlign = 'right';
+  for (let v = 0; v <= 1; v += 0.2) {
+    const y = pad.t + plotH - v * plotH;
+    ctx.fillText(v.toFixed(1), pad.l - 4, y + 3);
+  }
+
+  // Title
+  ctx.fillStyle = tc.text;
+  ctx.font = 'bold 12px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Per-Residue Conservation Score', pad.l, pad.t - 10);
+
+  // Legend
+  const legendX = w - pad.r - 320;
+  const legendY = pad.t - 14;
+  [{role:'E2',label:'E2 Interface'},{role:'Cullin',label:'Cullin Interface'},{role:'Zinc',label:'Zinc-binding'},{role:'Other',label:'Other'}].forEach((item, i) => {
+    const x = legendX + i * 82;
+    ctx.fillStyle = getRoleColor(item.role, isDark);
+    ctx.fillRect(x, legendY, 10, 10);
+    ctx.fillStyle = tc.text;
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(item.label, x + 13, legendY + 9);
+  });
+
+  // X-axis title
+  ctx.fillStyle = tc.text;
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Residue Number', w / 2, h - 4);
+}
+
+function drawEvoEntropyHist() {
+  const canvas = document.getElementById('evoEntropyHist');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const tc = {
+    text: isDark ? '#c9d1d9' : '#333',
+    grid: isDark ? '#30363d' : '#e4e4e4',
+    bg: isDark ? '#0d1117' : '#fff',
+    bar: isDark ? '#58a6ff' : '#1772d0'
+  };
+
+  const w = canvas.width, h = canvas.height;
+  const pad = {t: 30, r: 20, b: 40, l: 45};
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const nBins = 12;
+  const maxEnt = 2.4;
+  const bins = new Array(nBins).fill(0);
+  conservationData.forEach(d => {
+    const idx = Math.min(Math.floor(d.ent / maxEnt * nBins), nBins - 1);
+    bins[idx]++;
+  });
+  const maxCount = Math.max(...bins);
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = tc.bg; ctx.fillRect(0, 0, w, h);
+
+  // Grid
+  ctx.strokeStyle = tc.grid; ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 5; i++) {
+    const y = pad.t + plotH - (i / 5) * plotH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
+  }
+
+  // Bars
+  const barW = plotW / nBins;
+  bins.forEach((count, i) => {
+    ctx.fillStyle = tc.bar;
+    const bh = (count / maxCount) * plotH;
+    ctx.fillRect(pad.l + i * barW + 2, pad.t + plotH - bh, barW - 4, bh);
+  });
+
+  // Labels
+  ctx.fillStyle = tc.text;
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'center';
+  for (let i = 0; i <= nBins; i++) {
+    ctx.fillText((i * maxEnt / nBins).toFixed(1), pad.l + i * barW, h - pad.b + 14);
+  }
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 5; i++) {
+    const v = Math.round(maxCount * i / 5);
+    ctx.fillText(v, pad.l - 4, pad.t + plotH - (i / 5) * plotH + 3);
+  }
+
+  ctx.font = 'bold 12px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Shannon Entropy Distribution', pad.l, pad.t - 10);
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Entropy (bits)', w / 2, h - 4);
+}
+
+function drawEvoInterfaceCompare() {
+  const canvas = document.getElementById('evoInterfaceCompare');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const tc = {
+    text: isDark ? '#c9d1d9' : '#333',
+    grid: isDark ? '#30363d' : '#e4e4e4',
+    bg: isDark ? '#0d1117' : '#fff'
+  };
+
+  const groups = [
+    {label: 'E2 Face', color: isDark ? '#64b5f6' : '#1565c0'},
+    {label: 'Cullin Face', color: isDark ? '#ef9a9a' : '#c62828'},
+    {label: 'Non-interface', color: isDark ? '#616161' : '#9e9e9e'}
+  ];
+
+  const e2Cons = conservationData.filter(d => e2Interface.has(d.num)).map(d => d.cons);
+  const cullinCons = conservationData.filter(d => cullinInterface.has(d.num)).map(d => d.cons);
+  const otherCons = conservationData.filter(d => !e2Interface.has(d.num) && !cullinInterface.has(d.num)).map(d => d.cons);
+  const means = [
+    e2Cons.reduce((a,b)=>a+b,0)/e2Cons.length,
+    cullinCons.reduce((a,b)=>a+b,0)/cullinCons.length,
+    otherCons.reduce((a,b)=>a+b,0)/otherCons.length
+  ];
+
+  const w = canvas.width, h = canvas.height;
+  const pad = {t: 30, r: 20, b: 40, l: 50};
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const barW = plotW / groups.length;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = tc.bg; ctx.fillRect(0, 0, w, h);
+
+  ctx.strokeStyle = tc.grid; ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 5; i++) {
+    const y = pad.t + plotH - (i / 5) * plotH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
+  }
+
+  groups.forEach((g, i) => {
+    ctx.fillStyle = g.color;
+    const bh = means[i] * plotH;
+    const x = pad.l + i * barW + barW * 0.15;
+    const bw = barW * 0.7;
+    ctx.fillRect(x, pad.t + plotH - bh, bw, bh);
+    ctx.fillStyle = tc.text;
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(means[i].toFixed(3), x + bw / 2, pad.t + plotH - bh - 6);
+    ctx.font = '11px sans-serif';
+    ctx.fillText(g.label, x + bw / 2, h - pad.b + 16);
+  });
+
+  ctx.fillStyle = tc.text;
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 5; i++) {
+    const v = i / 5;
+    ctx.fillText(v.toFixed(1), pad.l - 4, pad.t + plotH - v * plotH + 3);
+  }
+  ctx.font = 'bold 12px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Mean Conservation by Region', pad.l, pad.t - 10);
+}
+
+function drawEvoGapCompare() {
+  const canvas = document.getElementById('evoGapCompare');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const tc = {
+    text: isDark ? '#c9d1d9' : '#333',
+    grid: isDark ? '#30363d' : '#e4e4e4',
+    bg: isDark ? '#0d1117' : '#fff'
+  };
+
+  const groups = [
+    {label: 'E2 Face', color: isDark ? '#64b5f6' : '#1565c0'},
+    {label: 'Cullin Face', color: isDark ? '#ef9a9a' : '#c62828'},
+    {label: 'Non-interface', color: isDark ? '#616161' : '#9e9e9e'}
+  ];
+
+  const e2Gaps = conservationData.filter(d => e2Interface.has(d.num)).map(d => d.gap);
+  const cullinGaps = conservationData.filter(d => cullinInterface.has(d.num)).map(d => d.gap);
+  const otherGaps = conservationData.filter(d => !e2Interface.has(d.num) && !cullinInterface.has(d.num)).map(d => d.gap);
+  const means = [
+    e2Gaps.reduce((a,b)=>a+b,0)/e2Gaps.length,
+    cullinGaps.reduce((a,b)=>a+b,0)/cullinGaps.length,
+    otherGaps.reduce((a,b)=>a+b,0)/otherGaps.length
+  ];
+  const maxGap = Math.max(...means) * 1.3;
+
+  const w = canvas.width, h = canvas.height;
+  const pad = {t: 30, r: 20, b: 40, l: 50};
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const barW = plotW / groups.length;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = tc.bg; ctx.fillRect(0, 0, w, h);
+
+  ctx.strokeStyle = tc.grid; ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 5; i++) {
+    const y = pad.t + plotH - (i / 5) * plotH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
+  }
+
+  groups.forEach((g, i) => {
+    ctx.fillStyle = g.color;
+    const bh = (means[i] / maxGap) * plotH;
+    const x = pad.l + i * barW + barW * 0.15;
+    const bw = barW * 0.7;
+    ctx.fillRect(x, pad.t + plotH - bh, bw, bh);
+    ctx.fillStyle = tc.text;
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(means[i].toFixed(4), x + bw / 2, pad.t + plotH - bh - 6);
+    ctx.font = '11px sans-serif';
+    ctx.fillText(g.label, x + bw / 2, h - pad.b + 16);
+  });
+
+  ctx.fillStyle = tc.text;
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 5; i++) {
+    const v = (maxGap * i / 5);
+    ctx.fillText(v.toFixed(3), pad.l - 4, pad.t + plotH - (i / 5) * plotH + 3);
+  }
+  ctx.font = 'bold 12px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Mean Gap Fraction by Region', pad.l, pad.t - 10);
+}
+
+function drawEvoPlots() {
+  drawEvoConservation();
+  drawEvoEntropyHist();
+  drawEvoInterfaceCompare();
+  drawEvoGapCompare();
+  populateEvoResidueTable();
+  populateEvoSequenceViz();
+}
+
+function populateEvoResidueTable() {
+  const tbody = document.getElementById('evoResidueBody');
+  if (!tbody) return;
+  const highCons = conservationData.filter(d => d.cons >= 0.93);
+  tbody.innerHTML = highCons.map(d => {
+    const role = getResidueRole(d.num);
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const roleColor = getRoleColor(role, isDark);
+    return `<tr>
+      <td>${d.num}</td>
+      <td style="font-family:monospace;font-weight:bold;">${d.aa}</td>
+      <td><strong>${d.cons.toFixed(4)}</strong></td>
+      <td>${d.ent.toFixed(4)}</td>
+      <td>${d.gap.toFixed(4)}</td>
+      <td><span style="color:${roleColor};font-weight:600;">${role}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function populateEvoSequenceViz() {
+  const container = document.getElementById('evoSequenceViz');
+  if (!container) return;
+  container.innerHTML = conservationData.map(d => {
+    const role = getResidueRole(d.num);
+    let bg, fg;
+    if (d.cons >= 0.95) { bg = '#1b5e20'; fg = '#fff'; }
+    else if (d.cons >= 0.9) { bg = '#388e3c'; fg = '#fff'; }
+    else if (d.cons >= 0.8) { bg = '#ffb300'; fg = '#000'; }
+    else if (d.cons >= 0.7) { bg = '#ff8f00'; fg = '#000'; }
+    else { bg = '#e53935'; fg = '#fff'; }
+    return `<span title="Res ${d.num} (${d.aa}) | Cons: ${d.cons.toFixed(3)} | Ent: ${d.ent.toFixed(3)} | Gap: ${d.gap.toFixed(3)} | ${role}" style="
+      display:inline-block;padding:1px 3px;margin:1px;border-radius:3px;
+      background:${bg};color:${fg};font-weight:bold;cursor:default;
+      min-width:16px;text-align:center;font-size:13px;">${d.aa}</span>`;
+  }).join('');
+}
+
+// Update drawAllPlots to include evo plots
+const _origDrawAll = drawAllPlots;
+drawAllPlots = function() {
+  _origDrawAll();
+  drawEvoPlots();
+};
 </script>
 
 </body>
