@@ -582,7 +582,7 @@
 
     <div class="page-title">RBX1 Binder Design Dashboard</div>
     <div class="page-subtitle">De novo protein binder design for RBX1 (RING Box Protein 1, 108 AA) &mdash; GEM Workshop / ICLR 2026</div>
-    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 19:10 UTC</div>
+    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 23:45 UTC</div>
 
     <!-- ===== Tabs ===== -->
     <div class="tabs">
@@ -599,45 +599,57 @@
       <!-- Summary Stats -->
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-value" id="statTotal">20</div>
+          <div class="stat-value" id="statTotal">50</div>
           <div class="stat-label">Total Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statE2">5</div>
-          <div class="stat-label">E2 Face (RFdiff)</div>
+          <div class="stat-value" id="statE2">20</div>
+          <div class="stat-label">E2 Face (MPNN)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statCullin">5</div>
-          <div class="stat-label">Cullin Face (RFdiff)</div>
+          <div class="stat-value" id="statCullin">20</div>
+          <div class="stat-label">Cullin Face (MPNN)</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" id="statBoltzGen">10</div>
           <div class="stat-label">BoltzGen Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statScored">10</div>
+          <div class="stat-value" id="statScored">50</div>
           <div class="stat-label">Scored (Boltz-2)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statBestIpTM">0.493</div>
+          <div class="stat-value" id="statBestIpTM">0.645</div>
           <div class="stat-label">Best ipTM</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" id="statBestPAE">2.49</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statBestPLDDT">0.723</div>
+          <div class="stat-label">Best pLDDT</div>
           <div class="stat-label">Best min PAE</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statPhase">Pilot</div>
+          <div class="stat-value" id="statPhase">Scale-up</div>
           <div class="stat-label">Current Phase</div>
         </div>
       </div>
 
       <!-- Info Banner -->
       <div class="info-banner">
-        <strong>Pipeline Status:</strong> Pilot phase &mdash; 10 RFdiffusion backbone structures generated (5 E2, 5 Cullin).
-        ProteinMPNN sequence design <strong>complete</strong> for all 10 RFdiffusion backbones.
-        BoltzGen pipeline <strong>fully operational</strong> &mdash; 5 small-pilot + 5 medium-pilot designs generated with full Boltz-2 scoring.
-        RFdiffusion designs still awaiting Boltz-2 complex prediction for confidence metrics.
+        <strong>Analysis &amp; Interpretation (March 22, 2026):</strong><br>
+        <strong>Major update:</strong> Boltz-2 scoring is now <strong>complete</strong> for all 40 pilot RFdiffusion&rarr;ProteinMPNN binders (20 E2 face + 20 Cullin face, 4 MPNN samples per backbone).
+        Best hit: <strong>design_0039</strong> (Cullin face, 46 AA) with ipTM=0.645, pTM=0.782, pLDDT=0.665, ipDE=3.08 &mdash; substantially better than any BoltzGen design.
+        Top RFdiffusion+MPNN designs (ipTM&gt;0.4): design_0039 (0.645), design_0033 (0.485), design_0025 (0.456), design_0004 (0.442), design_0017 (0.429), design_0016 (0.421), design_0020 (0.417).
+        BoltzGen best remains rbx1_small_3 (ipTM=0.493 from BoltzGen self-scoring, but RFdiffusion pipeline now dominates on Boltz-2 cross-validation).
+        <br><br>
+        <strong>Scale-up status:</strong> 97 RFdiffusion backbones generated across 13 campaigns (beta_e2, cul_small, cul_med, e2_small, e2_med; sizes 10 and 100).
+        BoltzGen scale-up: small_10 (10 designs, inverse-folded), small_100 (100 designs, inverse-folded), medium_10 (2 intermediate), medium_100 (8 intermediate) &mdash; awaiting scoring.
+        <br><br>
+        <strong>Red flags:</strong> Many MPNN designs show low ipTM (&lt;0.3), indicating poor predicted binding. Only 7/40 designs exceed ipTM&gt;0.4.
+        BoltzGen medium designs have high bb_RMSD (&gt;12 &Aring;), suggesting poor structural fidelity.
+        <strong>Recommendation:</strong> Prioritize design_0039 and top-5 MPNN designs for experimental validation. Run MPNN on the 97 scale-up backbones next.
       </div>
 
       <!-- Pipeline Status -->
@@ -646,13 +658,22 @@
         <div class="pipeline-grid">
           <div class="pipeline-card">
             <div class="pipeline-card-header">
-              <span class="pipeline-name">Pipeline A: RFdiffusion &rarr; ProteinMPNN</span>
+              <span class="pipeline-name">Pipeline A: RFdiffusion &rarr; ProteinMPNN (Pilot)</span>
+              <span class="tag tag-finished">SCORED</span>
+            </div>
+            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (10 pilot designs)</div>
+            <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (40 sequences, 4 per backbone)</div>
+            <div class="pipeline-step step-done">&#10003; Boltz-2 complex prediction (40/40 complete)</div>
+            <div class="pipeline-step step-done">&#10003; Score extraction &mdash; best ipTM=0.645 (design_0039)</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-header">
+              <span class="pipeline-name">Pipeline A: RFdiffusion Scale-up</span>
               <span class="tag tag-reading">IN PROGRESS</span>
             </div>
-            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (10 designs)</div>
-            <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (10 designs, 4 samples each)</div>
-            <div class="pipeline-step step-pending">&#9675; Boltz-2 complex prediction</div>
-            <div class="pipeline-step step-pending">&#9675; Score extraction (ipSAE, ipTM, pLDDT)</div>
+            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (97 designs, 13 campaigns)</div>
+            <div class="pipeline-step step-pending">&#9675; ProteinMPNN sequence design</div>
+            <div class="pipeline-step step-pending">&#9675; Boltz-2 scoring</div>
           </div>
           <div class="pipeline-card">
             <div class="pipeline-card-header">
@@ -673,6 +694,17 @@
             <div class="pipeline-step step-done">&#10003; Inverse folding &amp; sequence design</div>
             <div class="pipeline-step step-done">&#10003; Boltz-2 scoring &amp; refolding</div>
             <div class="pipeline-step step-done">&#10003; Final ranking (5 designs ranked)</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-header">
+              <span class="pipeline-name">Pipeline B: BoltzGen Scale-up</span>
+              <span class="tag tag-reading">IN PROGRESS</span>
+            </div>
+            <div class="pipeline-step step-done">&#10003; small_10: 10 designs generated + inverse-folded</div>
+            <div class="pipeline-step step-done">&#10003; small_100: 100 designs generated + inverse-folded</div>
+            <div class="pipeline-step step-pending">&#9675; medium_10: 2 intermediate designs (generation ongoing)</div>
+            <div class="pipeline-step step-pending">&#9675; medium_100: 8 intermediate designs (generation ongoing)</div>
+            <div class="pipeline-step step-pending">&#9675; Scoring &amp; ranking</div>
           </div>
           <div class="pipeline-card">
             <div class="pipeline-card-header">
@@ -703,14 +735,14 @@
           <div class="dist-card">
             <h3>Binder Length Histogram</h3>
             <canvas id="canvasBinderLen" width="460" height="220"></canvas>
-            <div class="caption">Distribution of binder lengths across all 20 designs, colored by pipeline. RFdiffusion designs (blue/red by campaign) cluster in the 42-64 AA range. BoltzGen small pilot (teal) at 44-64 AA, medium pilot (orange) at 92-120 AA.</div>
+            <div class="caption">Distribution of binder lengths across all 50 designs, colored by campaign. RFdiffusion+MPNN designs (blue/red) cluster in the 42-64 AA range. BoltzGen small pilot (teal) at 44-64 AA, medium pilot (orange) at 92-120 AA.</div>
           </div>
 
           <!-- 2. RFdiffusion Confidence Distribution -->
           <div class="dist-card">
             <h3>RFdiffusion Confidence Distribution</h3>
             <canvas id="canvasRFdiffConf" width="460" height="220"></canvas>
-            <div class="caption">Strip plot of mean binder B-factor confidence for 10 RFdiffusion designs. All values are very high (0.979-0.992), with Cullin face designs (red) showing marginally higher confidence than E2 face (blue).</div>
+            <div class="caption">Strip plot of mean binder B-factor confidence for 40 RFdiffusion+MPNN designs (grouped by backbone). All backbone confidence values are very high (0.979-0.992). Cullin face designs (red) show marginally higher confidence than E2 face (blue).</div>
           </div>
 
           <!-- 3. Campaign Comparison -->
@@ -1136,94 +1168,418 @@
 <script>
 // ===== Design Data =====
 const designs = [
-  // ---- RFdiffusion E2 Face ----
+  // ---- RFdiffusion+MPNN E2 Face (Boltz-2 Scored) ----
+  // E2 backbone 0: 4 MPNN samples -> design_0000 to design_0003
   {
-    id: "e2_small_pilot_design_0", name: "E2 Pilot Design 0", campaign: "E2 Face",
-    binder_length: 50, target_length: 100,
+    id: "mpnn_design_0000", name: "E2-B0 MPNN-1", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
     rfdiff_conf: 0.979, rfdiff_min: 0.95, rfdiff_max: 1.00,
-    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
-    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.267, design_ptm: null, pLDDT: 0.594, pTM: 0.544, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAALAAQAAARAAWAALLADGRLMRALAEQARREAEERAKRAAEEEAKK",
+    ipDE: 6.74,
     pdb_file: "data/rbx1_designs/e2_design_0.pdb"
   },
   {
-    id: "e2_small_pilot_design_1", name: "E2 Pilot Design 1", campaign: "E2 Face",
-    binder_length: 42, target_length: 100,
+    id: "mpnn_design_0001", name: "E2-B0 MPNN-2", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    rfdiff_conf: 0.979, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.198, design_ptm: null, pLDDT: 0.593, pTM: 0.429, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "LAELLAAQAAALAAAAELLANRVEMLKLRQEAAEAARAARRAEEERRRLE",
+    ipDE: 7.84
+  },
+  {
+    id: "mpnn_design_0002", name: "E2-B0 MPNN-3", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    rfdiff_conf: 0.979, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.217, design_ptm: null, pLDDT: 0.607, pTM: 0.489, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "AAAAAAEAARAAAEWEALLADRVAQRELREAARKAAEEAARAAEERRAAE",
+    ipDE: 7.10
+  },
+  {
+    id: "mpnn_design_0003", name: "E2-B0 MPNN-4", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    rfdiff_conf: 0.979, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.296, design_ptm: null, pLDDT: 0.678, pTM: 0.591, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEARRRAEEEKAAWEELLKDRVKMRKLKEEKEEEERREKERKELEEELE",
+    ipDE: 7.07
+  },
+  // E2 backbone 1: design_0004 to design_0007
+  {
+    id: "mpnn_design_0004", name: "E2-B1 MPNN-1", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
     rfdiff_conf: 0.987, rfdiff_min: 0.92, rfdiff_max: 1.00,
-    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
-    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null,
-    pdb_file: "data/rbx1_designs/e2_design_1.pdb"
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.442, design_ptm: null, pLDDT: 0.687, pTM: 0.608, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEEERKAEEERRREEERKRKEKEEEKERVKKIIEEIREELK",
+    ipDE: 5.64
   },
   {
-    id: "e2_small_pilot_design_2", name: "E2 Pilot Design 2", campaign: "E2 Face",
-    binder_length: 48, target_length: 100,
+    id: "mpnn_design_0005", name: "E2-B1 MPNN-2", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
+    rfdiff_conf: 0.987, rfdiff_min: 0.92, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.234, design_ptm: null, pLDDT: 0.643, pTM: 0.529, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKKKEEEKRRKEEKEKEEKKKEEEEKEKVKKIIEEIREELK",
+    ipDE: 7.18
+  },
+  {
+    id: "mpnn_design_0006", name: "E2-B1 MPNN-3", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
+    rfdiff_conf: 0.987, rfdiff_min: 0.92, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.144, design_ptm: null, pLDDT: 0.621, pTM: 0.459, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEEKKKKEKEEKEEEEKKKKEEEEKKKKVEEIIEEIRKELK",
+    ipDE: 8.25
+  },
+  {
+    id: "mpnn_design_0007", name: "E2-B1 MPNN-4", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
+    rfdiff_conf: 0.987, rfdiff_min: 0.92, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.253, design_ptm: null, pLDDT: 0.669, pTM: 0.611, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKKRKEEKEREEERKKKEEEEEKKKREEVEKIIKEIREELK",
+    ipDE: 7.45
+  },
+  // E2 backbone 2: design_0008 to design_0011
+  {
+    id: "mpnn_design_0008", name: "E2-B2 MPNN-1", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
     rfdiff_conf: 0.985, rfdiff_min: 0.95, rfdiff_max: 1.00,
-    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
-    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null,
-    pdb_file: "data/rbx1_designs/e2_design_2.pdb"
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.188, design_ptm: null, pLDDT: 0.652, pTM: 0.536, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEELERQKKLEEELKKKKEEEEEKKKKEEEEKKKKEKEKKEKEELEKL",
+    ipDE: 9.69
   },
   {
-    id: "e2_small_pilot_design_3", name: "E2 Pilot Design 3", campaign: "E2 Face",
-    binder_length: 64, target_length: 100,
+    id: "mpnn_design_0009", name: "E2-B2 MPNN-2", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    rfdiff_conf: 0.985, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.125, design_ptm: null, pLDDT: 0.638, pTM: 0.483, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SEEEERRKKLYEELEERKKKEEEKEEEEKKKKEKEEKEKEEEERKKKE",
+    ipDE: 9.05
+  },
+  {
+    id: "mpnn_design_0010", name: "E2-B2 MPNN-3", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    rfdiff_conf: 0.985, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.104, design_ptm: null, pLDDT: 0.633, pTM: 0.488, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEIERQKKLEEELKRRKEKEEEERRRREREEEERRRREEERRRLEEL",
+    ipDE: 12.39
+  },
+  {
+    id: "mpnn_design_0011", name: "E2-B2 MPNN-4", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    rfdiff_conf: 0.985, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.209, design_ptm: null, pLDDT: 0.654, pTM: 0.525, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEKKRQEELEKLLKEKKEKEEKEKKEKEEEEKKKKEEKEKEEKLKKL",
+    ipDE: 7.67
+  },
+  // E2 backbone 3: design_0012 to design_0015
+  {
+    id: "mpnn_design_0012", name: "E2-B3 MPNN-1", campaign: "E2 Face",
+    binder_length: 64, target_length: 108,
     rfdiff_conf: 0.989, rfdiff_min: 0.98, rfdiff_max: 1.00,
-    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
-    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null,
-    pdb_file: "data/rbx1_designs/e2_design_3.pdb"
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.125, design_ptm: null, pLDDT: 0.630, pTM: 0.434, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEERRRREEEERRRREREEAEREEREKREAEERWRAQMEAAAAVEAAAAAAAAAAEAAAAAA",
+    ipDE: 10.49
   },
   {
-    id: "e2_small_pilot_design_4", name: "E2 Pilot Design 4", campaign: "E2 Face",
-    binder_length: 48, target_length: 100,
+    id: "mpnn_design_0013", name: "E2-B3 MPNN-2", campaign: "E2 Face",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: 0.989, rfdiff_min: 0.98, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.174, design_ptm: null, pLDDT: 0.665, pTM: 0.437, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKEEEEKRKKEEEAKRKEEEEKKKEEEKKKKEEEKRRKLIEEDKEIEEEKKKKEKEEEEKKKKE",
+    ipDE: 9.16
+  },
+  {
+    id: "mpnn_design_0014", name: "E2-B3 MPNN-3", campaign: "E2 Face",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: 0.989, rfdiff_min: 0.98, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.315, design_ptm: null, pLDDT: 0.666, pTM: 0.549, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EKEEKEKKKEEEEKKKKEEEEKKKEEEKKEKELEEYRKKVEEYEKVKKEEEEKKKKEEEEKKKK",
+    ipDE: 6.06
+  },
+  {
+    id: "mpnn_design_0015", name: "E2-B3 MPNN-4", campaign: "E2 Face",
+    binder_length: 64, target_length: 108,
+    rfdiff_conf: 0.989, rfdiff_min: 0.98, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.233, design_ptm: null, pLDDT: 0.662, pTM: 0.514, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "ERERREEEERRREEEERAREEAEKEKKEEEEKLEKYRKLREEAEKKKKEEEEAKEKEEEAKKLA",
+    ipDE: 8.03
+  },
+  // E2 backbone 4: design_0016 to design_0019
+  {
+    id: "mpnn_design_0016", name: "E2-B4 MPNN-1", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
     rfdiff_conf: 0.983, rfdiff_min: 0.93, rfdiff_max: 1.00,
-    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
-    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null,
-    pdb_file: "data/rbx1_designs/e2_design_4.pdb"
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.421, design_ptm: null, pLDDT: 0.620, pTM: 0.676, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "VDEEVLEKNAELVEEERRRREEEARRAREEKERRRRAEEELQRLLEEL",
+    ipDE: 6.19
   },
-  // ---- RFdiffusion Cullin Face ----
   {
-    id: "cullin_small_pilot_design_0", name: "Cullin Pilot Design 0", campaign: "Cullin Face",
-    binder_length: 63, target_length: 100,
+    id: "mpnn_design_0017", name: "E2-B4 MPNN-2", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    rfdiff_conf: 0.983, rfdiff_min: 0.93, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.429, design_ptm: null, pLDDT: 0.709, pTM: 0.654, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "VDKEVLEKNAKLVEEEEREARERLERERREKEERRRREEEERRKREEE",
+    ipDE: 6.77
+  },
+  {
+    id: "mpnn_design_0018", name: "E2-B4 MPNN-3", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    rfdiff_conf: 0.983, rfdiff_min: 0.93, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.149, design_ptm: null, pLDDT: 0.622, pTM: 0.510, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "VSEEVLKEQEELVKEEEKRAAEAAAAAAAAAAAAAAAAAAEAARAAAA",
+    ipDE: 9.38
+  },
+  {
+    id: "mpnn_design_0019", name: "E2-B4 MPNN-4", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    rfdiff_conf: 0.983, rfdiff_min: 0.93, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.179, design_ptm: null, pLDDT: 0.655, pTM: 0.515, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "IDKKVLEENAKLVEEKEEKKKKAKEEAKKKKEEEKKKKEEEERRREEE",
+    ipDE: 7.86
+  },
+  // ---- RFdiffusion+MPNN Cullin Face (Boltz-2 Scored) ----
+  // Cullin backbone 0: design_0020 to design_0023
+  {
+    id: "mpnn_design_0020", name: "Cul-B0 MPNN-1", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
     rfdiff_conf: 0.992, rfdiff_min: 0.98, rfdiff_max: 1.00,
-    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
-    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null,
-    pdb_file: "data/rbx1_designs/cullin_design_0.pdb"
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.417, design_ptm: null, pLDDT: 0.645, pTM: 0.599, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEKEKEEKEKREKEEKEKKKKEEEKKILESQKKVEEAKKRKKEEEEKEKKKKEEEEKKEKLE",
+    ipDE: 5.96
   },
   {
-    id: "cullin_small_pilot_design_1", name: "Cullin Pilot Design 1", campaign: "Cullin Face",
-    binder_length: 53, target_length: 100,
+    id: "mpnn_design_0021", name: "Cul-B0 MPNN-2", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: 0.992, rfdiff_min: 0.98, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.262, design_ptm: null, pLDDT: 0.699, pTM: 0.523, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEERRRRREEEERRRREEEEEKRKEIEESKELVKKSLEEEKKREEEEKKKKEEQEKKEELE",
+    ipDE: 7.55
+  },
+  {
+    id: "mpnn_design_0022", name: "Cul-B0 MPNN-3", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: 0.992, rfdiff_min: 0.98, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.159, design_ptm: null, pLDDT: 0.650, pTM: 0.460, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEKKKKEEEERKRKEEEERRKREEEIRKSQEKVREAKEREKKRKEEEEKEKKEEEEKKKEE",
+    ipDE: 7.95
+  },
+  {
+    id: "mpnn_design_0023", name: "Cul-B0 MPNN-4", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
+    rfdiff_conf: 0.992, rfdiff_min: 0.98, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.216, design_ptm: null, pLDDT: 0.669, pTM: 0.475, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEERRRREEEERRRREEEERERREEEEKSKELVKKSLERKKEEEKKKEEEEKKKKELEEKE",
+    ipDE: 8.15
+  },
+  // Cullin backbone 1: design_0024 to design_0027
+  {
+    id: "mpnn_design_0024", name: "Cul-B1 MPNN-1", campaign: "Cullin Face",
+    binder_length: 53, target_length: 108,
     rfdiff_conf: 0.987, rfdiff_min: 0.90, rfdiff_max: 1.00,
-    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
-    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null,
-    pdb_file: "data/rbx1_designs/cullin_design_1.pdb"
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.312, design_ptm: null, pLDDT: 0.720, pTM: 0.538, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKEEEQKRREEERRRKEEEEKERREKEEEEKARRLAEEARRRRLEEELAALEP",
+    ipDE: 6.67
   },
   {
-    id: "cullin_small_pilot_design_2", name: "Cullin Pilot Design 2", campaign: "Cullin Face",
-    binder_length: 44, target_length: 100,
+    id: "mpnn_design_0025", name: "Cul-B1 MPNN-2", campaign: "Cullin Face",
+    binder_length: 53, target_length: 108,
+    rfdiff_conf: 0.987, rfdiff_min: 0.90, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.456, design_ptm: null, pLDDT: 0.723, pTM: 0.706, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAEERRREEEQRREEERRRREEEERERREREERLAREARRAALQAKLEALRP",
+    ipDE: 4.30
+  },
+  {
+    id: "mpnn_design_0026", name: "Cul-B1 MPNN-3", campaign: "Cullin Face",
+    binder_length: 53, target_length: 108,
+    rfdiff_conf: 0.987, rfdiff_min: 0.90, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.197, design_ptm: null, pLDDT: 0.654, pTM: 0.557, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SREREEEERRRREEEERRREREEEERKRREEEEERAKEVREKKLKEKLEELEE",
+    ipDE: 7.51
+  },
+  {
+    id: "mpnn_design_0027", name: "Cul-B1 MPNN-4", campaign: "Cullin Face",
+    binder_length: 53, target_length: 108,
+    rfdiff_conf: 0.987, rfdiff_min: 0.90, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.212, design_ptm: null, pLDDT: 0.641, pTM: 0.490, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "EEEEKKKKEEEERKKKEEKEKEKKEEEEKKKEEELAEEARRKKLEEELKALEP",
+    ipDE: 9.99
+  },
+  // Cullin backbone 2: design_0028 to design_0031
+  {
+    id: "mpnn_design_0028", name: "Cul-B2 MPNN-1", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
     rfdiff_conf: 0.988, rfdiff_min: 0.95, rfdiff_max: 1.00,
-    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
-    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.267, design_ptm: null, pLDDT: 0.627, pTM: 0.553, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEERRRKEEEEKKRKEEEKKKKEEEREKERKKFAEEVKKKLE",
+    ipDE: 5.95
   },
   {
-    id: "cullin_small_pilot_design_3", name: "Cullin Pilot Design 3", campaign: "Cullin Face",
-    binder_length: 61, target_length: 100,
+    id: "mpnn_design_0029", name: "Cul-B2 MPNN-2", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
     rfdiff_conf: 0.988, rfdiff_min: 0.95, rfdiff_max: 1.00,
-    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
-    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.347, design_ptm: null, pLDDT: 0.662, pTM: 0.648, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEERRREEEREREARRAREEEERKRREEERRKEYAKKVEEEKK",
+    ipDE: 6.07
   },
   {
-    id: "cullin_small_pilot_design_4", name: "Cullin Pilot Design 4", campaign: "Cullin Face",
-    binder_length: 46, target_length: 100,
+    id: "mpnn_design_0030", name: "Cul-B2 MPNN-3", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: 0.988, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.150, design_ptm: null, pLDDT: 0.628, pTM: 0.477, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MERRREEEERRRREREERERREKEREEEEERARELAEEAELAAE",
+    ipDE: 10.51
+  },
+  {
+    id: "mpnn_design_0031", name: "Cul-B2 MPNN-4", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    rfdiff_conf: 0.988, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.214, design_ptm: null, pLDDT: 0.670, pTM: 0.515, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEERRRLEELEEAERRREEEEKAREEAERKRRELAEKVREELE",
+    ipDE: 8.45
+  },
+  // Cullin backbone 3: design_0032 to design_0035
+  {
+    id: "mpnn_design_0032", name: "Cul-B3 MPNN-1", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: 0.988, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.280, design_ptm: null, pLDDT: 0.711, pTM: 0.497, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SRAELIEERLAAREALRAAAEAARAAEERAREEERRRREEERRRREEARRRAEEERRLREL",
+    ipDE: 7.28
+  },
+  {
+    id: "mpnn_design_0033", name: "Cul-B3 MPNN-2", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: 0.988, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.485, design_ptm: null, pLDDT: 0.660, pTM: 0.645, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SMEEHIEEVLKKRKEEKELAEKNRKELEERRKREEEEEEERRRREEEERRRERLREELERL",
+    ipDE: 5.48
+  },
+  {
+    id: "mpnn_design_0034", name: "Cul-B3 MPNN-3", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: 0.988, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.268, design_ptm: null, pLDDT: 0.616, pTM: 0.474, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLEERILANLAAREAAREAAAAARAAAAAAAERAAAAAAAAARAAEEARRAAELAERLLAL",
+    ipDE: 9.55
+  },
+  {
+    id: "mpnn_design_0035", name: "Cul-B3 MPNN-4", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: 0.988, rfdiff_min: 0.95, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.277, design_ptm: null, pLDDT: 0.578, pTM: 0.523, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SLEELIQKRLEERARLEAAAAAARAAAAAAARAAAEAAAAAAAAAAAAAAAAAAAEAAAAA",
+    ipDE: 9.97
+  },
+  // Cullin backbone 4: design_0036 to design_0039
+  {
+    id: "mpnn_design_0036", name: "Cul-B4 MPNN-1", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
     rfdiff_conf: 0.984, rfdiff_min: 0.96, rfdiff_max: 1.00,
-    pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
-    ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.197, design_ptm: null, pLDDT: 0.634, pTM: 0.564, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEEEEKAKKALEEEEKKLKEELEKKLKEEAKREEERKREEELKK",
+    ipDE: 8.57
+  },
+  {
+    id: "mpnn_design_0037", name: "Cul-B4 MPNN-2", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: 0.984, rfdiff_min: 0.96, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.187, design_ptm: null, pLDDT: 0.675, pTM: 0.531, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEEEEKKEAEEKKKEKEEKEKKELERRLKEEEKRRREREERERRER",
+    ipDE: 8.29
+  },
+  {
+    id: "mpnn_design_0038", name: "Cul-B4 MPNN-3", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: 0.984, rfdiff_min: 0.96, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.212, design_ptm: null, pLDDT: 0.642, pTM: 0.511, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEEKKKKAEEKKKEKEKELKKKLEEELRRKAREEEEEERRRREEE",
+    ipDE: 8.15
+  },
+  {
+    id: "mpnn_design_0039", name: "Cul-B4 MPNN-4", campaign: "Cullin Face",
+    binder_length: 46, target_length: 108,
+    rfdiff_conf: 0.984, rfdiff_min: 0.96, rfdiff_max: 1.00,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.645, design_ptm: null, pLDDT: 0.665, pTM: 0.782, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEEEEKRRAEEEREKQREEEKKKLEEELKEEREKKLKEELEKKLEE",
+    ipDE: 3.08
   },
   // ---- BoltzGen Small Pilot ----
   {
@@ -1363,7 +1719,8 @@ function renderCard(d, showRank) {
     'E2 Face': 'meta-campaign-e2',
     'Cullin Face': 'meta-campaign-cullin',
     'BoltzGen Small': 'meta-pipeline',
-    'BoltzGen Medium': 'meta-pipeline'
+    'BoltzGen Medium': 'meta-pipeline',
+    'RFdiffusion+MPNN': 'meta-pipeline'
   };
   const campaignClass = campaignClassMap[d.campaign] || 'meta-pipeline';
 
@@ -1408,11 +1765,11 @@ function renderCard(d, showRank) {
       ${confBar}
       <div class="metrics-grid">
         ${fmtMetric(d.ipTM, 'ipTM')}
+        ${fmtMetric(d.pLDDT, 'pLDDT')}
+        ${fmtMetric(d.pTM, 'pTM')}
         ${fmtMetric(d.design_ptm, 'Design pTM')}
         ${fmtMetric(d.min_pae, 'Min PAE')}
-        ${fmtMetric(d.pTM, 'pTM')}
-        ${fmtInt(d.hbonds, 'H-Bonds')}
-        ${fmtInt(d.bsa, 'Delta SASA')}
+        ${d.ipDE !== undefined && d.ipDE !== null ? fmtMetric(d.ipDE, 'ipDE') : fmtInt(d.hbonds, 'H-Bonds')}
       </div>
       <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
         Size class: ${d.size_class} &middot; Target: ${d.target_length} res
