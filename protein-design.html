@@ -597,7 +597,7 @@
 
     <div class="page-title">RBX1 Binder Design Dashboard</div>
     <div class="page-subtitle">De novo protein binder design for RBX1 (RING Box Protein 1, 108 AA) &mdash; GEM Workshop / ICLR 2026</div>
-    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 — Boltz-2 scoring update 2026-03-22T23:00 UTC</div>
+    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 — Boltz-2 scoring update 2026-03-22T23:30 UTC</div>
 
     <!-- ===== Tabs ===== -->
     <div class="tabs">
@@ -615,15 +615,15 @@
       <!-- Summary Stats -->
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-value" id="statTotal">420</div>
+          <div class="stat-value" id="statTotal">707</div>
           <div class="stat-label">Total Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statE2">157</div>
+          <div class="stat-value" id="statE2">391</div>
           <div class="stat-label">E2 Face (MPNN)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statCullin">243</div>
+          <div class="stat-value" id="statCullin">296</div>
           <div class="stat-label">Cullin Face (MPNN)</div>
         </div>
         <div class="stat-card">
@@ -631,15 +631,15 @@
           <div class="stat-label">BoltzGen Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statScored">420</div>
+          <div class="stat-value" id="statScored">707</div>
           <div class="stat-label">Scored (Boltz-2)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statBestIpTM">0.959</div>
+          <div class="stat-value" id="statBestIpTM">0.962</div>
           <div class="stat-label">Best ipTM</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statBestPAE">2.49</div>
+          <div class="stat-value" id="statBestPAE">0.62</div>
           <div class="stat-label">Best min PAE</div>
         </div>
         <div class="stat-card">
@@ -654,16 +654,16 @@
 
       <!-- Info Banner -->
       <div class="info-banner">
-        <strong>Analysis &amp; Interpretation (March 22, 2026 &mdash; 23:00 UTC scan):</strong><br>
-        <strong>NEW BEST: beta_e2_100-026 achieves ipTM=0.959.</strong> This 45 AA E2-face binder is the strongest design to date. Multiple campaigns now producing ipTM &gt; 0.9 hits. 360 designs scored via Boltz-2 (53% of 676), up from 18 at last scan.
+        <strong>Analysis &amp; Interpretation (March 22, 2026 &mdash; 23:30 UTC scan):</strong><br>
+        <strong>NEW BEST: sat_e2-0675 achieves ipTM=0.962.</strong> This 62 AA satellite E2-face binder edges out the previous best (beta_e2_100-026, 0.959). 550/676 scale-up designs now scored (81%), plus 60 pilot/BoltzGen. 287 new entries added this scan.
         <br><br>
-        <strong>Boltz-2 scoring progress:</strong> <strong>360/676</strong> binders scored across 9 batches (00-07, 09). 420 total designs on dashboard (60 pilot/BoltzGen + 360 scale-up). 109 designs exceed ipTM 0.8; 190 exceed ipTM 0.7.
+        <strong>Boltz-2 scoring progress:</strong> <strong>550/676</strong> binders scored across all 14 batches (00-13). 707 total designs on dashboard (60 pilot/BoltzGen + 647 scale-up). 185 designs exceed ipTM 0.8; 327 exceed ipTM 0.7. Batches 01, 05-07, 12-13 still running.
         <br><br>
-        <strong>Top 5 hits:</strong> beta_e2_100-026 (ipTM=0.959), beta_e2_10-004 (0.945), cul_small_10-017 (0.944), e2_med_10-027 (0.941), beta_e2_100-012 (0.935). Both E2 and Cullin campaigns producing world-class hits.
+        <strong>Top 5 hits:</strong> sat_e2-0675 (ipTM=0.962), beta_e2_100-026 (0.959), beta_e2_10-004 (0.945), cul_small_10-017 (0.945), beta_e2_10-024 (0.944). E2 face dominating the top ranks.
         <br><br>
-        <strong>Campaign summary:</strong> E2 Face: 137 scored, mean ipTM=0.706, best=0.959. Cullin Face: 223 scored, mean ipTM=0.653, best=0.945. Small binder designs (40-65 AA) dominating the top ranks.
+        <strong>Campaign summary:</strong> E2 Face: 391 designs, mean ipTM=0.645, best=0.962. Cullin Face: 296 designs, mean ipTM=0.626, best=0.945. Small binder designs (40-65 AA) continue to dominate top ranks.
         <br><br>
-        <strong>Recommendation:</strong> With 190 designs above ipTM 0.7, begin aggressive filtering. Apply thresholds: ipTM &gt; 0.8 AND pLDDT &gt; 0.65 (yields ~80 candidates). Start structural inspection and ipSAE analysis on top 20.
+        <strong>Recommendation:</strong> With 327 designs above ipTM 0.7 and 185 above 0.8, filtering is essential. Apply thresholds: ipTM &gt; 0.85 AND pLDDT &gt; 0.7 to narrow to ~50 top candidates for structural inspection and ipSAE analysis.
       </div>
 
       <!-- Pipeline Status -->
@@ -687,7 +687,7 @@
             </div>
             <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (1,416 backbones &mdash; 362 core + satellite campaigns)</div>
             <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (676 binders)</div>
-            <div class="pipeline-step step-active">&#9654; Boltz-2 scoring with MSA (9/14 batches scored: 360/676 designs, 53% &mdash; best ipTM=0.959)</div>
+            <div class="pipeline-step step-active">&#9654; Boltz-2 scoring with MSA (14/14 batches active: 550/676 designs, 81% &mdash; best ipTM=0.962)</div>
             <div class="pipeline-step step-pending">&#9675; Filtering &amp; submission (after scoring completes)</div>
           </div>
           <div class="pipeline-card">
@@ -771,14 +771,14 @@
           <div class="dist-card">
             <h3>ipTM Distribution (BoltzGen Designs)</h3>
             <canvas id="canvasIpTM" width="460" height="220"></canvas>
-            <div class="caption">ipTM scores for all 420 scored designs. MSA-scored scale-up designs (blue/red) dominate the high end, with 109 designs above ipTM 0.8. Best overall: 0.959 (beta_e2_100-026, E2 face). Note: pilot designs were scored without MSA (lower ipTM).</div>
+            <div class="caption">ipTM scores for all 707 scored designs. MSA-scored scale-up designs (blue/red) dominate the high end, with 185 designs above ipTM 0.8. Best overall: 0.962 (sat_e2-0675, E2 face). Note: pilot designs were scored without MSA (lower ipTM).</div>
           </div>
 
           <!-- 5. ipTM vs min PAE Scatter -->
           <div class="dist-card">
             <h3>ipTM vs min interaction PAE</h3>
             <canvas id="canvasScatter" width="460" height="220"></canvas>
-            <div class="caption">Scatter of ipTM vs ipDE (interface distance error) for all 420 scored designs. Scale-up MPNN designs (MSA-scored) cluster in the upper-left with ipTM 0.7-0.96 and low ipDE. BoltzGen and pilot designs form separate clusters at lower ipTM.</div>
+            <div class="caption">Scatter of ipTM vs ipDE (interface distance error) for all 707 scored designs. Scale-up MPNN designs (MSA-scored) cluster in the upper-left with ipTM 0.7-0.96 and low ipDE. BoltzGen and pilot designs form separate clusters at lower ipTM.</div>
           </div>
         </div>
       </div>
@@ -789,7 +789,7 @@
 
         <h3>Summary</h3>
         <p>
-          <strong>420 total designs on dashboard</strong> (60 pilot/BoltzGen + 360 Boltz-2 scored scale-up). Scoring is 53% complete (360/676).
+          <strong>707 total designs on dashboard</strong> (60 pilot/BoltzGen + 647 Boltz-2 scored scale-up). Scoring is 81% complete (550/676).
           <strong>RFdiffusion+MPNN scale-up:</strong> 360 designs scored across 9 batches (00-07, 09), spanning 17 campaigns including beta_e2_100 (50), beta_e2_10 (15), cul_med_100 (50), cul_med_100_1080ti (26), cul_small_100_1080ti (16), and more.
           <strong>BoltzGen pipeline:</strong> 20 designs unchanged (5 small pilot + 10 small_10, 5 medium pilot).
           <strong>109 designs above ipTM 0.8.</strong> Mean ipTM across all scored = 0.667. The MSA-informed scoring is producing exceptionally strong predictions across all campaigns.
@@ -835,7 +835,7 @@
 
         <h3 class="red-flag">Red Flags</h3>
         <p>
-          <span class="red-flag">1. Scoring 53% complete.</span> 360/676 binders scored across 9 batches. 5 batches still pending (08, 10-13). Jobs queued on savio3_gpu.
+          <span class="red-flag">1. Scoring 81% complete.</span> 550/676 binders scored across all 14 batches. Batches 01, 05-07, 12-13 still running on savio3_gpu. ~126 designs remaining.
         </p>
         <p>
           <span class="red-flag">2. MSA vs no-MSA scoring inconsistency.</span> The pilot 40 designs were scored without MSA (lower ipTM). The scale-up designs are scored with MSA (much higher ipTM). This makes cross-pipeline comparison unreliable. Consider rescoring pilot designs with MSA for fair comparison.
@@ -865,7 +865,7 @@
         <p>
           Estimated overall completion: <strong>68%</strong>.
           Evolutionary analysis (100%), RFdiffusion generation (100%), ProteinMPNN (100%), BoltzGen pilots (100%).
-          Boltz-2 scoring: pilot complete (no-MSA), scale-up 53% (360/676, with MSA). Filtering (0%), submission (0%).
+          Boltz-2 scoring: pilot complete (no-MSA), scale-up 81% (550/676, with MSA). Filtering (0%), submission (0%).
         </p>
         <div class="progress-bar-container">
           <div class="progress-bar-fill" style="width: 68%;"></div>
@@ -5589,6 +5589,2016 @@ const designs = [
     bsa: null, contacts: null, hbonds: null,
     sequence: "SLEELEEELKKKKEEEEKKREKVRKAVEEAAEKEAEELRREIAENAEALEALRRA",
     ipDE: 11.414
+  },
+  // ---- NEW BATCH SCAN (March 22, 2026 - late scan) ----
+  {
+    id: "scaleup_0244", name: "cul_med_10-032", campaign: "Cullin Face",
+    binder_length: 105, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.292, pTM: 0.517, pLDDT: 0.76, ipDE: 8.97,
+    sequence: "MEKEREERERQEELEALREEKEKKEKEEEELKKELKELEEKKKELEEKLKKLKEEGSKEIPKLEKELEELKKKIEEVKKKLKEFEEEKKRKFERLKELEEFRKEG"
+  },
+  {
+    id: "scaleup_0245", name: "cul_med_10-033", campaign: "Cullin Face",
+    binder_length: 105, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.749, pTM: 0.796, pLDDT: 0.769, ipDE: 2.3,
+    sequence: "MEEEERKKKLEEERKELEKKKKEKEKEEEELKKKKKELEEEIKRLEEELRKAKEEGSPKIEELEEKLKKLKEEKKELEEKLKEFEKEKKKVFETLEELKKFREEG"
+  },
+  {
+    id: "scaleup_0246", name: "cul_med_10-034", campaign: "Cullin Face",
+    binder_length: 105, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.715, pTM: 0.759, pLDDT: 0.728, ipDE: 3.3,
+    sequence: "MEEERRREEEERRRERLEKEKEEKKKKYEELKKKKKELEEKIKELEKELKEKKEAGSPEVEELEKELKKLKEELAKLEKELAEFEEEKKEEVERRKELEEFREEG"
+  },
+  {
+    id: "scaleup_0247", name: "cul_med_10-035", campaign: "Cullin Face",
+    binder_length: 105, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.889, pTM: 0.879, pLDDT: 0.79, ipDE: 1.03,
+    sequence: "SAEEAERAAEEAEREALEEKKREEEREEEELKRELAELEEKIKKLKEELEKKKKEGSKDIEKLEKELKELEKKKEELKKKLEEFEEKKKEKFERLEELEKFREEG"
+  },
+  {
+    id: "scaleup_0248", name: "cul_med_10-036", campaign: "Cullin Face",
+    binder_length: 118, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.658, pTM: 0.744, pLDDT: 0.71, ipDE: 4.19,
+    sequence: "SELLEKLKKEEEELKKEIEEKEKEIKEKEEKLKEEMETKTAELDTEKAAVLPTVEAAEKGEIEEAVGEECKKKLKELEEKEKELKEKAEELQKEIEKKKEEVEKKLKEFKKKLEELKK"
+  },
+  {
+    id: "scaleup_0249", name: "cul_med_10-037", campaign: "Cullin Face",
+    binder_length: 118, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.533, pTM: 0.677, pLDDT: 0.74, ipDE: 6.01,
+    sequence: "MEALRRLEAERRELEARIAEAEEEIRKLEEEIEKKKEEEMAELENEREAVLPIVERGEAGEIKEAVVEEARKKLAELEEREKKLEEEAEEKRREIERIREEVERERAEFEARLAALAA"
+  },
+  {
+    id: "scaleup_0278", name: "cul_small_100_1080ti-026", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.761, pTM: 0.733, pLDDT: 0.711, ipDE: 3.91,
+    sequence: "MTLEEKKKIESEKEKKKSEELAKKALEALKEREEIQKEIEELRK"
+  },
+  {
+    id: "scaleup_0279", name: "cul_small_100_1080ti-027", campaign: "Cullin Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.867, pTM: 0.862, pLDDT: 0.809, ipDE: 0.77,
+    sequence: "ISLEEGIEIESKKAKEKSEELAKIAKKELEEREKILKEMEELRK"
+  },
+  {
+    id: "scaleup_0280", name: "cul_small_100_1080ti-028", campaign: "Cullin Face",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.648, pTM: 0.772, pLDDT: 0.716, ipDE: 3.45,
+    sequence: "MKEKEEKEKEERKKKEEEKRKEEEEKKREEERKLKELCEELRKKALEEALE"
+  },
+  {
+    id: "scaleup_0281", name: "cul_small_100_1080ti-029", campaign: "Cullin Face",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.444, pTM: 0.704, pLDDT: 0.704, ipDE: 6.51,
+    sequence: "MEEEKKKKEEEEKKKEEEKRKEEEKKKKEEEEKLKEECKEEEKKQKEEALK"
+  },
+  {
+    id: "scaleup_0282", name: "cul_small_100_1080ti-030", campaign: "Cullin Face",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.671, pTM: 0.718, pLDDT: 0.709, ipDE: 4.13,
+    sequence: "MKKREEEERKRREEEERKRRREEEERRRREERERRERCEEQRREAERRALE"
+  },
+  {
+    id: "scaleup_0283", name: "cul_small_100_1080ti-031", campaign: "Cullin Face",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.282, pTM: 0.539, pLDDT: 0.739, ipDE: 9.08,
+    sequence: "MEKELEEQKKKEEEEREKEKKKEEEEKKKEEEEKKLKCEEIKKKKLEEALK"
+  },
+  {
+    id: "scaleup_0284", name: "cul_small_100_1080ti-032", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.32, pTM: 0.577, pLDDT: 0.691, ipDE: 9.45,
+    sequence: "SEKEKLEKEEEEKKKKEEEEKKKKEEEEKKKKEKEEKEQKKKEEEEKKKKLEKLKKEEELEEELK"
+  },
+  {
+    id: "scaleup_0285", name: "cul_small_100_1080ti-033", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.788, pTM: 0.798, pLDDT: 0.79, ipDE: 1.83,
+    sequence: "TKEEIERKRREEEERRERERREREEEEEKKRKEREEKEREEVEKKAKEELEKKLKEEEEKKKELE"
+  },
+  {
+    id: "scaleup_0286", name: "cul_small_100_1080ti-034", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.439, pTM: 0.583, pLDDT: 0.75, ipDE: 7.34,
+    sequence: "SAADEERRRREEEERREEERRRREEARRREEERRREEERRRVEERALEERRRALEEEEALKEALE"
+  },
+  {
+    id: "scaleup_0287", name: "cul_small_100_1080ti-035", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.415, pTM: 0.615, pLDDT: 0.694, ipDE: 8.79,
+    sequence: "SLEDVLAAAAAAARAEAEAAARRAAEEARRRAAREAEAQRRVEEEARKELLEKLKKEEEEEKKLE"
+  },
+  {
+    id: "scaleup_0288", name: "cul_small_100_1080ti-036", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.527, pTM: 0.628, pLDDT: 0.816, ipDE: 5.93,
+    sequence: "MEEERRREEEERRREEERRRREEEERRRKEEEEKKKKEEEKELNPEEYLKELEEKEKEKILKE"
+  },
+  {
+    id: "scaleup_0289", name: "cul_small_100_1080ti-037", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.706, pTM: 0.785, pLDDT: 0.749, ipDE: 3.06,
+    sequence: "MEKEEKEKEEEEKKKKEEEKKKEEEEKKKKKEEEKKKEEEEKLDPSEELEEEEKKKKEEILKE"
+  },
+  {
+    id: "scaleup_0290", name: "cul_small_100_1080ti-038", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.889, pTM: 0.826, pLDDT: 0.665, ipDE: 0.85,
+    sequence: "MEEEKKKKEEEEKKREEEEKKLEEERKKKEEEEKKKEEEKKKLDPLEKLKEEEEKKKKKILEE"
+  },
+  {
+    id: "scaleup_0291", name: "cul_small_100_1080ti-039", campaign: "Cullin Face",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.046, pTM: 0.426, pLDDT: 0.688, ipDE: 17.7,
+    sequence: "MEEERRRREERRREEEERRRRRREEEEERRKKEEEEKEKEKELDPTEELKKLEEEKKEEILKK"
+  },
+  {
+    id: "scaleup_0292", name: "cul_small_100_1080ti-040", campaign: "Cullin Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.793, pTM: 0.872, pLDDT: 0.703, ipDE: 2.09,
+    sequence: "DEKEEKEKKKKEEEKKKEELKKELEELKKLLEKNKKKEEEEKKKKELEEK"
+  },
+  {
+    id: "scaleup_0293", name: "cul_small_100_1080ti-041", campaign: "Cullin Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.462, pTM: 0.669, pLDDT: 0.716, ipDE: 6.63,
+    sequence: "MREEEERRRREEEERRERELKKKLEELKKLLEKVEAAKKKEEEAKKKKEE"
+  },
+  {
+    id: "scaleup_0294", name: "cul_small_100_1080ti-042", campaign: "Cullin Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.395, pTM: 0.687, pLDDT: 0.689, ipDE: 6.82,
+    sequence: "EEEKKKEEEEKKEEEEKKKKEEEEKKLKELLEKNEEYLKKEKEKLEELLR"
+  },
+  {
+    id: "scaleup_0295", name: "cul_small_100_1080ti-043", campaign: "Cullin Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.692, pTM: 0.822, pLDDT: 0.746, ipDE: 3.9,
+    sequence: "DKEEEKKKEEEKKKEEEKKKKKKEEELKKLLEEVKKAKEKEEEEKKLKEE"
+  },
+  {
+    id: "scaleup_0296", name: "cul_small_100_1080ti-044", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.704, pTM: 0.706, pLDDT: 0.844, ipDE: 3.43,
+    sequence: "SEEEEKKKKEELERKNKEALEKAKKEQEEKLEKEEEEKKKEKEKKEEEEKRKKEEELLKK"
+  },
+  {
+    id: "scaleup_0297", name: "cul_small_100_1080ti-045", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.316, pTM: 0.548, pLDDT: 0.701, ipDE: 7.4,
+    sequence: "DKEEKEKKKKELEELNKKALEEAKKKQEEELEKKREEEKKKEEERRKREEEEKREKLEKE"
+  },
+  {
+    id: "scaleup_0298", name: "cul_small_100_1080ti-046", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.837, pTM: 0.854, pLDDT: 0.798, ipDE: 1.56,
+    sequence: "SEEEKKAKEEELKKKNEEAREKALKEQEEKLEEKKKKEEEERKKEEEEEKKLKEELEKKK"
+  },
+  {
+    id: "scaleup_0299", name: "cul_small_100_1080ti-047", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.448, pTM: 0.597, pLDDT: 0.691, ipDE: 6.7,
+    sequence: "MEEEERRRREEQEELDREALEEAKKKQEEELEEEEEKKKKKLEEEEARKKEEEERKLKEE"
+  },
+  {
+    id: "scaleup_0329", name: "cul_small_100-021", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.787, pTM: 0.793, pLDDT: 0.657, ipDE: 3.54,
+    sequence: "AEALEAARRAALELERRLRALEERLAHYEAAARETGTGRARALAEAARAERAALRAEVAAALAAA"
+  },
+  {
+    id: "scaleup_0330", name: "cul_small_100-022", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.928, pTM: 0.901, pLDDT: 0.795, ipDE: 0.77,
+    sequence: "SAALEAARELALEFERIKERLEEKLKYYKEAYEKTGTGRSKEKAEEAEKKLEELKKKLAEELAAA"
+  },
+  {
+    id: "scaleup_0331", name: "cul_small_100-023", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.928, pTM: 0.942, pLDDT: 0.639, ipDE: 0.79,
+    sequence: "AAAALAAALAARALALRLALLDAREAHYAAAAAETGTGRARQLAEAARQARAALEAAVAAALAAA"
+  },
+  {
+    id: "scaleup_0332", name: "cul_small_100-024", campaign: "Cullin Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.851, pTM: 0.885, pLDDT: 0.728, ipDE: 1.5,
+    sequence: "SEEAKKLEEEVEKLRKELSFEEELERRKREAEERERELAARAPELERAAAEAAAAAA"
+  },
+  {
+    id: "scaleup_0333", name: "cul_small_100-025", campaign: "Cullin Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.399, pTM: 0.681, pLDDT: 0.726, ipDE: 6.51,
+    sequence: "SEEEEELKKKVEEERLERSFEYQLKKMEEEKKKKEEEEKKRLPEIQKEKEEKERKEL"
+  },
+  {
+    id: "scaleup_0334", name: "cul_small_100-026", campaign: "Cullin Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.881, pTM: 0.815, pLDDT: 0.674, ipDE: 1.8,
+    sequence: "SEEEEKLLKEVEEKRLELSPEYELERRRRREEEEEARRRAEAPARRAAAEAARRAAL"
+  },
+  {
+    id: "scaleup_0335", name: "cul_small_100-027", campaign: "Cullin Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.726, pTM: 0.834, pLDDT: 0.667, ipDE: 3.73,
+    sequence: "SEEEKKLKEEVEKLKKEKSFEYELEKRKEEEKKEKEELEKKKEEIEEEEKKKKLEEL"
+  },
+  {
+    id: "scaleup_0336", name: "cul_small_100-028", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.745, pTM: 0.796, pLDDT: 0.785, ipDE: 1.91,
+    sequence: "VEKLKEEIEKLEKKLEEIEEALKSGLLEESMKSSVEYNKYKLEKKIKELKKKLEEELKKK"
+  },
+  {
+    id: "scaleup_0337", name: "cul_small_100-029", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.421, pTM: 0.531, pLDDT: 0.693, ipDE: 6.63,
+    sequence: "AKELEEKIKKLEEKLKEIEEGLKSGIFEESMQSSIDRNIYELKKEIEKLKKELEEALKKE"
+  },
+  {
+    id: "scaleup_0338", name: "cul_small_100-030", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.555, pTM: 0.666, pLDDT: 0.638, ipDE: 5.19,
+    sequence: "AEKLKEEIEKLKKELEEIKKAIEEGLFKESMKSSIEYNIYELEKKIKELEEELKKALEEE"
+  },
+  {
+    id: "scaleup_0339", name: "cul_small_100-031", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.908, pTM: 0.861, pLDDT: 0.77, ipDE: 1.43,
+    sequence: "VKKLEEELEKLKEKKKEIEEALKSGKLKESMKNSVERNMFELEKKIKELEEEKERALKEK"
+  },
+  {
+    id: "scaleup_0340", name: "cul_small_10-000", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.68, pTM: 0.732, pLDDT: 0.712, ipDE: 3.44,
+    sequence: "MAEEEARRRAEEERRREEAERRAREEEEKKKKEEAEEEAKKKLEEKREEELKEEAEKKLLE"
+  },
+  {
+    id: "scaleup_0341", name: "cul_small_10-001", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.796, pTM: 0.798, pLDDT: 0.672, ipDE: 1.18,
+    sequence: "MEEEARKKAEAEAAAAAAAAAAAAAAAAAAAEAAAEAEAAEAARRAAEAAKEAEAAALLAE"
+  },
+  {
+    id: "scaleup_0342", name: "cul_small_10-002", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.39, pTM: 0.639, pLDDT: 0.69, ipDE: 6.76,
+    sequence: "MKEEEEKKKKEKEEEEEKEKKEKEEEEKKKKEEEEEKKALKELEEKRREELKKVAEELLKK"
+  },
+  {
+    id: "scaleup_0343", name: "cul_small_10-003", campaign: "Cullin Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.588, pTM: 0.68, pLDDT: 0.701, ipDE: 5.96,
+    sequence: "DAAAEAARRAAEEAAREAALAAERAAEEAKRKAEEEKKALEKLKEEEEKEMKKFAEELLKK"
+  },
+  {
+    id: "scaleup_0344", name: "cul_small_10-004", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.807, pTM: 0.822, pLDDT: 0.738, ipDE: 1.21,
+    sequence: "KEKELKKNLEEAKKNYEKRKFEEYKEEQKKIEEELKKEKEKKREEEERKRREEEEERRRRREEEE"
+  },
+  {
+    id: "scaleup_0345", name: "cul_small_10-005", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.777, pTM: 0.795, pLDDT: 0.746, ipDE: 2.19,
+    sequence: "DEEELKKNIEEAKERYKERKQKELEEEEKKIEEEEKKKKEEEEERKRREEERRREEERRREEEEK"
+  },
+  {
+    id: "scaleup_0346", name: "cul_small_10-006", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.679, pTM: 0.715, pLDDT: 0.736, ipDE: 3.67,
+    sequence: "EEEEKKKNIEEAKKTYKAEKYEEYKKKEAEEEEKEKKEKEKKKKEEEERRRKEREEEERRRREEE"
+  },
+  {
+    id: "scaleup_0347", name: "cul_small_10-007", campaign: "Cullin Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.62, pTM: 0.743, pLDDT: 0.764, ipDE: 4.92,
+    sequence: "SEEEKKKNLEEAKKNYKKLKKEEYEKKNKEIEEEKKKKEEKEKEEKKKEEEEKKKEEEKKKKLEE"
+  },
+  {
+    id: "scaleup_0348", name: "cul_small_10-008", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.62, pTM: 0.737, pLDDT: 0.69, ipDE: 5.63,
+    sequence: "LEKRVKEAEERVKAILEEEEKKKKEAEKLNKEIKEAKEKAL"
+  },
+  {
+    id: "scaleup_0349", name: "cul_small_10-009", campaign: "Cullin Face",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.825, pTM: 0.795, pLDDT: 0.73, ipDE: 1.66,
+    sequence: "LEAAVEAARERVEALRREAREREEERRRLDAELRAAEAAAR"
+  },
+  {
+    id: "scaleup_0376", name: "cul_small_10-036", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.728, pTM: 0.788, pLDDT: 0.797, ipDE: 2.84,
+    sequence: "EKEEEEEKKKKEEEEEEEKKKKEEEEKKEKEKKEKEEKEKKEKEEKEKCEKKLKELKELE"
+  },
+  {
+    id: "scaleup_0377", name: "cul_small_10-037", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.807, pTM: 0.839, pLDDT: 0.706, ipDE: 1.6,
+    sequence: "MEEEKKKKEEEEKKKKEEEKKKEEKEKKKKEEEEKKKKKEKEEKEKEKCLAEVLRELEEE"
+  },
+  {
+    id: "scaleup_0378", name: "cul_small_10-038", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.764, pTM: 0.84, pLDDT: 0.759, ipDE: 2.26,
+    sequence: "SMEERERRERERREEEERRRREEERRREEERRRREEEKKREEEERKKKCLKEVLEKLKKK"
+  },
+  {
+    id: "scaleup_0379", name: "cul_small_10-039", campaign: "Cullin Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.441, pTM: 0.592, pLDDT: 0.726, ipDE: 5.9,
+    sequence: "MEKKKKEEEEKKKKEEEEEERRRKEEKKREEERKKEEEKKKKEEEREKGLKELEERLKKK"
+  },
+  {
+    id: "scaleup_0078", name: "beta_e2_10-014", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.66, pTM: 0.693, pLDDT: 0.736, ipDE: 5.6,
+    sequence: "DEEARREAERERLRASPEAFELKLIEIELQVRLLPDSVSEEEKKKLLEEAKKALEEEL"
+  },
+  {
+    id: "scaleup_0079", name: "beta_e2_10-015", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.847, pTM: 0.833, pLDDT: 0.686, ipDE: 1.93,
+    sequence: "MEEEKKREEEEKLEASPERKQLLLLRIEYNVRLLPESVSEEEREALLAAAKAALEAAL"
+  },
+  {
+    id: "scaleup_0080", name: "beta_e2_10-016", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.618, pTM: 0.654, pLDDT: 0.644, ipDE: 6.79,
+    sequence: "MKVEVELIDLREFLAKHSRKELLEKIRELIKEGWRVRLYYKDGKPYAALCEREV"
+  },
+  {
+    id: "scaleup_0081", name: "beta_e2_10-017", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.686, pTM: 0.758, pLDDT: 0.692, ipDE: 3.0,
+    sequence: "MKLEEELIDLTPFLAEHSELELKEKLREYMLEGYEVRLYYQDGKPAWAKLVKEV"
+  },
+  {
+    id: "scaleup_0082", name: "beta_e2_10-018", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.834, pTM: 0.822, pLDDT: 0.693, ipDE: 3.36,
+    sequence: "MKVEVELFDLRPFLAEHSLEELLEWIRELMKEGWTVRLYYEDGKPVAALAEREV"
+  },
+  {
+    id: "scaleup_0083", name: "beta_e2_10-019", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.621, pTM: 0.717, pLDDT: 0.721, ipDE: 4.66,
+    sequence: "MKIEEKVIDLTPFLAEHSLKELLEKLRELMLEGWEVRLYYKDGKPVAAVCTKEV"
+  },
+  {
+    id: "scaleup_0084", name: "beta_e2_10-020", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.926, pTM: 0.869, pLDDT: 0.733, ipDE: 1.31,
+    sequence: "MIDVGIRAETVGEAYKLMAEEVGEKDPEVLEKCLELTIDEKLEIDGVVLEMELA"
+  },
+  {
+    id: "scaleup_0085", name: "beta_e2_10-021", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.51, pTM: 0.666, pLDDT: 0.621, ipDE: 5.2,
+    sequence: "MIDVGIRADTVGEAYAALAREVGETDEETLEKLLELGIDEDLEIDGVVLHLELA"
+  },
+  {
+    id: "scaleup_0086", name: "beta_e2_10-022", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.716, pTM: 0.652, pLDDT: 0.648, ipDE: 3.69,
+    sequence: "MIDVGIREKTVGEAYAKLAEEIGEKDKEKLEELLKLKEEEDVEVDGVVLHLELA"
+  },
+  {
+    id: "scaleup_0087", name: "beta_e2_10-023", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.809, pTM: 0.745, pLDDT: 0.612, ipDE: 2.15,
+    sequence: "MIDVGIRAETVGEAYAAMAREVGEKDEAVLEECLKLGIDEDLVVNGVVLRLELA"
+  },
+  {
+    id: "scaleup_0088", name: "beta_e2_10-024", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.944, pTM: 0.907, pLDDT: 0.792, ipDE: 0.67,
+    sequence: "SREEHLEKQIELLKKQREEKKIAEENPDEKDTAVRLEEIEEEKKKQEELEKELKK"
+  },
+  {
+    id: "scaleup_0089", name: "beta_e2_10-025", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.818, pTM: 0.88, pLDDT: 0.621, ipDE: 1.57,
+    sequence: "SEDKHLEERLKELADARAEAEIAAANPDLTDTAIKLQEAKARAAAEAARRAAEEA"
+  },
+  {
+    id: "scaleup_0090", name: "beta_e2_10-026", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.822, pTM: 0.889, pLDDT: 0.666, ipDE: 1.98,
+    sequence: "SEDEYLEERLKELEEAREAKEIAKENPDEKDTAIILKEKKKREEEERKRKEELEA"
+  },
+  {
+    id: "scaleup_0091", name: "beta_e2_10-027", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.814, pTM: 0.849, pLDDT: 0.749, ipDE: 2.0,
+    sequence: "SRDEHLEKQLEELAKARAEQEIKEKNPDEENTAIVLEKEKEEEKKKKEEEEKLKK"
+  },
+  {
+    id: "scaleup_0092", name: "beta_e2_10-028", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.663, pTM: 0.769, pLDDT: 0.65, ipDE: 4.2,
+    sequence: "SAEEKKKKEERRKKALQKALQLLAEDPSFSVEEKCLLTLAEEKEEVQKEIEELLKKLEEKS"
+  },
+  {
+    id: "scaleup_0093", name: "beta_e2_10-029", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.73, pTM: 0.743, pLDDT: 0.678, ipDE: 4.74,
+    sequence: "MEEERRRREEERERVYREALELYAKDPSLSVEEKNLLSLFREREECQERIRELLRELKEKE"
+  },
+  {
+    id: "scaleup_0094", name: "beta_e2_10-030", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.908, pTM: 0.834, pLDDT: 0.74, ipDE: 1.27,
+    sequence: "SAAARAAAERERQEVIDRALELLAKDPSLSVEEKCLLQRAREDPEAQERIAELLKRREAAA"
+  },
+  {
+    id: "scaleup_0095", name: "beta_e2_10-031", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.268, pTM: 0.485, pLDDT: 0.621, ipDE: 7.02,
+    sequence: "MEEKKRKEEERRKKVLKEALELLAKDPSFSVEFKLLLSRAEEEEEAQKKIEEWLKEKKAKE"
+  },
+  {
+    id: "scaleup_0096", name: "beta_e2_10-032", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.728, pTM: 0.787, pLDDT: 0.612, ipDE: 3.02,
+    sequence: "ERERLARRQRLLGLQGKIREHCLSSGEELNLPEVDLSQASLDRFIEANREAYERLTREEERAALE"
+  },
+  {
+    id: "scaleup_0097", name: "beta_e2_10-033", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.578, pTM: 0.734, pLDDT: 0.645, ipDE: 4.02,
+    sequence: "TKELEAQYNKLMGIAEKIREEMLKTGEKLDLPEIDLSQESLDAFVEANKEKIEKLTKEEEEEKLS"
+  },
+  {
+    id: "scaleup_0098", name: "beta_e2_10-034", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.633, pTM: 0.732, pLDDT: 0.581, ipDE: 4.18,
+    sequence: "EKELEAERNRLLGLQGRLRERALREGLPLDLPEIDLSPESRRAFVAANAEEIAALAAEEARAAAA"
+  },
+  {
+    id: "scaleup_0099", name: "beta_e2_10-035", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.653, pTM: 0.725, pLDDT: 0.65, ipDE: 3.76,
+    sequence: "TAELQAQYNELLGIQGEIRERCLKEGLELNLPEIDLSQASLDEFVAANAELIEELTKERERKALE"
+  },
+  {
+    id: "scaleup_0380", name: "e2_med_100-000", campaign: "E2 Face",
+    binder_length: 100, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.627, pTM: 0.773, pLDDT: 0.727, ipDE: 4.63,
+    sequence: "SKEIEELQKKIKEVEEEAEIKKIAAERYEKKAEELKKKIEEIKKKNPEAEKDKKVQEELKKLEEEIKELEEKAKEYKEKAKELEKEKEKLKKELEELLAK"
+  },
+  {
+    id: "scaleup_0381", name: "e2_med_100-001", campaign: "E2 Face",
+    binder_length: 100, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.297, pTM: 0.579, pLDDT: 0.726, ipDE: 8.22,
+    sequence: "MEEIEKLKKEIEELEEKAKICKHAAELYEEKAKELKKEIEEIKKKDPSAEEDEEVKEEIKEKEEEIKELEEKKEKYEKKREELEKKIKELKEELEKLLKE"
+  },
+  {
+    id: "scaleup_0382", name: "e2_med_100-002", campaign: "E2 Face",
+    binder_length: 100, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.688, pTM: 0.734, pLDDT: 0.815, ipDE: 5.59,
+    sequence: "SEEIEKLQKEIEETEKELELLEWGAELFEKRAEELKAEIEKIIAEDPSALDDEEARKKIEELEKEIEELEEKKKKYEEKAKELEEKRKELKKKLEELKAK"
+  },
+  {
+    id: "scaleup_0383", name: "e2_med_100-003", campaign: "E2 Face",
+    binder_length: 100, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.531, pTM: 0.708, pLDDT: 0.715, ipDE: 6.11,
+    sequence: "SAEIEKLKKEIEEVEREAEICRRAAARYRARAEALEAEIAAKLAADPRAAEDEEARAEIEAKRKEIEELRRKAEEYERKARELEEKKKELEEKLKKKLEE"
+  },
+  {
+    id: "scaleup_0384", name: "e2_med_100-004", campaign: "E2 Face",
+    binder_length: 116, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.39, pTM: 0.601, pLDDT: 0.751, ipDE: 8.18,
+    sequence: "MEEEKRRKEEEERRRKEEEKKKEEEKKKEEEFKKKLEEAQRLEREIELRKKILEGERAKLEAERAALPEDAPEEEREALEARIRALEEEEKKLEKLEEEAKKLRKEVEEEWKKVTE"
+  },
+  {
+    id: "scaleup_0385", name: "e2_med_100-005", campaign: "E2 Face",
+    binder_length: 116, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.644, pTM: 0.753, pLDDT: 0.789, ipDE: 4.3,
+    sequence: "SAAERRREEEERRRREEERRREEERRRELEELEERAREYQRLERRCEIREKILKGKFKKLEEEKKKLPEDAPEEEREELEKKIEELKEREKKLKEERKRAEELRAEIDARVAELTA"
+  },
+  {
+    id: "scaleup_0386", name: "e2_med_100-006", campaign: "E2 Face",
+    binder_length: 116, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.668, pTM: 0.774, pLDDT: 0.799, ipDE: 4.08,
+    sequence: "MREREEEERRRREEEERERERKKKEEEEEKEFEEKLKEYQELEREIEIREKILEGEKARLEAEEAALPPDAPAEEREALERRRRELEEREKKLEELKKKAKELKEEVDAKWAEKTA"
+  },
+  {
+    id: "scaleup_0387", name: "e2_med_100-007", campaign: "E2 Face",
+    binder_length: 116, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.605, pTM: 0.739, pLDDT: 0.726, ipDE: 4.69,
+    sequence: "SREEEERRREEERRREEEERRRAEEEARLREFERRLEEAQRLRRRNEIRRRILEGERARLEAERAALPADAPEEERRALEERLEELRRREERLREEERRARELEEEVRREWEERTE"
+  },
+  {
+    id: "scaleup_0388", name: "e2_med_100-008", campaign: "E2 Face",
+    binder_length: 108, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.83, pTM: 0.845, pLDDT: 0.744, ipDE: 2.14,
+    sequence: "SAEEEKKKKKEEEEKEKKEIEEEAEKLLKAIETEEARKELEEEELEITELKVKIKKLLEEYKKAKDPEEKEKLKKEIEELLKKLEELLEKKKKAEKGVEEKKKKEAEE"
+  },
+  {
+    id: "scaleup_0389", name: "e2_med_100-009", campaign: "E2 Face",
+    binder_length: 108, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.89, pTM: 0.905, pLDDT: 0.799, ipDE: 1.2,
+    sequence: "SAAAAAAAAAAAEAARRAREEELAERLRRAIETEEAREELYEEVLEEARLRREIAALLEQLAAETDPARRAELQARIDELLARLRALEEERRLAEAGLRRAAEAAAAA"
+  },
+  {
+    id: "scaleup_0390", name: "e2_med_100-010", campaign: "E2 Face",
+    binder_length: 108, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.705, pTM: 0.758, pLDDT: 0.741, ipDE: 2.87,
+    sequence: "SAAERAAEEARRRAEEEARIAAAAAELREAVATEEAAEALMDRVLEKTELKQRLKELLEEYKKEKDEEKKKKLKEEIKKVLEELEKLEEYERDALEGLAREAAAAAAA"
+  },
+  {
+    id: "scaleup_0391", name: "e2_med_100-011", campaign: "E2 Face",
+    binder_length: 108, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.765, pTM: 0.799, pLDDT: 0.699, ipDE: 2.93,
+    sequence: "SAAARAAEEARRRAEEEAEIERAAEELLAAIETEEAAEKLRERKLEMFELEREIRELLKKYEEEKDEKEREELRKKIEEKLEELERLKERERKALEGLRRREEAARRA"
+  },
+  {
+    id: "scaleup_0392", name: "e2_med_100-012", campaign: "E2 Face",
+    binder_length: 119, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.755, pTM: 0.812, pLDDT: 0.756, ipDE: 2.1,
+    sequence: "MDEEEMKLAKKFVELYRKKTKEYAEELEELRELEKSEDKEEKLPEYLEKLKKRFEKLKSGELEKKYPEKIKKIEELLKKVEEGKEDSMEYLREVYALLFEMELESGWEKEELEKLKKEL"
+  },
+  {
+    id: "scaleup_0393", name: "e2_med_100-013", campaign: "E2 Face",
+    binder_length: 119, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.341, pTM: 0.585, pLDDT: 0.709, ipDE: 6.48,
+    sequence: "MDEKKMRIAKEVVRYRREVEREAAEKLEELRELEKREDKEEKLPEVLKEIEERFEKLKEGELKEKYPEKIKEIEELIEKIKEGKPESMKYALEAYKLLTEIEFESGWLKEKLKEILEKL"
+  },
+  {
+    id: "scaleup_0394", name: "e2_med_100-014", campaign: "E2 Face",
+    binder_length: 119, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.289, pTM: 0.564, pLDDT: 0.657, ipDE: 7.31,
+    sequence: "VDEEEKALNKAVVEEYRKVRREYAKELEELREIEKSEDKKEKLPEYLEKVEERFEKLLEGELKEKYPEKIEEIKKLLEEVKKGKEESMKYLLEAYKLLFEIELESGWMKEFLEKLKEEM"
+  },
+  {
+    id: "scaleup_0395", name: "e2_med_100-015", campaign: "E2 Face",
+    binder_length: 119, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.66, pTM: 0.758, pLDDT: 0.664, ipDE: 4.12,
+    sequence: "IDEEVLKLAQEFVKYRREVEKEYAKKLEELEELEKSEDKKEKLPKVLEELEKLFKKLKSGEMKEKYPEKIKKIEELLEKVKKGKEDSMKYAKEIYKLLFELELESGEYKEFLEKLKKEL"
+  },
+  {
+    id: "scaleup_0396", name: "e2_med_100-016", campaign: "E2 Face",
+    binder_length: 96, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.824, pTM: 0.763, pLDDT: 0.679, ipDE: 2.58,
+    sequence: "KEEEKKKKEEEKRKKEREKIYEQNIQKRKEEEEAVRKAKEAVENKKKKEEEAKKEKEELKKKLEKAKKELEILLKGTPEDEEKIKECEELLEKEKK"
+  },
+  {
+    id: "scaleup_0397", name: "e2_med_100-017", campaign: "E2 Face",
+    binder_length: 96, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.47, pTM: 0.573, pLDDT: 0.685, ipDE: 7.13,
+    sequence: "KKEEEEKKEKERKEKEKIEAMEKSIKQREEEEKKVEEAKKEEEDKEKRKKEEEEKEKKLKEELEKAKKLLEELKKGSEKDKPLIEKCKKLLKEAEK"
+  },
+  {
+    id: "scaleup_0398", name: "e2_med_100-018", campaign: "E2 Face",
+    binder_length: 96, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.716, pTM: 0.723, pLDDT: 0.78, ipDE: 3.21,
+    sequence: "KKEEEEKEKEEKKKEEEEKKFQETIEERERVKRAVEEARRREAEKEKRKEEEEKKKEEEKKELEEAKKKLEELLKGSEKDKPEIEKCKELLKKAAE"
+  },
+  {
+    id: "scaleup_0399", name: "e2_med_100-019", campaign: "E2 Face",
+    binder_length: 96, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.459, pTM: 0.574, pLDDT: 0.646, ipDE: 6.81,
+    sequence: "EEEEKKKEEEKKLEEEYEKKLEENIEQRKKEKEAVEEAKKKEENKEKEKKKKEEEEKKKKKEIEKAKKELEKLLKGTPEDQPKIEECKKLLEEEKA"
+  },
+  {
+    id: "scaleup_0407", name: "e2_med_100-027", campaign: "E2 Face",
+    binder_length: 94, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.663, pTM: 0.652, pLDDT: 0.591, ipDE: 1.95,
+    sequence: "AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAEAAAAMLAEKEKKEEEEKELKELLEEAFKKKK"
+  },
+  {
+    id: "scaleup_0408", name: "e2_med_100-028", campaign: "E2 Face",
+    binder_length: 95, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.773, pTM: 0.782, pLDDT: 0.848, ipDE: 2.71,
+    sequence: "KELVEKIRKELEEVRELLKKIIEYLKYKMSKEEAEKKAKEMEAELEEIEREAERLIREGRYEEALELIKKKKKEIEEEAKKAEEEYEKKKKEEEE"
+  },
+  {
+    id: "scaleup_0409", name: "e2_med_100-029", campaign: "E2 Face",
+    binder_length: 95, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.879, pTM: 0.853, pLDDT: 0.736, ipDE: 1.51,
+    sequence: "REEVERVREILEETERLLEAIIEYLRYKLSPEEAERIAEKLRAELEAVRREVERLIVKGEIEEARRLAEERLEEIREEGLEAKEEYEKKKEEEEE"
+  },
+  {
+    id: "scaleup_0410", name: "e2_med_100-030", campaign: "E2 Face",
+    binder_length: 95, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.169, pTM: 0.514, pLDDT: 0.725, ipDE: 9.31,
+    sequence: "MKEIEEIKKILEEVRKLLKDIQKYLEYKLSPEEAEKINAKLEAELKEIELEVEELIKRGKFEEAKELALEYLEKIKEEAEKAKKEYEAYKKKLEE"
+  },
+  {
+    id: "scaleup_0411", name: "e2_med_100-031", campaign: "E2 Face",
+    binder_length: 95, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.559, pTM: 0.732, pLDDT: 0.705, ipDE: 5.63,
+    sequence: "KELIEEIEKLLEETEKLLKDIQKYLKYKLSKEEGEKINAKLEAEYNKIKNEVKELIKKGKFEEAKKKAEEYYEKIKKEAEEAKEKYKKKEKELKE"
+  },
+  {
+    id: "scaleup_0412", name: "e2_med_100-032", campaign: "E2 Face",
+    binder_length: 90, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.826, pTM: 0.862, pLDDT: 0.645, ipDE: 1.76,
+    sequence: "GLKKLEELKNEKHKLNVELSEMLELYEMSVEDVREIVRKECEEDPSGADERAEEAVARTTYLKENEEEIKKKIEELKKLNEEIKKLEEEL"
+  },
+  {
+    id: "scaleup_0413", name: "e2_med_100-033", campaign: "E2 Face",
+    binder_length: 90, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.829, pTM: 0.87, pLDDT: 0.671, ipDE: 1.54,
+    sequence: "KKAELEKLLNEYAKLRKELSENLRLYSASVEEVRELTLKECADDPSGAEEKAEEAVKRTQYLKENESYLKEQIEELEKLAEEIKKKEEEL"
+  },
+  {
+    id: "scaleup_0414", name: "e2_med_100-034", campaign: "E2 Face",
+    binder_length: 90, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.667, pTM: 0.722, pLDDT: 0.702, ipDE: 3.94,
+    sequence: "MKEELEKLKAELARLRKELNRDLLLYLASVEEVREAVREECKEDPSGAEEKAEEAERETEFLKKNKSAIDEKLKELEELRKKIKELEEKM"
+  },
+  {
+    id: "scaleup_0415", name: "e2_med_100-035", campaign: "E2 Face",
+    binder_length: 90, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.761, pTM: 0.765, pLDDT: 0.695, ipDE: 4.91,
+    sequence: "MEKELEELKNKKAELREELNEKLRLYTASEEQVREYVLKECEEDPSGAEERAEEAVKRTKYLQENKEEIEELIKKYEELNEKIKKLEAEM"
+  },
+  {
+    id: "scaleup_0416", name: "e2_med_100-036", campaign: "E2 Face",
+    binder_length: 100, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.814, pTM: 0.814, pLDDT: 0.784, ipDE: 1.66,
+    sequence: "KDENKMEEYLEAKRKAFEEKLKELEKEIKEKEEEIKKKEEEIKKLEEKIKENEEDPKAKELKEEVEKKKEEIEKEKKEIEEKKQEAAAERARLERLEKQL"
+  },
+  {
+    id: "scaleup_0417", name: "e2_med_100-037", campaign: "E2 Face",
+    binder_length: 100, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.787, pTM: 0.858, pLDDT: 0.766, ipDE: 1.7,
+    sequence: "DDEDAFERALARKRKAFEERKKELEKEIKKVEEEIKKKEEEVKEKEKELEENKEDKEAEKKKKEIEELKKEIEEKKEEIEKKKAELAAEEERLRRLEEQL"
+  },
+  {
+    id: "scaleup_0418", name: "e2_med_100-038", campaign: "E2 Face",
+    binder_length: 100, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.385, pTM: 0.622, pLDDT: 0.753, ipDE: 8.99,
+    sequence: "SEKNKMEEALKKKEEEFEKEKKEAEKEIEEKQKELEKKKEELAKKKEEIKKNKEDPDAAKKEEEVKKLEEEIKKIEEEINKKKEELAKREAKLKELKEQL"
+  },
+  {
+    id: "scaleup_0419", name: "e2_med_100-039", campaign: "E2 Face",
+    binder_length: 100, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.753, pTM: 0.791, pLDDT: 0.765, ipDE: 2.52,
+    sequence: "SKKNEFEEFLEKKEKEFEEKKKKLEEEIKKEEEEIEKKKKEVEEKKKYIEENKEDEKAEELKKEVEEKEKEIKEKEEEIKKKKAEAAAEEAKLKALKSQL"
+  },
+  {
+    id: "scaleup_0420", name: "e2_med_100-040", campaign: "E2 Face",
+    binder_length: 107, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.553, pTM: 0.72, pLDDT: 0.77, ipDE: 6.07,
+    sequence: "MEEEKKRREEEERKKELEELKKKAKEEIEKKMKELEEFIKKAKELVERYPGRMEKILLEELEKFKEEFKKKLKELKEKLKEDKEFLEYLEEVEKKVEEKYEEFKKFI"
+  },
+  {
+    id: "scaleup_0421", name: "e2_med_100-041", campaign: "E2 Face",
+    binder_length: 107, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.758, pTM: 0.836, pLDDT: 0.775, ipDE: 1.69,
+    sequence: "MKKKEEEEKKKKKKEELEKLIEEAKKELEEEMKEFKELLKKAKELVKKYPGRMSKILEEEFEKKLKEFNKKLEELKEKVKEDEEFLKYIEEVKEEFEKLYEEFKKFI"
+  },
+  {
+    id: "scaleup_0422", name: "e2_med_100-042", campaign: "E2 Face",
+    binder_length: 107, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.853, pTM: 0.856, pLDDT: 0.832, ipDE: 1.88,
+    sequence: "SAAEAERRKKEEEKKELEKLKKETLKEIEEEMKKFEEFLKKAKELVKEYPGRMEKILLEEFEKFKEEFKKKIEEKKEELKEDEEFLKYLEEVEKEVEEKYEEFKKFI"
+  },
+  {
+    id: "scaleup_0423", name: "e2_med_100-043", campaign: "E2 Face",
+    binder_length: 107, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.734, pTM: 0.788, pLDDT: 0.828, ipDE: 2.65,
+    sequence: "MKEEEEKKKKEEEEKKLKELKKKTKKEFEEEMKKFEELLEKSKKLVEKYPGEMEELLLREFERFLKETTKKIKEEKEKLKEDEEFLKWLEEREEYLKKLYEEFKKFI"
+  },
+  {
+    id: "scaleup_0424", name: "e2_med_100-044", campaign: "E2 Face",
+    binder_length: 111, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.767, pTM: 0.858, pLDDT: 0.789, ipDE: 1.95,
+    sequence: "ELEEVLEAVEKELEERIRETEEEIRRLEEEAERLLREAARLREEAEALRAKAEELAADPARAEEARRLREEAERLEAEARRLEAEARRLLREAEERRERLEREIKEKLEEA"
+  },
+  {
+    id: "scaleup_0425", name: "e2_med_100-045", campaign: "E2 Face",
+    binder_length: 111, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.744, pTM: 0.819, pLDDT: 0.827, ipDE: 2.76,
+    sequence: "MDEKKLEEVREKLKEEIEETEREIERLRREAERLRREALELEERAEELLAEAEELEKDEALRERAEELREEARALREEAEELRLRARELLEEAERKKKELEEKKKKLLEEV"
+  },
+  {
+    id: "scaleup_0426", name: "e2_med_100-046", campaign: "E2 Face",
+    binder_length: 111, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.574, pTM: 0.731, pLDDT: 0.845, ipDE: 5.5,
+    sequence: "DLAAVLARAEELLRERIEETERRIRELLEEARRLRREARELEEEARRLKEKAEELEKDEEKKEEAERLRKEAEELERRAEELRREALELERRAEELRRALEAEWEALLREL"
+  },
+  {
+    id: "scaleup_0427", name: "e2_med_100-047", campaign: "E2 Face",
+    binder_length: 111, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.513, pTM: 0.712, pLDDT: 0.723, ipDE: 6.38,
+    sequence: "KDEEILKKAKEKLEEKIKETEKEIEELEKRAEELLREARELEERARRLREEAERLREDEEKREEARRLEEEARRLEEEARRLRLEARELLEEAKKKKEELKEEVEKLLKEL"
+  },
+  {
+    id: "scaleup_0428", name: "e2_med_100-048", campaign: "E2 Face",
+    binder_length: 97, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.599, pTM: 0.72, pLDDT: 0.722, ipDE: 4.03,
+    sequence: "SLEEEIKKRVEELKKRAEEVKKEIEKLREKGEAGTEEERKKLEEEIKKLEEELKKEELELAEGIRELLEKAKKLAEEEKKILEELEKKKKEEEEKKK"
+  },
+  {
+    id: "scaleup_0429", name: "e2_med_100-049", campaign: "E2 Face",
+    binder_length: 97, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.653, pTM: 0.724, pLDDT: 0.677, ipDE: 2.96,
+    sequence: "SLEELINNKVKELQEEAGKKKEEIEKLKKEGEAGTEEEREKKEEEIKKIEKELEEKRLELSEEIRKLREEAEKLRELEKEIKKLLEEEERKKLLAEL"
+  },
+  {
+    id: "scaleup_0430", name: "e2_med_100-050", campaign: "E2 Face",
+    binder_length: 97, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.624, pTM: 0.692, pLDDT: 0.715, ipDE: 3.86,
+    sequence: "SLEEEIEEKVKKLQEEAAKKKKEIKELEEKAKKGTPEEAKKLKEEIKKIEEELKKKELKLFEDILKLKEEAEKLAEEEKEILKAEEEKKKKEEEEKK"
+  },
+  {
+    id: "scaleup_0431", name: "e2_med_100-051", campaign: "E2 Face",
+    binder_length: 97, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.793, pTM: 0.832, pLDDT: 0.753, ipDE: 1.51,
+    sequence: "SLEKEINDAVKKLQEEAKKKKEEIKKLEEEAKKGTEEEKEKKEKEIEKIKEELEKKQLELAENRRKLLEEAEEERKEEEEELEEELEELLERLEEEL"
+  },
+  {
+    id: "scaleup_0432", name: "e2_med_100-052", campaign: "E2 Face",
+    binder_length: 105, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.543, pTM: 0.679, pLDDT: 0.688, ipDE: 6.97,
+    sequence: "SRLEELRRERDEALAKATELEIRIATEGGAARAANAAATAAAYAALAAAGTAAEAAAVAAAAAAAANAAIAAREAALRAEAAAERERARELQAEIHELERELAEA"
+  },
+  {
+    id: "scaleup_0433", name: "e2_med_100-053", campaign: "E2 Face",
+    binder_length: 105, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.853, pTM: 0.872, pLDDT: 0.852, ipDE: 1.57,
+    sequence: "KELEELKKKYDEKLAEARELELRIKIEGGKKREELEKEIKELYEKLLKEGTEEEAKKKAEELREKKEKEIEEEIEKLEKEKEELLKEAEEILAEIHRLEKKLKEE"
+  },
+  {
+    id: "scaleup_0434", name: "e2_med_100-054", campaign: "E2 Face",
+    binder_length: 105, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.68, pTM: 0.753, pLDDT: 0.69, ipDE: 4.76,
+    sequence: "AELEKLEEEAKELEAKARDLDIKIKTEIGAREAALAAETAARAAALAAAGTPEEAAAVTAAATAAAKAAIAAEKAALEKEKKELEERYREVLAEIQRLKARLAAA"
+  },
+  {
+    id: "scaleup_0482", name: "e2_small_100-006", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.547, pTM: 0.698, pLDDT: 0.726, ipDE: 4.67,
+    sequence: "SEEEERRKKEEEEKRREREEEEKKRKEEEELEKLKEEIKKKIEEKKKK"
+  },
+  {
+    id: "scaleup_0483", name: "e2_small_100-007", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.276, pTM: 0.552, pLDDT: 0.747, ipDE: 11.1,
+    sequence: "SMEEEKRKKEEEKKKEEEEKKKKEEEKEKELEELKKEIEKERQEKKEK"
+  },
+  {
+    id: "scaleup_0484", name: "e2_small_100-008", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.602, pTM: 0.746, pLDDT: 0.634, ipDE: 5.32,
+    sequence: "SAAAAAAAALAAALAALAAELAAAAARQEEIEAIREEYERRVAE"
+  },
+  {
+    id: "scaleup_0485", name: "e2_small_100-009", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.841, pTM: 0.819, pLDDT: 0.746, ipDE: 1.29,
+    sequence: "SAAEAAAAAARAAAEARREALREAEEREKKIREVREELERLLRE"
+  },
+  {
+    id: "scaleup_0486", name: "e2_small_100-010", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.528, pTM: 0.695, pLDDT: 0.668, ipDE: 5.93,
+    sequence: "SAAEEARRRREEAEEERKRRLEEYKEREKIINEIREKLEKKIKE"
+  },
+  {
+    id: "scaleup_0487", name: "e2_small_100-011", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.704, pTM: 0.769, pLDDT: 0.729, ipDE: 3.81,
+    sequence: "SALEELAKKLEEELKERLEKLKKYEERQKKIEEVRKALEEKIKE"
+  },
+  {
+    id: "scaleup_0488", name: "e2_small_100-012", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.846, pTM: 0.776, pLDDT: 0.74, ipDE: 2.33,
+    sequence: "MKKEERKKKAEELREEIKKKLKELDENPELSSVEVEKILKEIEEKEKKAEEIEG"
+  },
+  {
+    id: "scaleup_0489", name: "e2_small_100-013", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.717, pTM: 0.795, pLDDT: 0.715, ipDE: 2.89,
+    sequence: "MSEEEKKKLAEEILKEVEKKKKELDENPELSEVKVKEIQKEIAELEKKAKEILG"
+  },
+  {
+    id: "scaleup_0490", name: "e2_small_100-014", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.751, pTM: 0.732, pLDDT: 0.767, ipDE: 4.88,
+    sequence: "MKKEEREKKAKELLEEIKKKEEELEENPELLQVEVEKIKKEIEEKKKEAEEILK"
+  },
+  {
+    id: "scaleup_0491", name: "e2_small_100-015", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.552, pTM: 0.727, pLDDT: 0.666, ipDE: 4.99,
+    sequence: "MSEKERKEKAKKLLEEIEKIKKEMEENPELLEIEYKEKLEEIEKKREEAKKILG"
+  },
+  {
+    id: "scaleup_0492", name: "e2_small_100-016", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.775, pTM: 0.772, pLDDT: 0.701, ipDE: 1.85,
+    sequence: "GLESVEKARKKAKEELEEKLKREEEERKEKEQRELEEKRKEE"
+  },
+  {
+    id: "scaleup_0493", name: "e2_small_100-017", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.824, pTM: 0.79, pLDDT: 0.766, ipDE: 1.68,
+    sequence: "GLERVLELRERAERELKEELEKRKEEEKKKEEEEREKRRELE"
+  },
+  {
+    id: "scaleup_0494", name: "e2_small_100-018", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.295, pTM: 0.573, pLDDT: 0.67, ipDE: 7.81,
+    sequence: "GLAAVEAARERARRELEEALRRRREKEEEERRREEEERRREE"
+  },
+  {
+    id: "scaleup_0495", name: "e2_small_100-019", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.28, pTM: 0.579, pLDDT: 0.678, ipDE: 8.32,
+    sequence: "GLAAVEEARRRAEEELRRALEEEERRRRREEEERRERLERLE"
+  },
+  {
+    id: "scaleup_0496", name: "e2_small_100-020", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.865, pTM: 0.885, pLDDT: 0.662, ipDE: 1.06,
+    sequence: "DEAARLAAEAEAAARAAAAEAAEAARAEVLSPRLAEALEFYKKKLEEEKK"
+  },
+  {
+    id: "scaleup_0497", name: "e2_small_100-021", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.556, pTM: 0.686, pLDDT: 0.632, ipDE: 4.67,
+    sequence: "MEEEKKKKEEEKKKKEEEKKEEEEFIKKVLSPREAAALNLYKELLAEEEA"
+  },
+  {
+    id: "scaleup_0498", name: "e2_small_100-022", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.576, pTM: 0.69, pLDDT: 0.681, ipDE: 4.54,
+    sequence: "EERKREEERRRAEEERRREEERRELLEKVLSPELAEAVEFYKKSLEEEKK"
+  },
+  {
+    id: "scaleup_0499", name: "e2_small_100-023", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.775, pTM: 0.806, pLDDT: 0.622, ipDE: 2.58,
+    sequence: "DEEKKKKEEEEKKKEKEKKEELEAYIAKVLSPKIKEAVDFYKEKLKEKKE"
+  },
+  {
+    id: "scaleup_0508", name: "e2_small_100-032", campaign: "E2 Face",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.778, pTM: 0.786, pLDDT: 0.781, ipDE: 2.02,
+    sequence: "MVEELKEKEPEALKALREKYLKTDPEKVEEKVAEFKKKIEEAIKFLEEAEK"
+  },
+  {
+    id: "scaleup_0509", name: "e2_small_100-033", campaign: "E2 Face",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.83, pTM: 0.836, pLDDT: 0.65, ipDE: 2.44,
+    sequence: "MVEEIRAQKPAALAALRERMLAEDPEGAEEKVAAFEARVEAAIARLERAKA"
+  },
+  {
+    id: "scaleup_0510", name: "e2_small_100-034", campaign: "E2 Face",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.905, pTM: 0.839, pLDDT: 0.761, ipDE: 1.33,
+    sequence: "MVEELRAREPEALAALRARELATDPAGAAEKVAALRARIERAIEFLERAEA"
+  },
+  {
+    id: "scaleup_0511", name: "e2_small_100-035", campaign: "E2 Face",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.774, pTM: 0.823, pLDDT: 0.668, ipDE: 2.21,
+    sequence: "MVKEIEEKKPEALEALRERYLKEDPENVEKKVKEFEERIEKAIERLKKAEE"
+  },
+  {
+    id: "scaleup_0512", name: "e2_small_100-036", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.529, pTM: 0.711, pLDDT: 0.736, ipDE: 5.68,
+    sequence: "EEEERRREEKERAREEAEKKKKEIEERFEAQKKKIEEEKRKKEEEEEKKKKE"
+  },
+  {
+    id: "scaleup_0513", name: "e2_small_100-037", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.775, pTM: 0.822, pLDDT: 0.692, ipDE: 2.66,
+    sequence: "KEEEEKEKEREEALKKREEEKKEIEAIIEEQKKKIEKEKKEKEEERREEEEE"
+  },
+  {
+    id: "scaleup_0514", name: "e2_small_100-038", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.535, pTM: 0.656, pLDDT: 0.694, ipDE: 5.75,
+    sequence: "EEEERRRREREEALRRAEEEEEEIKRRFEAARKKIEKEEEEKEREEERKRKE"
+  },
+  {
+    id: "scaleup_0515", name: "e2_small_100-039", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.395, pTM: 0.612, pLDDT: 0.773, ipDE: 8.78,
+    sequence: "MEEEEEKKKKEEALKEREEKKKEVDAIIEAAKKEVEAKEKKEEEEKKKKLEE"
+  },
+  {
+    id: "scaleup_0516", name: "e2_small_100-040", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.667, pTM: 0.776, pLDDT: 0.564, ipDE: 3.94,
+    sequence: "MTPEEAAELARRAAEEARRAADEGARDVVNEAILRGAAALPELAAALAAAAAAAAAL"
+  },
+  {
+    id: "scaleup_0517", name: "e2_small_100-041", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.315, pTM: 0.599, pLDDT: 0.611, ipDE: 7.04,
+    sequence: "MTPEERRALEEELRRRARELVDVGLQNIVNEAVLKGKEALEELEELLAELAAALAAA"
+  },
+  {
+    id: "scaleup_0518", name: "e2_small_100-042", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.873, pTM: 0.885, pLDDT: 0.586, ipDE: 0.64,
+    sequence: "MTPEALAAAAAAAAAAARRAACEGLRQILNDAILKGKEALKELEELLAAAAAAAAAA"
+  },
+  {
+    id: "scaleup_0519", name: "e2_small_100-043", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.785, pTM: 0.772, pLDDT: 0.746, ipDE: 3.72,
+    sequence: "VTLEELLKALLEAMERAREAVCKGLRAILNEAILKGEKALPELEKLLAELAAALAAL"
+  },
+  {
+    id: "scaleup_0520", name: "e2_small_100-044", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.934, pTM: 0.943, pLDDT: 0.709, ipDE: 0.64,
+    sequence: "EAAEAERRAAAAKRAAEAAAAAARLAADPSIAVEIWKALPVEDRRRFREVLELE"
+  },
+  {
+    id: "scaleup_0521", name: "e2_small_100-045", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.859, pTM: 0.864, pLDDT: 0.578, ipDE: 1.34,
+    sequence: "SAAAAAAAAAAAAAAARAAAAAAALAADPSIALEVWKSLPVEDRLAFRDVLELE"
+  },
+  {
+    id: "scaleup_0522", name: "e2_small_100-046", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.896, pTM: 0.926, pLDDT: 0.646, ipDE: 0.93,
+    sequence: "EEEVKEALEKAKKELEEKEKAAKKLAEDPSIAKEYIAKLPTEEKVRFKELRELE"
+  },
+  {
+    id: "scaleup_0523", name: "e2_small_100-047", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.902, pTM: 0.864, pLDDT: 0.732, ipDE: 1.16,
+    sequence: "AEELEKALEELARRLAEAERAAAELAADPSILLEIIKSLPVEERLAFKHLLEHL"
+  },
+  {
+    id: "scaleup_0524", name: "e2_small_100-048", campaign: "E2 Face",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.86, pTM: 0.892, pLDDT: 0.68, ipDE: 1.22,
+    sequence: "MEEERRREERERREREEEEAKKEEEERKKLLRKKLEERLEAEK"
+  },
+  {
+    id: "scaleup_0525", name: "e2_small_100-049", campaign: "E2 Face",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.522, pTM: 0.728, pLDDT: 0.762, ipDE: 5.77,
+    sequence: "MEEEREREAERRAREEEERREREEEERKKLLKLKLEEREEAEK"
+  },
+  {
+    id: "scaleup_0526", name: "e2_small_100-050", campaign: "E2 Face",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.205, pTM: 0.514, pLDDT: 0.685, ipDE: 9.67,
+    sequence: "AKEEEERKAEEERRKAEEEEKKKEEEYKKLLEKRLEERKKKEE"
+  },
+  {
+    id: "scaleup_0527", name: "e2_small_100-051", campaign: "E2 Face",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.556, pTM: 0.695, pLDDT: 0.713, ipDE: 4.87,
+    sequence: "EEEEEERREKEEEEERKRKEEEEEEERRKLLELRLKKLLEEEK"
+  },
+  {
+    id: "scaleup_0528", name: "e2_small_100-052", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.667, pTM: 0.634, pLDDT: 0.742, ipDE: 3.44,
+    sequence: "SLEEELEELKKKTEEEIKKAEKYGGRKYTIRLELEEELERLKKE"
+  },
+  {
+    id: "scaleup_0529", name: "e2_small_100-053", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.523, pTM: 0.569, pLDDT: 0.656, ipDE: 6.32,
+    sequence: "SAAAALAALREATAARIAEAEQYGGLPFTIQDELDERLAAAAAA"
+  },
+  {
+    id: "scaleup_0530", name: "e2_small_100-054", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.541, pTM: 0.641, pLDDT: 0.649, ipDE: 4.01,
+    sequence: "SLEELLKKLKEETEKEIEKAKQYGGLPFTIERELQKLLEELAKK"
+  },
+  {
+    id: "scaleup_0531", name: "e2_small_100-055", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.736, pTM: 0.749, pLDDT: 0.668, ipDE: 3.1,
+    sequence: "SLEELLKKLEEETAKRIEEAKQYGGLEYTIQRELDKLLEALKAA"
+  },
+  {
+    id: "scaleup_0532", name: "e2_small_100-056", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.639, pTM: 0.684, pLDDT: 0.826, ipDE: 4.9,
+    sequence: "EEKKKKEEEEKKKEEEKKKKEEEKREKARKEFEELERKKKEEEEKKK"
+  },
+  {
+    id: "scaleup_0533", name: "e2_small_100-057", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.423, pTM: 0.601, pLDDT: 0.657, ipDE: 5.99,
+    sequence: "EKEKEEKEREEEEKKKEEEERKKKREEAEREFEELEREREKAEEEEE"
+  },
+  {
+    id: "scaleup_0534", name: "e2_small_100-058", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.628, pTM: 0.779, pLDDT: 0.711, ipDE: 4.26,
+    sequence: "DEEARRRAEEERRRREEEERREERRRRAEEEFRRLEEERAAEEALRE"
+  },
+  {
+    id: "scaleup_0535", name: "e2_small_100-059", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.886, pTM: 0.861, pLDDT: 0.775, ipDE: 0.94,
+    sequence: "EEEEERRRREEEERRKREKEEEEKRKEAEEKRKKLEEEKKKKEEEEE"
+  },
+  {
+    id: "scaleup_0536", name: "e2_small_100-060", campaign: "E2 Face",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.586, pTM: 0.754, pLDDT: 0.705, ipDE: 4.53,
+    sequence: "MDEEKKKEEEEKKKEEEEEKELKKKLEEERKKYEEEEKKKREEEKKKKEEEKKEKE"
+  },
+  {
+    id: "scaleup_0537", name: "e2_small_100-061", campaign: "E2 Face",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.282, pTM: 0.531, pLDDT: 0.698, ipDE: 8.84,
+    sequence: "MDEEELKRKEELEKEEKEKKELEKKFKELLEEEEKRRERERREREERERREREEEE"
+  },
+  {
+    id: "scaleup_0538", name: "e2_small_100-062", campaign: "E2 Face",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.675, pTM: 0.739, pLDDT: 0.767, ipDE: 4.02,
+    sequence: "MDKEKEEKELKEKKEKEEEKRLEERFREAREREERERKKRREEARREAALRAELAA"
+  },
+  {
+    id: "scaleup_0539", name: "e2_small_100-063", campaign: "E2 Face",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.592, pTM: 0.731, pLDDT: 0.737, ipDE: 4.78,
+    sequence: "MDLEEEAEKKKKEEEEKEEEELKKKFEELRKEEEERRRREREERERRRREEELRRR"
+  },
+  {
+    id: "scaleup_0540", name: "e2_small_100-064", campaign: "E2 Face",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.855, pTM: 0.883, pLDDT: 0.732, ipDE: 1.12,
+    sequence: "SEEEEKERKEKEKEEKEKIEEILNSSFYDYPVEKKKIEEEKKEEKKREEEERRRRRREEEERK"
+  },
+  {
+    id: "scaleup_0541", name: "e2_small_100-065", campaign: "E2 Face",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.923, pTM: 0.936, pLDDT: 0.692, ipDE: 0.66,
+    sequence: "SAAEAARAAAEAAAEAAKLAEILASSYYDHPLEKKEIEEKAKEAREKEERERELREELERLLE"
+  },
+  {
+    id: "scaleup_0542", name: "e2_small_100-066", campaign: "E2 Face",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.864, pTM: 0.868, pLDDT: 0.74, ipDE: 1.23,
+    sequence: "SKEEEEKRREKEEEEKKKIQEILDSSLYEHPEEKKEIEEEEEKKKEEEKRKKEEEKRKREEEE"
+  },
+  {
+    id: "scaleup_0543", name: "e2_small_100-067", campaign: "E2 Face",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.783, pTM: 0.826, pLDDT: 0.63, ipDE: 1.93,
+    sequence: "SAAERAAAEAARAAEEARRQEILDSSYYDFPLEKQKIEEERRKAEKEREEEEKRREEERREKE"
+  },
+  {
+    id: "scaleup_0544", name: "e2_small_100-068", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.161, pTM: 0.515, pLDDT: 0.695, ipDE: 11.42,
+    sequence: "SSITKEEEELLKEEEEKKKKEKEEEEEEKRRREEKARREAEEEARRRAEEEAR"
+  },
+  {
+    id: "scaleup_0558", name: "e2_small_100-082", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.71, pTM: 0.734, pLDDT: 0.61, ipDE: 4.32,
+    sequence: "AAAEAARAAAAAAAAAEAAAAAAAAAALEKLEAIEKEKEELEKFHEEMKKELLE"
+  },
+  {
+    id: "scaleup_0559", name: "e2_small_100-083", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.441, pTM: 0.63, pLDDT: 0.721, ipDE: 5.98,
+    sequence: "SKEEEEKERKEKEEKEKKEKEKKEEEELEKLKKIIEEKKKREEFLEEMKKLLEE"
+  },
+  {
+    id: "scaleup_0560", name: "e2_small_100-084", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.466, pTM: 0.61, pLDDT: 0.679, ipDE: 6.68,
+    sequence: "EIEESIEKVRENAFFYKNQEKLRKELEEKEKEEKKKEEEEKEKEERKRKLEEE"
+  },
+  {
+    id: "scaleup_0561", name: "e2_small_100-085", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.768, pTM: 0.779, pLDDT: 0.695, ipDE: 1.75,
+    sequence: "DIEESVERVRRDAELYANAEALRAAAAAARAEAAAAEARRRAAELARRLAEAE"
+  },
+  {
+    id: "scaleup_0562", name: "e2_small_100-086", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.59, pTM: 0.667, pLDDT: 0.631, ipDE: 3.71,
+    sequence: "RLEKSIEEVEERRRFYENAEELRAAAAAAAAAAAEAAAAAAAAAAEAARAAAA"
+  },
+  {
+    id: "scaleup_0563", name: "e2_small_100-087", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.663, pTM: 0.765, pLDDT: 0.619, ipDE: 3.96,
+    sequence: "KLEESIKKVKENVELYKNAEELREELKRLAEELERERREEERRREEERRRREE"
+  },
+  {
+    id: "scaleup_0564", name: "e2_small_100-088", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.755, pTM: 0.755, pLDDT: 0.829, ipDE: 2.01,
+    sequence: "GMSPEELLELMKKREEERRKEAAERARERARAAEEERRRREEEERRRREEEERRRREE"
+  },
+  {
+    id: "scaleup_0565", name: "e2_small_100-089", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.483, pTM: 0.63, pLDDT: 0.797, ipDE: 5.1,
+    sequence: "SMSPEELEKHYEEEKKKREEKLKKKNIEEKEKKEKEEKEKKEREEKEEKERKEKEKLA"
+  },
+  {
+    id: "scaleup_0566", name: "e2_small_100-090", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.575, pTM: 0.661, pLDDT: 0.654, ipDE: 4.61,
+    sequence: "MMSPEELERRRAEAEAKAREEAEAANRAAAAAAAEAAAAAARAEAEAERARAAAAAAA"
+  },
+  {
+    id: "scaleup_0567", name: "e2_small_100-091", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.586, pTM: 0.663, pLDDT: 0.691, ipDE: 5.56,
+    sequence: "MLSPEELEKLREEQEKKLKEEAAAAAVAAAAAAAEAAAAAAEAAAAAEAAARARAEAE"
+  },
+  {
+    id: "scaleup_0568", name: "e2_small_100-092", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.605, pTM: 0.67, pLDDT: 0.696, ipDE: 6.52,
+    sequence: "DLEKKLEELLENIIRALRLEMIREAVREGISEEELKEREKELKKKVEELKKLLE"
+  },
+  {
+    id: "scaleup_0569", name: "e2_small_100-093", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.773, pTM: 0.768, pLDDT: 0.663, ipDE: 4.04,
+    sequence: "EEEKAEKERLERIIRHLRLEMIREAVREGVSKEELEKRLKELEEKVKKLEELLE"
+  },
+  {
+    id: "scaleup_0570", name: "e2_small_100-094", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.908, pTM: 0.868, pLDDT: 0.755, ipDE: 1.63,
+    sequence: "AAEEALKKQLEDIVLHLRQEMIREAVREGVSKEELEEREKELEKKIEELRKLLE"
+  },
+  {
+    id: "scaleup_0571", name: "e2_small_100-095", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.73, pTM: 0.794, pLDDT: 0.721, ipDE: 3.2,
+    sequence: "DELAELAARLEALIRALRVEMIREAVREGVSREELEERERELAARIAALRAALA"
+  },
+  {
+    id: "scaleup_0572", name: "e2_small_100-096", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.489, pTM: 0.635, pLDDT: 0.762, ipDE: 8.36,
+    sequence: "VTPEELEKKREELKKRAEEREAARAAEERRRAEEAAARAAALAARLAEELAR"
+  },
+  {
+    id: "scaleup_0573", name: "e2_small_100-097", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.614, pTM: 0.729, pLDDT: 0.671, ipDE: 5.07,
+    sequence: "VTPEELKEKEEELKKKYLERKEEEEKKLKELEEAKKAALEKLLEELEKKLKE"
+  },
+  {
+    id: "scaleup_0574", name: "e2_small_100-098", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.46, pTM: 0.662, pLDDT: 0.733, ipDE: 6.15,
+    sequence: "VSKEELEKELEEKKKEALERLKKLEEEKKKKEEEEKKKAKELEEKKKKLEEE"
+  },
+  {
+    id: "scaleup_0575", name: "e2_small_100-099", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.713, pTM: 0.774, pLDDT: 0.702, ipDE: 2.86,
+    sequence: "VTKEEKEKKLEELKKEYEKIEEEKKEKEKKEKEEEEKKKEELEKELKEKLEA"
+  },
+  {
+    id: "scaleup_0576", name: "e2_small_100-100", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.832, pTM: 0.863, pLDDT: 0.731, ipDE: 1.84,
+    sequence: "KKEELLKELEEEKKKKEEIEKEKEELEAFLEKNKEKLSKEEQELIQKQIEVLEAE"
+  },
+  {
+    id: "scaleup_0577", name: "e2_small_100-101", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.879, pTM: 0.785, pLDDT: 0.695, ipDE: 3.37,
+    sequence: "MEEERRRELEEEEERRRAIEERRAALRAYLEANREALSPEEIARLQQEIAVLEAL"
+  },
+  {
+    id: "scaleup_0578", name: "e2_small_100-102", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.858, pTM: 0.836, pLDDT: 0.748, ipDE: 1.63,
+    sequence: "EEEEKLKKLEEEKKKREEIEKRKKELEAYLKENEEKLSPEEIELLKKEIEVLKAQ"
+  },
+  {
+    id: "scaleup_0579", name: "e2_small_100-103", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.481, pTM: 0.646, pLDDT: 0.735, ipDE: 6.52,
+    sequence: "EEKKKLEELEELEKKREEIEKRREELEAWLEKNREKLSEEEIEEIRKEIEVLEAL"
+  },
+  {
+    id: "scaleup_0580", name: "e2_small_100-104", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.292, pTM: 0.523, pLDDT: 0.697, ipDE: 10.35,
+    sequence: "MSPEEEEERRRREREEEERRREEERKKEEEEKKKEEEKKKKEEEEKREKEKREKEEK"
+  },
+  {
+    id: "scaleup_0581", name: "e2_small_100-105", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.833, pTM: 0.85, pLDDT: 0.753, ipDE: 1.75,
+    sequence: "MSPEELEELERKRQEEIEKKEEEKKKKEEEEEKEKEKEEEEKKKAEEEEKEKKLKEE"
+  },
+  {
+    id: "scaleup_0582", name: "e2_small_100-106", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.245, pTM: 0.522, pLDDT: 0.733, ipDE: 10.8,
+    sequence: "MSPEELEKKEEKEQEEEKKKREEEEKKEEEEEKKKKEEEEKKREEEEREEKEKLEEL"
+  },
+  {
+    id: "scaleup_0583", name: "e2_small_100-107", campaign: "E2 Face",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.129, pTM: 0.486, pLDDT: 0.778, ipDE: 13.12,
+    sequence: "MSEEELKKKEKEEREKEEKLREEERKKEEEEEKKKKEEEEAEREKKEKEEKERKEAE"
+  },
+  {
+    id: "scaleup_0584", name: "e2_small_100-108", campaign: "E2 Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.694, pTM: 0.743, pLDDT: 0.642, ipDE: 4.88,
+    sequence: "AEAAARLAALLAAARAAVEAARLELLRELLFNPEELLARLEAERAEAERRERAAREAALA"
+  },
+  {
+    id: "scaleup_0585", name: "e2_small_100-109", campaign: "E2 Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.538, pTM: 0.736, pLDDT: 0.685, ipDE: 5.66,
+    sequence: "EKEEEEKKKLLEEAKKEYEEKELKEREKLLFNPEEYLEELEKKKKKEEEEEERKRREEEE"
+  },
+  {
+    id: "scaleup_0586", name: "e2_small_100-110", campaign: "E2 Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.676, pTM: 0.784, pLDDT: 0.715, ipDE: 4.13,
+    sequence: "DELLAKLLAELARALAEAEAARAELRRLLLHEPEKLLEELEKEKKKKEEEERRRKELEEE"
+  },
+  {
+    id: "scaleup_0587", name: "e2_small_100-111", campaign: "E2 Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.651, pTM: 0.807, pLDDT: 0.736, ipDE: 4.54,
+    sequence: "DEELKKLLELLEKALKEYEEKKKKERDLLLNNPKEYLEKLEEEERRRREEEERRRREAEE"
+  },
+  {
+    id: "scaleup_0588", name: "e2_small_100-112", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.666, pTM: 0.805, pLDDT: 0.668, ipDE: 4.24,
+    sequence: "SEEEKKKKKKKKKKERKKKKEKAKKKLEEAKKKKEELEKYREELRKLAEE"
+  },
+  {
+    id: "scaleup_0589", name: "e2_small_100-113", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.396, pTM: 0.627, pLDDT: 0.665, ipDE: 5.78,
+    sequence: "DEEKEKKKKEEEEKKKEEKKKEEEERLREIQKELEERERYREEMRRLAEE"
+  },
+  {
+    id: "scaleup_0590", name: "e2_small_100-114", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.53, pTM: 0.675, pLDDT: 0.703, ipDE: 5.54,
+    sequence: "AEEEARRAKLEAEERRKKEIEEALERLKKVKEELEEREKYVEELREEAAR"
+  },
+  {
+    id: "scaleup_0591", name: "e2_small_100-115", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.782, pTM: 0.881, pLDDT: 0.7, ipDE: 2.9,
+    sequence: "DKEKKEKKKKKKEELEKKLKEEAEKKKKELEKEEKERNEYREELEKLYKE"
+  },
+  {
+    id: "scaleup_0592", name: "e2_small_100-116", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.658, pTM: 0.722, pLDDT: 0.706, ipDE: 3.41,
+    sequence: "EIEKEFKELEERRILEGIEKLLKELLEELEKLLEELLAALLAAL"
+  },
+  {
+    id: "scaleup_0593", name: "e2_small_100-117", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.857, pTM: 0.888, pLDDT: 0.658, ipDE: 1.5,
+    sequence: "DELKELEELERRRIERGAEELLARRRRRRAEEEAARRAAEEAAR"
+  },
+  {
+    id: "scaleup_0594", name: "e2_small_100-118", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.814, pTM: 0.831, pLDDT: 0.738, ipDE: 1.51,
+    sequence: "DIKKRFEELERERRERGIAELLAAAAAAAAAAAAAAAAAAAAAA"
+  },
+  {
+    id: "scaleup_0595", name: "e2_small_100-119", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.609, pTM: 0.709, pLDDT: 0.709, ipDE: 5.47,
+    sequence: "DKLEKLKKLQEEREEKGLAELLAEAAAAAAAAAAEAAAAAAAAA"
+  },
+  {
+    id: "scaleup_0596", name: "e2_small_10-000", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.89, pTM: 0.906, pLDDT: 0.67, ipDE: 1.43,
+    sequence: "AEEERRRRQKEIEELIEKIKKLEEELKKKLETGSEEDTEPLKKELEKLKKELKELCRG"
+  },
+  {
+    id: "scaleup_0597", name: "e2_small_10-001", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.512, pTM: 0.687, pLDDT: 0.676, ipDE: 7.17,
+    sequence: "AEAERRRRQEEIRRLREEIRELRRELERVKAEGSEADTEPLRRRLEELEARLRELMRG"
+  },
+  {
+    id: "scaleup_0598", name: "e2_small_10-002", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.865, pTM: 0.854, pLDDT: 0.812, ipDE: 1.41,
+    sequence: "EEEEREKLRKKIEELRKEIEELRKRIEETLATGSPEDTEPLRARLEELEKELRELMRG"
+  },
+  {
+    id: "scaleup_0599", name: "e2_small_10-003", campaign: "E2 Face",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.359, pTM: 0.563, pLDDT: 0.729, ipDE: 8.32,
+    sequence: "EEEEKKKRQEEIEKLEEEIKKLKKEIEEILKKGSPEDTKELEKKLKELEEELRELCLG"
+  },
+  {
+    id: "scaleup_0600", name: "e2_small_10-004", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.68, pTM: 0.756, pLDDT: 0.665, ipDE: 3.76,
+    sequence: "SAAEAAARAAAAAAAAAAAAAAARRRAEVRARLEREEKEEEEAKEEELEELEE"
+  },
+  {
+    id: "scaleup_0601", name: "e2_small_10-005", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.818, pTM: 0.782, pLDDT: 0.708, ipDE: 2.4,
+    sequence: "AAAAEAAAAAAAAAAAAAAARAEEERRRRRRRLEEEREKERKEKEEKEKKELE"
+  },
+  {
+    id: "scaleup_0602", name: "e2_small_10-006", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.745, pTM: 0.822, pLDDT: 0.746, ipDE: 2.59,
+    sequence: "MEEERRRREEEERRRREEAERRERIRKERAEKFREEREKERKEKEEKEKKELE"
+  },
+  {
+    id: "scaleup_0603", name: "e2_small_10-007", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.511, pTM: 0.644, pLDDT: 0.784, ipDE: 5.91,
+    sequence: "MEEERREREEKEREEKEKKEEFEKILKEIAEKRRKEEEEKRRKEEEERRKKLE"
+  },
+  {
+    id: "scaleup_0604", name: "e2_small_10-008", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.904, pTM: 0.881, pLDDT: 0.628, ipDE: 1.22,
+    sequence: "REELLRQARREENRLKLTSTEAEAEAWRTENVQLPEEERAAILAAAEEARAAA"
+  },
+  {
+    id: "scaleup_0605", name: "e2_small_10-009", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.454, pTM: 0.701, pLDDT: 0.699, ipDE: 6.27,
+    sequence: "MEELLREARRRENELLLEGSEEEAEVYRTENVQLSEEERRRLLKEAEERRRRE"
+  },
+  {
+    id: "scaleup_0606", name: "e2_small_10-010", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.366, pTM: 0.622, pLDDT: 0.552, ipDE: 5.93,
+    sequence: "DEARLREARHEQMKLALTGSEEEAAVYATENVQLSEEERAALRAAAEARRAAA"
+  },
+  {
+    id: "scaleup_0607", name: "e2_small_10-011", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.346, pTM: 0.579, pLDDT: 0.614, ipDE: 6.61,
+    sequence: "REERIREARARENEALLTSSEEEARVYATINTQLSDEERAALVEAARARRAAE"
+  },
+  {
+    id: "scaleup_0608", name: "e2_small_10-012", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.609, pTM: 0.765, pLDDT: 0.693, ipDE: 3.9,
+    sequence: "SAMKELEERWKRLEEERKKRKEEEERRRKKEKEEEERKREEEELEKL"
+  },
+  {
+    id: "scaleup_0609", name: "e2_small_10-013", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.877, pTM: 0.897, pLDDT: 0.769, ipDE: 1.25,
+    sequence: "SEEEELERRYEELEKYRKELKEKKEEERKKKEKEEEEKKLKELLEKL"
+  },
+  {
+    id: "scaleup_0610", name: "e2_small_10-014", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.777, pTM: 0.767, pLDDT: 0.803, ipDE: 1.8,
+    sequence: "SEKELLDERYKRLKEEREKRKEEEEEELRRREEEEERRRREEEEALE"
+  },
+  {
+    id: "scaleup_0611", name: "e2_small_10-015", campaign: "E2 Face",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.592, pTM: 0.753, pLDDT: 0.752, ipDE: 4.36,
+    sequence: "SEKEELEKRYLELEEERKKEKEEEEKELEKKRKEEEERRRKEELEKL"
+  },
+  {
+    id: "scaleup_0612", name: "e2_small_10-016", campaign: "E2 Face",
+    binder_length: 49, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.648, pTM: 0.719, pLDDT: 0.652, ipDE: 3.44,
+    sequence: "PEPPPPDARERAEAYRRDAAAAAAAAAAAAAAREAAEAARRAHLERLAA"
+  },
+  {
+    id: "scaleup_0613", name: "e2_small_10-017", campaign: "E2 Face",
+    binder_length: 49, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.156, pTM: 0.507, pLDDT: 0.641, ipDE: 9.98,
+    sequence: "PEPPPDDAKKRAEEYKKDKKKKEEKKKKKEEKKKEEEKAKELHEALKKK"
+  },
+  {
+    id: "scaleup_0614", name: "e2_small_10-018", campaign: "E2 Face",
+    binder_length: 49, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.53, pTM: 0.638, pLDDT: 0.649, ipDE: 6.01,
+    sequence: "AEPPSPEAEKRAKAYKKDKRKRKRRKKKKKKKKKKKKRRKKLHEELKKK"
+  },
+  {
+    id: "scaleup_0615", name: "e2_small_10-019", campaign: "E2 Face",
+    binder_length: 49, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.739, pTM: 0.733, pLDDT: 0.679, ipDE: 4.25,
+    sequence: "AEPPSPEAERRARAYRRDRAAAAAAAAAAAAALAAAAAAAAAHAALAAA"
+  },
+  {
+    id: "scaleup_0616", name: "e2_small_10-020", campaign: "E2 Face",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.736, pTM: 0.728, pLDDT: 0.64, ipDE: 2.55,
+    sequence: "EEEEKEREKREKEAKEELEKKEKEIEELLKKNGKGKKELEKLKGEAGEAKERARKEARERAE"
+  },
+  {
+    id: "scaleup_0617", name: "e2_small_10-021", campaign: "E2 Face",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.196, pTM: 0.511, pLDDT: 0.7, ipDE: 10.28,
+    sequence: "EEFEKEEKEKEEKRKEEYEEKLKKIEELERENGEGKKLREKLEGEMGEEKEKEKEERKKKAE"
+  },
+  {
+    id: "scaleup_0618", name: "e2_small_10-022", campaign: "E2 Face",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.779, pTM: 0.847, pLDDT: 0.626, ipDE: 2.96,
+    sequence: "DEFEEKEEKEKKEAEEELKKKLEEIEKLEKENGKGKEEREKLLGEAGKKEEERRRARREAAL"
+  },
+  {
+    id: "scaleup_0619", name: "e2_small_10-023", campaign: "E2 Face",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.877, pTM: 0.9, pLDDT: 0.634, ipDE: 1.71,
+    sequence: "DEEEKELEKYKKKREEEYKKKLEEIKELEKKNGKGKKEREKLEGELLKEEEELRENLRKRAE"
+  },
+  {
+    id: "scaleup_0620", name: "e2_small_10-024", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.445, pTM: 0.6, pLDDT: 0.668, ipDE: 6.73,
+    sequence: "MKNMEEIEEMKEELVRFAREARKARAADPEGFEALLEASERLRKLLELGEELLKLKEEEEK"
+  },
+  {
+    id: "scaleup_0621", name: "e2_small_10-025", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.303, pTM: 0.548, pLDDT: 0.604, ipDE: 7.55,
+    sequence: "MNNMAEIEKMKQDYIDFARAARAAAAADPEAFQARLEASARLQAELALGEELLAEAEEEAA"
+  },
+  {
+    id: "scaleup_0622", name: "e2_small_10-026", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.708, pTM: 0.789, pLDDT: 0.677, ipDE: 3.46,
+    sequence: "MNNMKEIEEMKEKLVEFYEKAEEEKKKNPEAFEKKLKESEKLRKLLEEGKRLAELRRKKEE"
+  },
+  {
+    id: "scaleup_0623", name: "e2_small_10-027", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.859, pTM: 0.833, pLDDT: 0.655, ipDE: 2.14,
+    sequence: "MNNMAEIERMKEELIEWAREFERALAEDPEAVEARLAASEKERARLRLGRRLLAEEEERRA"
+  },
+  {
+    id: "scaleup_0624", name: "e2_small_10-028", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.58, pTM: 0.675, pLDDT: 0.701, ipDE: 6.15,
+    sequence: "LKELEERLKKEKKRLEEIKALSPEEQEEALKKLKEEEERKKELEELKKENEELRKKAKELE"
+  },
+  {
+    id: "scaleup_0625", name: "e2_small_10-029", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.83, pTM: 0.847, pLDDT: 0.811, ipDE: 1.47,
+    sequence: "KKELKEKLKKLEKILKEIEALSPEEKKKALEELKKILEEEEELKKRREENEKLRKEAEEKE"
+  },
+  {
+    id: "scaleup_0626", name: "e2_small_10-030", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.83, pTM: 0.849, pLDDT: 0.676, ipDE: 2.03,
+    sequence: "LARALAALAKAAERLAAYAALSPEEQAEAEKKFAEEEKEKEELEKLKEENEELRRKAEAEK"
+  },
+  {
+    id: "scaleup_0627", name: "e2_small_10-031", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.922, pTM: 0.902, pLDDT: 0.749, ipDE: 0.8,
+    sequence: "LAAAAAALARAQARLDAIAALSPEEQARARAEAEAAARRAEELARRQEENRRAREEAERAR"
+  },
+  {
+    id: "scaleup_0628", name: "e2_small_10-032", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.429, pTM: 0.657, pLDDT: 0.701, ipDE: 7.1,
+    sequence: "DLKELLEKKKKEELEKKLKEIKEEATKKELEKRIEELLEEKKKKEEEEKKKKLE"
+  },
+  {
+    id: "scaleup_0629", name: "e2_small_10-033", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.849, pTM: 0.866, pLDDT: 0.718, ipDE: 1.1,
+    sequence: "AEAAARAAAALAALAAELEKIREEKTREELEKKKEELLKEKEEEKKKKELEELE"
+  },
+  {
+    id: "scaleup_0630", name: "e2_small_10-034", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.314, pTM: 0.593, pLDDT: 0.71, ipDE: 7.95,
+    sequence: "EEEREREEEERAKREEELEKLRRKATEEALEERKKKLLEEKKKKEEEELKKKLE"
+  },
+  {
+    id: "scaleup_0631", name: "e2_small_10-035", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.769, pTM: 0.847, pLDDT: 0.818, ipDE: 1.55,
+    sequence: "EEEERERERREKELEEELEKLREEATKKKFEEREKKLLEEKKKEEEKKKAEELE"
+  },
+  {
+    id: "scaleup_0632", name: "e2_small_10-036", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.747, pTM: 0.84, pLDDT: 0.711, ipDE: 2.11,
+    sequence: "VSEEELEKREKELKELREELIEENKEKIEKALEEKKEKEKKEEEEKKKKEEEERKKKEEEE"
+  },
+  {
+    id: "scaleup_0633", name: "e2_small_10-037", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.324, pTM: 0.568, pLDDT: 0.691, ipDE: 8.35,
+    sequence: "VSKKELEEKEKKLKELKDELYEKYKEEIKKAEEEEKKKKEEEEEEKKKKEKEEKEKKRKEE"
+  },
+  {
+    id: "scaleup_0634", name: "e2_small_10-038", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.497, pTM: 0.591, pLDDT: 0.673, ipDE: 8.71,
+    sequence: "VDEEELKRRREELEELREELRAEHAEELAAAAEAAARAAAEAARREAERRAAEERRRELLA"
+  },
+  {
+    id: "scaleup_0635", name: "e2_small_10-039", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.798, pTM: 0.821, pLDDT: 0.671, ipDE: 2.59,
+    sequence: "VSAEELKERQEELEELREELEEEFREKLEEAERERRRREEEERRRREEEERRRREEERRRR"
+  },
+  {
+    id: "scaleup_0636", name: "e2-000", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.758, pTM: 0.833, pLDDT: 0.633, ipDE: 3.12,
+    sequence: "SAAALAAQAAARAAWAALLADGRLMRALAEQARREAEERAKRAAEEEAKK"
+  },
+  {
+    id: "scaleup_0637", name: "e2-001", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.904, pTM: 0.844, pLDDT: 0.776, ipDE: 1.35,
+    sequence: "LAELLAAQAAALAAAAELLANRVEMLKLRQEAAEAARAARRAEEERRRLE"
+  },
+  {
+    id: "scaleup_0638", name: "e2-002", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.297, pTM: 0.582, pLDDT: 0.631, ipDE: 7.31,
+    sequence: "AAAAAAEAARAAAEWEALLADRVAQRELREAARKAAEEAARAAEERRAAE"
+  },
+  {
+    id: "scaleup_0639", name: "e2-003", campaign: "E2 Face",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.777, pTM: 0.752, pLDDT: 0.788, ipDE: 3.37,
+    sequence: "MEEARRRAEEEKAAWEELLKDRVKMRKLKEEKEEEERREKERKELEEELE"
+  },
+  {
+    id: "scaleup_0640", name: "e2-004", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.436, pTM: 0.603, pLDDT: 0.75, ipDE: 6.29,
+    sequence: "SEEEERKAEEERRREEERKRKEKEEEKERVKKIIEEIREELK"
+  },
+  {
+    id: "scaleup_0650", name: "e2-014", campaign: "E2 Face",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.436, pTM: 0.656, pLDDT: 0.719, ipDE: 5.78,
+    sequence: "EKEEKEKKKEEEEKKKKEEEEKKKEEEKKEKELEEYRKKVEEYEKVKKEEEEKKKKEEEEKKKK"
+  },
+  {
+    id: "scaleup_0651", name: "e2-015", campaign: "E2 Face",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.309, pTM: 0.53, pLDDT: 0.663, ipDE: 8.16,
+    sequence: "ERERREEEERRREEEERAREEAEKEKKEEEEKLEKYRKLREEAEKKKKEEEEAKEKEEEAKKLA"
+  },
+  {
+    id: "scaleup_0652", name: "e2-016", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.834, pTM: 0.791, pLDDT: 0.723, ipDE: 2.21,
+    sequence: "VDEEVLEKNAELVEEERRRREEEARRAREEKERRRRAEEELQRLLEEL"
+  },
+  {
+    id: "scaleup_0653", name: "e2-017", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.806, pTM: 0.76, pLDDT: 0.819, ipDE: 2.56,
+    sequence: "VDKEVLEKNAKLVEEEEREARERLERERREKEERRRREEEERRKREEE"
+  },
+  {
+    id: "scaleup_0654", name: "e2-018", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.811, pTM: 0.798, pLDDT: 0.662, ipDE: 2.1,
+    sequence: "VSEEVLKEQEELVKEEEKRAAEAAAAAAAAAAAAAAAAAAEAARAAAA"
+  },
+  {
+    id: "scaleup_0655", name: "e2-019", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.881, pTM: 0.899, pLDDT: 0.679, ipDE: 0.69,
+    sequence: "IDKKVLEENAKLVEEKEEKKKKAKEEAKKKKEEEKKKKEEEERRREEE"
+  },
+  {
+    id: "scaleup_0656", name: "sat_e2-0656", campaign: "E2 Face",
+    binder_length: 120, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.365, pTM: 0.63, pLDDT: 0.738, ipDE: 6.75,
+    sequence: "EVQLVESGGGLVQAGGSLRLSEAASGFTFSSYAMGWYRQAPGKEREFVAAISSSGGYTAYADSVKGRFTISRDNAKNTLYLQMNSLKPEDTAVYYEARAAGDNALVFDYWGQGTQVTVSS"
+  },
+  {
+    id: "scaleup_0657", name: "sat_e2-0657", campaign: "E2 Face",
+    binder_length: 108, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.584, pTM: 0.693, pLDDT: 0.636, ipDE: 5.78,
+    sequence: "SAVEAAREAAEAAAKLTGEAGRRAAALAGVLAVAAEEIFANDPAAMEAALPLAKRALEAAKAGDARGAAVAFAEANHALHFAAVARYRETGELPPVNEKKYEFVGRGV"
+  },
+  {
+    id: "scaleup_0658", name: "sat_e2-0658", campaign: "E2 Face",
+    binder_length: 117, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.646, pTM: 0.689, pLDDT: 0.763, ipDE: 3.36,
+    sequence: "EVQLVESGGGLVQAGGSLRLSEAASGFTFSDSVMGWVRQAPGKGREFVAAISSTGTLKLYADSVKGRFTISRDTAKNTLYLQMNSLKAEDTAVYYAVAYDVSTNKVYWGQGTQVTVS"
+  },
+  {
+    id: "scaleup_0659", name: "sat_e2-0659", campaign: "E2 Face",
+    binder_length: 92, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
+    ipTM: 0.417, pTM: 0.571, pLDDT: 0.527, ipDE: 6.08,
+    sequence: "SKEGEEVVRDNQAAALDALNAQSELDPIDKAPLFEPSPEAKEQGLSLNHPDNLVVISTSKISSWYGSLEKWLKTNKTDPVNGKPFNILKYEP"
+  },
+  {
+    id: "scaleup_0660", name: "sat_e2-0660", campaign: "E2 Face",
+    binder_length: 101, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.853, pTM: 0.884, pLDDT: 0.513, ipDE: 1.44,
+    sequence: "MAASGDVATAKELIEKYRAFTITVEFPPDVKIEKDPIDGELITEVSKEGKELGLGPTDPRNLILYGLDNIAYHFLSAAKWYNTKPVSPANGKPFVPRFAEM"
+  },
+  {
+    id: "scaleup_0661", name: "sat_e2-0661", campaign: "E2 Face",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.901, pTM: 0.862, pLDDT: 0.728, ipDE: 1.09,
+    sequence: "KVTVEVVSNPPASPAAVEAAREAAVRALDERGATAAARAAAEAALAAMGDPKAAVFVRVEVE"
+  },
+  {
+    id: "scaleup_0662", name: "sat_e2-0662", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.816, pTM: 0.88, pLDDT: 0.714, ipDE: 1.39,
+    sequence: "DAAERARELGRKAAKAARAGKKEEALKHAEEALKAAEAATDDPAALATAKAALEALKRLLA"
+  },
+  {
+    id: "scaleup_0663", name: "sat_e2-0663", campaign: "E2 Face",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.575, pTM: 0.683, pLDDT: 0.624, ipDE: 3.62,
+    sequence: "VEEAVAAAEAAVAAALARDKAAARAAWAAALEAAEKSKDPQARAAALLGAAAAAAGAVLALT"
+  },
+  {
+    id: "scaleup_0664", name: "sat_e2-0664", campaign: "E2 Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.834, pTM: 0.648, pLDDT: 0.773, ipDE: 2.82,
+    sequence: "SARLERAAKELGVSVETINEILERLKKGEEITDEELAERLGVSVETAKGIKKLLEEKVKK"
+  },
+  {
+    id: "scaleup_0665", name: "sat_e2-0665", campaign: "E2 Face",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.547, pTM: 0.637, pLDDT: 0.683, ipDE: 5.4,
+    sequence: "RKRLPMRVTREGKGVWIYMPKELWDKIEARAAALAAELAAK"
+  },
+  {
+    id: "scaleup_0666", name: "sat_e2-0666", campaign: "E2 Face",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.729, pTM: 0.763, pLDDT: 0.716, ipDE: 2.83,
+    sequence: "GQEVRDKLVELNEKIAKEKDPAKRLELAREMLRLIREHPEEVDEIVKEVLAR"
+  },
+  {
+    id: "scaleup_0667", name: "sat_e2-0667", campaign: "E2 Face",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.856, pTM: 0.877, pLDDT: 0.659, ipDE: 2.07,
+    sequence: "VAETALKLAELEEKLAEEAKREGAEGLADIFYRHAEEARELAK"
+  },
+  {
+    id: "scaleup_0668", name: "sat_e2-0668", campaign: "E2 Face",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.647, pTM: 0.593, pLDDT: 0.734, ipDE: 4.7,
+    sequence: "KVEAKTIGNDEISDEEAKEIAEEVLKEHPNASPVELARLVAERLKEKYPEVKRIGVEISVET"
+  },
+  {
+    id: "scaleup_0669", name: "sat_e2-0669", campaign: "E2 Face",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.475, pTM: 0.655, pLDDT: 0.658, ipDE: 5.25,
+    sequence: "SAEERALLALLLGLLAAVKKLEIVLEARKEGDETAFAAAGRALRAVLDAALAGL"
+  },
+  {
+    id: "scaleup_0670", name: "sat_e2-0670", campaign: "E2 Face",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.289, pTM: 0.536, pLDDT: 0.611, ipDE: 8.84,
+    sequence: "GPAVAAAGAALAIAGGALQNPVLAALGAGIAGAAAVASRSLAAANAAAVGGAAAARAAFG"
+  },
+  {
+    id: "scaleup_0671", name: "sat_e2-0671", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.326, pTM: 0.561, pLDDT: 0.683, ipDE: 7.16,
+    sequence: "SNLERLERIARGAAEFLLSLVEANAAGDVEGARALLKAAEAGAA"
+  },
+  {
+    id: "scaleup_0672", name: "sat_e2-0672", campaign: "E2 Face",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.659, pTM: 0.669, pLDDT: 0.698, ipDE: 4.58,
+    sequence: "GAKVVKSVTVEISPDDTFEEIVEKIKAENPELSDEEAEALAKELQRAASRGIAGEFTVAVVEE"
+  },
+  {
+    id: "scaleup_0673", name: "sat_e2-0673", campaign: "E2 Face",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.907, pTM: 0.87, pLDDT: 0.635, ipDE: 1.46,
+    sequence: "SAAAAAGEKAAAAAEAGASTDELAKLWVEAAKLAAASSDPAAANAAFIGIAKAIVIRMKRLLGL"
+  },
+  {
+    id: "scaleup_0674", name: "sat_e2-0674", campaign: "E2 Face",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.76, pTM: 0.677, pLDDT: 0.679, ipDE: 2.97,
+    sequence: "AGAAAGVSRKVTADELPGVARELWERAQRLLGRKPDKARLTFYW"
+  },
+  {
+    id: "scaleup_0675", name: "sat_e2-0675", campaign: "E2 Face",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.962, pTM: 0.903, pLDDT: 0.829, ipDE: 0.74,
+    sequence: "KTEEEIAEELSKKFGISLTAARAAVEAVRRILERHPDITAEELAERTGASLEEVEHLLELLK"
   },
 ];
 
