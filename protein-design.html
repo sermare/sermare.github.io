@@ -111,6 +111,7 @@
     }
 
     .step-done { color: var(--tag-text); }
+    .step-active { color: #e67e22; font-weight: 600; }
     .step-pending { color: var(--text-secondary); }
     .step-failed { color: var(--tag-text-reading); }
 
@@ -582,7 +583,7 @@
 
     <div class="page-title">RBX1 Binder Design Dashboard</div>
     <div class="page-subtitle">De novo protein binder design for RBX1 (RING Box Protein 1, 108 AA) &mdash; GEM Workshop / ICLR 2026</div>
-    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 — periodic scan 2026-03-22T23:59 UTC</div>
+    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 — periodic scan 2026-03-22T20:45 UTC</div>
 
     <!-- ===== Tabs ===== -->
     <div class="tabs">
@@ -639,21 +640,20 @@
 
       <!-- Info Banner -->
       <div class="info-banner">
-        <strong>Analysis &amp; Interpretation (March 22, 2026 &mdash; evening scan):</strong><br>
-        <strong>Major update:</strong> Boltz-2 scoring is <strong>complete</strong> for all 40 pilot RFdiffusion&rarr;ProteinMPNN binders (20 E2 face + 20 Cullin face).
-        Best hit: <strong>design_0039</strong> (Cullin face, 46 AA) with ipTM=0.645, pTM=0.782, pLDDT=0.665, ipDE=3.08.
-        Top RFdiffusion+MPNN designs (ipTM&gt;0.4): design_0039 (0.645), design_0033 (0.485), design_0025 (0.456), design_0004 (0.442), design_0017 (0.429), design_0016 (0.421), design_0020 (0.417).
+        <strong>Analysis &amp; Interpretation (March 22, 2026 &mdash; 20:45 UTC scan):</strong><br>
+        <strong>Boltz-2 scoring launched:</strong> 676 binders split into <strong>14 batches</strong> (batch_00&ndash;batch_13). Batch b2_b00 is running; b2_b01&ndash;b2_b13 queued (Priority). Scoring on savio3_gpu A40 nodes.
         <br><br>
-        <strong>NEW &mdash; BoltzGen small_10 batch scored:</strong> 10 new BoltzGen designs from the small_10 campaign are now fully scored (BoltzGen pipeline with inverse folding, refolding, and PLIP analysis).
-        Best: <strong>rbx1_small_0</strong> (ipTM=0.582, min_PAE=2.41, 12 H-bonds, delta_SASA=1801 &Aring;&sup2;) &mdash; the highest BoltzGen ipTM to date.
-        rbx1_small_6 (ipTM=0.569) and rbx1_small_2 (ipTM=0.529) also strong. However, several show high bb_RMSD (&gt;5 &Aring;), indicating refold failures.
+        <strong>RFdiffusion scale-up surged:</strong> <strong>1,416 total PDB backbones</strong> (362 core + 333 satellite E2 campaigns + ongoing). 5 RFdiffusion jobs running across savio2_1080ti generating more satellite backbones for beta_e2, cullin_med, cullin_small, e2_med, e2_small campaigns.
         <br><br>
-        <strong>Scale-up status:</strong> 404 RFdiffusion backbones generated (313 core + 91 satellite campaigns). ProteinMPNN now complete across <strong>14 campaigns with 656 designed sequences</strong>.
-        676 binders staged for Boltz-2 scoring (all_binders_to_score.fasta prepared).
-        BoltzGen: small_10 scored (10 designs), small_100 (100 inverse-folded, awaiting final ranking), medium pilots awaiting scale-up.
+        <strong>ProteinMPNN:</strong> mpnn_all job running (~5 min in), processing all binders for sequence design across the expanded backbone set. 676 binders already staged.
         <br><br>
-        <strong>Red flags:</strong> Many MPNN pilot designs show low ipTM (&lt;0.3). BoltzGen medium designs have high bb_RMSD (&gt;12 &Aring;). Several small_10 designs (rbx1_small_5, rbx1_small_9) show poor metrics.
-        <strong>Recommendation:</strong> Prioritize design_0039 and top-5 MPNN designs. Launch Boltz-2 scoring on the 676 staged binders. Focus BoltzGen efforts on small (40-65 AA) designs.
+        <strong>BoltzGen scale-up:</strong> small_100: 69/100 inverse-folded, 59/100 refolded (bgen_s100 running). medium_100: 28/100 inverse-folded, 24/100 refolded (bgen_m100 running).
+        <br><br>
+        <strong>Previous best hits unchanged:</strong> design_0039 (ipTM=0.645), rbx1_small_0 (ipTM=0.582). Top MPNN designs (ipTM&gt;0.4): design_0039 (0.645), design_0033 (0.485), design_0025 (0.456), design_0004 (0.442), design_0017 (0.429), design_0016 (0.421), design_0020 (0.417).
+        <br><br>
+        <strong>Active SLURM jobs (28):</strong> 5 RFdiffusion, 1 MPNN, 2 BoltzGen, 14 Boltz-2 scoring (1 running + 13 pending), plus test jobs.
+        <strong>Red flags:</strong> Boltz-2 scoring not yet producing predictions (batch_00 processed 51 inputs but predictions dir empty &mdash; may need time). Monitor b2_b00 output.
+        <strong>Recommendation:</strong> Wait for b2_b00 to complete (~1 hr). Check predictions/ folder. If successful, remaining 13 batches will auto-process. Continue monitoring BoltzGen refolding progress.
       </div>
 
       <!-- Pipeline Status -->
@@ -675,9 +675,9 @@
               <span class="pipeline-name">Pipeline A: RFdiffusion Scale-up</span>
               <span class="tag tag-reading">IN PROGRESS</span>
             </div>
-            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (404 backbones, 13 core + satellite campaigns)</div>
-            <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (656 sequences across 14 campaigns)</div>
-            <div class="pipeline-step step-pending">&#9675; Boltz-2 scoring (676 binders staged)</div>
+            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (1,416 backbones &mdash; 362 core + 333 satellite + 5 jobs running)</div>
+            <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (676 binders staged; mpnn_all job running)</div>
+            <div class="pipeline-step step-active">&#9654; Boltz-2 scoring (14 batches: b2_b00 running, b2_b01&ndash;b2_b13 queued)</div>
           </div>
           <div class="pipeline-card">
             <div class="pipeline-card-header">
@@ -705,10 +705,10 @@
               <span class="tag tag-reading">IN PROGRESS</span>
             </div>
             <div class="pipeline-step step-done">&#10003; small_10: 10 designs &mdash; fully scored &amp; ranked (best ipTM=0.582)</div>
-            <div class="pipeline-step step-done">&#10003; small_100: 100 designs generated + inverse-folded</div>
-            <div class="pipeline-step step-pending">&#9675; medium_10: 2 intermediate designs (generation ongoing)</div>
-            <div class="pipeline-step step-pending">&#9675; medium_100: 8 intermediate designs (generation ongoing)</div>
-            <div class="pipeline-step step-pending">&#9675; small_100 scoring &amp; ranking</div>
+            <div class="pipeline-step step-active">&#9654; small_100: 69/100 inverse-folded, 59/100 refolded (bgen_s100 running)</div>
+            <div class="pipeline-step step-active">&#9654; medium_100: 28/100 inverse-folded, 24/100 refolded (bgen_m100 running)</div>
+            <div class="pipeline-step step-pending">&#9675; small_100 final scoring &amp; ranking</div>
+            <div class="pipeline-step step-pending">&#9675; medium_100 final scoring &amp; ranking</div>
           </div>
           <div class="pipeline-card">
             <div class="pipeline-card-header">
@@ -838,7 +838,7 @@
           <span class="rec">1. Priority: Launch Boltz-2 scoring on the 676 staged binders.</span> The all_binders_to_score.fasta is ready. This is the highest-impact next step, as pilot MPNN designs already produced the best hit (ipTM=0.645).
         </p>
         <p>
-          <span class="rec">2. RFdiffusion scale-up is now substantial (404 backbones, 656 MPNN sequences).</span> Focus shifts from generation to scoring. Satellite E2 campaigns (91 backbones) are still generating; monitor completion.
+          <span class="rec">2. RFdiffusion scale-up is massive (1,416 backbones, 676 MPNN binders staged).</span> Focus has shifted to scoring &mdash; Boltz-2 batch scoring launched (14 batches). 5 RFdiffusion jobs + 1 MPNN job still running.
         </p>
         <p>
           <span class="rec">3. Focus on BoltzGen small pilot designs.</span> Small pilot outperforms medium pilot across all metrics. Consider generating more small designs (40-65 AA) rather than medium.
@@ -849,12 +849,12 @@
 
         <h3>Pipeline Progress</h3>
         <p>
-          Estimated overall completion: <strong>35%</strong>.
-          Evolutionary analysis (100%), RFdiffusion generation (100% for pilot), ProteinMPNN (100% for pilot), BoltzGen small (100%), BoltzGen medium (100%).
-          Remaining: RFdiffusion scoring (0%), scale-up generation (0%), filtering (0%), submission (0%).
+          Estimated overall completion: <strong>45%</strong>.
+          Evolutionary analysis (100%), RFdiffusion generation (pilot 100%, scale-up ~90%), ProteinMPNN (pilot 100%, scale-up running), BoltzGen small pilot (100%), BoltzGen small_10 (100%), BoltzGen small_100 (59%), BoltzGen medium_100 (24%).
+          Boltz-2 scoring: pilot complete, scale-up launched (0/14 batches complete). Filtering (0%), submission (0%).
         </p>
         <div class="progress-bar-container">
-          <div class="progress-bar-fill" style="width: 35%;"></div>
+          <div class="progress-bar-fill" style="width: 45%;"></div>
         </div>
       </div>
 
