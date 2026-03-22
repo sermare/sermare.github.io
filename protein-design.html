@@ -582,7 +582,7 @@
 
     <div class="page-title">RBX1 Binder Design Dashboard</div>
     <div class="page-subtitle">De novo protein binder design for RBX1 (RING Box Protein 1, 108 AA) &mdash; GEM Workshop / ICLR 2026</div>
-    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 23:45 UTC</div>
+    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 — periodic scan 2026-03-22T23:59 UTC</div>
 
     <!-- ===== Tabs ===== -->
     <div class="tabs">
@@ -600,7 +600,7 @@
       <!-- Summary Stats -->
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-value" id="statTotal">50</div>
+          <div class="stat-value" id="statTotal">60</div>
           <div class="stat-label">Total Designs</div>
         </div>
         <div class="stat-card">
@@ -612,11 +612,11 @@
           <div class="stat-label">Cullin Face (MPNN)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statBoltzGen">10</div>
+          <div class="stat-value" id="statBoltzGen">20</div>
           <div class="stat-label">BoltzGen Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statScored">50</div>
+          <div class="stat-value" id="statScored">60</div>
           <div class="stat-label">Scored (Boltz-2)</div>
         </div>
         <div class="stat-card">
@@ -639,18 +639,21 @@
 
       <!-- Info Banner -->
       <div class="info-banner">
-        <strong>Analysis &amp; Interpretation (March 22, 2026):</strong><br>
-        <strong>Major update:</strong> Boltz-2 scoring is now <strong>complete</strong> for all 40 pilot RFdiffusion&rarr;ProteinMPNN binders (20 E2 face + 20 Cullin face, 4 MPNN samples per backbone).
-        Best hit: <strong>design_0039</strong> (Cullin face, 46 AA) with ipTM=0.645, pTM=0.782, pLDDT=0.665, ipDE=3.08 &mdash; substantially better than any BoltzGen design.
+        <strong>Analysis &amp; Interpretation (March 22, 2026 &mdash; evening scan):</strong><br>
+        <strong>Major update:</strong> Boltz-2 scoring is <strong>complete</strong> for all 40 pilot RFdiffusion&rarr;ProteinMPNN binders (20 E2 face + 20 Cullin face).
+        Best hit: <strong>design_0039</strong> (Cullin face, 46 AA) with ipTM=0.645, pTM=0.782, pLDDT=0.665, ipDE=3.08.
         Top RFdiffusion+MPNN designs (ipTM&gt;0.4): design_0039 (0.645), design_0033 (0.485), design_0025 (0.456), design_0004 (0.442), design_0017 (0.429), design_0016 (0.421), design_0020 (0.417).
-        BoltzGen best remains rbx1_small_3 (ipTM=0.493 from BoltzGen self-scoring, but RFdiffusion pipeline now dominates on Boltz-2 cross-validation).
         <br><br>
-        <strong>Scale-up status:</strong> 97 RFdiffusion backbones generated across 13 campaigns (beta_e2, cul_small, cul_med, e2_small, e2_med; sizes 10 and 100).
-        BoltzGen scale-up: small_10 (10 designs, inverse-folded), small_100 (100 designs, inverse-folded), medium_10 (2 intermediate), medium_100 (8 intermediate) &mdash; awaiting scoring.
+        <strong>NEW &mdash; BoltzGen small_10 batch scored:</strong> 10 new BoltzGen designs from the small_10 campaign are now fully scored (BoltzGen pipeline with inverse folding, refolding, and PLIP analysis).
+        Best: <strong>rbx1_small_0</strong> (ipTM=0.582, min_PAE=2.41, 12 H-bonds, delta_SASA=1801 &Aring;&sup2;) &mdash; the highest BoltzGen ipTM to date.
+        rbx1_small_6 (ipTM=0.569) and rbx1_small_2 (ipTM=0.529) also strong. However, several show high bb_RMSD (&gt;5 &Aring;), indicating refold failures.
         <br><br>
-        <strong>Red flags:</strong> Many MPNN designs show low ipTM (&lt;0.3), indicating poor predicted binding. Only 7/40 designs exceed ipTM&gt;0.4.
-        BoltzGen medium designs have high bb_RMSD (&gt;12 &Aring;), suggesting poor structural fidelity.
-        <strong>Recommendation:</strong> Prioritize design_0039 and top-5 MPNN designs for experimental validation. Run MPNN on the 97 scale-up backbones next.
+        <strong>Scale-up status:</strong> 404 RFdiffusion backbones generated (313 core + 91 satellite campaigns). ProteinMPNN now complete across <strong>14 campaigns with 656 designed sequences</strong>.
+        676 binders staged for Boltz-2 scoring (all_binders_to_score.fasta prepared).
+        BoltzGen: small_10 scored (10 designs), small_100 (100 inverse-folded, awaiting final ranking), medium pilots awaiting scale-up.
+        <br><br>
+        <strong>Red flags:</strong> Many MPNN pilot designs show low ipTM (&lt;0.3). BoltzGen medium designs have high bb_RMSD (&gt;12 &Aring;). Several small_10 designs (rbx1_small_5, rbx1_small_9) show poor metrics.
+        <strong>Recommendation:</strong> Prioritize design_0039 and top-5 MPNN designs. Launch Boltz-2 scoring on the 676 staged binders. Focus BoltzGen efforts on small (40-65 AA) designs.
       </div>
 
       <!-- Pipeline Status -->
@@ -672,9 +675,9 @@
               <span class="pipeline-name">Pipeline A: RFdiffusion Scale-up</span>
               <span class="tag tag-reading">IN PROGRESS</span>
             </div>
-            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (97 designs, 13 campaigns)</div>
-            <div class="pipeline-step step-pending">&#9675; ProteinMPNN sequence design</div>
-            <div class="pipeline-step step-pending">&#9675; Boltz-2 scoring</div>
+            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (404 backbones, 13 core + satellite campaigns)</div>
+            <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (656 sequences across 14 campaigns)</div>
+            <div class="pipeline-step step-pending">&#9675; Boltz-2 scoring (676 binders staged)</div>
           </div>
           <div class="pipeline-card">
             <div class="pipeline-card-header">
@@ -701,11 +704,11 @@
               <span class="pipeline-name">Pipeline B: BoltzGen Scale-up</span>
               <span class="tag tag-reading">IN PROGRESS</span>
             </div>
-            <div class="pipeline-step step-done">&#10003; small_10: 10 designs generated + inverse-folded</div>
+            <div class="pipeline-step step-done">&#10003; small_10: 10 designs &mdash; fully scored &amp; ranked (best ipTM=0.582)</div>
             <div class="pipeline-step step-done">&#10003; small_100: 100 designs generated + inverse-folded</div>
             <div class="pipeline-step step-pending">&#9675; medium_10: 2 intermediate designs (generation ongoing)</div>
             <div class="pipeline-step step-pending">&#9675; medium_100: 8 intermediate designs (generation ongoing)</div>
-            <div class="pipeline-step step-pending">&#9675; Scoring &amp; ranking</div>
+            <div class="pipeline-step step-pending">&#9675; small_100 scoring &amp; ranking</div>
           </div>
           <div class="pipeline-card">
             <div class="pipeline-card-header">
@@ -736,7 +739,7 @@
           <div class="dist-card">
             <h3>Binder Length Histogram</h3>
             <canvas id="canvasBinderLen" width="460" height="220"></canvas>
-            <div class="caption">Distribution of binder lengths across all 50 designs, colored by campaign. RFdiffusion+MPNN designs (blue/red) cluster in the 42-64 AA range. BoltzGen small pilot (teal) at 44-64 AA, medium pilot (orange) at 92-120 AA.</div>
+            <div class="caption">Distribution of binder lengths across all 60 designs, colored by campaign. RFdiffusion+MPNN designs (blue/red) cluster in the 42-64 AA range. BoltzGen small designs (teal) at 41-64 AA, medium pilot (orange) at 92-120 AA.</div>
           </div>
 
           <!-- 2. RFdiffusion Confidence Distribution -->
@@ -757,14 +760,14 @@
           <div class="dist-card">
             <h3>ipTM Distribution (BoltzGen Designs)</h3>
             <canvas id="canvasIpTM" width="460" height="220"></canvas>
-            <div class="caption">Boltz-2 ipTM scores for 10 BoltzGen designs. Small pilot designs (teal) show higher ipTM than medium pilot (orange). Best: rbx1_small_3 at 0.493.</div>
+            <div class="caption">BoltzGen ipTM scores for 20 BoltzGen designs (10 small pilot + 10 small_10 scale-up). Small designs (teal) show higher ipTM than medium pilot (orange). Best: rbx1_s10_0 at 0.582.</div>
           </div>
 
           <!-- 5. ipTM vs min PAE Scatter -->
           <div class="dist-card">
             <h3>ipTM vs min interaction PAE</h3>
             <canvas id="canvasScatter" width="460" height="220"></canvas>
-            <div class="caption">Scatter of ipTM vs minimum interaction PAE for BoltzGen designs. Ideal designs appear in upper-left (high ipTM, low PAE). Small pilot designs (teal circles) show better separation than medium pilot (orange squares).</div>
+            <div class="caption">Scatter of ipTM vs minimum interaction PAE for BoltzGen designs. Ideal designs appear in upper-left (high ipTM, low PAE). Small designs (teal circles) show better separation than medium pilot (orange squares). small_10 batch adds several designs in the 0.4-0.58 ipTM range.</div>
           </div>
         </div>
       </div>
@@ -777,7 +780,7 @@
         <p>
           <strong>20 total designs</strong> across two pipelines.
           <strong>RFdiffusion pipeline:</strong> 10 backbone designs (5 E2 face, 5 Cullin face), all with ProteinMPNN sequences (4 samples each = 40 candidate sequences total).
-          <strong>BoltzGen pipeline:</strong> 10 designs (5 small pilot, 44-64 AA; 5 medium pilot, 92-120 AA), all with full Boltz-2 scoring including refolding, PLIP contact analysis, and liability assessment.
+          <strong>BoltzGen pipeline:</strong> 20 designs (5 small pilot + 10 small_10 scale-up, 41-64 AA; 5 medium pilot, 92-120 AA). Small pilot and small_10 have full scoring including refolding, PLIP contact analysis, and liability assessment.
         </p>
 
         <h3>Confidence Analysis (RFdiffusion)</h3>
@@ -799,12 +802,12 @@
 
         <h3>Scoring Status (BoltzGen Designs)</h3>
         <p>
-          All 10 BoltzGen designs have complete Boltz-2 scoring. Key findings:
+          All 20 BoltzGen designs have complete scoring. Key findings:
         </p>
         <p>
-          <strong>Small pilot top performer:</strong> rbx1_small_3 achieves the best ipTM of 0.493 with design_ptm 0.766 and min interaction PAE of 3.48.
-          rbx1_small_4 (rank 1 by composite score) shows ipTM 0.461, design_ptm 0.723, and the best min PAE of 2.95 with 8 PLIP H-bonds.
-          rbx1_small_0 has the most H-bonds (27) and best delta SASA (2030 A^2) but lower ipTM (0.445).
+          <strong>Small pilot top performer:</strong> rbx1_small_3 achieves ipTM of 0.493 with design_ptm 0.766 and min interaction PAE of 3.48.
+          <strong>Small_10 scale-up (NEW):</strong> rbx1_s10_0 achieves ipTM=0.582 (best BoltzGen overall) with min_PAE=2.41, 12 H-bonds, and delta_SASA=1801 &Aring;&sup2;.
+          rbx1_s10_6 (ipTM=0.569, min_PAE=3.11) and rbx1_s10_2 (ipTM=0.529, min_PAE=3.39) also strong. rbx1_s10_4 has 15 H-bonds (most in batch) with bb_RMSD=2.58 &Aring;.
         </p>
         <p>
           <strong>Medium pilot:</strong> Scores are generally lower. Best ipTM is rbx1_medium_0 at 0.350, with high backbone RMSD values (1.59-14.8 A) suggesting many designs fail to refold correctly.
@@ -813,12 +816,11 @@
 
         <h3 class="red-flag">Red Flags</h3>
         <p>
-          <span class="red-flag">1. RFdiffusion designs have no Boltz-2 scores yet.</span> These 10 designs (with 40 MPNN sequences) represent a critical scoring gap.
-          The Boltz-2 scoring script exists at 03_scoring/scripts/score_with_boltz2.py but has not been run on the RFdiffusion+MPNN outputs.
+          <span class="red-flag">1. Scale-up binders awaiting Boltz-2 scoring.</span> 676 MPNN-designed binders (from 14 RFdiffusion campaigns) are staged in all_binders_to_score.fasta but not yet scored. This is the critical next step.
         </p>
         <p>
-          <span class="red-flag">2. BoltzGen ipTM values are weak.</span> The best ipTM across all BoltzGen designs is 0.493 (small_3), which is below the typical 0.6+ threshold for confident binding.
-          All design_to_target_iptm values are in the 0.17-0.49 range, suggesting the binder-target interactions are not confidently predicted.
+          <span class="red-flag">2. BoltzGen ipTM values improving but still moderate.</span> The best BoltzGen ipTM is now 0.582 (rbx1_s10_0), up from 0.493 (small_3). Still below the 0.6+ threshold for confident binding, though approaching it.
+          Several small_10 designs show high bb_RMSD (&gt;5 &Aring;), indicating refold failures despite good ipTM.
         </p>
         <p>
           <span class="red-flag">3. Medium pilot designs show poor refolding.</span> Backbone RMSDs of 12-15 A for medium designs 1, 2 indicate these structures do not refold to their designed conformations.
@@ -833,10 +835,10 @@
 
         <h3 class="rec">Recommendations</h3>
         <p>
-          <span class="rec">1. Priority: Run Boltz-2 scoring on RFdiffusion+MPNN designs.</span> Use the existing score_with_boltz2.py script. The 40 MPNN sequences are the most likely source of competitive designs given the structural diversity.
+          <span class="rec">1. Priority: Launch Boltz-2 scoring on the 676 staged binders.</span> The all_binders_to_score.fasta is ready. This is the highest-impact next step, as pilot MPNN designs already produced the best hit (ipTM=0.645).
         </p>
         <p>
-          <span class="rec">2. Scale up RFdiffusion generation.</span> The pilot (5+5 designs) is very small. Generating 50-100 backbones per campaign with varied hotspot constraints would dramatically improve chances of finding a high-confidence binder.
+          <span class="rec">2. RFdiffusion scale-up is now substantial (404 backbones, 656 MPNN sequences).</span> Focus shifts from generation to scoring. Satellite E2 campaigns (91 backbones) are still generating; monitor completion.
         </p>
         <p>
           <span class="rec">3. Focus on BoltzGen small pilot designs.</span> Small pilot outperforms medium pilot across all metrics. Consider generating more small designs (40-65 AA) rather than medium.
@@ -1789,6 +1791,107 @@ const designs = [
     sequence: "SNLERLERIARGAAEFLLSLVEANAAGDVEGARALLKAAEAGAA",
     pdb_file: "data/rbx1_designs/rank1_rbx1_small_4.cif",
     bb_rmsd: 1.40, delta_sasa: 1831
+  },
+  // ---- BoltzGen Small Scale-up (small_10) ----
+  {
+    id: "rbx1_s10_3", name: "BG S10-3 (Rank 1)", campaign: "BoltzGen Small",
+    binder_length: 62, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.399, design_ptm: 0.746, pLDDT: null, pTM: null, pAE: null, min_pae: 4.03,
+    bsa: null, contacts: null, hbonds: 10,
+    sequence: "KVTVEVVSNPPASPAAVEAAREAAVRALDERGATAAARAAAEAALAAMGDPKAAVFVRVEVE",
+    bb_rmsd: 1.38, delta_sasa: 1338
+  },
+  {
+    id: "rbx1_s10_8", name: "BG S10-8 (Rank 2)", campaign: "BoltzGen Small",
+    binder_length: 61, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.338, design_ptm: 0.764, pLDDT: null, pTM: null, pAE: null, min_pae: 5.91,
+    bsa: null, contacts: null, hbonds: 5,
+    sequence: "DAAERARELGRKAAKAARAGKKEEALKHAEEALKAAEAATDDPAALATAKAALEALKRLLA",
+    bb_rmsd: 1.61, delta_sasa: 1413
+  },
+  {
+    id: "rbx1_s10_6", name: "BG S10-6 (Rank 3)", campaign: "BoltzGen Small",
+    binder_length: 62, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.569, design_ptm: 0.748, pLDDT: null, pTM: null, pAE: null, min_pae: 3.11,
+    bsa: null, contacts: null, hbonds: 2,
+    sequence: "VEEAVAAAEAAVAAALARDKAAARAAWAAALEAAEKSKDPQARAAALLGAAAAAAGAVLALT",
+    bb_rmsd: 4.13, delta_sasa: 1440
+  },
+  {
+    id: "rbx1_s10_2", name: "BG S10-2 (Rank 4)", campaign: "BoltzGen Small",
+    binder_length: 60, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.529, design_ptm: 0.747, pLDDT: null, pTM: null, pAE: null, min_pae: 3.39,
+    bsa: null, contacts: null, hbonds: 5,
+    sequence: "SARLERAAKELGVSVETINEILERLKKGEEITDEELAERLGVSVETAKGIKKLLEEKVKK",
+    bb_rmsd: 7.46, delta_sasa: 1106
+  },
+  {
+    id: "rbx1_s10_0", name: "BG S10-0 (Rank 5)", campaign: "BoltzGen Small",
+    binder_length: 41, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.582, design_ptm: 0.714, pLDDT: null, pTM: null, pAE: null, min_pae: 2.41,
+    bsa: null, contacts: null, hbonds: 12,
+    sequence: "RKRLPMRVTREGKGVWIYMPKELWDKIEARAAALAAELAAK",
+    bb_rmsd: 6.49, delta_sasa: 1801
+  },
+  {
+    id: "rbx1_s10_1", name: "BG S10-1 (Rank 6)", campaign: "BoltzGen Small",
+    binder_length: 52, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.472, design_ptm: 0.747, pLDDT: null, pTM: null, pAE: null, min_pae: 4.05,
+    bsa: null, contacts: null, hbonds: 3,
+    sequence: "GQEVRDKLVELNEKIAKEKDPAKRLELAREMLRLIREHPEEVDEIVKEVLAR",
+    bb_rmsd: 5.56, delta_sasa: 970
+  },
+  {
+    id: "rbx1_s10_7", name: "BG S10-7 (Rank 7)", campaign: "BoltzGen Small",
+    binder_length: 43, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.487, design_ptm: 0.758, pLDDT: null, pTM: null, pAE: null, min_pae: 4.21,
+    bsa: null, contacts: null, hbonds: 1,
+    sequence: "VAETALKLAELEEKLAEEAKREGAEGLADIFYRHAEEARELAK",
+    bb_rmsd: 3.77, delta_sasa: 1146
+  },
+  {
+    id: "rbx1_s10_4", name: "BG S10-4 (Rank 8)", campaign: "BoltzGen Small",
+    binder_length: 62, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.352, design_ptm: 0.739, pLDDT: null, pTM: null, pAE: null, min_pae: 3.94,
+    bsa: null, contacts: null, hbonds: 15,
+    sequence: "KVEAKTIGNDEISDEEAKEIAEEVLKEHPNASPVELARLVAERLKEKYPEVKRIGVEISVET",
+    bb_rmsd: 2.58, delta_sasa: 1181
+  },
+  {
+    id: "rbx1_s10_5", name: "BG S10-5 (Rank 9)", campaign: "BoltzGen Small",
+    binder_length: 54, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.515, design_ptm: 0.653, pLDDT: null, pTM: null, pAE: null, min_pae: 3.39,
+    bsa: null, contacts: null, hbonds: 0,
+    sequence: "SAEERALLALLLGLLAAVKKLEIVLEARKEGDETAFAAAGRALRAVLDAALAGL",
+    bb_rmsd: 9.52, delta_sasa: 2072
+  },
+  {
+    id: "rbx1_s10_9", name: "BG S10-9 (Rank 10)", campaign: "BoltzGen Small",
+    binder_length: 60, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "BoltzGen", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.179, design_ptm: 0.674, pLDDT: null, pTM: null, pAE: null, min_pae: 12.52,
+    bsa: null, contacts: null, hbonds: 1,
+    sequence: "GPAVAAAGAALAIAGGALQNPVLAALGAGIAGAAAVASRSLAAANAAAVGGAAAARAAFG",
+    bb_rmsd: 4.97, delta_sasa: 914
   },
   // ---- BoltzGen Medium Pilot ----
   {
