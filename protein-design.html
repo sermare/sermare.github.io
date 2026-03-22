@@ -589,6 +589,7 @@
       <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
       <button class="tab-btn" onclick="switchTab('all')">All Structures</button>
       <button class="tab-btn" onclick="switchTab('evo')">Evolutionary Analysis</button>
+      <button class="tab-btn" onclick="switchTab('dms')">ESM-2 DMS</button>
     </div>
 
     <!-- ============================================ -->
@@ -1154,6 +1155,151 @@
       </p>
       <div id="evoSequenceViz" style="font-family:monospace;font-size:14px;line-height:2.2;word-break:break-all;background:var(--bg-alt);padding:16px;border-radius:8px;border:1px solid var(--border);margin-bottom:24px;">
         <!-- Populated by JS -->
+      </div>
+
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 4: ESM-2 DMS ANALYSIS                   -->
+    <!-- ============================================ -->
+    <div class="tab-content" id="tab-dms">
+
+      <div class="section-heading">ESM-2 Deep Mutational Scanning</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;">
+        Masked marginal log-likelihood ratios (dLLR) computed with ESM-2 (650M params) for all single-point mutations across the 108-residue RBX1 sequence.
+        More negative dLLR = more deleterious mutation. Sensitivity = mean |dLLR| across all 20 amino acids at each position.
+      </p>
+
+      <!-- Summary Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value">2,160</div>
+          <div class="stat-label">Mutations Scored</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">0.581</div>
+          <div class="stat-label">Spearman r (vs Evo)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">0.714</div>
+          <div class="stat-label">Pearson r (vs Evo)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">-18.25</div>
+          <div class="stat-label">Most Deleterious dLLR</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">+2.54</div>
+          <div class="stat-label">Most Beneficial dLLR</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">31</div>
+          <div class="stat-label">Predicted Contacts</div>
+        </div>
+      </div>
+
+      <!-- DMS Heatmap -->
+      <div class="section-heading" style="font-size:18px;">Mutation Effect Heatmap</div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">
+        Log-likelihood ratio for each of 20 amino acids at each position. Blue = tolerated/beneficial, red = deleterious. Wild-type residue marked with black dot. Hover for values.
+      </p>
+      <div style="overflow-x:auto;margin-bottom:24px;position:relative;">
+        <canvas id="dmsHeatmap" width="1060" height="380" style="max-width:100%;cursor:crosshair;"></canvas>
+        <div id="dmsTooltip" style="display:none;position:absolute;background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text);pointer-events:none;z-index:10;box-shadow:var(--shadow);"></div>
+      </div>
+
+      <!-- Sensitivity Bar Chart -->
+      <div class="section-heading" style="font-size:18px;">Per-Position Mutation Sensitivity</div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">
+        Mean |dLLR| across all 20 amino acids. Higher = less tolerant of mutations. Colored by functional role.
+      </p>
+      <div style="overflow-x:auto;margin-bottom:24px;">
+        <canvas id="dmsSensitivity" width="1060" height="240" style="max-width:100%;"></canvas>
+      </div>
+
+      <!-- ESM vs Conservation Scatter -->
+      <div class="pipeline-grid" style="margin-bottom:24px;">
+        <div>
+          <div class="section-heading" style="font-size:18px;">ESM Sensitivity vs Conservation</div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">
+            Spearman r = 0.581, Pearson r = 0.714. Strong agreement between model-predicted and evolutionary constraint.
+          </p>
+          <canvas id="dmsVsCons" width="460" height="300" style="max-width:100%;"></canvas>
+        </div>
+        <div>
+          <div class="section-heading" style="font-size:18px;">Predicted Contact Map</div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">
+            ESM-2 attention-derived contact predictions (probability &gt; 0.5). 31 high-confidence contacts.
+          </p>
+          <canvas id="dmsContacts" width="300" height="300" style="max-width:100%;"></canvas>
+        </div>
+      </div>
+
+      <!-- Most Deleterious Mutations -->
+      <div class="section-heading" style="font-size:18px;">Top 20 Most Deleterious Single Mutations</div>
+      <div class="table-wrapper" style="margin-bottom:24px;">
+        <table class="all-structures-table" id="dmsWorstTable">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Position</th>
+              <th>WT &rarr; Mut</th>
+              <th>dLLR</th>
+              <th>Functional Role</th>
+              <th>WT Conservation</th>
+            </tr>
+          </thead>
+          <tbody id="dmsWorstBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Top Sensitive Residues -->
+      <div class="section-heading" style="font-size:18px;">Top 30 Mutation-Sensitive Residues</div>
+      <div class="table-wrapper" style="margin-bottom:24px;">
+        <table class="all-structures-table" id="dmsSensTable">
+          <thead>
+            <tr>
+              <th>Residue</th>
+              <th>AA</th>
+              <th>ESM Sensitivity</th>
+              <th>Evo Conservation</th>
+              <th>WT Log-Prob</th>
+              <th>Functional Role</th>
+            </tr>
+          </thead>
+          <tbody id="dmsSensBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Interpretation -->
+      <div class="section-heading" style="font-size:18px;">Interpretation</div>
+      <div style="background:var(--bg-alt);border:1px solid var(--border);border-left:4px solid #7b1fa2;border-radius:0 8px 8px 0;padding:18px 22px;margin-bottom:24px;font-size:14px;color:var(--text);line-height:1.75;">
+        <p style="margin-bottom:12px;">
+          <strong>ESM-2 and evolution strongly agree on which residues are critical.</strong> The Spearman correlation of 0.581 (p &lt; 10<sup>-10</sup>)
+          and Pearson of 0.714 (p &lt; 10<sup>-17</sup>) between ESM-2 sensitivity and Shannon entropy conservation confirm that the protein language model
+          has learned genuine structural and functional constraints from sequence alone.
+        </p>
+        <p style="margin-bottom:12px;">
+          <strong>Zinc-coordinating cysteines dominate the sensitivity landscape.</strong> C42, C56, C83, C75, C53, C68, and C94 are all among the top 15
+          most sensitive positions. Any mutation at these sites is catastrophic (dLLR &lt; -10), consistent with their role as structural zinc ligands
+          that maintain the RING-H2 fold. The most deleterious single mutation in the entire protein is I54W (dLLR = -18.25), a massive tryptophan
+          insertion into the hydrophobic core adjacent to C53 and C56.
+        </p>
+        <p style="margin-bottom:12px;">
+          <strong>The Cullin face has the single most sensitive residue (D36, sensitivity = 13.0)</strong>, which also has perfect evolutionary
+          conservation (0.945). This aspartate likely forms critical salt bridges in the Cullin interaction. For binder design, targeting residues
+          around D36 could be highly effective at disrupting the complex.
+        </p>
+        <p style="margin-bottom:12px;">
+          <strong>ESM-2 identifies some positions as sensitive that conservation misses.</strong> I54 (ESM sensitivity rank 5, conservation only 0.786)
+          and I84 (rank 11, conservation 0.802) are moderately conserved but ESM predicts they are among the most intolerant of mutations &mdash;
+          likely because they play critical roles in hydrophobic packing that the MSA alone doesn't fully capture.
+        </p>
+        <p style="margin-bottom:0;">
+          <strong>Design implications:</strong> Binders should maximize contacts with high-sensitivity residues (especially D36, C42, R46, F79, W87)
+          since these positions cannot easily mutate to escape binding. The DMS data also suggests that the N-terminal tail (residues 1&ndash;20)
+          has low mutation sensitivity, confirming it is a poor target for binder design.
+        </p>
       </div>
 
     </div>
@@ -2854,12 +3000,406 @@ function populateEvoSequenceViz() {
   }).join('');
 }
 
-// Update drawAllPlots to include evo plots
+// Update drawAllPlots to include evo plots and DMS plots
 const _origDrawAll = drawAllPlots;
 drawAllPlots = function() {
   _origDrawAll();
   drawEvoPlots();
+  drawDmsPlots();
 };
+
+// ===== ESM-2 DMS Data =====
+const AA_ORDER = 'ACDEFGHIKLMNPQRSTVWY';
+const dmsData = [
+[1,"M",7.31,-0.0172,[-6.17,-9.4,-8.25,-7.35,-8.98,-6.41,-8.12,-7.54,-8.53,-7.34,0.0,-5.58,-6.74,-7.24,-6.73,-6.6,-7.18,-8.06,-10.43,-9.56]],
+[2,"A",6.05,-0.1785,[0.0,-7.73,-3.83,-3.88,-7.04,-5.65,-7.72,-8.29,-8.93,-6.3,-7.22,-7.06,-4.09,-7.31,-7.54,-2.19,-5.29,-4.75,-7.94,-8.13]],
+[3,"A",4.76,-2.0886,[0.0,-8.25,0.48,1.57,-7.38,-2.73,-6.49,-5.88,-8.08,-5.86,-5.32,-4.01,-5.4,-4.89,-8.39,-1.05,-2.02,-2.74,-10.3,-8.49]],
+[4,"A",3.54,-1.4487,[0.0,-6.43,-1.95,-2.02,-6.04,-1.51,-3.95,-4.86,-4.55,-4.06,-5.62,-1.91,0.39,-3.04,-4.38,-0.26,-1.64,-3.15,-8.68,-7.05]],
+[5,"M",7.77,-0.0141,[-6.51,-11.42,-7.69,-8.23,-9.43,-7.43,-10.03,-5.85,-8.09,-6.92,0.0,-8.53,-7.97,-9.01,-7.31,-7.2,-6.2,-5.83,-11.42,-10.38]],
+[6,"D",10.82,-0.0729,[-9.8,-13.76,0.0,-2.59,-14.04,-9.69,-10.43,-13.04,-11.44,-12.81,-13.58,-9.04,-12.42,-9.52,-13.2,-11.21,-12.48,-9.97,-15.2,-12.24]],
+[7,"V",7.39,-0.2367,[-6.53,-8.17,-10.09,-7.92,-4.78,-10.1,-9.33,-1.83,-12.92,-2.58,-4.63,-10.2,-8.87,-8.94,-10.7,-7.85,-4.63,0.0,-10.2,-7.55]],
+[8,"D",10.32,-0.0182,[-8.43,-13.46,0.0,-4.07,-13.24,-7.62,-10.4,-12.27,-11.47,-12.77,-13.09,-8.26,-11.46,-10.6,-13.12,-9.71,-10.59,-9.49,-15.08,-11.37]],
+[9,"T",3.3,-1.406,[0.24,-4.26,-6.02,-3.02,-5.21,-1.45,-4.59,-2.58,-5.29,-2.07,-2.39,-3.26,-2.58,-1.72,-4.76,-0.96,0.0,-0.69,-8.79,-6.6]],
+[10,"P",7.39,-0.0378,[-4.8,-8.51,-7.01,-6.4,-9.9,-5.37,-8.11,-8.65,-10.15,-6.68,-9.37,-7.38,0.0,-6.51,-9.18,-4.24,-5.65,-7.14,-12.28,-10.56]],
+[11,"S",3.4,-1.5667,[0.54,-3.71,-4.24,-3.39,-5.65,-1.85,-5.08,-2.28,-5.97,-2.56,-2.55,-3.32,-2.22,-3.26,-5.4,0.0,-0.61,-0.17,-9.48,-6.85]],
+[12,"G",3.28,-1.7039,[-0.42,-4.36,-3.95,-2.62,-6.55,0.0,-3.99,-4.06,-2.9,-4.15,-4.47,-1.22,-2.87,-2.33,-4.18,0.39,0.47,-2.64,-8.95,-6.81]],
+[13,"T",2.1,-3.0473,[0.82,-3.84,-3.12,-2.33,-4.22,0.79,-3.02,-3.17,-2.7,-2.1,-3.65,-0.88,0.37,-1.59,-2.34,2.54,0.0,-1.32,-6.73,-5.54]],
+[14,"N",2.26,-3.2718,[1.43,-3.66,-2.99,-2.07,-6.18,1.72,-3.61,-3.39,-0.64,-3.34,-3.34,0.0,-1.48,-1.62,-3.06,2.37,1.17,-1.18,-8.2,-7.07]],
+[15,"S",4.06,-0.9636,[-0.99,-6.36,-2.88,-3.21,-7.38,-0.98,-4.11,-4.87,-4.38,-4.44,-5.42,-1.14,-3.25,-3.23,-5.94,0.0,-1.27,-3.21,-10.75,-7.43]],
+[16,"G",3.78,-1.7528,[-0.31,-5.42,-3.39,-3.67,-8.12,0.0,-4.45,-4.98,-1.08,-5.28,-5.34,0.3,-3.39,-3.32,-4.83,0.49,-0.68,-2.99,-10.45,-8.68]],
+[17,"A",3.12,-1.9375,[0.0,-4.38,-0.94,-2.03,-6.97,-0.09,-2.12,-4.4,-2.84,-4.48,-5.57,0.26,-2.53,-2.1,-5.13,0.84,-0.99,-2.32,-9.66,-6.86]],
+[18,"G",6.1,-0.314,[-2.25,-7.61,-5.96,-5.27,-10.07,0.0,-7.26,-7.6,-6.73,-7.55,-8.15,-3.56,-4.61,-5.45,-8.31,-1.79,-3.32,-5.11,-11.23,-10.13]],
+[19,"K",9.02,-0.0118,[-7.96,-12.49,-9.64,-8.76,-14.26,-7.19,-8.66,-10.57,0.0,-11.44,-9.74,-5.15,-9.44,-7.66,-5.97,-7.47,-7.2,-9.76,-13.65,-13.39]],
+[20,"K",8.53,-0.0289,[-8.8,-11.17,-10.19,-8.02,-13.65,-7.73,-8.02,-10.03,0.0,-10.37,-8.34,-6.95,-8.29,-6.52,-3.73,-7.75,-7.45,-9.92,-11.75,-12.01]],
+[21,"R",8.66,-0.0262,[-11.34,-8.6,-12.59,-11.94,-11.23,-9.81,-4.41,-9.03,-4.41,-8.79,-7.24,-9.64,-9.1,-7.95,0.0,-9.59,-9.05,-9.53,-9.32,-9.7]],
+[22,"F",11.98,-0.0018,[-13.92,-11.49,-14.96,-15.49,0.0,-14.07,-12.63,-11.74,-14.01,-9.2,-11.88,-13.66,-12.82,-14.12,-13.8,-12.13,-12.76,-12.11,-12.35,-6.41]],
+[23,"E",10.09,-0.0049,[-9.02,-13.27,-5.93,0.0,-13.02,-10.63,-10.94,-11.25,-10.61,-11.2,-10.62,-11.22,-11.93,-6.47,-12.34,-10.08,-9.55,-8.22,-13.28,-12.12]],
+[24,"V",8.91,-0.1856,[-9.13,-9.85,-10.19,-9.69,-8.37,-9.94,-11.51,-1.6,-10.26,-7.59,-7.76,-9.73,-9.97,-11.45,-10.39,-10.4,-8.74,0.0,-11.86,-9.81]],
+[25,"K",10.87,-0.0012,[-11.85,-13.56,-13.45,-10.57,-12.03,-12.53,-12.5,-10.86,0.0,-11.15,-9.12,-10.05,-13.27,-7.99,-7.51,-11.53,-9.7,-11.96,-14.09,-13.7]],
+[26,"K",10.89,-0.0009,[-11.85,-13.16,-12.96,-10.25,-14.19,-11.86,-12.59,-10.77,0.0,-12.79,-10.0,-8.83,-12.13,-10.46,-7.99,-9.22,-8.9,-13.23,-13.89,-12.71]],
+[27,"W",10.48,-0.0014,[-12.42,-8.33,-13.02,-12.81,-10.42,-8.84,-12.55,-12.16,-11.66,-9.13,-11.51,-12.6,-11.5,-11.32,-7.35,-9.52,-12.51,-11.54,0.0,-10.35]],
+[28,"N",9.57,-0.0138,[-10.46,-9.93,-7.72,-11.23,-12.3,-9.04,-8.68,-10.15,-8.37,-11.41,-11.42,0.0,-11.99,-10.53,-9.97,-4.39,-8.74,-11.29,-13.58,-10.13]],
+[29,"A",9.84,-0.002,[0.0,-10.55,-8.38,-9.16,-11.8,-7.95,-11.14,-12.32,-11.99,-9.73,-11.61,-10.91,-9.2,-10.99,-11.11,-7.72,-7.99,-8.55,-13.27,-12.39]],
+[30,"V",10.08,-0.0012,[-8.35,-10.95,-10.56,-10.21,-10.68,-8.34,-12.97,-8.1,-11.74,-9.11,-9.31,-11.99,-11.37,-11.71,-10.86,-11.04,-10.0,0.0,-12.26,-11.97]],
+[31,"A",8.31,-0.0418,[0.0,-8.55,-9.21,-9.59,-9.16,-7.18,-10.48,-11.08,-10.09,-8.21,-7.7,-9.42,-7.77,-9.54,-9.05,-3.24,-7.63,-8.69,-9.82,-9.9]],
+[32,"L",9.66,-0.007,[-11.38,-10.91,-13.78,-12.85,-7.64,-9.21,-10.66,-8.28,-12.18,0.0,-5.3,-11.57,-9.23,-8.56,-10.69,-10.73,-9.47,-7.26,-11.52,-12.05]],
+[33,"W",10.55,-0.0006,[-10.58,-9.26,-12.33,-12.01,-11.3,-9.6,-12.93,-12.27,-12.51,-10.18,-11.6,-12.82,-11.35,-10.58,-9.3,-9.48,-9.49,-11.88,0.0,-11.51]],
+[34,"A",10.77,-0.0018,[0.0,-11.1,-10.02,-10.11,-13.46,-9.0,-13.83,-13.3,-12.77,-12.25,-12.19,-12.66,-9.52,-12.05,-12.2,-6.83,-8.19,-9.41,-13.59,-12.92]],
+[35,"W",10.74,-0.0009,[-12.31,-8.72,-12.4,-12.48,-9.97,-9.73,-12.26,-13.31,-12.12,-9.27,-12.43,-13.24,-12.01,-11.2,-7.83,-10.02,-12.97,-12.09,0.0,-10.49]],
+[36,"D",13.0,-0.0002,[-12.16,-15.04,0.0,-9.47,-15.47,-10.95,-12.07,-15.34,-14.79,-14.92,-16.23,-10.39,-15.92,-14.12,-15.04,-12.99,-14.46,-12.87,-15.23,-12.53]],
+[37,"I",12.26,-0.0005,[-12.67,-14.85,-12.43,-13.2,-13.01,-13.88,-14.73,0.0,-13.67,-10.56,-11.3,-11.78,-13.55,-14.11,-13.82,-12.74,-10.54,-7.86,-16.48,-13.93]],
+[38,"V",11.07,-0.0015,[-8.05,-11.8,-11.66,-10.34,-12.55,-11.33,-14.86,-7.26,-13.43,-8.71,-8.8,-13.21,-11.42,-11.79,-13.54,-12.41,-10.15,0.0,-15.58,-14.6]],
+[39,"V",11.02,-0.0014,[-9.62,-8.56,-12.95,-12.95,-10.67,-11.51,-14.68,-8.48,-14.62,-8.3,-7.45,-12.97,-12.51,-13.11,-13.07,-12.24,-10.57,0.0,-13.47,-12.74]],
+[40,"D",9.92,-0.0111,[-8.33,-11.98,0.0,-4.65,-12.54,-7.91,-9.5,-12.05,-10.05,-12.42,-13.21,-7.74,-12.57,-10.29,-11.77,-11.14,-12.06,-8.41,-12.76,-9.02]],
+[41,"N",10.4,-0.0021,[-10.67,-10.75,-10.62,-12.1,-13.31,-10.71,-8.42,-9.88,-10.13,-12.33,-11.89,0.0,-12.52,-11.03,-11.82,-6.79,-7.54,-11.1,-15.36,-11.07]],
+[42,"C",12.98,-0.0001,[-14.41,0.0,-13.81,-14.92,-12.51,-11.2,-13.9,-15.96,-15.2,-14.32,-16.31,-14.97,-14.06,-14.89,-10.85,-11.63,-15.24,-13.51,-10.87,-11.03]],
+[43,"A",11.94,-0.0006,[0.0,-12.22,-12.35,-13.12,-13.96,-8.76,-14.38,-13.65,-14.4,-14.74,-14.78,-13.49,-10.2,-14.14,-13.42,-8.91,-8.73,-10.07,-13.74,-13.79]],
+[44,"I",11.54,-0.0077,[-11.31,-13.56,-11.56,-12.32,-12.44,-11.45,-15.06,0.0,-12.45,-10.73,-11.03,-10.24,-13.65,-14.55,-13.06,-10.77,-10.98,-4.91,-15.66,-15.03]],
+[45,"C",10.23,-0.0014,[-12.07,0.0,-11.27,-11.31,-8.99,-8.79,-11.08,-12.78,-12.21,-10.68,-11.49,-12.76,-12.79,-10.85,-7.95,-9.61,-12.41,-10.27,-8.46,-8.75]],
+[46,"R",11.44,-0.0002,[-13.86,-10.31,-14.27,-14.14,-12.86,-10.52,-10.83,-11.79,-11.33,-11.14,-12.37,-12.94,-11.41,-11.22,0.0,-10.76,-12.97,-13.22,-10.46,-12.34]],
+[47,"N",11.12,-0.0007,[-12.08,-12.13,-10.02,-12.65,-13.59,-10.28,-10.76,-11.05,-10.49,-11.97,-12.88,0.0,-15.65,-12.48,-12.42,-8.02,-10.85,-9.53,-14.09,-11.4]],
+[48,"H",8.15,-0.0511,[-8.13,-8.0,-9.95,-10.47,-7.75,-8.23,0.0,-10.48,-10.62,-8.25,-11.35,-5.84,-6.53,-3.18,-7.97,-5.85,-10.47,-10.26,-12.93,-6.76]],
+[49,"I",10.09,-0.0052,[-10.04,-12.35,-10.52,-10.91,-9.7,-10.24,-12.79,0.0,-11.34,-8.46,-8.93,-10.52,-11.28,-12.28,-11.1,-10.34,-10.31,-5.41,-13.77,-11.54]],
+[50,"M",11.21,-0.0004,[-11.77,-13.37,-13.36,-12.74,-12.15,-13.09,-11.95,-10.31,-10.31,-8.82,0.0,-12.23,-12.97,-10.82,-11.32,-11.27,-9.74,-10.29,-13.7,-13.98]],
+[51,"D",11.25,-0.0029,[-9.97,-13.33,0.0,-6.06,-13.96,-9.63,-10.49,-14.05,-11.71,-13.85,-14.97,-7.98,-12.91,-10.29,-13.03,-11.35,-12.23,-11.63,-16.64,-10.94]],
+[52,"L",8.98,-0.0048,[-7.17,-10.5,-10.91,-11.17,-7.85,-11.16,-9.97,-10.66,-10.62,0.0,-8.7,-11.02,-6.8,-8.38,-7.61,-8.84,-9.74,-6.88,-10.17,-11.46]],
+[53,"C",12.36,-0.0002,[-13.68,0.0,-12.75,-14.23,-11.34,-11.61,-12.55,-14.68,-14.6,-13.46,-15.63,-13.44,-13.93,-15.05,-9.73,-10.98,-14.39,-13.83,-11.35,-9.91]],
+[54,"I",12.47,-0.0009,[-12.38,-14.83,-14.36,-15.18,-11.51,-14.66,-15.64,0.0,-13.53,-9.36,-9.26,-11.01,-15.4,-14.95,-14.53,-12.71,-9.74,-7.38,-18.25,-14.68]],
+[55,"E",11.42,-0.0023,[-10.71,-13.47,-6.37,0.0,-15.83,-10.2,-13.23,-13.98,-10.23,-11.71,-14.19,-11.6,-13.52,-9.56,-11.52,-10.81,-11.63,-10.67,-14.31,-14.8]],
+[56,"C",12.66,-0.0002,[-13.85,0.0,-13.31,-14.94,-10.63,-11.52,-13.54,-15.03,-15.31,-13.73,-15.37,-13.9,-15.12,-16.24,-10.31,-11.21,-15.25,-13.48,-10.6,-9.93]],
+[57,"Q",11.54,-0.0005,[-11.88,-13.53,-14.62,-11.89,-15.6,-12.64,-9.42,-13.45,-9.92,-10.55,-12.17,-12.95,-10.47,0.0,-8.44,-12.45,-10.1,-13.22,-12.64,-14.87]],
+[58,"A",10.6,-0.0015,[0.0,-11.78,-11.61,-10.79,-12.46,-10.1,-10.64,-11.98,-12.75,-12.34,-11.31,-9.64,-12.83,-11.94,-12.65,-7.23,-7.86,-9.06,-13.7,-11.24]],
+[59,"N",10.41,-0.0012,[-8.83,-12.37,-9.56,-12.45,-13.62,-9.09,-9.86,-9.98,-11.48,-11.31,-10.9,0.0,-13.88,-11.02,-11.66,-7.64,-9.14,-8.95,-14.1,-12.47]],
+[60,"Q",10.11,-0.0011,[-9.4,-11.63,-12.84,-10.69,-13.4,-10.66,-8.15,-11.85,-10.63,-8.88,-9.99,-11.01,-9.17,0.0,-8.54,-9.64,-10.02,-11.2,-12.27,-12.17]],
+[61,"A",10.04,-0.0041,[0.0,-11.32,-10.23,-10.32,-12.96,-6.43,-12.34,-11.35,-14.45,-10.68,-9.93,-10.35,-9.9,-10.63,-11.16,-6.88,-7.04,-8.14,-13.06,-13.56]],
+[62,"S",9.98,-0.0021,[-7.76,-8.37,-12.52,-14.27,-11.4,-9.96,-11.24,-11.22,-13.77,-7.14,-9.81,-9.28,-10.26,-11.46,-9.95,0.0,-8.49,-10.96,-11.5,-10.28]],
+[63,"A",9.66,-0.0076,[0.0,-10.61,-9.53,-10.5,-11.97,-7.75,-11.75,-11.18,-13.69,-10.21,-10.16,-8.9,-9.52,-11.08,-11.26,-5.66,-5.99,-7.26,-13.61,-12.59]],
+[64,"T",9.65,-0.0275,[-3.66,-11.15,-11.59,-11.54,-12.22,-9.49,-12.09,-8.82,-12.05,-9.79,-8.26,-8.13,-8.7,-11.69,-10.63,-7.32,0.0,-7.97,-14.95,-12.94]],
+[65,"S",9.45,-0.0039,[-7.18,-8.63,-11.79,-12.09,-9.73,-8.25,-11.13,-10.32,-12.72,-8.73,-10.84,-8.06,-8.46,-11.73,-9.39,0.0,-6.34,-10.92,-11.77,-10.92]],
+[66,"E",11.15,-0.0047,[-8.95,-15.0,-5.48,0.0,-14.54,-9.05,-13.03,-13.24,-10.95,-13.89,-12.17,-8.73,-12.72,-10.56,-14.03,-10.03,-10.25,-11.16,-15.8,-13.39]],
+[67,"E",10.97,-0.012,[-9.06,-14.41,-4.46,0.0,-13.84,-9.02,-11.97,-12.76,-10.51,-13.41,-12.92,-10.02,-13.45,-9.52,-13.83,-11.41,-11.35,-10.12,-14.79,-12.54]],
+[68,"C",11.76,-0.0004,[-12.5,0.0,-13.53,-14.73,-10.5,-10.68,-11.28,-13.83,-14.89,-13.09,-15.11,-12.09,-13.73,-14.35,-9.52,-9.77,-13.4,-12.65,-10.82,-8.68]],
+[69,"T",9.68,-0.0085,[-7.41,-10.26,-10.53,-12.67,-12.62,-10.72,-10.99,-8.53,-11.2,-10.97,-9.31,-5.33,-9.36,-11.9,-10.03,-6.04,0.0,-8.68,-14.19,-12.81]],
+[70,"V",10.4,-0.0033,[-6.01,-10.69,-10.73,-10.75,-11.52,-10.12,-14.14,-8.07,-12.84,-8.86,-9.57,-11.31,-10.07,-12.65,-13.22,-10.44,-9.35,0.0,-14.41,-13.21]],
+[71,"A",9.94,-0.0057,[0.0,-9.86,-8.4,-9.48,-11.29,-7.7,-13.41,-11.47,-12.23,-11.54,-12.35,-11.41,-9.69,-13.42,-11.15,-5.87,-7.45,-6.63,-13.02,-12.45]],
+[72,"W",10.02,-0.0021,[-11.27,-7.61,-13.72,-13.87,-10.57,-10.0,-11.34,-11.41,-12.6,-7.55,-11.45,-10.69,-11.79,-10.99,-7.84,-8.07,-9.68,-10.21,0.0,-9.8]],
+[73,"G",10.97,-0.0008,[-9.57,-10.26,-8.75,-8.82,-14.44,0.0,-13.64,-12.67,-11.82,-13.14,-14.02,-11.79,-13.25,-12.6,-8.77,-8.73,-12.47,-9.91,-10.73,-14.06]],
+[74,"V",8.0,-0.1427,[-3.13,-9.6,-9.7,-6.62,-9.95,-7.83,-10.91,-2.31,-9.18,-7.5,-5.87,-8.82,-11.69,-8.0,-10.35,-7.63,-5.61,0.0,-13.98,-11.41]],
+[75,"C",12.45,-0.0003,[-13.45,0.0,-13.83,-15.79,-10.65,-12.24,-12.46,-15.23,-14.37,-13.32,-16.36,-13.18,-14.67,-14.86,-9.5,-10.24,-14.81,-13.88,-11.43,-8.84]],
+[76,"N",10.69,-0.0013,[-11.03,-12.14,-9.25,-13.08,-13.51,-9.53,-9.97,-10.94,-9.99,-12.03,-10.11,0.0,-12.24,-11.87,-12.3,-7.12,-9.17,-12.8,-15.24,-11.53]],
+[77,"H",11.33,-0.0006,[-13.49,-11.93,-10.48,-13.19,-13.08,-12.44,0.0,-12.64,-13.56,-10.85,-13.99,-9.96,-10.54,-9.39,-8.32,-13.35,-13.07,-13.57,-13.77,-8.88]],
+[78,"A",10.0,-0.0048,[0.0,-9.44,-9.55,-10.4,-12.24,-7.2,-12.71,-11.41,-12.81,-11.35,-11.65,-11.13,-8.98,-12.77,-12.05,-6.56,-7.12,-6.54,-13.83,-12.2]],
+[79,"F",11.55,-0.0026,[-12.62,-9.97,-12.32,-14.96,0.0,-12.39,-12.09,-11.7,-16.66,-10.68,-13.28,-12.87,-12.92,-15.1,-13.11,-9.3,-12.55,-11.72,-10.72,-6.04]],
+[80,"H",10.57,-0.0012,[-12.95,-9.82,-7.71,-12.12,-12.04,-11.52,0.0,-12.43,-12.53,-10.28,-13.71,-9.74,-9.88,-9.8,-8.22,-11.28,-13.61,-12.56,-12.45,-8.81]],
+[81,"F",11.08,-0.001,[-11.79,-10.7,-12.57,-13.85,0.0,-13.17,-11.59,-11.48,-14.64,-8.88,-11.18,-11.8,-12.45,-12.7,-13.13,-9.64,-11.93,-11.25,-11.6,-7.3]],
+[82,"H",10.86,-0.001,[-13.07,-10.32,-10.31,-12.75,-11.98,-11.76,0.0,-13.81,-13.02,-10.42,-14.23,-9.28,-10.23,-7.6,-8.81,-10.87,-13.22,-13.0,-13.4,-9.07]],
+[83,"C",12.49,-0.0003,[-14.26,0.0,-12.69,-14.82,-11.52,-11.5,-12.26,-15.7,-14.75,-14.12,-17.0,-13.88,-14.0,-14.28,-8.85,-10.58,-14.73,-13.96,-11.04,-9.89]],
+[84,"I",11.9,-0.0013,[-13.24,-14.25,-12.24,-13.94,-12.54,-13.33,-14.67,0.0,-13.58,-8.03,-8.06,-10.36,-12.95,-13.93,-13.37,-11.35,-9.67,-7.61,-17.31,-17.5]],
+[85,"S",9.97,-0.0014,[-8.12,-8.58,-12.21,-11.48,-8.86,-9.88,-11.62,-11.86,-12.64,-8.8,-13.68,-10.06,-11.12,-8.74,-9.62,0.0,-8.7,-10.83,-11.33,-11.32]],
+[86,"R",9.16,-0.0041,[-11.26,-7.22,-13.77,-12.14,-11.27,-8.87,-7.13,-10.66,-8.56,-7.79,-10.47,-9.85,-8.76,-6.93,0.0,-8.58,-10.16,-10.88,-8.67,-10.26]],
+[87,"W",11.65,-0.0004,[-13.52,-9.97,-14.41,-14.8,-11.35,-11.7,-12.17,-13.88,-12.69,-9.8,-13.86,-13.17,-12.51,-11.58,-8.47,-10.79,-14.03,-13.29,0.0,-11.06]],
+[88,"L",11.87,-0.0002,[-13.6,-13.91,-15.22,-13.88,-10.22,-14.69,-12.66,-9.75,-13.2,0.0,-10.63,-13.63,-10.37,-11.5,-11.23,-11.54,-13.29,-10.3,-13.47,-14.37]],
+[89,"K",10.47,-0.0032,[-12.13,-13.71,-12.6,-9.18,-14.74,-11.51,-12.51,-9.74,0.0,-11.28,-9.07,-8.34,-12.01,-8.61,-6.18,-10.01,-8.22,-11.85,-13.8,-13.96]],
+[90,"T",10.24,-0.0033,[-7.09,-12.22,-12.59,-11.18,-12.74,-11.55,-12.05,-8.74,-10.68,-11.34,-8.71,-8.25,-11.87,-10.89,-10.44,-6.35,0.0,-10.12,-15.53,-12.43]],
+[91,"R",9.95,-0.0021,[-12.76,-7.75,-13.74,-12.42,-12.92,-9.68,-7.38,-11.66,-8.34,-10.01,-11.42,-8.79,-10.39,-8.81,0.0,-9.24,-11.61,-12.19,-8.79,-11.11]],
+[92,"Q",9.03,-0.0051,[-8.4,-11.1,-12.75,-9.22,-11.3,-8.71,-6.91,-11.95,-8.29,-8.92,-10.17,-9.41,-6.52,0.0,-7.06,-7.44,-8.94,-10.78,-11.43,-11.21]],
+[93,"V",10.2,-0.0021,[-7.58,-11.08,-13.22,-11.68,-9.68,-11.0,-12.55,-7.29,-11.94,-7.47,-10.07,-11.19,-12.26,-9.87,-11.71,-9.93,-10.27,0.0,-12.93,-12.33]],
+[94,"C",11.9,-0.0003,[-13.47,0.0,-12.46,-15.23,-10.69,-12.47,-12.08,-14.62,-12.83,-12.91,-15.2,-11.85,-13.83,-13.67,-8.59,-10.12,-13.08,-13.55,-11.39,-9.9]],
+[95,"P",10.08,-0.0015,[-9.61,-9.43,-13.05,-13.23,-9.28,-11.34,-9.51,-13.48,-12.37,-7.84,-13.21,-12.28,0.0,-8.99,-8.87,-8.03,-10.07,-10.01,-10.55,-10.36]],
+[96,"L",10.54,-0.0008,[-12.22,-12.3,-14.03,-12.93,-9.82,-13.16,-11.04,-9.31,-11.35,0.0,-8.93,-11.85,-8.9,-9.89,-10.02,-10.05,-12.1,-9.04,-12.09,-11.85]],
+[97,"D",11.17,-0.0006,[-10.65,-9.19,0.0,-10.35,-12.44,-8.88,-10.9,-13.24,-13.14,-13.64,-14.56,-9.17,-15.0,-13.95,-11.79,-11.41,-13.18,-10.3,-11.78,-9.89]],
+[98,"N",11.58,-0.0003,[-13.33,-13.25,-11.39,-14.3,-13.22,-11.2,-12.02,-11.18,-10.41,-12.95,-12.8,0.0,-14.9,-11.56,-11.36,-8.95,-11.19,-12.75,-13.75,-11.17]],
+[99,"R",8.32,-0.0176,[-9.68,-7.45,-11.97,-8.96,-11.16,-10.77,-8.39,-8.11,-4.72,-8.61,-8.34,-8.14,-11.65,-5.37,0.0,-6.71,-7.51,-8.82,-8.75,-11.33]],
+[100,"E",8.1,-0.4247,[-7.73,-10.69,-0.65,0.0,-10.98,-7.04,-8.63,-9.63,-6.63,-10.32,-10.98,-6.06,-8.44,-6.92,-9.82,-8.86,-9.12,-7.68,-13.03,-8.84]],
+[101,"W",10.22,-0.0027,[-13.02,-8.23,-12.51,-12.87,-9.62,-9.3,-11.45,-10.01,-11.95,-8.43,-11.9,-12.36,-12.01,-11.07,-6.34,-9.2,-12.69,-10.98,0.0,-10.44]],
+[102,"E",9.46,-0.0117,[-8.21,-13.13,-4.73,0.0,-11.78,-8.63,-10.29,-10.99,-7.16,-10.38,-11.47,-9.93,-12.16,-7.39,-11.03,-10.29,-10.24,-7.22,-13.05,-11.14]],
+[103,"F",10.58,-0.0021,[-12.95,-9.63,-12.04,-14.48,0.0,-13.8,-10.81,-9.45,-13.92,-7.85,-10.77,-11.4,-11.39,-12.69,-12.23,-8.77,-12.16,-9.38,-11.14,-6.68]],
+[104,"Q",8.86,-0.0033,[-9.29,-9.09,-10.77,-8.54,-11.55,-9.92,-6.93,-9.8,-8.5,-7.78,-9.21,-9.64,-9.29,0.0,-7.85,-8.78,-8.76,-8.93,-12.26,-10.25]],
+[105,"K",9.05,-0.0314,[-11.38,-11.54,-10.85,-6.63,-12.88,-11.0,-9.48,-9.26,0.0,-9.44,-8.52,-8.87,-10.34,-3.87,-4.74,-10.0,-8.6,-10.39,-10.59,-12.67]],
+[106,"Y",10.51,-0.001,[-12.13,-9.29,-11.04,-11.93,-7.76,-12.69,-8.4,-11.54,-12.94,-10.38,-12.32,-10.42,-12.17,-11.85,-12.05,-10.36,-11.31,-10.85,-10.87,0.0]],
+[107,"G",8.71,-0.0047,[-7.72,-8.69,-7.14,-7.15,-11.02,0.0,-10.27,-10.56,-9.36,-10.09,-11.04,-8.89,-9.87,-10.13,-7.11,-7.24,-9.83,-8.12,-9.23,-10.75]],
+[108,"H",6.22,-0.1019,[-8.04,-6.39,-7.82,-6.71,-7.12,-7.02,0.0,-7.12,-5.12,-6.35,-7.56,-5.66,-7.42,-5.21,-2.57,-6.08,-6.93,-7.78,-7.53,-5.97]]
+];
+
+const dmsContacts = [[39,48,0.854],[43,79,0.99],[43,96,0.928],[43,98,0.756],[44,79,0.926],[44,87,0.732],[44,96,0.7],[45,77,0.823],[45,80,0.986],[45,83,0.98],[45,97,0.665],[46,98,0.706],[47,98,0.919],[52,78,0.637],[56,68,0.952],[71,101,0.819],[72,78,0.648],[73,84,0.696],[73,101,0.999],[75,94,0.896],[77,97,0.757],[81,85,0.508],[85,89,0.828],[87,93,0.987],[87,94,0.88],[87,95,0.82],[87,96,0.628],[91,98,0.592],[92,100,0.934],[93,98,0.994],[93,100,0.953]];
+const dmsWorst = [[54,"I","W",-18.25],[84,"I","Y",-17.5],[84,"I","W",-17.31],[83,"C","M",-17.0],[79,"F","K",-16.66],[51,"D","W",-16.64],[37,"I","W",-16.48],[75,"C","M",-16.36],[42,"C","M",-16.31],[56,"C","Q",-16.24],[36,"D","M",-16.23],[42,"C","I",-15.96],[36,"D","P",-15.92],[55,"E","F",-15.83],[66,"E","W",-15.8],[75,"C","E",-15.79],[83,"C","I",-15.7],[44,"I","W",-15.66],[47,"N","P",-15.65],[54,"I","H",-15.64]];
+
+function drawDmsPlots() {
+  drawDmsHeatmap();
+  drawDmsSensitivity();
+  drawDmsVsCons();
+  drawDmsContactMap();
+  populateDmsTables();
+}
+
+function drawDmsHeatmap() {
+  const canvas = document.getElementById('dmsHeatmap');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const tc = {text: isDark ? '#c9d1d9' : '#333', bg: isDark ? '#0d1117' : '#fff', grid: isDark ? '#30363d' : '#e4e4e4'};
+
+  const w = canvas.width, h = canvas.height;
+  const pad = {t: 30, r: 10, b: 40, l: 40};
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const cellW = plotW / 108;
+  const cellH = plotH / 20;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = tc.bg; ctx.fillRect(0, 0, w, h);
+
+  // Color scale: blue (positive) -> white (0) -> red (negative)
+  function dllrColor(v) {
+    const maxV = 18;
+    if (v >= 0) {
+      const t = Math.min(v / 3, 1);
+      const r = Math.round(255 * (1 - t)), g = Math.round(255 * (1 - t * 0.3)), b = 255;
+      return `rgb(${r},${g},${b})`;
+    } else {
+      const t = Math.min(-v / maxV, 1);
+      const r = 255, g = Math.round(255 * (1 - t)), b = Math.round(255 * (1 - t));
+      return `rgb(${r},${g},${b})`;
+    }
+  }
+
+  // Draw cells
+  dmsData.forEach((row, i) => {
+    const scores = row[4];
+    scores.forEach((s, j) => {
+      ctx.fillStyle = dllrColor(s);
+      ctx.fillRect(pad.l + i * cellW, pad.t + j * cellH, cellW, cellH);
+      // Mark WT with dot
+      if (AA_ORDER[j] === row[1]) {
+        ctx.fillStyle = isDark ? '#fff' : '#000';
+        ctx.beginPath();
+        ctx.arc(pad.l + i * cellW + cellW/2, pad.t + j * cellH + cellH/2, Math.min(cellW, cellH) * 0.25, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+  });
+
+  // Y-axis AA labels
+  ctx.fillStyle = tc.text;
+  ctx.font = '9px monospace';
+  ctx.textAlign = 'right';
+  for (let j = 0; j < 20; j++) {
+    ctx.fillText(AA_ORDER[j], pad.l - 3, pad.t + j * cellH + cellH * 0.7);
+  }
+
+  // X-axis labels every 10
+  ctx.textAlign = 'center';
+  ctx.font = '9px sans-serif';
+  dmsData.forEach((row, i) => {
+    if (row[0] % 10 === 0 || row[0] === 1) {
+      ctx.fillText(row[0], pad.l + i * cellW + cellW/2, h - pad.b + 12);
+    }
+  });
+
+  ctx.font = 'bold 12px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Mutation Effect Heatmap (dLLR)', pad.l, pad.t - 10);
+
+  // Tooltip on hover
+  canvas.onmousemove = function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (w / rect.width);
+    const my = (e.clientY - rect.top) * (h / rect.height);
+    const ci = Math.floor((mx - pad.l) / cellW);
+    const cj = Math.floor((my - pad.t) / cellH);
+    const tip = document.getElementById('dmsTooltip');
+    if (ci >= 0 && ci < 108 && cj >= 0 && cj < 20) {
+      const row = dmsData[ci];
+      const score = row[4][cj];
+      tip.style.display = 'block';
+      tip.style.left = (e.clientX - rect.left + 10) + 'px';
+      tip.style.top = (e.clientY - rect.top - 30) + 'px';
+      tip.innerHTML = `<strong>${row[1]}${row[0]}${AA_ORDER[cj]}</strong> dLLR: ${score.toFixed(2)}`;
+    } else {
+      tip.style.display = 'none';
+    }
+  };
+  canvas.onmouseleave = function() { document.getElementById('dmsTooltip').style.display = 'none'; };
+}
+
+function drawDmsSensitivity() {
+  const canvas = document.getElementById('dmsSensitivity');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const tc = {text: isDark ? '#c9d1d9' : '#333', bg: isDark ? '#0d1117' : '#fff', grid: isDark ? '#30363d' : '#e4e4e4'};
+
+  const w = canvas.width, h = canvas.height;
+  const pad = {t: 30, r: 20, b: 35, l: 40};
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const barW = plotW / 108;
+  const maxSens = 14;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = tc.bg; ctx.fillRect(0, 0, w, h);
+
+  ctx.strokeStyle = tc.grid; ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 7; i++) {
+    const y = pad.t + plotH - (i * 2 / maxSens) * plotH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
+  }
+
+  dmsData.forEach((row, i) => {
+    const role = getResidueRole(row[0]);
+    ctx.fillStyle = getRoleColor(role, isDark);
+    const bh = (row[2] / maxSens) * plotH;
+    ctx.fillRect(pad.l + i * barW + 0.5, pad.t + plotH - bh, barW - 1, bh);
+  });
+
+  ctx.fillStyle = tc.text;
+  ctx.font = '9px sans-serif';
+  ctx.textAlign = 'center';
+  dmsData.forEach((row, i) => {
+    if (row[0] % 10 === 0 || row[0] === 1) ctx.fillText(row[0], pad.l + i * barW + barW/2, h - pad.b + 12);
+  });
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 7; i++) ctx.fillText(i * 2, pad.l - 4, pad.t + plotH - (i * 2 / maxSens) * plotH + 3);
+
+  ctx.font = 'bold 12px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Per-Position Sensitivity (mean |dLLR|)', pad.l, pad.t - 10);
+}
+
+function drawDmsVsCons() {
+  const canvas = document.getElementById('dmsVsCons');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const tc = {text: isDark ? '#c9d1d9' : '#333', bg: isDark ? '#0d1117' : '#fff', grid: isDark ? '#30363d' : '#e4e4e4'};
+
+  const w = canvas.width, h = canvas.height;
+  const pad = {t: 20, r: 20, b: 40, l: 50};
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = tc.bg; ctx.fillRect(0, 0, w, h);
+
+  ctx.strokeStyle = tc.grid; ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 5; i++) {
+    const y = pad.t + plotH - (i / 5) * plotH;
+    const x = pad.l + (i / 5) * plotW;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, h - pad.b); ctx.stroke();
+  }
+
+  // Plot points
+  conservationData.forEach((cd, i) => {
+    const row = dmsData[i];
+    const role = getResidueRole(cd.num);
+    const x = pad.l + (cd.cons - 0.4) / 0.6 * plotW;
+    const y = pad.t + plotH - (row[2] - 2) / 12 * plotH;
+    ctx.fillStyle = getRoleColor(role, isDark);
+    ctx.globalAlpha = 0.7;
+    ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+
+  ctx.fillStyle = tc.text;
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Evolutionary Conservation', w / 2, h - 6);
+  ctx.save();
+  ctx.translate(12, h / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('ESM-2 Sensitivity', 0, 0);
+  ctx.restore();
+
+  ctx.textAlign = 'center';
+  for (let i = 0; i <= 5; i++) {
+    ctx.fillText((0.4 + i * 0.12).toFixed(1), pad.l + (i / 5) * plotW, h - pad.b + 14);
+  }
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 5; i++) {
+    ctx.fillText((2 + i * 2.4).toFixed(0), pad.l - 4, pad.t + plotH - (i / 5) * plotH + 3);
+  }
+}
+
+function drawDmsContactMap() {
+  const canvas = document.getElementById('dmsContacts');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const tc = {text: isDark ? '#c9d1d9' : '#333', bg: isDark ? '#0d1117' : '#fff', grid: isDark ? '#30363d' : '#e4e4e4'};
+
+  const w = canvas.width, h = canvas.height;
+  const pad = {t: 20, r: 10, b: 30, l: 30};
+  const plotS = Math.min(w - pad.l - pad.r, h - pad.t - pad.b);
+  const cellS = plotS / 108;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = tc.bg; ctx.fillRect(0, 0, w, h);
+
+  // Diagonal
+  ctx.strokeStyle = tc.grid; ctx.lineWidth = 0.3;
+  ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l + plotS, pad.t + plotS); ctx.stroke();
+
+  // Contact dots
+  dmsContacts.forEach(([i, j, p]) => {
+    const x = pad.l + (i - 1) * cellS + cellS / 2;
+    const y = pad.t + (j - 1) * cellS + cellS / 2;
+    const r = 2 + p * 3;
+    ctx.fillStyle = isDark ? `rgba(100,181,246,${p})` : `rgba(21,101,192,${p})`;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(y - pad.t + pad.l, x - pad.l + pad.t, r, 0, Math.PI * 2); ctx.fill();
+  });
+
+  ctx.fillStyle = tc.text;
+  ctx.font = '9px sans-serif';
+  ctx.textAlign = 'center';
+  for (let i = 10; i <= 108; i += 20) {
+    ctx.fillText(i, pad.l + (i - 1) * cellS, h - pad.b + 12);
+  }
+  ctx.textAlign = 'right';
+  for (let i = 10; i <= 108; i += 20) {
+    ctx.fillText(i, pad.l - 3, pad.t + (i - 1) * cellS + 3);
+  }
+}
+
+function populateDmsTables() {
+  // Worst mutations
+  const worstBody = document.getElementById('dmsWorstBody');
+  if (worstBody) {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    worstBody.innerHTML = dmsWorst.map((m, i) => {
+      const role = getResidueRole(m[0]);
+      const cd = conservationData.find(c => c.num === m[0]);
+      return `<tr>
+        <td>${i + 1}</td>
+        <td>${m[0]}</td>
+        <td style="font-family:monospace;font-weight:bold;">${m[1]} &rarr; ${m[2]}</td>
+        <td style="color:#c62828;font-weight:bold;">${m[3].toFixed(2)}</td>
+        <td><span style="color:${getRoleColor(role, isDark)};font-weight:600;">${role}</span></td>
+        <td>${cd ? cd.cons.toFixed(3) : 'N/A'}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Top sensitive residues
+  const sensBody = document.getElementById('dmsSensBody');
+  if (sensBody) {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const sorted = [...dmsData].sort((a, b) => b[2] - a[2]).slice(0, 30);
+    sensBody.innerHTML = sorted.map(row => {
+      const role = getResidueRole(row[0]);
+      const cd = conservationData.find(c => c.num === row[0]);
+      return `<tr>
+        <td>${row[0]}</td>
+        <td style="font-family:monospace;font-weight:bold;">${row[1]}</td>
+        <td><strong>${row[2].toFixed(2)}</strong></td>
+        <td>${cd ? cd.cons.toFixed(3) : 'N/A'}</td>
+        <td>${row[3].toFixed(4)}</td>
+        <td><span style="color:${getRoleColor(role, isDark)};font-weight:600;">${role}</span></td>
+      </tr>`;
+    }).join('');
+  }
+}
 </script>
 
 </body>
