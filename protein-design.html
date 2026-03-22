@@ -8,6 +8,7 @@
   <meta name="description" content="RBX1 de novo binder design dashboard — metrics, pipeline status, and structure cards">
   <link rel="stylesheet" href="stylesheet.css">
   <link rel="icon" type="image/png" href="data/avatar.png">
+  <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
   <style>
     /* ========== Protein Design Page Overrides ========== */
     .container { max-width: 1100px; }
@@ -524,6 +525,33 @@
       background: linear-gradient(90deg, #b388ff, #82b1ff);
     }
 
+    /* 3D Viewer */
+    .viewer3d-container {
+      width: 100%;
+      height: 200px;
+      position: relative;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      display: none;
+    }
+    .viewer3d-container.active { display: block; }
+    .btn-3d-toggle {
+      display: inline-block;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-alt);
+      color: var(--text);
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: background 0.15s;
+    }
+    .btn-3d-toggle:hover { background: var(--border); }
+
     /* Responsive */
     @media (max-width: 700px) {
       .structure-grid {
@@ -560,6 +588,7 @@
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
       <button class="tab-btn" onclick="switchTab('all')">All Structures</button>
+      <button class="tab-btn" onclick="switchTab('evo')">Evolutionary Analysis</button>
     </div>
 
     <!-- ============================================ -->
@@ -890,6 +919,211 @@
       </div>
     </div>
 
+    <!-- ============================================ -->
+    <!-- TAB 3: EVOLUTIONARY ANALYSIS                 -->
+    <!-- ============================================ -->
+    <div class="tab-content" id="tab-evo">
+
+      <div class="section-heading">Evolutionary Analysis of RBX1</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;">
+        Conservation analysis from 165-sequence MSA (MAFFT) of RBX1 homologs across eukaryotes.
+        834 raw homologs collected via HMMER, filtered to 272 non-redundant sequences, aligned with 1155 total rows including outgroups.
+      </p>
+
+      <!-- MSA & Homolog Summary -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value">165</div>
+          <div class="stat-label">MSA Sequences</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">834</div>
+          <div class="stat-label">Raw Homologs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">272</div>
+          <div class="stat-label">Filtered Seqs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">108</div>
+          <div class="stat-label">Target Residues</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Zn<sup>2+</sup> Sites</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">66</div>
+          <div class="stat-label">Interface Residues</div>
+        </div>
+      </div>
+
+      <!-- Conservation Heatmap Plot -->
+      <div class="section-heading" style="font-size:18px;">Per-Residue Conservation</div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">
+        Shannon entropy-based conservation score (0 = variable, 1 = perfectly conserved). Colored by functional role:
+        <span style="color:#1565c0;font-weight:600;">E2 interface</span>,
+        <span style="color:#c62828;font-weight:600;">Cullin interface</span>,
+        <span style="color:#ff8f00;font-weight:600;">Zinc-binding</span>,
+        <span style="color:var(--text-secondary);">other</span>.
+        Hover for details.
+      </p>
+      <div style="overflow-x:auto;margin-bottom:24px;">
+        <canvas id="evoConservationCanvas" width="1060" height="280" style="max-width:100%;"></canvas>
+      </div>
+
+      <!-- Entropy Distribution -->
+      <div class="pipeline-grid" style="margin-bottom:24px;">
+        <div style="grid-column:1/-1;">
+          <div class="section-heading" style="font-size:18px;">Entropy Distribution</div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">
+            Histogram of Shannon entropy values across all 108 residues. Lower entropy = higher conservation.
+          </p>
+          <canvas id="evoEntropyHist" width="520" height="240" style="max-width:100%;"></canvas>
+        </div>
+      </div>
+
+      <!-- Interface Comparison -->
+      <div class="pipeline-grid" style="margin-bottom:24px;">
+        <div>
+          <div class="section-heading" style="font-size:18px;">Interface Conservation Comparison</div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">
+            Mean conservation by functional region.
+          </p>
+          <canvas id="evoInterfaceCompare" width="460" height="260" style="max-width:100%;"></canvas>
+        </div>
+        <div>
+          <div class="section-heading" style="font-size:18px;">Gap Fraction by Region</div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">
+            Mean alignment gap fraction. Lower = better coverage in the MSA.
+          </p>
+          <canvas id="evoGapCompare" width="460" height="260" style="max-width:100%;"></canvas>
+        </div>
+      </div>
+
+      <!-- Key Residues Table -->
+      <div class="section-heading" style="font-size:18px;">Highly Conserved Residues (Conservation &ge; 0.93)</div>
+      <div class="table-wrapper" style="margin-bottom:24px;">
+        <table class="all-structures-table" id="evoResidueTable">
+          <thead>
+            <tr>
+              <th>Residue #</th>
+              <th>Amino Acid</th>
+              <th>Conservation</th>
+              <th>Entropy</th>
+              <th>Gap Fraction</th>
+              <th>Functional Role</th>
+            </tr>
+          </thead>
+          <tbody id="evoResidueBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Zinc Coordination -->
+      <div class="section-heading" style="font-size:18px;">Zinc Coordination Sites</div>
+      <div class="pipeline-grid" style="margin-bottom:24px;">
+        <div class="pipeline-card">
+          <div class="pipeline-name" style="margin-bottom:8px;">Zn<sup>2+</sup> Site 1 (ZN_109)</div>
+          <div style="font-size:14px;line-height:1.8;color:var(--text);">
+            <strong>Ligands:</strong> CYS42, CYS45, HIS80, CYS83<br>
+            <strong>Avg Conservation:</strong> 0.943<br>
+            <strong>Role:</strong> Stabilizes RING-H2 domain fold, part of E2 recruitment surface
+          </div>
+        </div>
+        <div class="pipeline-card">
+          <div class="pipeline-name" style="margin-bottom:8px;">Zn<sup>2+</sup> Site 2 (ZN_110)</div>
+          <div style="font-size:14px;line-height:1.8;color:var(--text);">
+            <strong>Ligands:</strong> CYS75, HIS77, CYS94<br>
+            <strong>Avg Conservation:</strong> 0.956<br>
+            <strong>Role:</strong> Structural zinc, anchors the beta-sheet core between the two interfaces
+          </div>
+        </div>
+        <div class="pipeline-card">
+          <div class="pipeline-name" style="margin-bottom:8px;">Zn<sup>2+</sup> Site 3 (ZN_111)</div>
+          <div style="font-size:14px;line-height:1.8;color:var(--text);">
+            <strong>Ligands:</strong> CYS53, CYS56, CYS68, HIS82<br>
+            <strong>Avg Conservation:</strong> 0.922<br>
+            <strong>Role:</strong> Bridges the E2-binding loop to the core, critical for domain integrity
+          </div>
+        </div>
+      </div>
+
+      <!-- Interface Definitions -->
+      <div class="section-heading" style="font-size:18px;">Target Interface Definitions</div>
+      <div class="pipeline-grid" style="margin-bottom:24px;">
+        <div class="pipeline-card">
+          <div class="pipeline-card-header">
+            <span class="pipeline-name">E2 Recruitment Face</span>
+            <span class="tag meta-campaign-e2" style="font-size:11px;">PRIMARY (60%)</span>
+          </div>
+          <div style="font-size:14px;color:var(--text);line-height:1.7;">
+            <strong>35 residues</strong> at UBC12/E2 interface (PDB 4P5O, 8&Aring; cutoff)<br>
+            <strong>Residues:</strong> <span style="font-family:monospace;font-size:12px;">41,42,43,44,45,46,47,48,51,52,53,54,55,56,57,58,59,79,81,82,83,84,85,86,87,88,90,91,93,94,95,96,97,98,99</span><br>
+            <strong>Mean conservation:</strong> 0.839<br>
+            <strong>Hotspots (RFdiffusion):</strong> <span style="font-family:monospace;font-size:12px;">B44-B48, B52, B55-B57, B84-B88, B95-B98</span><br>
+            <strong>Key residues:</strong> R46 (1.0), C94 (0.988), I44 (0.948), C56 (0.966), P95 (0.947)
+          </div>
+        </div>
+        <div class="pipeline-card">
+          <div class="pipeline-card-header">
+            <span class="pipeline-name">Cullin Interface</span>
+            <span class="tag meta-campaign-cullin" style="font-size:11px;">SECONDARY (40%)</span>
+          </div>
+          <div style="font-size:14px;color:var(--text);line-height:1.7;">
+            <strong>31 residues</strong> at Cullin C-terminal domain interface<br>
+            <strong>Residues:</strong> <span style="font-family:monospace;font-size:12px;">23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,72,73,74,75,76,89,90,91,92,93,99,100,101,102,103,104</span><br>
+            <strong>Mean conservation:</strong> 0.938<br>
+            <strong>Hotspots (RFdiffusion):</strong> <span style="font-family:monospace;font-size:12px;">B24-B34, B72-B75, B100-B104</span><br>
+            <strong>Key residues:</strong> W33 (1.0), W35 (1.0), G73 (1.0), W101 (0.988), V30 (0.974)
+          </div>
+        </div>
+      </div>
+
+      <!-- Interpretation -->
+      <div class="section-heading" style="font-size:18px;">Interpretation</div>
+      <div style="background:var(--bg-alt);border:1px solid var(--border);border-left:4px solid var(--link);border-radius:0 8px 8px 0;padding:18px 22px;margin-bottom:24px;font-size:14px;color:var(--text);line-height:1.75;">
+        <p style="margin-bottom:12px;">
+          <strong>RBX1 is deeply conserved across eukaryotes.</strong> The RING-H2 domain (residues ~27&ndash;104) shows uniformly high conservation
+          (&gt;0.7 for nearly all positions), with zinc-coordinating cysteines and histidines reaching near-perfect conservation (0.91&ndash;1.0).
+          The N-terminal tail (residues 1&ndash;20) is more variable, consistent with it being unstructured in the NMR ensemble (2LGV).
+        </p>
+        <p style="margin-bottom:12px;">
+          <strong>The Cullin face is significantly more conserved than the E2 face</strong> (mean 0.938 vs 0.839). This makes sense:
+          the Cullin interaction is constitutive (RBX1 is always bound to a Cullin scaffold in vivo), whereas the E2 interface cycles through
+          multiple E2 partners. The higher conservation at the Cullin face means binders targeting it are more likely to disrupt a
+          functionally critical interaction, but the surface may also be harder to compete with due to the tight, conserved binding.
+        </p>
+        <p style="margin-bottom:12px;">
+          <strong>Three perfectly conserved residues</strong> stand out: W33, W35 (both Cullin face), G73 (Cullin face), and R46 (E2 face).
+          These are absolutely invariant across all 165 sequences in the MSA. W33 and W35 form a tryptophan pair that likely stacks against
+          the Cullin surface&mdash;a classic hot-spot motif. R46 is the catalytic arginine critical for E2 activation.
+        </p>
+        <p style="margin-bottom:12px;">
+          <strong>Gap fraction is low (&lt;2%) for the core domain</strong> (residues 36&ndash;105), meaning the MSA is well-aligned in the
+          structured region. The N/C-terminal tails show higher gaps (10&ndash;27%), reflecting length variation among homologs.
+          This gives confidence that the conservation scores in the core are reliable.
+        </p>
+        <p style="margin-bottom:0;">
+          <strong>Design implications:</strong> The 60/40 E2/Cullin split is well-justified. The Cullin face offers a tighter, more conserved
+          target with multiple tryptophan hot-spots, favoring high-affinity designs. The E2 face is more diverse, potentially offering more
+          epitope options but requiring designs that can outcompete the native E2 partners. The zinc sites should be included in the target
+          structure but not directly targeted&mdash;they are buried and structurally critical, not surface-accessible.
+        </p>
+      </div>
+
+      <!-- Sequence with conservation coloring -->
+      <div class="section-heading" style="font-size:18px;">RBX1 Sequence &mdash; Conservation Colored</div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">
+        Each residue colored by conservation score. Hover for details.
+      </p>
+      <div id="evoSequenceViz" style="font-family:monospace;font-size:14px;line-height:2.2;word-break:break-all;background:var(--bg-alt);padding:16px;border-radius:8px;border:1px solid var(--border);margin-bottom:24px;">
+        <!-- Populated by JS -->
+      </div>
+
+    </div>
+
     <!-- Footer -->
     <div class="footer">
       Sergio E. Mares &mdash; RBX1 Binder Design Dashboard &mdash; <a href="index.html">Home</a>
@@ -907,7 +1141,8 @@ const designs = [
     rfdiff_conf: 0.979, rfdiff_min: 0.95, rfdiff_max: 1.00,
     pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
     ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null
+    bsa: null, contacts: null, hbonds: null, sequence: null,
+    pdb_file: "data/rbx1_designs/e2_design_0.pdb"
   },
   {
     id: "e2_small_pilot_design_1", name: "E2 Pilot Design 1", campaign: "E2 Face",
@@ -915,7 +1150,8 @@ const designs = [
     rfdiff_conf: 0.987, rfdiff_min: 0.92, rfdiff_max: 1.00,
     pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
     ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null
+    bsa: null, contacts: null, hbonds: null, sequence: null,
+    pdb_file: "data/rbx1_designs/e2_design_1.pdb"
   },
   {
     id: "e2_small_pilot_design_2", name: "E2 Pilot Design 2", campaign: "E2 Face",
@@ -923,7 +1159,8 @@ const designs = [
     rfdiff_conf: 0.985, rfdiff_min: 0.95, rfdiff_max: 1.00,
     pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
     ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null
+    bsa: null, contacts: null, hbonds: null, sequence: null,
+    pdb_file: "data/rbx1_designs/e2_design_2.pdb"
   },
   {
     id: "e2_small_pilot_design_3", name: "E2 Pilot Design 3", campaign: "E2 Face",
@@ -931,7 +1168,8 @@ const designs = [
     rfdiff_conf: 0.989, rfdiff_min: 0.98, rfdiff_max: 1.00,
     pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
     ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null
+    bsa: null, contacts: null, hbonds: null, sequence: null,
+    pdb_file: "data/rbx1_designs/e2_design_3.pdb"
   },
   {
     id: "e2_small_pilot_design_4", name: "E2 Pilot Design 4", campaign: "E2 Face",
@@ -939,7 +1177,8 @@ const designs = [
     rfdiff_conf: 0.983, rfdiff_min: 0.93, rfdiff_max: 1.00,
     pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
     ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null
+    bsa: null, contacts: null, hbonds: null, sequence: null,
+    pdb_file: "data/rbx1_designs/e2_design_4.pdb"
   },
   // ---- RFdiffusion Cullin Face ----
   {
@@ -948,7 +1187,8 @@ const designs = [
     rfdiff_conf: 0.992, rfdiff_min: 0.98, rfdiff_max: 1.00,
     pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
     ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null
+    bsa: null, contacts: null, hbonds: null, sequence: null,
+    pdb_file: "data/rbx1_designs/cullin_design_0.pdb"
   },
   {
     id: "cullin_small_pilot_design_1", name: "Cullin Pilot Design 1", campaign: "Cullin Face",
@@ -956,7 +1196,8 @@ const designs = [
     rfdiff_conf: 0.987, rfdiff_min: 0.90, rfdiff_max: 1.00,
     pipeline: "RFdiffusion", stage: "MPNN Complete", size_class: "Small (40-65 AA)",
     ipTM: null, design_ptm: null, pLDDT: null, pTM: null, pAE: null, min_pae: null,
-    bsa: null, contacts: null, hbonds: null, sequence: null
+    bsa: null, contacts: null, hbonds: null, sequence: null,
+    pdb_file: "data/rbx1_designs/cullin_design_1.pdb"
   },
   {
     id: "cullin_small_pilot_design_2", name: "Cullin Pilot Design 2", campaign: "Cullin Face",
@@ -991,7 +1232,8 @@ const designs = [
     ipTM: 0.445, design_ptm: 0.680, pLDDT: null, pTM: 0.508, pAE: 12.34, min_pae: 2.49,
     bsa: 2030, contacts: null, hbonds: 27,
     sequence: "AGAAAGVSRKVTADELPGVARELWERAQRLLGRKPDKARLTFYW",
-    bb_rmsd: 2.78, delta_sasa: 2030
+    bb_rmsd: 2.78, delta_sasa: 2030,
+    pdb_file: "data/rbx1_designs/rank4_rbx1_small_0.cif"
   },
   {
     id: "rbx1_small_1", name: "BG Small 1", campaign: "BoltzGen Small",
