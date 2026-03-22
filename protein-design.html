@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RBX1 Protein Design Dashboard — Sergio E. Mares</title>
+  <meta name="author" content="Sergio E. Mares">
+  <meta name="description" content="RBX1 de novo binder design dashboard — metrics, pipeline status, and structure cards">
+  <link rel="stylesheet" href="stylesheet.css">
+  <link rel="icon" type="image/png" href="data/avatar.png">
+  <style>
+    /* ========== Protein Design Page Overrides ========== */
+    .container { max-width: 1100px; }
+
+    .back-link {
+      font-size: 15px;
+      margin-bottom: 18px;
+      display: inline-block;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--name-color);
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .last-updated {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-bottom: 24px;
+    }
+
+    /* Overview stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--heading-color);
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-top: 4px;
+    }
+
+    /* Pipeline status */
+    .pipeline-section {
+      margin-bottom: 28px;
+    }
+
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .pipeline-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .pipeline-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .pipeline-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--heading-color);
+    }
+
+    .pipeline-step {
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-done { color: var(--tag-text); }
+    .step-pending { color: var(--text-secondary); }
+    .step-failed { color: var(--tag-text-reading); }
+
+    /* Structure cards */
+    .structure-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .structure-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+
+    .structure-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    .structure-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .structure-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--heading-color);
+      word-break: break-all;
+    }
+
+    .structure-rank {
+      font-size: 13px;
+      font-weight: 700;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+
+    .structure-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .meta-tag {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .meta-campaign-e2 {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+    [data-theme="dark"] .meta-campaign-e2 {
+      background: #0d2744;
+      color: #64b5f6;
+    }
+
+    .meta-campaign-cullin {
+      background: #fce4ec;
+      color: #c62828;
+    }
+    [data-theme="dark"] .meta-campaign-cullin {
+      background: #3d1218;
+      color: #ef9a9a;
+    }
+
+    .meta-pipeline {
+      background: #f3e5f5;
+      color: #6a1b9a;
+    }
+    [data-theme="dark"] .meta-pipeline {
+      background: #2a1035;
+      color: #ce93d8;
+    }
+
+    .meta-stage {
+      background: var(--tag-bg-reading);
+      color: var(--tag-text-reading);
+    }
+
+    /* Metrics grid within card */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .metric-item {
+      text-align: center;
+      padding: 8px 4px;
+      background: var(--bg);
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .metric-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--heading-color);
+      line-height: 1.2;
+    }
+
+    .metric-value.pending {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-top: 2px;
+    }
+
+    .metric-good { color: var(--tag-text); }
+    .metric-ok { color: var(--tag-text-reading); }
+    .metric-bad { color: #c62828; }
+
+    /* Confidence bar */
+    .confidence-bar-wrap {
+      margin-bottom: 8px;
+    }
+
+    .confidence-bar-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3px;
+    }
+
+    .confidence-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .confidence-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    .bar-good { background: #4caf50; }
+    .bar-ok { background: #ff9800; }
+    .bar-bad { background: #f44336; }
+
+    /* Sortable table */
+    .table-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .table-controls label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .table-controls select {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-alt);
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .table-controls input[type="text"] {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-alt);
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      width: 200px;
+    }
+
+    .all-structures-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .all-structures-table thead {
+      background: var(--bg-alt);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .all-structures-table th {
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--heading-color);
+      border-bottom: 2px solid var(--border);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .all-structures-table th:hover {
+      color: var(--link);
+    }
+
+    .all-structures-table th .sort-arrow {
+      margin-left: 4px;
+      font-size: 10px;
+    }
+
+    .all-structures-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .all-structures-table tbody tr:hover {
+      background: var(--bg-alt);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    /* Top structures highlight */
+    .top-structures-heading {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--heading-color);
+      margin-bottom: 14px;
+      margin-top: 8px;
+    }
+
+    .campaign-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      margin-top: 20px;
+    }
+
+    /* Info banner */
+    .info-banner {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--link);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .info-banner strong {
+      color: var(--heading-color);
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .structure-grid {
+        grid-template-columns: 1fr;
+      }
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .pipeline-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn"></button>
+
+  <div class="container">
+
+    <a href="index.html" class="back-link">&larr; Back to home</a>
+
+    <div class="page-title">RBX1 Binder Design Dashboard</div>
+    <div class="page-subtitle">De novo protein binder design for RBX1 (RING Box Protein 1, 108 AA) &mdash; GEM Workshop / ICLR 2026</div>
+    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026</div>
+
+    <!-- ===== Tabs ===== -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+      <button class="tab-btn" onclick="switchTab('all')">All Structures</button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 1: OVERVIEW                              -->
+    <!-- ============================================ -->
+    <div class="tab-content active" id="tab-overview">
+
+      <!-- Summary Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="statTotal">8</div>
+          <div class="stat-label">Total Designs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statE2">4</div>
+          <div class="stat-label">E2 Face</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statCullin">4</div>
+          <div class="stat-label">Cullin Face</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statScored">0</div>
+          <div class="stat-label">Scored (Boltz-2)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statBestIpSAE">&mdash;</div>
+          <div class="stat-label">Best ipSAE</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statPhase">Pilot</div>
+          <div class="stat-label">Current Phase</div>
+        </div>
+      </div>
+
+      <!-- Info Banner -->
+      <div class="info-banner">
+        <strong>Pipeline Status:</strong> Pilot phase &mdash; 8 backbone structures generated via RFdiffusion.
+        Awaiting ProteinMPNN sequence design and Boltz-2 structure prediction to obtain confidence metrics
+        (pLDDT, ipTM, ipSAE, pAE). BoltzGen pipeline blocked on mmCIF parsing &mdash; needs format fix.
+      </div>
+
+      <!-- Pipeline Status -->
+      <div class="pipeline-section">
+        <div class="section-heading">Pipeline Status</div>
+        <div class="pipeline-grid">
+          <div class="pipeline-card">
+            <div class="pipeline-card-header">
+              <span class="pipeline-name">Pipeline A: RFdiffusion &rarr; ProteinMPNN</span>
+              <span class="tag tag-reading">IN PROGRESS</span>
+            </div>
+            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (8 designs)</div>
+            <div class="pipeline-step step-pending">&#9675; ProteinMPNN sequence design</div>
+            <div class="pipeline-step step-pending">&#9675; Boltz-2 complex prediction</div>
+            <div class="pipeline-step step-pending">&#9675; Score extraction (ipSAE, ipTM, pLDDT)</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-header">
+              <span class="pipeline-name">Pipeline B: BoltzGen</span>
+              <span class="tag meta-stage">BLOCKED</span>
+            </div>
+            <div class="pipeline-step step-failed">&#10007; mmCIF parsing error on 2LGV.cif</div>
+            <div class="pipeline-step step-pending">&#9675; Small pilot (40-65 AA)</div>
+            <div class="pipeline-step step-pending">&#9675; Medium pilot (90-120 AA)</div>
+            <div class="pipeline-step step-pending">&#9675; Scoring</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-header">
+              <span class="pipeline-name">Pipeline C: ESM3</span>
+              <span class="tag" style="background:var(--bg);color:var(--text-secondary);border:1px solid var(--border);font-size:11px;">STRETCH</span>
+            </div>
+            <div class="pipeline-step step-pending">&#9675; Not yet started (stretch goal)</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-header">
+              <span class="pipeline-name">Evolutionary Analysis</span>
+              <span class="tag tag-finished">COMPLETE</span>
+            </div>
+            <div class="pipeline-step step-done">&#10003; 1155-seq MSA (MAFFT)</div>
+            <div class="pipeline-step step-done">&#10003; Conservation scoring (108 residues)</div>
+            <div class="pipeline-step step-done">&#10003; Interface mapping (E2: 35 res, Cullin: 31 res)</div>
+            <div class="pipeline-step step-done">&#10003; Hotspot selection</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top 5 Structures (by RFdiffusion confidence) -->
+      <div class="section-heading">Top 5 Structures</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;">
+        Ranked by RFdiffusion self-confidence (B-factor). Full scoring metrics (ipSAE, ipTM, pLDDT) pending Boltz-2 prediction.
+      </p>
+      <div class="structure-grid" id="topStructures">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Target Info -->
+      <div class="section-heading" style="margin-top:12px;">Target: RBX1</div>
+      <div class="pipeline-grid" style="margin-bottom:28px;">
+        <div class="pipeline-card">
+          <div class="pipeline-name" style="margin-bottom:8px;">Sequence (108 AA)</div>
+          <div style="font-family:monospace;font-size:12px;color:var(--text);word-break:break-all;line-height:1.5;background:var(--bg);padding:10px;border-radius:6px;border:1px solid var(--border);">
+            MAAAMDVDTPSGTNSGAGKKRFEVKKWNAVALWAWDIVVDNCAICRNHIMDLCIECQANQASATSEECTVAWGVCNHAFHFHCISRWLKTRQVCPLDNREWEFQKYGH
+          </div>
+        </div>
+        <div class="pipeline-card">
+          <div class="pipeline-name" style="margin-bottom:8px;">Key Properties</div>
+          <div style="font-size:14px;color:var(--text);line-height:1.8;">
+            <div><strong>PDB:</strong> 2LGV (NMR), 4P5O (complex)</div>
+            <div><strong>Zinc sites:</strong> 3 Zn<sup>2+</sup> (11 Cys, 3 His)</div>
+            <div><strong>E2 interface:</strong> 35 res, mean conservation 0.839</div>
+            <div><strong>Cullin interface:</strong> 31 res, mean conservation 0.938</div>
+            <div><strong>Competition:</strong> GEM / ICLR 2026, deadline Apr 26</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 2: ALL STRUCTURES                        -->
+    <!-- ============================================ -->
+    <div class="tab-content" id="tab-all">
+
+      <div class="section-heading">All Designed Structures</div>
+
+      <div class="table-controls">
+        <label for="sortSelect">Sort by:</label>
+        <select id="sortSelect" onchange="sortTable()">
+          <option value="rank">Rank (RFdiff Confidence)</option>
+          <option value="name">Name</option>
+          <option value="campaign">Campaign</option>
+          <option value="binder_length">Binder Length</option>
+          <option value="rfdiff_conf">RFdiff Confidence</option>
+          <option value="ipSAE">ipSAE</option>
+          <option value="ipTM">ipTM</option>
+          <option value="pLDDT">pLDDT</option>
+        </select>
+
+        <label for="filterCampaign">Campaign:</label>
+        <select id="filterCampaign" onchange="filterTable()">
+          <option value="all">All</option>
+          <option value="E2 Face">E2 Face</option>
+          <option value="Cullin Face">Cullin Face</option>
+        </select>
+
+        <input type="text" id="searchInput" placeholder="Search designs..." oninput="filterTable()">
+      </div>
+
+      <div class="table-wrapper">
+        <table class="all-structures-table" id="allStructuresTable">
+          <thead>
+            <tr>
+              <th onclick="sortByColumn('rank')">Rank <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('name')">Design <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('campaign')">Campaign <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('binder_length')">Binder Len <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('rfdiff_conf')">RFdiff Conf <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('ipSAE')">ipSAE <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('ipTM')">ipTM <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('pLDDT')">pLDDT <span class="sort-arrow"></span></th>
+              <th onclick="sortByColumn('pTM')">pTM <span class="sort-arrow"></span></th>
+              <th>Pipeline</th>
+              <th>Stage</th>
+            </tr>
+          </thead>
+          <tbody id="allStructuresBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:20px;">
+        <div class="section-heading">All Structure Cards</div>
+        <div class="structure-grid" id="allStructureCards">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      Sergio E. Mares &mdash; RBX1 Binder Design Dashboard &mdash; <a href="index.html">Home</a>
+    </div>
+
+  </div>
+
+<script>
+// ===== Design Data =====
+const designs = [
+  {
+    id: "e2_small_pilot_design_0",
+    name: "E2 Pilot Design 0",
+    campaign: "E2 Face",
+    binder_length: 50,
+    target_length: 100,
+    rfdiff_conf: 0.979,
+    rfdiff_min: 0.95,
+    rfdiff_max: 1.0,
+    pipeline: "RFdiffusion",
+    stage: "Backbone Only",
+    size_class: "Small (40-65 AA)",
+    ipSAE: null,
+    ipTM: null,
+    pLDDT: null,
+    pTM: null,
+    pAE: null,
+    bsa: null,
+    contacts: null,
+    sequence: null
+  },
+  {
+    id: "e2_small_pilot_design_1",
+    name: "E2 Pilot Design 1",
+    campaign: "E2 Face",
+    binder_length: 42,
+    target_length: 100,
+    rfdiff_conf: 0.987,
+    rfdiff_min: 0.92,
+    rfdiff_max: 1.0,
+    pipeline: "RFdiffusion",
+    stage: "Backbone Only",
+    size_class: "Small (40-65 AA)",
+    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+  },
+  {
+    id: "e2_small_pilot_design_2",
+    name: "E2 Pilot Design 2",
+    campaign: "E2 Face",
+    binder_length: 48,
+    target_length: 100,
+    rfdiff_conf: 0.985,
+    rfdiff_min: 0.95,
+    rfdiff_max: 1.0,
+    pipeline: "RFdiffusion",
+    stage: "Backbone Only",
+    size_class: "Small (40-65 AA)",
+    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+  },
+  {
+    id: "e2_small_pilot_design_3",
+    name: "E2 Pilot Design 3",
+    campaign: "E2 Face",
+    binder_length: 64,
+    target_length: 100,
+    rfdiff_conf: 0.989,
+    rfdiff_min: 0.98,
+    rfdiff_max: 1.0,
+    pipeline: "RFdiffusion",
+    stage: "Backbone Only",
+    size_class: "Small (40-65 AA)",
+    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+  },
+  {
+    id: "cullin_small_pilot_design_0",
+    name: "Cullin Pilot Design 0",
+    campaign: "Cullin Face",
+    binder_length: 63,
+    target_length: 100,
+    rfdiff_conf: 0.992,
+    rfdiff_min: 0.98,
+    rfdiff_max: 1.0,
+    pipeline: "RFdiffusion",
+    stage: "Backbone Only",
+    size_class: "Small (40-65 AA)",
+    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+  },
+  {
+    id: "cullin_small_pilot_design_1",
+    name: "Cullin Pilot Design 1",
+    campaign: "Cullin Face",
+    binder_length: 53,
+    target_length: 100,
+    rfdiff_conf: 0.987,
+    rfdiff_min: 0.90,
+    rfdiff_max: 1.0,
+    pipeline: "RFdiffusion",
+    stage: "Backbone Only",
+    size_class: "Small (40-65 AA)",
+    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+  },
+  {
+    id: "cullin_small_pilot_design_2",
+    name: "Cullin Pilot Design 2",
+    campaign: "Cullin Face",
+    binder_length: 44,
+    target_length: 100,
+    rfdiff_conf: 0.988,
+    rfdiff_min: 0.95,
+    rfdiff_max: 1.0,
+    pipeline: "RFdiffusion",
+    stage: "Backbone Only",
+    size_class: "Small (40-65 AA)",
+    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+  },
+  {
+    id: "cullin_small_pilot_design_3",
+    name: "Cullin Pilot Design 3",
+    campaign: "Cullin Face",
+    binder_length: 61,
+    target_length: 100,
+    rfdiff_conf: 0.988,
+    rfdiff_min: 0.95,
+    rfdiff_max: 1.0,
+    pipeline: "RFdiffusion",
+    stage: "Backbone Only",
+    size_class: "Small (40-65 AA)",
+    ipSAE: null, ipTM: null, pLDDT: null, pTM: null, pAE: null, bsa: null, contacts: null, sequence: null
+  }
+];
+
+// ===== Rank designs by rfdiff confidence =====
+function rankDesigns(arr) {
+  const sorted = [...arr].sort((a, b) => b.rfdiff_conf - a.rfdiff_conf);
+  sorted.forEach((d, i) => d.rank = i + 1);
+  return sorted;
+}
+
+let rankedDesigns = rankDesigns(designs);
+
+// ===== Render a structure card =====
+function renderCard(d, showRank) {
+  const campaignClass = d.campaign === 'E2 Face' ? 'meta-campaign-e2' : 'meta-campaign-cullin';
+  const confPct = Math.round(d.rfdiff_conf * 100);
+  const barClass = confPct >= 95 ? 'bar-good' : confPct >= 80 ? 'bar-ok' : 'bar-bad';
+
+  const fmtMetric = (val, name) => {
+    if (val === null) return `<div class="metric-item"><div class="metric-value pending">Pending</div><div class="metric-label">${name}</div></div>`;
+    return `<div class="metric-item"><div class="metric-value">${val}</div><div class="metric-label">${name}</div></div>`;
+  };
+
+  return `
+    <div class="structure-card">
+      <div class="structure-card-header">
+        <div class="structure-name">${d.name}</div>
+        ${showRank ? `<div class="structure-rank">#${d.rank}</div>` : ''}
+      </div>
+      <div class="structure-meta">
+        <span class="meta-tag ${campaignClass}">${d.campaign}</span>
+        <span class="meta-tag meta-pipeline">${d.pipeline}</span>
+        <span class="meta-tag meta-stage">${d.stage}</span>
+        <span class="meta-tag" style="background:var(--bg);color:var(--text-secondary);border:1px solid var(--border);">${d.binder_length} AA</span>
+      </div>
+      <div class="confidence-bar-wrap">
+        <div class="confidence-bar-label">
+          <span>RFdiff Confidence</span>
+          <span>${d.rfdiff_conf.toFixed(3)} (${d.rfdiff_min.toFixed(2)}&ndash;${d.rfdiff_max.toFixed(2)})</span>
+        </div>
+        <div class="confidence-bar">
+          <div class="confidence-bar-fill ${barClass}" style="width:${confPct}%"></div>
+        </div>
+      </div>
+      <div class="metrics-grid">
+        ${fmtMetric(d.ipSAE, 'ipSAE')}
+        ${fmtMetric(d.ipTM, 'ipTM')}
+        ${fmtMetric(d.pLDDT, 'pLDDT')}
+        ${fmtMetric(d.pTM, 'pTM')}
+        ${fmtMetric(d.bsa, 'BSA')}
+        ${fmtMetric(d.contacts, 'Contacts')}
+      </div>
+      <div style="font-size:12px;color:var(--text-secondary);">
+        Size class: ${d.size_class} &middot; Target: ${d.target_length} res
+      </div>
+    </div>
+  `;
+}
+
+// ===== Populate Top 5 =====
+function renderTop5() {
+  const top5 = rankedDesigns.slice(0, 5);
+  document.getElementById('topStructures').innerHTML = top5.map(d => renderCard(d, true)).join('');
+}
+
+// ===== Populate All Cards =====
+function renderAllCards() {
+  document.getElementById('allStructureCards').innerHTML = rankedDesigns.map(d => renderCard(d, true)).join('');
+}
+
+// ===== Populate Table =====
+let currentSort = 'rank';
+let sortAsc = true;
+
+function renderTable(data) {
+  const tbody = document.getElementById('allStructuresBody');
+  tbody.innerHTML = data.map(d => `
+    <tr>
+      <td><strong>#${d.rank}</strong></td>
+      <td>${d.name}</td>
+      <td><span class="meta-tag ${d.campaign === 'E2 Face' ? 'meta-campaign-e2' : 'meta-campaign-cullin'}" style="font-size:11px;">${d.campaign}</span></td>
+      <td>${d.binder_length}</td>
+      <td>${d.rfdiff_conf.toFixed(3)}</td>
+      <td style="color:var(--text-secondary);font-style:italic;">${d.ipSAE !== null ? d.ipSAE : 'Pending'}</td>
+      <td style="color:var(--text-secondary);font-style:italic;">${d.ipTM !== null ? d.ipTM : 'Pending'}</td>
+      <td style="color:var(--text-secondary);font-style:italic;">${d.pLDDT !== null ? d.pLDDT : 'Pending'}</td>
+      <td style="color:var(--text-secondary);font-style:italic;">${d.pTM !== null ? d.pTM : 'Pending'}</td>
+      <td>${d.pipeline}</td>
+      <td><span class="meta-tag meta-stage" style="font-size:11px;">${d.stage}</span></td>
+    </tr>
+  `).join('');
+}
+
+function getFilteredData() {
+  let data = [...rankedDesigns];
+  const campaign = document.getElementById('filterCampaign').value;
+  const search = document.getElementById('searchInput').value.toLowerCase();
+
+  if (campaign !== 'all') {
+    data = data.filter(d => d.campaign === campaign);
+  }
+  if (search) {
+    data = data.filter(d =>
+      d.name.toLowerCase().includes(search) ||
+      d.id.toLowerCase().includes(search) ||
+      d.campaign.toLowerCase().includes(search)
+    );
+  }
+  return data;
+}
+
+function sortTable() {
+  const sortBy = document.getElementById('sortSelect').value;
+  currentSort = sortBy;
+
+  const keyMap = {
+    rank: d => d.rank,
+    name: d => d.name,
+    campaign: d => d.campaign,
+    binder_length: d => d.binder_length,
+    rfdiff_conf: d => d.rfdiff_conf,
+    ipSAE: d => d.ipSAE !== null ? d.ipSAE : Infinity,
+    ipTM: d => d.ipTM !== null ? d.ipTM : -Infinity,
+    pLDDT: d => d.pLDDT !== null ? d.pLDDT : -Infinity,
+  };
+
+  const descMetrics = ['rfdiff_conf', 'ipTM', 'pLDDT'];
+  const ascending = !descMetrics.includes(sortBy);
+
+  let data = getFilteredData();
+  data.sort((a, b) => {
+    const va = keyMap[sortBy](a);
+    const vb = keyMap[sortBy](b);
+    if (typeof va === 'string') return ascending ? va.localeCompare(vb) : vb.localeCompare(va);
+    return ascending ? va - vb : vb - va;
+  });
+
+  renderTable(data);
+}
+
+function sortByColumn(col) {
+  document.getElementById('sortSelect').value = col;
+  sortTable();
+}
+
+function filterTable() {
+  sortTable();
+}
+
+// ===== Tab Switching =====
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===== Theme Toggle =====
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeBtn(next);
+}
+
+function updateThemeBtn(theme) {
+  const btn = document.getElementById('themeBtn');
+  btn.textContent = theme === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+}
+
+// Init theme
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    updateThemeBtn('dark');
+  } else {
+    updateThemeBtn('light');
+  }
+})();
+
+// ===== Init =====
+renderTop5();
+renderAllCards();
+sortTable();
+</script>
+
+</body>
+</html>
