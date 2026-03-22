@@ -7804,8 +7804,8 @@ const designs = [
 function rankDesigns(arr) {
   const sorted = [...arr].sort((a, b) => {
     // Scored designs first, ranked by ipTM descending
-    const aScored = a.ipTM !== null;
-    const bScored = b.ipTM !== null;
+    const aScored = a.ipTM != null;
+    const bScored = b.ipTM != null;
     if (aScored && !bScored) return -1;
     if (!aScored && bScored) return 1;
     if (aScored && bScored) return b.ipTM - a.ipTM;
@@ -7889,7 +7889,7 @@ function renderCard(d, showRank) {
       </div>
       <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
         Size class: ${d.size_class} &middot; Target: ${d.target_length} res
-        ${d.bb_rmsd !== undefined && d.bb_rmsd !== null ? ' &middot; BB RMSD: ' + d.bb_rmsd.toFixed(2) + ' &Aring;' : ''}
+        ${d.bb_rmsd != null ? ' &middot; BB RMSD: ' + d.bb_rmsd.toFixed(2) + ' &Aring;' : ''}
       </div>
       ${d.pdb_file ? renderStructureViewer(d) : ''}
     </div>
@@ -7914,8 +7914,8 @@ let sortAsc = true;
 function renderTable(data) {
   const tbody = document.getElementById('allStructuresBody');
   tbody.innerHTML = data.map(d => {
-    const fmtVal = (v) => v !== null && v !== undefined ? (typeof v === 'number' ? v.toFixed(3) : v) : '<span style="color:var(--text-secondary);font-style:italic;">Pending</span>';
-    const fmtConf = (v) => v !== null ? v.toFixed(3) : '<span style="color:var(--text-secondary);font-style:italic;">N/A</span>';
+    const fmtVal = (v) => v != null ? (typeof v === 'number' ? v.toFixed(3) : v) : '<span style="color:var(--text-secondary);font-style:italic;">Pending</span>';
+    const fmtConf = (v) => v != null ? v.toFixed(3) : '<span style="color:var(--text-secondary);font-style:italic;">N/A</span>';
     const campaignClassMap = {
       'E2 Face': 'meta-campaign-e2', 'Cullin Face': 'meta-campaign-cullin',
       'BoltzGen Small': 'meta-pipeline', 'BoltzGen Medium': 'meta-pipeline'
@@ -7932,7 +7932,7 @@ function renderTable(data) {
       <td>${fmtVal(d.design_ptm)}</td>
       <td>${fmtVal(d.pLDDT)}</td>
       <td>${fmtVal(d.min_pae)}</td>
-      <td>${d.hbonds !== null && d.hbonds !== undefined ? d.hbonds : '<span style="color:var(--text-secondary);font-style:italic;">Pending</span>'}</td>
+      <td>${d.hbonds != null ? d.hbonds : '<span style="color:var(--text-secondary);font-style:italic;">Pending</span>'}</td>
       <td>${d.pipeline}</td>
       <td><span class="meta-tag meta-stage" style="font-size:11px;">${d.stage}</span></td>
     </tr>
@@ -7969,13 +7969,13 @@ function sortTable() {
     campaign: d => d.campaign,
     pipeline: d => d.pipeline,
     binder_length: d => d.binder_length,
-    rfdiff_conf: d => d.rfdiff_conf !== null ? d.rfdiff_conf : -Infinity,
-    ipTM: d => d.ipTM !== null ? d.ipTM : -Infinity,
-    ipDE: d => d.ipDE !== null && d.ipDE !== undefined ? d.ipDE : Infinity,
-    design_ptm: d => d.design_ptm !== null ? d.design_ptm : -Infinity,
-    pLDDT: d => d.pLDDT !== null ? d.pLDDT : -Infinity,
-    min_pae: d => d.min_pae !== null ? d.min_pae : Infinity,
-    hbonds: d => d.hbonds !== null ? d.hbonds : -Infinity,
+    rfdiff_conf: d => d.rfdiff_conf != null ? d.rfdiff_conf : -Infinity,
+    ipTM: d => d.ipTM != null ? d.ipTM : -Infinity,
+    ipDE: d => d.ipDE != null ? d.ipDE : Infinity,
+    design_ptm: d => d.design_ptm != null ? d.design_ptm : -Infinity,
+    pLDDT: d => d.pLDDT != null ? d.pLDDT : -Infinity,
+    min_pae: d => d.min_pae != null ? d.min_pae : Infinity,
+    hbonds: d => d.hbonds != null ? d.hbonds : -Infinity,
   };
 
   const descMetrics = ['rfdiff_conf', 'ipTM', 'design_ptm', 'pLDDT', 'hbonds'];
@@ -8177,7 +8177,7 @@ function drawRFdiffConf() {
   const pw = w - pad.l - pad.r;
   const ph = h - pad.t - pad.b;
 
-  const rfdDesigns = designs.filter(d => d.rfdiff_conf !== null);
+  const rfdDesigns = designs.filter(d => d.rfdiff_conf != null);
   const minConf = 0.975;
   const maxConf = 0.995;
 
@@ -8308,7 +8308,7 @@ function drawIpTMDist() {
   const pw = w - pad.l - pad.r;
   const ph = h - pad.t - pad.b;
 
-  const scored = designs.filter(d => d.ipTM !== null);
+  const scored = designs.filter(d => d.ipTM != null);
   const small = scored.filter(d => d.campaign === 'BoltzGen Small');
   const medium = scored.filter(d => d.campaign === 'BoltzGen Medium');
 
@@ -8401,7 +8401,7 @@ function drawScatter() {
   const pw = w - pad.l - pad.r;
   const ph = h - pad.t - pad.b;
 
-  const scored = designs.filter(d => d.ipTM !== null && d.min_pae !== null);
+  const scored = designs.filter(d => d.ipTM != null && d.min_pae != null);
   const maxPAE = 18;
   const maxIpTM = 0.55;
 
