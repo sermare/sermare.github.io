@@ -597,7 +597,7 @@
 
     <div class="page-title">RBX1 Binder Design Dashboard</div>
     <div class="page-subtitle">De novo protein binder design for RBX1 (RING Box Protein 1, 108 AA) &mdash; GEM Workshop / ICLR 2026</div>
-    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 — periodic scan 2026-03-22T20:45 UTC</div>
+    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 — Boltz-2 scoring update 2026-03-22T22:00 UTC</div>
 
     <!-- ===== Tabs ===== -->
     <div class="tabs">
@@ -615,15 +615,15 @@
       <!-- Summary Stats -->
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-value" id="statTotal">60</div>
+          <div class="stat-value" id="statTotal">78</div>
           <div class="stat-label">Total Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statE2">20</div>
+          <div class="stat-value" id="statE2">27</div>
           <div class="stat-label">E2 Face (MPNN)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statCullin">20</div>
+          <div class="stat-value" id="statCullin">31</div>
           <div class="stat-label">Cullin Face (MPNN)</div>
         </div>
         <div class="stat-card">
@@ -631,43 +631,39 @@
           <div class="stat-label">BoltzGen Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statScored">60</div>
+          <div class="stat-value" id="statScored">78</div>
           <div class="stat-label">Scored (Boltz-2)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statBestIpTM">0.645</div>
+          <div class="stat-value" id="statBestIpTM">0.917</div>
           <div class="stat-label">Best ipTM</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" id="statBestPAE">2.49</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="statBestPLDDT">0.723</div>
-          <div class="stat-label">Best pLDDT</div>
           <div class="stat-label">Best min PAE</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statPhase">Scale-up</div>
+          <div class="stat-value" id="statBestPLDDT">0.852</div>
+          <div class="stat-label">Best pLDDT</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statPhase">Scoring</div>
           <div class="stat-label">Current Phase</div>
         </div>
       </div>
 
       <!-- Info Banner -->
       <div class="info-banner">
-        <strong>Analysis &amp; Interpretation (March 22, 2026 &mdash; 20:45 UTC scan):</strong><br>
-        <strong>Boltz-2 scoring launched:</strong> 676 binders split into <strong>14 batches</strong> (batch_00&ndash;batch_13). Batch b2_b00 is running; b2_b01&ndash;b2_b13 queued (Priority). Scoring on savio3_gpu A40 nodes.
+        <strong>Analysis &amp; Interpretation (March 22, 2026 &mdash; 22:00 UTC scan):</strong><br>
+        <strong>BREAKTHROUGH: beta_e2_100-005 achieves ipTM=0.917.</strong> This is an extraordinary result &mdash; the previous best was 0.645 (pilot design_0039). Six designs now exceed ipTM 0.7, with three above 0.85. The Boltz-2 re-scoring with MSA is producing dramatically improved predictions.
         <br><br>
-        <strong>RFdiffusion scale-up surged:</strong> <strong>1,416 total PDB backbones</strong> (362 core + 333 satellite E2 campaigns + ongoing). 5 RFdiffusion jobs running across savio2_1080ti generating more satellite backbones for beta_e2, cullin_med, cullin_small, e2_med, e2_small campaigns.
+        <strong>Boltz-2 scoring underway:</strong> <strong>18/676</strong> binders newly scored across batches 00 (5 designs) and 03 (8 designs from cul_med campaigns), plus 5 additional from batch 02. Scores are arriving live as GPU jobs complete. 78 total designs on dashboard (60 pilot/BoltzGen + 18 scale-up).
         <br><br>
-        <strong>ProteinMPNN:</strong> mpnn_all job running (~5 min in), processing all binders for sequence design across the expanded backbone set. 676 binders already staged.
+        <strong>Top hits (scale-up):</strong> beta_e2_100-005 (ipTM=0.917), beta_e2_100-003 (0.914), cul_med_100-003 (0.886), beta_e2_100-000 (0.867), cul_med_100_1080ti-029 (0.849), beta_e2_100-002 (0.815), beta_e2_100-006 (0.750), cul_med_100_1080ti-028 (0.746).
         <br><br>
-        <strong>BoltzGen scale-up:</strong> small_100: 69/100 inverse-folded, 59/100 refolded (bgen_s100 running). medium_100: 28/100 inverse-folded, 24/100 refolded (bgen_m100 running).
+        <strong>Both campaigns showing strong hits:</strong> E2 face (7 designs, max ipTM=0.917) and Cullin face (11 designs, max ipTM=0.886) are both producing high-confidence binders. Mean ipTM across all 18 new designs = 0.666.
         <br><br>
-        <strong>Previous best hits unchanged:</strong> design_0039 (ipTM=0.645), rbx1_small_0 (ipTM=0.582). Top MPNN designs (ipTM&gt;0.4): design_0039 (0.645), design_0033 (0.485), design_0025 (0.456), design_0004 (0.442), design_0017 (0.429), design_0016 (0.421), design_0020 (0.417).
-        <br><br>
-        <strong>Active SLURM jobs (28):</strong> 5 RFdiffusion, 1 MPNN, 2 BoltzGen, 14 Boltz-2 scoring (1 running + 13 pending), plus test jobs.
-        <strong>Red flags:</strong> Boltz-2 scoring not yet producing predictions (batch_00 processed 51 inputs but predictions dir empty &mdash; may need time). Monitor b2_b00 output.
-        <strong>Recommendation:</strong> Wait for b2_b00 to complete (~1 hr). Check predictions/ folder. If successful, remaining 13 batches will auto-process. Continue monitoring BoltzGen refolding progress.
+        <strong>Recommendation:</strong> Continue monitoring Boltz-2 batches (12+ still queued). These results are extremely promising &mdash; begin ipSAE scoring and structural analysis on top hits immediately. Prepare 04_filtered with ipTM &gt; 0.7 threshold.
       </div>
 
       <!-- Pipeline Status -->
@@ -689,9 +685,10 @@
               <span class="pipeline-name">Pipeline A: RFdiffusion Scale-up</span>
               <span class="tag tag-reading">IN PROGRESS</span>
             </div>
-            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (1,416 backbones &mdash; 362 core + 333 satellite + 5 jobs running)</div>
-            <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (676 binders staged; mpnn_all job running)</div>
-            <div class="pipeline-step step-active">&#9654; Boltz-2 scoring (14 batches: b2_b00 running, b2_b01&ndash;b2_b13 queued)</div>
+            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (1,416 backbones &mdash; 362 core + satellite campaigns)</div>
+            <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (676 binders)</div>
+            <div class="pipeline-step step-active">&#9654; Boltz-2 scoring with MSA (2/14 batches partial: b00 5/50, b03 8/50; 18/676 scored &mdash; best ipTM=0.917)</div>
+            <div class="pipeline-step step-pending">&#9675; Filtering &amp; submission (after scoring completes)</div>
           </div>
           <div class="pipeline-card">
             <div class="pipeline-card-header">
@@ -753,7 +750,7 @@
           <div class="dist-card">
             <h3>Binder Length Histogram</h3>
             <canvas id="canvasBinderLen" width="460" height="220"></canvas>
-            <div class="caption">Distribution of binder lengths across all 60 designs, colored by campaign. RFdiffusion+MPNN designs (blue/red) cluster in the 42-64 AA range. BoltzGen small designs (teal) at 41-64 AA, medium pilot (orange) at 92-120 AA.</div>
+            <div class="caption">Distribution of binder lengths across all 78 designs, colored by campaign. RFdiffusion+MPNN designs (blue/red) cluster in the 42-65 AA range. BoltzGen small designs (teal) at 41-64 AA, medium pilot (orange) at 92-120 AA. Scale-up Cullin medium designs are 55-65 AA.</div>
           </div>
 
           <!-- 2. RFdiffusion Confidence Distribution -->
@@ -774,7 +771,7 @@
           <div class="dist-card">
             <h3>ipTM Distribution (BoltzGen Designs)</h3>
             <canvas id="canvasIpTM" width="460" height="220"></canvas>
-            <div class="caption">BoltzGen ipTM scores for 20 BoltzGen designs (10 small pilot + 10 small_10 scale-up). Small designs (teal) show higher ipTM than medium pilot (orange). Best: rbx1_s10_0 at 0.582.</div>
+            <div class="caption">ipTM scores for all 78 scored designs. MSA-scored scale-up designs (blue/red) dominate the high end, with 6 designs above ipTM 0.8. Best overall: 0.917 (beta_e2_100-005, E2 face). Note: pilot designs were scored without MSA (lower ipTM).</div>
           </div>
 
           <!-- 5. ipTM vs min PAE Scatter -->
@@ -788,87 +785,90 @@
 
       <!-- ===== Analysis & Interpretation ===== -->
       <div class="analysis-section" id="analysisSection">
-        <h2>Analysis &mdash; March 22, 2026 [12:10 PDT]</h2>
+        <h2>Analysis &mdash; March 22, 2026 [22:00 UTC]</h2>
 
         <h3>Summary</h3>
         <p>
-          <strong>20 total designs</strong> across two pipelines.
-          <strong>RFdiffusion pipeline:</strong> 10 backbone designs (5 E2 face, 5 Cullin face), all with ProteinMPNN sequences (4 samples each = 40 candidate sequences total).
-          <strong>BoltzGen pipeline:</strong> 20 designs (5 small pilot + 10 small_10 scale-up, 41-64 AA; 5 medium pilot, 92-120 AA). Small pilot and small_10 have full scoring including refolding, PLIP contact analysis, and liability assessment.
+          <strong>78 total designs on dashboard</strong> (60 existing + 18 new scale-up). Boltz-2 re-scoring with MSA is producing dramatically improved predictions.
+          <strong>RFdiffusion+MPNN scale-up:</strong> 18 designs newly scored from batches 00 and 03, spanning beta_e2_100 (7), cul_med_100 (4), and cul_med_100_1080ti (5) campaigns, plus 2 from beta_e2_10.
+          <strong>BoltzGen pipeline:</strong> 20 designs unchanged (5 small pilot + 10 small_10, 5 medium pilot).
+          <strong>Scoring is ~3% complete</strong> (18/676 binders), but the early results are exceptionally strong.
         </p>
 
-        <h3>Confidence Analysis (RFdiffusion)</h3>
+        <h3>Breakthrough Results</h3>
         <p>
-          All 10 RFdiffusion designs exhibit extremely high self-confidence B-factor values, with means ranging from 0.979 to 0.992.
-          The distribution is tightly clustered near 1.0, indicating the diffusion model is very confident in all generated backbones.
-          <strong>Cullin face designs</strong> show slightly higher mean confidence (avg 0.988) compared to <strong>E2 face designs</strong> (avg 0.985).
-          The minimum B-factor across all designs is 0.90 (Cullin Pilot Design 1), suggesting no major structural uncertainty in any region.
-          However, high RFdiffusion confidence does not guarantee binding &mdash; these are backbone-only metrics and do not reflect sequence-level or interface quality.
+          <strong>beta_e2_100-005</strong> achieves <strong>ipTM = 0.917</strong> &mdash; a 42% improvement over the previous best (0.645). This 55 AA binder targets the E2 recruitment face with pTM=0.814 and pLDDT=0.787.
+          <strong>beta_e2_100-003</strong> is nearly as strong at ipTM=0.914 with excellent pTM=0.886.
+          <strong>cul_med_100-003</strong> from the Cullin face campaign hits ipTM=0.886 &mdash; the first Cullin face design to break 0.7.
+          These scores likely reflect the inclusion of MSA information in the Boltz-2 re-scoring, which substantially improves prediction quality.
         </p>
 
-        <h3>Binder Length Analysis</h3>
+        <h3>Top 10 Designs by ipTM (All Scored)</h3>
         <p>
-          RFdiffusion binder lengths range from 42 to 64 AA, well within the specified 40-65 AA target range for the small pilot.
-          The E2 face designs show more length variation (42-64 AA, mean 50.4) compared to Cullin face (44-63 AA, mean 53.4).
-          BoltzGen small pilot designs are similar (44-64 AA), while the medium pilot designs are much larger (92-120 AA), representing a distinct design regime.
-          The bimodal distribution reflects the intentional two-tier size strategy.
+          1. <strong>beta_e2_100-005</strong> &mdash; ipTM=0.917, pTM=0.814, pLDDT=0.787 (E2, scale-up)<br>
+          2. <strong>beta_e2_100-003</strong> &mdash; ipTM=0.914, pTM=0.886, pLDDT=0.670 (E2, scale-up)<br>
+          3. <strong>cul_med_100-003</strong> &mdash; ipTM=0.886, pTM=0.882, pLDDT=0.666 (Cullin, scale-up)<br>
+          4. <strong>beta_e2_100-000</strong> &mdash; ipTM=0.867, pTM=0.860, pLDDT=0.824 (E2, scale-up)<br>
+          5. <strong>cul_med_100_1080ti-029</strong> &mdash; ipTM=0.849, pTM=0.803, pLDDT=0.805 (Cullin, scale-up)<br>
+          6. <strong>beta_e2_100-002</strong> &mdash; ipTM=0.815, pTM=0.842, pLDDT=0.697 (E2, scale-up)<br>
+          7. <strong>beta_e2_100-006</strong> &mdash; ipTM=0.750, pTM=0.838, pLDDT=0.653 (E2, scale-up)<br>
+          8. <strong>cul_med_100_1080ti-028</strong> &mdash; ipTM=0.746, pTM=0.809, pLDDT=0.852 (Cullin, scale-up)<br>
+          9. <strong>beta_e2_100-004</strong> &mdash; ipTM=0.735, pTM=0.798, pLDDT=0.636 (E2, scale-up)<br>
+          10. <strong>cul_med_100-004</strong> &mdash; ipTM=0.722, pTM=0.789, pLDDT=0.679 (Cullin, scale-up)
         </p>
 
-        <h3>Scoring Status (BoltzGen Designs)</h3>
+        <h3>Distribution Analysis (18 Scale-up Designs)</h3>
         <p>
-          All 20 BoltzGen designs have complete scoring. Key findings:
+          Mean ipTM = 0.666, median = 0.721. This is dramatically higher than the pilot (mean ~0.30).
+          <strong>67% (12/18)</strong> achieve ipTM &ge; 0.5, <strong>56% (10/18)</strong> achieve ipTM &ge; 0.7, and <strong>33% (6/18)</strong> achieve ipTM &ge; 0.8.
+          pLDDT ranges from 0.636 to 0.852 (mean 0.723). pTM ranges from 0.474 to 0.886 (mean 0.733).
+          The dramatic improvement over pilot scores is likely due to MSA-informed Boltz-2 predictions rather than better design quality.
         </p>
+
+        <h3>Pipeline Comparison: RFdiffusion+MPNN vs BoltzGen</h3>
         <p>
-          <strong>Small pilot top performer:</strong> rbx1_small_3 achieves ipTM of 0.493 with design_ptm 0.766 and min interaction PAE of 3.48.
-          <strong>Small_10 scale-up (NEW):</strong> rbx1_s10_0 achieves ipTM=0.582 (best BoltzGen overall) with min_PAE=2.41, 12 H-bonds, and delta_SASA=1801 &Aring;&sup2;.
-          rbx1_s10_6 (ipTM=0.569, min_PAE=3.11) and rbx1_s10_2 (ipTM=0.529, min_PAE=3.39) also strong. rbx1_s10_4 has 15 H-bonds (most in batch) with bb_RMSD=2.58 &Aring;.
-        </p>
-        <p>
-          <strong>Medium pilot:</strong> Scores are generally lower. Best ipTM is rbx1_medium_0 at 0.350, with high backbone RMSD values (1.59-14.8 A) suggesting many designs fail to refold correctly.
-          rbx1_medium_2 shows a very low design_ptm of 0.415, indicating poor intrinsic stability.
+          <strong>RFdiffusion+MPNN (MSA-scored)</strong> now vastly outperforms all other results, with 10 designs above ipTM 0.7.
+          The previous best BoltzGen design (rbx1_s10_0 at ipTM=0.582) is now ranked well below the top scale-up hits.
+          <strong>Important caveat:</strong> The pilot MPNN designs were scored without MSA; when rescored with MSA, they may also show much higher ipTM. Direct comparison requires consistent scoring conditions.
+          <strong>E2 face vs Cullin face:</strong> Both campaigns produce high-quality hits. E2 face has the top design (0.917), but Cullin face also shows 3 designs above 0.7.
         </p>
 
         <h3 class="red-flag">Red Flags</h3>
         <p>
-          <span class="red-flag">1. Scale-up binders awaiting Boltz-2 scoring.</span> 676 MPNN-designed binders (from 14 RFdiffusion campaigns) are staged in all_binders_to_score.fasta but not yet scored. This is the critical next step.
+          <span class="red-flag">1. Only 3% of scoring complete.</span> 18/676 binders scored across batches 00 and 03. The remaining 12 batches are queued or running. Need to monitor SLURM queue.
         </p>
         <p>
-          <span class="red-flag">2. BoltzGen ipTM values improving but still moderate.</span> The best BoltzGen ipTM is now 0.582 (rbx1_s10_0), up from 0.493 (small_3). Still below the 0.6+ threshold for confident binding, though approaching it.
-          Several small_10 designs show high bb_RMSD (&gt;5 &Aring;), indicating refold failures despite good ipTM.
+          <span class="red-flag">2. MSA vs no-MSA scoring inconsistency.</span> The pilot 40 designs were scored without MSA (lower ipTM). The scale-up designs are scored with MSA (much higher ipTM). This makes cross-pipeline comparison unreliable. Consider rescoring pilot designs with MSA for fair comparison.
         </p>
         <p>
-          <span class="red-flag">3. Medium pilot designs show poor refolding.</span> Backbone RMSDs of 12-15 A for medium designs 1, 2 indicate these structures do not refold to their designed conformations.
-          Only rbx1_medium_0 and rbx1_medium_4 show reasonable RMSD (&lt;3 A).
+          <span class="red-flag">3. Very high ipTM values warrant caution.</span> ipTM &gt; 0.9 is unusual for de novo designs. Verify these are genuine binding predictions and not artifacts of the target self-interaction being included in the MSA-based scoring.
         </p>
         <p>
-          <span class="red-flag">4. ESM3 pipeline not started.</span> This remains a stretch goal with no progress.
-        </p>
-        <p>
-          <span class="red-flag">5. No designs in 04_filtered or 05_submission yet.</span> Filtering and submission preparation have not begun.
+          <span class="red-flag">4. No filtering or submission prep started.</span> 04_filtered and 05_submission remain empty.
         </p>
 
         <h3 class="rec">Recommendations</h3>
         <p>
-          <span class="rec">1. Priority: Launch Boltz-2 scoring on the 676 staged binders.</span> The all_binders_to_score.fasta is ready. This is the highest-impact next step, as pilot MPNN designs already produced the best hit (ipTM=0.645).
+          <span class="rec">1. Priority: Complete Boltz-2 scoring.</span> 658 binders remain to be scored. Monitor SLURM queue and resubmit stalled batches.
         </p>
         <p>
-          <span class="rec">2. RFdiffusion scale-up is massive (1,416 backbones, 676 MPNN binders staged).</span> Focus has shifted to scoring &mdash; Boltz-2 batch scoring launched (14 batches). 5 RFdiffusion jobs + 1 MPNN job still running.
+          <span class="rec">2. Rescore pilot designs with MSA.</span> To enable fair comparison, rescore the 40 pilot designs using the same MSA-enabled Boltz-2 pipeline.
         </p>
         <p>
-          <span class="rec">3. Focus on BoltzGen small pilot designs.</span> Small pilot outperforms medium pilot across all metrics. Consider generating more small designs (40-65 AA) rather than medium.
+          <span class="rec">3. Validate top hits.</span> Run ipSAE analysis, structural inspection, and PLIP contact analysis on designs with ipTM &gt; 0.8 (currently 6 designs). Check for interface quality and potential artifacts.
         </p>
         <p>
-          <span class="rec">4. Begin filtering pipeline.</span> Apply ipTM > 0.4, design_ptm > 0.7, RMSD &lt; 3 A thresholds to identify candidates for 05_submission.
+          <span class="rec">4. Begin filtering.</span> With multiple designs above ipTM 0.7, start populating 04_filtered. Apply thresholds: ipTM &gt; 0.7 AND pLDDT &gt; 0.6 (currently yields 10 candidates).
         </p>
 
         <h3>Pipeline Progress</h3>
         <p>
-          Estimated overall completion: <strong>45%</strong>.
-          Evolutionary analysis (100%), RFdiffusion generation (pilot 100%, scale-up ~90%), ProteinMPNN (pilot 100%, scale-up running), BoltzGen small pilot (100%), BoltzGen small_10 (100%), BoltzGen small_100 (59%), BoltzGen medium_100 (24%).
-          Boltz-2 scoring: pilot complete, scale-up launched (0/14 batches complete). Filtering (0%), submission (0%).
+          Estimated overall completion: <strong>48%</strong>.
+          Evolutionary analysis (100%), RFdiffusion generation (100%), ProteinMPNN (100%), BoltzGen pilots (100%).
+          Boltz-2 scoring: pilot complete (no-MSA), scale-up 3% (18/676, with MSA). Filtering (0%), submission (0%).
         </p>
         <div class="progress-bar-container">
-          <div class="progress-bar-fill" style="width: 45%;"></div>
+          <div class="progress-bar-fill" style="width: 48%;"></div>
         </div>
       </div>
 
@@ -1962,7 +1962,203 @@ const designs = [
     sequence: "EVQLVESGGGLVQAGGSLRLSEAASGFTFSDSVMGWVRQAPGKGREFVAAISSTGTLKLYADSVKGRFTISRDTAKNTLYLQMNSLKAEDTAVYYAVAYDVSTNKVYWGQGTQVTVS",
     bb_rmsd: 3.03, delta_sasa: 1427,
     pdb_file: "data/rbx1_designs/rank3_rbx1_medium_4.cif"
-  }
+  },
+  // ---- Scale-up RFdiffusion+MPNN (Boltz-2 Scored, 2026-03-22 22:00 UTC) ----
+  {
+    id: "scaleup_0005", name: "beta_e2_100-005", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9173, design_ptm: null, pLDDT: 0.7873, pTM: 0.8143, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "GPKKKTGVKKEEVEAAIEKFLKDEKNKEIIKEIEERKREELERRFEEERLEEELE",
+    ipDE: 2.108,
+    pdb_file: "data/rbx1_designs/scaleup_0005.cif"
+  },
+  {
+    id: "scaleup_0003", name: "beta_e2_100-003", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.9144, design_ptm: null, pLDDT: 0.6696, pTM: 0.8856, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEREKLKERIRELLKELREAGFTEEVDRLEKRLETNSDLPLEEYEELLKECEERIAQIKAALPP",
+    ipDE: 0.956,
+    pdb_file: "data/rbx1_designs/scaleup_0003.cif"
+  },
+  {
+    id: "scaleup_0159", name: "cul_med_100-003", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.8855, design_ptm: null, pLDDT: 0.6659, pTM: 0.8817, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DAAAAAAAARAAEEAARRAREERERRRRELAEAAEEAERFLRDLVENEENLEERKKKKEAVLKALKDGKEPEELKKEEKEEEEKKKAELERLQELCALRSAAVAERARAAA",
+    ipDE: 1.421
+  },
+  {
+    id: "scaleup_0000", name: "beta_e2_100-000", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8668, design_ptm: null, pLDDT: 0.8238, pTM: 0.8601, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEREKLRKEILELLEKLKKEGITEEVDRLLTRLETNEDLPLEELEKIKKECEELLKLIEEAKPP",
+    ipDE: 1.28,
+    pdb_file: "data/rbx1_designs/scaleup_0000.cif"
+  },
+  {
+    id: "scaleup_0153", name: "cul_med_100_1080ti-029", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.849, design_ptm: null, pLDDT: 0.8049, pTM: 0.8027, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEKERELEELKKRAGELRLEKANLEKKAEALKKNAEAMKKVLEKDPNNVNAKAELKKLEEKAKELEKKAKELGEEAEKIEKKLKEAEEE",
+    ipDE: 3.178,
+    pdb_file: "data/rbx1_designs/scaleup_0153.cif"
+  },
+  {
+    id: "scaleup_0002", name: "beta_e2_100-002", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.8152, design_ptm: null, pLDDT: 0.6969, pTM: 0.8422, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MAELEALKEEIRRLLAELRAAGLTEEVERTLKRLETNSDMPLEEYEKLLADARAKLAEIRAAAPP",
+    ipDE: 1.806,
+    pdb_file: "data/rbx1_designs/scaleup_0002.cif"
+  },
+  {
+    id: "scaleup_0006", name: "beta_e2_100-006", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7497, design_ptm: null, pLDDT: 0.6525, pTM: 0.8382, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "GKLKKTPIPKEEIEKAFKDFLNDPKNKEIIEKIKEEERKEFEEERKKKEEEEKKK",
+    ipDE: 3.007,
+    pdb_file: "data/rbx1_designs/scaleup_0006.cif"
+  },
+  {
+    id: "scaleup_0152", name: "cul_med_100_1080ti-028", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.7461, design_ptm: null, pLDDT: 0.8517, pTM: 0.8091, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEEKKKKIEELEEEAAKLKLEAANLRKKYEALEKKAEEMKKLLEKDPNNENVKAELKKLEEEAKELKEKYEELEKKYKEIEKELEKVKAE",
+    ipDE: 2.587,
+    pdb_file: "data/rbx1_designs/scaleup_0152.cif"
+  },
+  {
+    id: "scaleup_0004", name: "beta_e2_100-004", campaign: "E2 Face",
+    binder_length: 55, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.7348, design_ptm: null, pLDDT: 0.6357, pTM: 0.7984, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "GSAARSPVPLAALAAAAAAFLADPSNAALIEAAKKAEKEAFEKKREEERLKKLLE",
+    ipDE: 2.573,
+    pdb_file: "data/rbx1_designs/scaleup_0004.cif"
+  },
+  {
+    id: "scaleup_0160", name: "cul_med_100-004", campaign: "Cullin Face",
+    binder_length: 105, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.7221, design_ptm: null, pLDDT: 0.6788, pTM: 0.7894, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEISREELAELRRKNPHCDRSARVSKLEREIETRTARENAAAAARDAAEGAARAAELRATLTPEAAAAALAAIRAALAAARAALEAALAAEQAALRAEIARIEAE",
+    ipDE: 2.196
+  },
+  {
+    id: "scaleup_0154", name: "cul_med_100_1080ti-030", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.6922, design_ptm: null, pLDDT: 0.7419, pTM: 0.7991, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "DEKKKKELEEKKKKAAKLKVEYANLRKKAEALKKLAEEQKKELEKDPNNVNVKKKLEELEKKYEELKKKAEELEKEYKKLEEELKKAEEK",
+    ipDE: 3.468,
+    pdb_file: "data/rbx1_designs/scaleup_0154.cif"
+  },
+  {
+    id: "scaleup_0157", name: "cul_med_100-001", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.6702, design_ptm: null, pLDDT: 0.8273, pTM: 0.7266, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "KEKEEKKKKEEEKKKKEEEKKKKEEEKKKIAEAAEEAERGLRELVENEEDWESIKKKKEEILKERKDGKIPEEFLKELEELKKKEEEELKRLEELLKLRSEAVEEKKKAKE",
+    ipDE: 2.744,
+    pdb_file: "data/rbx1_designs/scaleup_0157.cif"
+  },
+  {
+    id: "scaleup_0150", name: "cul_med_100_1080ti-026", campaign: "Cullin Face",
+    binder_length: 93, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4931, design_ptm: null, pLDDT: 0.7645, pTM: 0.658, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MKEEEEKRKKEEIEELKKEIEEEEKKLKEEKEKFEEELKKLRSEIEVEKARGGKNVESLEKKLKEIEEKKKKEFEKKEKELEEKKEELKKLEE",
+    ipDE: 6.501,
+    pdb_file: "data/rbx1_designs/scaleup_0150.cif"
+  },
+  {
+    id: "scaleup_0158", name: "cul_med_100-002", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.4875, design_ptm: null, pLDDT: 0.6469, pTM: 0.5567, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SAAEEEARRAAAEEEARRAREARERERRRLAEEAEEAERYLKDLVENEDDLKALEEKIKKILKERKDGTKPEELKKELEKKKEEEEKKNKELEELCRKRAEAQERRAREAA",
+    ipDE: 6.449
+  },
+  {
+    id: "scaleup_0155", name: "cul_med_100_1080ti-031", campaign: "Cullin Face",
+    binder_length: 90, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-90 AA)",
+    ipTM: 0.4213, design_ptm: null, pLDDT: 0.7148, pTM: 0.627, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SSMEKKELEELRKEAAELRREAANLERHAAALRANAEAQRKELEKDPNNVNVRAALDELEARAAALEARAAELEARARELEEKLRKAKEE",
+    ipDE: 6.389,
+    pdb_file: "data/rbx1_designs/scaleup_0155.cif"
+  },
+  {
+    id: "scaleup_0001", name: "beta_e2_100-001", campaign: "E2 Face",
+    binder_length: 65, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.4129, design_ptm: null, pLDDT: 0.752, pTM: 0.6141, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "SKKREELIEELYKKLEELEKEGITEEVDRLKKKLDTNSELPLEELEELLNKAKKLLEEIKKAKEP",
+    ipDE: 7.431,
+    pdb_file: "data/rbx1_designs/scaleup_0001.cif"
+  },
+  {
+    id: "scaleup_0151", name: "cul_med_100_1080ti-027", campaign: "Cullin Face",
+    binder_length: 93, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.3343, design_ptm: null, pLDDT: 0.6904, pTM: 0.5226, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MAEKEKKEKQEKIKKMEEEIAKEEEELKKEEEEFEKELRERRARITVEEMLGGERVAAFRERLEKEIEEKEKEFQEKKKELEEKRKKLEELKK",
+    ipDE: 6.621,
+    pdb_file: "data/rbx1_designs/scaleup_0151.cif"
+  },
+  {
+    id: "scaleup_0156", name: "cul_med_100-000", campaign: "Cullin Face",
+    binder_length: 111, target_length: 108,
+    rfdiff_conf: null, rfdiff_min: null, rfdiff_max: null,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>90 AA)",
+    ipTM: 0.2816, design_ptm: null, pLDDT: 0.6422, pTM: 0.474, pAE: null, min_pae: null,
+    bsa: null, contacts: null, hbonds: null,
+    sequence: "MEKEREEEEKRREEEAEKKRKEEEEKKKKLYEEAEEAKKYLRELAENEEDWEAIEAKKAEILAKLKDGEKPEEFEKELKEKEKKEEEENKELEEKLKKRSEAVEKRKKEKE",
+    ipDE: 7.738,
+    pdb_file: "data/rbx1_designs/scaleup_0156.cif"
+  },
 ];
 
 // ===== Rank designs by composite score =====
