@@ -597,7 +597,7 @@
 
     <div class="page-title">RBX1 Binder Design Dashboard</div>
     <div class="page-subtitle">De novo protein binder design for RBX1 (RING Box Protein 1, 108 AA) &mdash; GEM Workshop / ICLR 2026</div>
-    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 — Boltz-2 scoring update 2026-03-22T23:30 UTC</div>
+    <div class="last-updated" id="lastUpdated">Last updated: March 22, 2026 — Boltz-2 scoring update 2026-03-22T20:51 UTC</div>
 
     <!-- ===== Tabs ===== -->
     <div class="tabs">
@@ -615,11 +615,11 @@
       <!-- Summary Stats -->
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-value" id="statTotal">707</div>
+          <div class="stat-value" id="statTotal">736</div>
           <div class="stat-label">Total Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statE2">391</div>
+          <div class="stat-value" id="statE2">420</div>
           <div class="stat-label">E2 Face (MPNN)</div>
         </div>
         <div class="stat-card">
@@ -631,7 +631,7 @@
           <div class="stat-label">BoltzGen Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statScored">707</div>
+          <div class="stat-value" id="statScored">736</div>
           <div class="stat-label">Scored (Boltz-2)</div>
         </div>
         <div class="stat-card">
@@ -647,17 +647,17 @@
           <div class="stat-label">Best pLDDT</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="statPhase">Scoring</div>
+          <div class="stat-value" id="statPhase">Filtering</div>
           <div class="stat-label">Current Phase</div>
         </div>
       </div>
 
       <!-- Info Banner -->
       <div class="info-banner">
-        <strong>Analysis &amp; Interpretation (March 22, 2026 &mdash; 23:30 UTC scan):</strong><br>
-        <strong>NEW BEST: sat_e2-0675 achieves ipTM=0.962.</strong> This 62 AA satellite E2-face binder edges out the previous best (beta_e2_100-026, 0.959). 550/676 scale-up designs now scored (81%), plus 60 pilot/BoltzGen. 287 new entries added this scan.
+        <strong>Analysis &amp; Interpretation (March 22, 2026 &mdash; 20:51 UTC scan):</strong><br>
+        <strong>All 676 scale-up designs now scored (100%).</strong> Best ipTM remains 0.962 (design_0675). 29 newly scored entries added this scan (batches 08&ndash;13 completions). 736 total designs on dashboard (420 E2-face, 296 Cullin-face, 20 BoltzGen). Mean ipTM=0.659 across all 676 scale-up designs.
         <br><br>
-        <strong>Boltz-2 scoring progress:</strong> <strong>550/676</strong> binders scored across all 14 batches (00-13). 707 total designs on dashboard (60 pilot/BoltzGen + 647 scale-up). 185 designs exceed ipTM 0.8; 327 exceed ipTM 0.7. Batches 01, 05-07, 12-13 still running.
+        <strong>Boltz-2 scoring progress:</strong> <strong>676/676</strong> binders scored across all 14 batches (00-13). 736 total designs on dashboard (60 pilot/BoltzGen + 676 scale-up). All batches complete.
         <br><br>
         <strong>Top 5 hits:</strong> sat_e2-0675 (ipTM=0.962), beta_e2_100-026 (0.959), beta_e2_10-004 (0.945), cul_small_10-017 (0.945), beta_e2_10-024 (0.944). E2 face dominating the top ranks.
         <br><br>
@@ -687,7 +687,7 @@
             </div>
             <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (1,416 backbones &mdash; 362 core + satellite campaigns)</div>
             <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (676 binders)</div>
-            <div class="pipeline-step step-active">&#9654; Boltz-2 scoring with MSA (14/14 batches active: 550/676 designs, 81% &mdash; best ipTM=0.962)</div>
+            <div class="pipeline-step step-done">&#10003; Boltz-2 scoring with MSA (14/14 batches complete: 676/676 designs, 100% &mdash; best ipTM=0.962)</div>
             <div class="pipeline-step step-pending">&#9675; Filtering &amp; submission (after scoring completes)</div>
           </div>
           <div class="pipeline-card">
@@ -789,7 +789,7 @@
 
         <h3>Summary</h3>
         <p>
-          <strong>707 total designs on dashboard</strong> (60 pilot/BoltzGen + 647 Boltz-2 scored scale-up). Scoring is 81% complete (550/676).
+          <strong>736 total designs on dashboard</strong> (60 pilot/BoltzGen + 676 Boltz-2 scored scale-up). Scoring is 100% complete (676/676).
           <strong>RFdiffusion+MPNN scale-up:</strong> 360 designs scored across 9 batches (00-07, 09), spanning 17 campaigns including beta_e2_100 (50), beta_e2_10 (15), cul_med_100 (50), cul_med_100_1080ti (26), cul_small_100_1080ti (16), and more.
           <strong>BoltzGen pipeline:</strong> 20 designs unchanged (5 small pilot + 10 small_10, 5 medium pilot).
           <strong>109 designs above ipTM 0.8.</strong> Mean ipTM across all scored = 0.667. The MSA-informed scoring is producing exceptionally strong predictions across all campaigns.
@@ -835,7 +835,7 @@
 
         <h3 class="red-flag">Red Flags</h3>
         <p>
-          <span class="red-flag">1. Scoring 81% complete.</span> 550/676 binders scored across all 14 batches. Batches 01, 05-07, 12-13 still running on savio3_gpu. ~126 designs remaining.
+          <span class="red-flag">1. Scoring 100% complete.</span> 676/676 binders scored across all 14 batches. All batches finished.
         </p>
         <p>
           <span class="red-flag">2. MSA vs no-MSA scoring inconsistency.</span> The pilot 40 designs were scored without MSA (lower ipTM). The scale-up designs are scored with MSA (much higher ipTM). This makes cross-pipeline comparison unreliable. Consider rescoring pilot designs with MSA for fair comparison.
@@ -849,7 +849,7 @@
 
         <h3 class="rec">Recommendations</h3>
         <p>
-          <span class="rec">1. Priority: Complete Boltz-2 scoring.</span> 316 binders remain across batches 08, 10-13. 6 Boltz-2 jobs queued (b2_b08 through b2_b13). Monitor SLURM queue.
+          <span class="rec">1. Priority: Filter and rank scored designs.</span> All 676 scale-up designs now scored. Proceed to diversity filtering and candidate selection for experimental validation.
         </p>
         <p>
           <span class="rec">2. Rescore pilot designs with MSA.</span> To enable fair comparison, rescore the 40 pilot designs using the same MSA-enabled Boltz-2 pipeline.
@@ -863,12 +863,12 @@
 
         <h3>Pipeline Progress</h3>
         <p>
-          Estimated overall completion: <strong>68%</strong>.
+          Estimated overall completion: <strong>75%</strong>.
           Evolutionary analysis (100%), RFdiffusion generation (100%), ProteinMPNN (100%), BoltzGen pilots (100%).
-          Boltz-2 scoring: pilot complete (no-MSA), scale-up 81% (550/676, with MSA). Filtering (0%), submission (0%).
+          Boltz-2 scoring: pilot complete (no-MSA), scale-up 100% (676/676, with MSA). Filtering (in progress), submission (0%).
         </p>
         <div class="progress-bar-container">
-          <div class="progress-bar-fill" style="width: 68%;"></div>
+          <div class="progress-bar-fill" style="width: 75%;"></div>
         </div>
       </div>
 
@@ -6455,6 +6455,111 @@ const designs = [
     sequence: "AELEKLEEEAKELEAKARDLDIKIKTEIGAREAALAAETAARAAALAAAGTPEEAAAVTAAATAAAKAAIAAEKAALEKEKKELEERYREVLAEIQRLKARLAAA"
   },
   {
+    id: "scaleup_0435", name: "e2_med_100-055", campaign: "E2 Face",
+    binder_length: 105, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.754, pTM: 0.741, pLDDT: 0.696, ipDE: 3.00,
+    sequence: "DELEKLREEYDRLLAEARELDIQIKTEGGAARAALAAATAAAYAALAAAGTPAEAAARTAAAAAAAQAALAAKEAALEAERAELERRAREVQEEIELLKRKEALV"
+  },
+  {
+    id: "scaleup_0436", name: "e2_med_100-056", campaign: "E2 Face",
+    binder_length: 106, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.255, pTM: 0.434, pLDDT: 0.553, ipDE: 7.89,
+    sequence: "AVAQLQRELDRLERLKKEGLELKKKLEELEKGEEGEKDLSEIEKVKEKLEKMLEYILGSYVERDSELKEWLEKSVEELEKKLDERIAAVRARLAEAEAAAAAAAAA"
+  },
+  {
+    id: "scaleup_0437", name: "e2_med_100-057", campaign: "E2 Face",
+    binder_length: 106, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.839, pTM: 0.880, pLDDT: 0.680, ipDE: 1.88,
+    sequence: "VVEQLQRKVDQLRRFREEVLEEKRRIEELEAGAPGQTDRSELERARERLEQLVRYILGENVEKEPELQALLAQSVEELEAALDERIAELEERLREAEEARRRAEEA"
+  },
+  {
+    id: "scaleup_0438", name: "e2_med_100-058", campaign: "E2 Face",
+    binder_length: 106, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.605, pTM: 0.689, pLDDT: 0.703, ipDE: 4.52,
+    sequence: "AIELLRKKLEKLKKLKEELLKLKKKIEEAKAGAPGEKDLSELKKLEEEMEKTLEYILGSYVRREPELEELLKKSVEEFEKELEELIKKVEEKLKKAEEEERKRAEA"
+  },
+  {
+    id: "scaleup_0439", name: "e2_med_100-059", campaign: "E2 Face",
+    binder_length: 106, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.276, pTM: 0.562, pLDDT: 0.711, ipDE: 9.32,
+    sequence: "MVEILQREVDRLKKLKEEGLKVKRKIEELEKGAPGEKDLSELEKAKKELEKILKYILGEAVEAESELKELLEKSVEEFEEELDKKIKELEEKLKEEEEKRREEEEK"
+  },
+  {
+    id: "scaleup_0440", name: "e2_med_100-060", campaign: "E2 Face",
+    binder_length: 113, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.661, pTM: 0.739, pLDDT: 0.605, ipDE: 2.94,
+    sequence: "SAEEERRFEEERRRKLEELKKRGPKVSEEERKLAESYEFLKQLLGEEEIEKLFAAGREARFEMLLKEACLLLKEMEELYKKAKEAGDTEEAKKLLEEAKKIEKELNERLEKAK"
+  },
+  {
+    id: "scaleup_0441", name: "e2_med_100-061", campaign: "E2 Face",
+    binder_length: 113, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.777, pTM: 0.850, pLDDT: 0.754, ipDE: 2.48,
+    sequence: "SAEEEEKFKKELEERLERLLERGYEVTEEERRLAESYRFLKQQLGEEEIEELRNKGPEARARLTLMEACALLAEAERLHREAVEAGPTPEAEELLERAEELLRELKERLEKEK"
+  },
+  {
+    id: "scaleup_0442", name: "e2_med_100-062", campaign: "E2 Face",
+    binder_length: 113, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.769, pTM: 0.790, pLDDT: 0.660, ipDE: 2.46,
+    sequence: "SAAEERAFRERRRRELERLLARGPRVSEVERRRAESYRFLKQQLGEEEIEELWKKGEEARFRMGLMEACELLAEMERLWEAAEAAGDTPEARELRERAERLEEEMRRRLEELK"
+  },
+  {
+    id: "scaleup_0443", name: "e2_med_100-063", campaign: "E2 Face",
+    binder_length: 113, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.812, pTM: 0.873, pLDDT: 0.748, ipDE: 2.03,
+    sequence: "SEEEKRAFEEELRARLAELKALGYKVSEVQRRLAESYRFLKQQLGEEEIKELREKGPEARAWILEMEACELLVEAEKLYKEAVEAGDSEEAKEKLEEAERILEEMNRRLEEEE"
+  },
+  {
+    id: "scaleup_0444", name: "e2_med_100-064", campaign: "E2 Face",
+    binder_length: 108, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.867, pTM: 0.898, pLDDT: 0.707, ipDE: 1.54,
+    sequence: "AAAAAAAAAAAAAAAAQAAAFEAWDARHREIYAEIVKMKKEGIKTELEREVLKKKADLLQLMLRARVTDFRAELPRIEEAERELRELERRLREERRRREEEERARAEE"
+  },
+  {
+    id: "scaleup_0445", name: "e2_med_100-065", campaign: "E2 Face",
+    binder_length: 108, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.872, pTM: 0.884, pLDDT: 0.689, ipDE: 1.72,
+    sequence: "DLEELLKKLLEELEKKYKEVLEELENRHKEIFKKIVEMEEKGIETEEEREVLQKAADLLQLILESYVGSLKETLPKIEEAEKELEALEKAREEKKAAEEAAAAAAAAA"
+  },
+  {
+    id: "scaleup_0446", name: "e2_med_100-066", campaign: "E2 Face",
+    binder_length: 108, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.546, pTM: 0.676, pLDDT: 0.721, ipDE: 5.59,
+    sequence: "DEAEELERLLREFEEARAAAYEALRERHRELFRRIVRLEEEGVRTELERRVLEALADTHRLILEAFRTDLAAELPRIEEALAELERLEEELRAARERAEAAAAAAAAA"
+  },
+  {
+    id: "scaleup_0447", name: "e2_med_100-067", campaign: "E2 Face",
+    binder_length: 108, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.739, pTM: 0.825, pLDDT: 0.776, ipDE: 2.92,
+    sequence: "EEEEEKKKLEEKRKEEQKKAFEELEKLHQEVFAKIVELEKRGVETEEEREVLEKLAELHQLMLEARKTSLLEELPKIEEKKKEVEELERRLRERRAEEAARRAAEAAA"
+  },
+  {
+    id: "scaleup_0448", name: "e2_med_100-068", campaign: "E2 Face",
+    binder_length: 106, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.558, pTM: 0.647, pLDDT: 0.777, ipDE: 4.63,
+    sequence: "SEFEKKAEELKEKLEKDTKKLLEELEKKKEKFGELAKELLGLVEEFSKKALEELDEAIKTGDEERLEKIEKEWEILKEAVEKLLKAKTKEEIEKIKKEYEEKLAEL"
+  },
+  {
+    id: "scaleup_0449", name: "e2_med_100-069", campaign: "E2 Face",
+    binder_length: 106, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
+    ipTM: 0.333, pTM: 0.604, pLDDT: 0.705, ipDE: 6.70,
+    sequence: "SKFKEECEKAKKEIEEDTKKLLEKLKELEKRFGELARELYGLVETSSKESLEKLDECIETGDKEEFKEVKKKWEILKKFIEELLKAKTKEEIEELKKKYKEELEKL"
+  },
+  {
     id: "scaleup_0482", name: "e2_small_100-006", campaign: "E2 Face",
     binder_length: 48, target_length: 108,
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
@@ -6838,6 +6943,41 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.161, pTM: 0.515, pLDDT: 0.695, ipDE: 11.42,
     sequence: "SSITKEEEELLKEEEEKKKKEKEEEEEEKRRREEKARREAEEEARRRAEEEAR"
+  },
+  {
+    id: "scaleup_0545", name: "e2_small_100-069", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.493, pTM: 0.659, pLDDT: 0.729, ipDE: 5.46,
+    sequence: "SSITEEERKLLEKYDEEREKEEEEERRRKEEEEREKEERERREEEERRRREEE"
+  },
+  {
+    id: "scaleup_0546", name: "e2_small_100-070", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.852, pTM: 0.836, pLDDT: 0.691, ipDE: 1.25,
+    sequence: "SLITPEEREALEELARKREAEAEAAAAAAAAAAAAAAAAAAAAAAEEARRAAA"
+  },
+  {
+    id: "scaleup_0547", name: "e2_small_100-071", campaign: "E2 Face",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.812, pTM: 0.764, pLDDT: 0.753, ipDE: 3.06,
+    sequence: "SSITEEERELLEKKEEEEKKKKEEAEKEARRRAEEERREAEERRREEEERRRA"
+  },
+  {
+    id: "scaleup_0548", name: "e2_small_100-072", campaign: "E2 Face",
+    binder_length: 49, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.208, pTM: 0.552, pLDDT: 0.641, ipDE: 9.47,
+    sequence: "VEEARRREEALAAEAARKAAEEARKKYLEGGREKKKKELLEEEEKEKEE"
+  },
+  {
+    id: "scaleup_0549", name: "e2_small_100-073", campaign: "E2 Face",
+    binder_length: 49, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.771, pTM: 0.776, pLDDT: 0.666, ipDE: 2.91,
+    sequence: "AAAEAAAAAAAAAAAAAAAAEAALRAYLEGGRERKREEELEERRREEEE"
   },
   {
     id: "scaleup_0558", name: "e2_small_100-082", campaign: "E2 Face",
@@ -7419,6 +7559,69 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.436, pTM: 0.603, pLDDT: 0.75, ipDE: 6.29,
     sequence: "SEEEERKAEEERRREEERKRKEKEEEKERVKKIIEEIREELK"
+  },
+  {
+    id: "scaleup_0641", name: "e2-005", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.760, pTM: 0.752, pLDDT: 0.756, ipDE: 2.40,
+    sequence: "MEKKKEEEKRRKEEKEKEEKKKEEEEKEKVKKIIEEIREELK"
+  },
+  {
+    id: "scaleup_0642", name: "e2-006", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.632, pTM: 0.746, pLDDT: 0.668, ipDE: 3.56,
+    sequence: "DEEEKKKKEKEEKEEEEKKKKEEEEKKKKVEEIIEEIRKELK"
+  },
+  {
+    id: "scaleup_0643", name: "e2-007", campaign: "E2 Face",
+    binder_length: 42, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.541, pTM: 0.751, pLDDT: 0.717, ipDE: 4.21,
+    sequence: "MEKKRKEEKEREEERKKKEEEEEKKKREEVEKIIKEIREELK"
+  },
+  {
+    id: "scaleup_0644", name: "e2-008", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.460, pTM: 0.692, pLDDT: 0.708, ipDE: 6.68,
+    sequence: "EEELERQKKLEEELKKKKEEEEEKKKKEEEEKKKKEKEKKEKEELEKL"
+  },
+  {
+    id: "scaleup_0645", name: "e2-009", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.732, pTM: 0.833, pLDDT: 0.690, ipDE: 2.38,
+    sequence: "SEEEERRKKLYEELEERKKKEEEKEEEEKKKKEKEEKEKEEEERKKKE"
+  },
+  {
+    id: "scaleup_0646", name: "e2-010", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.635, pTM: 0.728, pLDDT: 0.698, ipDE: 4.55,
+    sequence: "DEEIERQKKLEEELKRRKEKEEEERRRREREEEERRRREEERRRLEEL"
+  },
+  {
+    id: "scaleup_0647", name: "e2-011", campaign: "E2 Face",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.842, pTM: 0.888, pLDDT: 0.702, ipDE: 1.38,
+    sequence: "EEEKKRQEELEKLLKEKKEKEEKEKKEKEEEEKKKKEEKEKEEKLKKL"
+  },
+  {
+    id: "scaleup_0648", name: "e2-012", campaign: "E2 Face",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.582, pTM: 0.679, pLDDT: 0.716, ipDE: 5.07,
+    sequence: "MEEEERRRREEEERRRREREEAEREEREKREAEERWRAQMEAAAAVEAAAAAAAAAAEAAAAAA"
+  },
+  {
+    id: "scaleup_0649", name: "e2-013", campaign: "E2 Face",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.730, pTM: 0.791, pLDDT: 0.721, ipDE: 2.40,
+    sequence: "MKEEEEKRKKEEEAKRKEEEEKKKEEEKKKKEEEKRRKLIEEDKEIEEEKKKKEKEEEEKKKKE"
   },
   {
     id: "scaleup_0650", name: "e2-014", campaign: "E2 Face",
