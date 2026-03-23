@@ -990,103 +990,151 @@ Campaigns:
     <!-- ============================================ -->
     <div class="tab-content" id="tab-pipelines">
 
-      <!-- AF3 Validation Section -->
-      <div class="section-heading" style="font-size:20px;font-weight:400;">AlphaFold3 Validation</div>
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;font-weight:400;">
-        28 top designs validated with AlphaFold3. AF3 ipTM is the ground-truth orthogonal validation.
-        Most RFdiffusion+MPNN E2 face designs show massive Boltz-2 score inflation (delta 0.5-0.86).
-        BoltzGen designs targeting the full RBX1 surface show better AF3 agreement.
+      <!-- Section 1: Scoring Bias -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;">Cross-Validation: Scoring Bias</div>
+      <p style="font-size:14px;color:var(--text-secondary);font-weight:400;margin-bottom:16px;">
+        Three independent structure prediction methods -- Boltz-2 (scoring), OpenFold3, and AlphaFold3 --
+        show dramatically different agreement patterns. AF3 is the ground-truth orthogonal validation.
       </p>
 
-      <div class="plot-img-container" style="margin-bottom:24px;">
-        <h3 style="font-weight:400;">Boltz-2 vs AF3 ipTM</h3>
-        <img src="data/rbx1_plots/af3_vs_boltz.png" alt="Boltz vs AF3 scatter" style="max-width:100%;">
-        <div class="plot-caption">Each point is one validated design. Dashed line = perfect agreement. BoltzGen designs (green) cluster near the diagonal, while RFdiffusion+MPNN E2 designs (blue) show extreme inflation. Edge color indicates AF3 flag: black = top hit, green = promote, orange = review, gray = discard.</div>
-      </div>
-
-      <div class="dist-grid">
-        <div class="plot-img-container">
-          <h3 style="font-weight:400;">AF3 vs Boltz ipTM per design</h3>
-          <img src="data/rbx1_plots/af3_ranked_bars.png" alt="AF3 ranked bar chart" style="max-width:100%;">
-          <div class="plot-caption">Solid bars = AF3 ipTM, faded bars = Boltz ipTM. Sorted by AF3 score. Only design_0673 (AF3=0.85) and design_0357 (AF3=0.78) pass ipTM > 0.5.</div>
-        </div>
-        <div class="plot-img-container">
-          <h3 style="font-weight:400;">Score inflation by pipeline</h3>
-          <img src="data/rbx1_plots/af3_delta_by_pipeline.png" alt="Delta by pipeline" style="max-width:100%;">
-          <div class="plot-caption">Delta = Boltz ipTM - AF3 ipTM. BoltzGen: delta 0.05-0.4. RFdiff+MPNN E2: delta 0.5-0.86. Cullin RFdiff (0357): delta 0.165.</div>
+      <div class="plot-img-container" style="margin-bottom:28px;">
+        <img src="data/rbx1_plots/pipe_boltz_vs_af3.png" alt="Boltz-2 vs AF3 ipTM scatter" style="max-width:100%;">
+        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+          <span style="color:var(--text);">Figure 1.</span> Boltz-2 ipTM vs AlphaFold3 ipTM for 60 validated designs.
+          Points colored by target face: E2 (blue, n=45), Cullin (red, n=6), BoltzGen (green, n=9).
+          Marginal boxplots show per-face distributions. Orange line: Ridge regression (r=0.08, rho=-0.12).
+          Dashed diagonal: perfect agreement. Boltz-2 scores show no correlation with AF3 validation (r=0.08),
+          confirming that high Boltz scores do not predict genuine binding.
         </div>
       </div>
 
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">OpenFold3 Validation (211 designs)</div>
-
-      <div class="plot-img-container" style="margin-bottom:24px;">
-        <h3 style="font-weight:400;">Boltz-2 vs OpenFold3 ipTM</h3>
-        <img src="data/rbx1_plots/of3_vs_boltz.png" alt="Boltz vs OF3 scatter" style="max-width:100%;">
-        <div class="plot-caption">OF3 shows much better agreement with Boltz-2 than AF3 does — the cloud sits higher. Top OF3 hits (design_1459 at 0.776, design_0283 at 0.749) still show significant Boltz inflation but the correlation is stronger. E2 face designs (blue) show more inflation than Cullin (red).</div>
-      </div>
-
-      <div class="dist-grid">
-        <div class="plot-img-container">
-          <h3 style="font-weight:400;">AF3 vs OpenFold3 ipTM</h3>
-          <img src="data/rbx1_plots/af3_vs_of3.png" alt="AF3 vs OF3 scatter" style="max-width:100%;">
-          <div class="plot-caption">For the 49 designs with both AF3 and OF3 scores, OF3 is consistently more generous than AF3. Most designs fall above the diagonal. The two methods agree on relative ranking but not absolute values — OF3 ipTM is generally higher than AF3 ipTM, though the gap varies by pipeline.</div>
-        </div>
-        <div class="plot-img-container">
-          <h3 style="font-weight:400;">Three-method comparison (top 20 by OF3)</h3>
-          <img src="data/rbx1_plots/three_method_comparison.png" alt="Boltz vs OF3 vs AF3 bars" style="max-width:100%;">
-          <div class="plot-caption">Side-by-side Boltz-2 (blue, faded), OpenFold3 (red), and AF3 (green) ipTM for the top 20 OF3 designs. The gap between Boltz and OF3/AF3 is consistent across designs. Faint green bars indicate designs without AF3 data.</div>
+      <div class="plot-img-container" style="margin-bottom:28px;">
+        <img src="data/rbx1_plots/pipe_af3_vs_of3.png" alt="AF3 vs OF3 ipTM scatter" style="max-width:100%;">
+        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+          <span style="color:var(--text);">Figure 2.</span> AF3 ipTM vs OF3 ipTM for 49 designs with both scores.
+          Points colored by target face: E2 (blue, n=40), Cullin (red, n=5), BoltzGen (green, n=4).
+          Ridge regression (r=0.57, rho=0.49) shows moderate positive correlation between the two
+          independent validation methods, suggesting they capture overlapping but distinct structural signals.
         </div>
       </div>
 
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:32px;">Pipeline Performance Comparison</div>
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;font-weight:400;">
-        Meta-analysis of design pipelines across campaigns. All plots generated from Python analysis scripts.
+      <div class="plot-img-container" style="margin-bottom:28px;">
+        <img src="data/rbx1_plots/pipe_boltz_vs_of3.png" alt="Boltz-2 vs OF3 ipTM scatter" style="max-width:100%;">
+        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+          <span style="color:var(--text);">Figure 3.</span> Boltz-2 ipTM vs OF3 ipTM for 1,225 designs.
+          Points colored by target face: E2 (blue, n=845), Cullin (red, n=335), BoltzGen (green, n=45).
+          Ridge regression (r=-0.01, rho=-0.04) shows essentially zero correlation between Boltz-2 scoring
+          and OF3 validation at scale, consistent with the AF3 result. Boltz-2 ipTM is uninformative for
+          predicting orthogonal validation scores.
+        </div>
+      </div>
+
+      <!-- Section 2: Performance by Target -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:32px;">Performance by Target Face</div>
+      <p style="font-size:14px;color:var(--text-secondary);font-weight:400;margin-bottom:16px;">
+        Designs target three RBX1 surfaces: E2 interface (12,112 designs), Cullin interface (6,791), and
+        BoltzGen full-surface (1,820). ipSAE and structural confidence metrics vary by target.
+      </p>
+
+      <div class="plot-img-container" style="margin-bottom:28px;">
+        <img src="data/rbx1_plots/pipe_ipsae_by_face.png" alt="ipSAE by target face" style="max-width:100%;">
+        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+          <span style="color:var(--text);">Figure 4.</span> ipSAE distribution by target face with individual points (downsampled to 300 per group).
+          BoltzGen designs achieve higher mean ipSAE (0.446) than E2 (0.227) or Cullin (0.205).
+          Significance bars show two-sample t-test p-values between groups.
+        </div>
+      </div>
+
+      <div class="plot-img-container" style="margin-bottom:28px;">
+        <img src="data/rbx1_plots/pipe_metrics_by_face.png" alt="Metrics by target face" style="max-width:100%;">
+        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+          <span style="color:var(--text);">Figure 5.</span> Four key metrics (ipSAE, Boltz ipTM, Boltz pLDDT, Boltz pTM) compared across target faces.
+          BoltzGen shows higher ipSAE but generally comparable Boltz confidence metrics, suggesting that
+          the ipSAE advantage is interface-specific rather than driven by global structural quality.
+        </div>
+      </div>
+
+      <!-- Section 3: Performance by Size -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:32px;">Performance by Binder Size</div>
+      <p style="font-size:14px;color:var(--text-secondary);font-weight:400;margin-bottom:16px;">
+        Binder lengths range from under 55 to over 100 amino acids. Size buckets reveal whether
+        longer binders achieve better interface quality or structural confidence.
       </p>
 
       <div class="dist-grid">
-        <div class="plot-img-container">
-          <h3>Pipeline Comparison (Boxplots)</h3>
-          <img src="data/rbx1_plots/pipeline_comparison.png" alt="Pipeline comparison boxplots">
-          <div class="plot-caption">Boxplots of ipTM, ipSAE, and pLDDT by sub-campaign. Scale-up and wave2 MPNN designs consistently outperform BoltzGen across all metrics.</div>
+        <div class="plot-img-container" style="margin-bottom:28px;">
+          <img src="data/rbx1_plots/pipe_ipsae_by_size.png" alt="ipSAE by binder size" style="max-width:100%;">
+          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+            <span style="color:var(--text);">Figure 6.</span> ipSAE by binder size bucket (&lt;55, 55-65, 66-99, 100+ AA).
+            Mean and count annotations per group. No strong size-dependent trend in interface quality.
+          </div>
         </div>
-        <div class="plot-img-container">
-          <h3>Hit Rate Comparison</h3>
-          <img src="data/rbx1_plots/hit_rate_comparison.png" alt="Hit rate curves">
-          <div class="plot-caption">Cumulative hit rate curves showing the fraction of designs above various ipTM thresholds. Scale-up and wave2 campaigns show similar performance profiles.</div>
+        <div class="plot-img-container" style="margin-bottom:28px;">
+          <img src="data/rbx1_plots/pipe_iptm_vs_length.png" alt="Boltz ipTM vs binder length" style="max-width:100%;">
+          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+            <span style="color:var(--text);">Figure 7.</span> Boltz-2 ipTM vs binder length colored by target face.
+            Small binders (40-65 AA) dominate the E2 dataset with wide ipTM spread. Cullin and BoltzGen
+            designs span broader length ranges.
+          </div>
         </div>
       </div>
 
-      <div class="plot-img-container" style="max-width:600px;">
-        <h3>ipTM vs Binder Length</h3>
-        <img src="data/rbx1_plots/iptm_vs_length.png" alt="ipTM vs binder length">
-        <div class="plot-caption">Relationship between binder length and ipTM score. Small binders (40-65 AA) dominate the dataset and show wide ipTM variation. No clear length-performance correlation observed.</div>
+      <!-- Section 4: Performance by Model -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:32px;">Performance by Model Checkpoint</div>
+      <p style="font-size:14px;color:var(--text-secondary);font-weight:400;margin-bottom:16px;">
+        Designs were generated with three model variants: Base (standard Boltz-2), Beta (beta checkpoint),
+        and BoltzGen (generative model). Comparing ipSAE across checkpoints.
+      </p>
+
+      <div class="plot-img-container" style="margin-bottom:28px;">
+        <img src="data/rbx1_plots/pipe_ipsae_by_model.png" alt="ipSAE by model checkpoint" style="max-width:100%;">
+        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+          <span style="color:var(--text);">Figure 8.</span> ipSAE by model checkpoint (Base, Beta, BoltzGen).
+          Mean and count annotations per group. BoltzGen designs achieve higher ipSAE on average,
+          while Base and Beta show similar distributions.
+        </div>
       </div>
 
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">Metric Distributions</div>
+      <!-- Section 5: Hit Rates -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:32px;">Hit Rate Analysis</div>
+      <p style="font-size:14px;color:var(--text-secondary);font-weight:400;margin-bottom:16px;">
+        Hit rate curves show the fraction of designs exceeding a given quality threshold across
+        the full ipSAE and OF3 ipTM ranges, stratified by target face.
+      </p>
 
       <div class="dist-grid">
-        <div class="plot-img-container">
-          <h3>ipTM by Campaign</h3>
-          <img src="data/rbx1_plots/iptm_by_campaign.png" alt="ipTM histogram by campaign">
-          <div class="plot-caption">Distribution of ipTM scores stratified by campaign. Both E2 face campaigns (scale-up and wave2) show bimodal distributions with peaks near 0.3 and 0.8.</div>
+        <div class="plot-img-container" style="margin-bottom:28px;">
+          <img src="data/rbx1_plots/pipe_hitrate_ipsae.png" alt="Hit rate by ipSAE threshold" style="max-width:100%;">
+          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+            <span style="color:var(--text);">Figure 9.</span> Hit rate curves by target face at ipSAE thresholds.
+            BoltzGen maintains the highest hit rate across most thresholds.
+            E2 and Cullin face designs show similar hit rate profiles.
+          </div>
         </div>
-        <div class="plot-img-container">
-          <h3>ipSAE by Campaign</h3>
-          <img src="data/rbx1_plots/ipsae_by_campaign.png" alt="ipSAE histogram by campaign">
-          <div class="plot-caption">ipSAE distribution by campaign (real values from Boltz-2 ranking). Higher ipSAE indicates tighter predicted interface contacts.</div>
+        <div class="plot-img-container" style="margin-bottom:28px;">
+          <img src="data/rbx1_plots/pipe_hitrate_of3.png" alt="Hit rate by OF3 ipTM threshold" style="max-width:100%;">
+          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+            <span style="color:var(--text);">Figure 10.</span> Hit rate curves by target face at OF3 ipTM thresholds
+            (for the 1,225 designs with OF3 validation). Reveals which target face produces the most
+            designs above stringent OF3 cutoffs.
+          </div>
         </div>
       </div>
 
-      <div class="dist-grid">
-        <div class="plot-img-container">
-          <h3>pLDDT by Campaign</h3>
-          <img src="data/rbx1_plots/plddt_by_campaign.png" alt="pLDDT histogram by campaign">
-          <div class="plot-caption">pLDDT distribution across campaigns. Most scored designs cluster between 0.6 and 0.8 pLDDT, with the best designs reaching 0.892.</div>
-        </div>
-        <div class="plot-img-container">
-          <h3>Binder Length Distribution</h3>
-          <img src="data/rbx1_plots/binder_length.png" alt="Binder length distribution">
-          <div class="plot-caption">Binder length distribution across all designs colored by campaign. The majority are small binders (40-65 AA) from E2 face campaigns.</div>
+      <!-- Section 6: Three-method comparison -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:32px;">Three-Method Comparison</div>
+      <p style="font-size:14px;color:var(--text-secondary);font-weight:400;margin-bottom:16px;">
+        Side-by-side comparison of Boltz-2, OpenFold3, and AlphaFold3 ipTM scores for top designs
+        ranked by OF3 validation. Highlights consistent Boltz-2 score inflation across methods.
+      </p>
+
+      <div class="plot-img-container" style="margin-bottom:28px;">
+        <img src="data/rbx1_plots/pipe_three_method.png" alt="Three-method comparison bars" style="max-width:100%;">
+        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+          <span style="color:var(--text);">Figure 11.</span> Top 20 designs by OF3 ipTM: Boltz-2 (blue, faded), OpenFold3 (red),
+          and AlphaFold3 (green) scores side-by-side. Faint green bars indicate designs without AF3 data.
+          Boltz-2 consistently overestimates compared to both orthogonal validation methods, while
+          OF3 and AF3 show better mutual agreement.
         </div>
       </div>
 
