@@ -820,6 +820,7 @@
               <th data-col="ipSAE" onclick="sortByColumn('ipSAE')">ipSAE <span class="sort-arrow"></span></th>
               <th data-col="pLDDT" onclick="sortByColumn('pLDDT')">pLDDT <span class="sort-arrow"></span></th>
               <th data-col="design_ptm" onclick="sortByColumn('design_ptm')">pTM <span class="sort-arrow"></span></th>
+              <th data-col="af2_iptm" onclick="sortByColumn('af2_iptm')">AF2 ipTM <span class="sort-arrow"></span></th>
               <th data-col="pipeline" onclick="sortByColumn('pipeline')">Pipeline <span class="sort-arrow"></span></th>
               <th>Download</th>
             </tr>
@@ -2104,6 +2105,7 @@ const designs = [
     sequence: "GPKKKTGVKKEEVEAAIEKFLKDEKNKEIIKEIEERKREELERRFEEERLEEELE",
     ipDE: 2.108,
     ipSAE: 0.7643117571455555,
+    af2_iptm: 0.11, af2_ptm: 0.31, af2_plddt: 42.75,
     pdb_file: "data/rbx1_designs/scaleup_0005.cif"
   },
   {
@@ -2116,6 +2118,7 @@ const designs = [
     sequence: "DEEREKLKERIRELLKELREAGFTEEVDRLEKRLETNSDLPLEEYEELLKECEERIAQIKAALPP",
     ipDE: 0.956,
     ipSAE: 0.7738873221465941,
+    af2_iptm: 0.09, af2_ptm: 0.28, af2_plddt: 43.97,
     pdb_file: "data/rbx1_designs/scaleup_0003.cif"
   },
   {
@@ -2128,6 +2131,7 @@ const designs = [
     sequence: "DAAAAAAAARAAEEAARRAREERERRRRELAEAAEEAERFLRDLVENEENLEERKKKKEAVLKALKDGKEPEELKKEEKEEEEKKKAELERLQELCALRSAAVAERARAAA",
     ipDE: 1.421,
     ipSAE: 0.7925272742070122,
+    af2_iptm: 0.09, af2_ptm: 0.28, af2_plddt: 49.28,
   },
   {
     id: "scaleup_0000", name: "beta_e2_100-000", campaign: "E2 Face",
@@ -2139,6 +2143,7 @@ const designs = [
     sequence: "DEEREKLRKEILELLEKLKKEGITEEVDRLLTRLETNEDLPLEELEKIKKECEELLKLIEEAKPP",
     ipDE: 1.28,
     ipSAE: 0.6363640072659826,
+    af2_iptm: 0.09, af2_ptm: 0.26, af2_plddt: 40.92,
     pdb_file: "data/rbx1_designs/scaleup_0000.cif"
   },
   {
@@ -2151,6 +2156,7 @@ const designs = [
     sequence: "DEEKERELEELKKRAGELRLEKANLEKKAEALKKNAEAMKKVLEKDPNNVNAKAELKKLEEKAKELEKKAKELGEEAEKIEKKLKEAEEE",
     ipDE: 3.178,
     ipSAE: 0.6430061560278707,
+    af2_iptm: 0.08, af2_ptm: 0.43, af2_plddt: 60.36,
     pdb_file: "data/rbx1_designs/scaleup_0153.cif"
   },
   {
@@ -2318,6 +2324,7 @@ const designs = [
     sequence: "SGRKELEEGIKKILEGYPLEDESFIERAKDKSVIVEYYKEAKDLL",
     ipDE: 0.836,
     ipSAE: 0.7665951328350623,
+    af2_iptm: 0.09, af2_ptm: 0.25, af2_plddt: 38.79,
     pdb_file: "data/rbx1_designs/scaleup_0026.cif"
   },
   {
@@ -2330,6 +2337,7 @@ const designs = [
     sequence: "LRELRLYEGLVELAKEKAEETYPENEEEREKYLKELLEEIEEHFKKIEKPIP",
     ipDE: 0.695,
     ipSAE: 0.7720725826746486,
+    af2_iptm: 0.11, af2_ptm: 0.34, af2_plddt: 45.77,
     pdb_file: "data/rbx1_designs/scaleup_0068.cif"
   },
   {
@@ -2342,6 +2350,7 @@ const designs = [
     sequence: "SRMEENRRARAERAEALRAAGDLAALEALLAAEAAAQAALAAAAERERAERERRRAEEEA",
     ipDE: 0.640,
     ipSAE: 0.8051307359009613,
+    af2_iptm: 0.09, af2_ptm: 0.26, af2_plddt: 44.24,
     pdb_file: "data/rbx1_designs/scaleup_0357.cif"
   },
   {
@@ -2354,6 +2363,7 @@ const designs = [
     sequence: "SRERRMYENLLALAKEKAEKTYPEDEEKRKEYLAKLEAEIDARYAELARPEP",
     ipDE: 0.649,
     ipSAE: 0.7877665086091248,
+    af2_iptm: 0.11, af2_ptm: 0.34, af2_plddt: 47.12,
     pdb_file: "data/rbx1_designs/scaleup_0071.cif"
   },
   {
@@ -2366,6 +2376,7 @@ const designs = [
     sequence: "SAAAAAARAAAERQAALNAELGRLVVATLDPAYARELLAEQERRREEVARLAAEVGEEAARRWEAEWERERERRAAEAFRAFKAEEEERKRKREEEEE",
     ipDE: 1.324,
     ipSAE: 0.801335713701265,
+    af2_iptm: 0.1, af2_ptm: 0.27, af2_plddt: 44.56,
     pdb_file: "data/rbx1_designs/scaleup_0463.cif"
   },
   {
@@ -2378,6 +2389,7 @@ const designs = [
     sequence: "MKTVFLEVKAHKEDIEEIKKKALEIAKKYGLKLILDLKEEKAGTKEEIIKNIEAFFKKEKKKLEE",
     ipDE: 0.785,
     ipSAE: 0.7909155090148472,
+    af2_iptm: 0.09, af2_ptm: 0.26, af2_plddt: 39.9,
     pdb_file: "data/rbx1_designs/scaleup_0012.cif"
   },
   {
@@ -2390,6 +2402,7 @@ const designs = [
     sequence: "MKTVFLEVGVHPEHKEEIKERALEIAKEYGLDVILDLKEEEAGTVEEVIADIEALFKKKVEELKA",
     ipDE: 0.798,
     ipSAE: 0.7639476729610022,
+    af2_iptm: 0.07, af2_ptm: 0.3, af2_plddt: 40.4,
     pdb_file: "data/rbx1_designs/scaleup_0015.cif"
   },
   {
@@ -2402,6 +2415,7 @@ const designs = [
     sequence: "EAERRLEERRRRREAFLRRHAGEAERLRAAAAAAAAAAAAAAAAAAAAAAAALAA",
     ipDE: 0.838,
     ipSAE: 0.719876632394245,
+    af2_iptm: 0.11, af2_ptm: 0.28, af2_plddt: 49.96,
     pdb_file: "data/rbx1_designs/scaleup_0058.cif"
   },
   {
@@ -2414,6 +2428,7 @@ const designs = [
     sequence: "DEEAERLAAALAAAAAAAAAAAAAAAFFEGGRRRRREELERERRARELE",
     ipDE: 1.387,
     ipSAE: 0.7551429541754869,
+    af2_iptm: 0.09, af2_ptm: 0.3, af2_plddt: 43.41,
     pdb_file: "data/rbx1_designs/scaleup_0550.cif"
   },
   {
@@ -2426,6 +2441,7 @@ const designs = [
     sequence: "GEKKLEEMCKDPESTLRRLSGAKAAAALAAALAAAAAALAAAAAAA",
     ipDE: 0.620,
     ipSAE: 0.6680593621919214,
+    af2_iptm: 0.08, af2_ptm: 0.22, af2_plddt: 39.27,
     pdb_file: "data/rbx1_designs/scaleup_0501.cif"
   },
   {
@@ -2438,6 +2454,7 @@ const designs = [
     sequence: "SSKPKAVVLVRTKRNGEVTFEIYRGVSYEEAAKLAEELSKEENGEVRVVRVFEE",
     ipDE: 1.064,
     ipSAE: 0.7164609904390806,
+    af2_iptm: 0.12, af2_ptm: 0.3, af2_plddt: 37.6,
     pdb_file: "data/rbx1_designs/design_0033_model_0.cif"},
   {
     id: "scaleup_0263", name: "cul_small_100_1080ti-011", campaign: "Cullin Face",
@@ -2449,6 +2466,7 @@ const designs = [
     sequence: "KEVEEEERRKLREAALAAREAAAKARAAREAEERARREALA",
     ipDE: 1.543,
     ipSAE: 0.6881674465677465,
+    af2_iptm: 0.08, af2_ptm: 0.28, af2_plddt: 46.17,
     pdb_file: "data/rbx1_designs/design_0263_model_0.cif"},
   {
     id: "scaleup_0265", name: "cul_small_100_1080ti-013", campaign: "Cullin Face",
@@ -2460,6 +2478,7 @@ const designs = [
     sequence: "KEVEEQARIEFRARKDYSKAELEKNPEEILEEAKKKLEEDLERHKTLEEWRKKME",
     ipDE: 1.219,
     ipSAE: 0.7150634093787379,
+    af2_iptm: 0.68, af2_ptm: 0.54, af2_plddt: 56.91,
     pdb_file: "data/rbx1_designs/design_0265_model_0.cif"},
   {
     id: "scaleup_0057", name: "beta_e2_100-057", campaign: "E2 Face",
@@ -2471,6 +2490,7 @@ const designs = [
     sequence: "SADEYLKEQEEVLKEFLEKHKGEAEKLEREAAEEAARRAAREAEEAARLAALLAS",
     ipDE: 0.976,
     ipSAE: 0.5736761637247331,
+    af2_iptm: 0.12, af2_ptm: 0.31, af2_plddt: 49.48,
     pdb_file: "data/rbx1_designs/design_0057_model_0.cif"},
   {
     id: "scaleup_0021", name: "beta_e2_100-021", campaign: "E2 Face",
@@ -2482,6 +2502,7 @@ const designs = [
     sequence: "SAAEAAARAAAAAREAEIEAKTARALEALRASDPEAAEVLEARLAAL",
     ipDE: 1.028,
     ipSAE: 0.6886282165260211,
+    af2_iptm: 0.1, af2_ptm: 0.31, af2_plddt: 43.49,
     pdb_file: "data/rbx1_designs/design_0021_model_0.cif"},
   {
     id: "scaleup_0024", name: "beta_e2_100-024", campaign: "E2 Face",
@@ -2493,6 +2514,7 @@ const designs = [
     sequence: "SGREELLKGVLDIVRGAEQPDKSFLEKAKEEPVVVKYIEEKKDLL",
     ipDE: 0.919,
     ipSAE: 0.5547012171486763,
+    af2_iptm: 0.14, af2_ptm: 0.23, af2_plddt: 37.24,
     pdb_file: "data/rbx1_designs/design_0024_model_0.cif"},
   {
     id: "scaleup_0350", name: "cul_small_10-010", campaign: "Cullin Face",
@@ -2504,6 +2526,7 @@ const designs = [
     sequence: "LRERVEEERRRVEELKREEEERKKKAEELNKKIKEEEKEKE",
     ipDE: 1.298,
     ipSAE: 0.6869118114952509,
+    af2_iptm: 0.08, af2_ptm: 0.28, af2_plddt: 43.6,
     pdb_file: "data/rbx1_designs/design_0350_model_0.cif"},
   {
     id: "scaleup_0314", name: "cul_small_100-006", campaign: "Cullin Face",
@@ -2515,6 +2538,7 @@ const designs = [
     sequence: "MSEEERERREAEERRRARREAARRAAARAARAAAEEARRRAEEAL",
     ipDE: 1.648,
     ipSAE: 0.707153111905122,
+    af2_iptm: 0.08, af2_ptm: 0.28, af2_plddt: 46.72,
     pdb_file: "data/rbx1_designs/design_0314_model_0.cif"},
   {
     id: "scaleup_0471", name: "e2_med_10-035", campaign: "E2 Face",
@@ -2526,6 +2550,7 @@ const designs = [
     sequence: "MEKKLKELEKLYAEVVNFELTELGRIEAEYEKALEESEEKALEILPKLIKKLEEAIEKIEELLKKMEELGETDSEKVEEAKERLYELKQKLEELKKKLEEAKA",
     ipDE: 0.738,
     ipSAE: 0.7887166481109904,
+    af2_iptm: 0.1, af2_ptm: 0.4, af2_plddt: 49.78,
     pdb_file: "data/rbx1_designs/design_0471_model_0.cif"},
   {
     id: "scaleup_0328", name: "cul_small_100-020", campaign: "Cullin Face",
@@ -2537,6 +2562,7 @@ const designs = [
     sequence: "SEALELARLRALERRRVLSRLDAAYAHYKAAYEKTGTGRSKELADAYEEKKAAYEAAVAAEEAAA",
     ipDE: 1.737,
     ipSAE: 0.7494351475734471,
+    af2_iptm: 0.08, af2_ptm: 0.36, af2_plddt: 47.52,
     pdb_file: "data/rbx1_designs/design_0328_model_0.cif"},
   {
     id: "scaleup_0243", name: "cul_med_10-031", campaign: "Cullin Face",
@@ -2548,6 +2574,7 @@ const designs = [
     sequence: "MTKKDEFERRVGELEIRLRELEARLAAARAELEARRAALAPEIERLLAEDPAATEALRAELAAEERRVAGYEDLVRRVREELERMRREEEEA",
     ipDE: 1.483,
     ipSAE: 0.7577009774047622,
+    af2_iptm: 0.08, af2_ptm: 0.32, af2_plddt: 46.02,
     pdb_file: "data/rbx1_designs/design_0243_model_0.cif"},
   {
     id: "scaleup_0186", name: "cul_med_100-030", campaign: "Cullin Face",
@@ -2570,6 +2597,7 @@ const designs = [
     sequence: "MEEALLERAEKLIRVNELTREAERLEKELASVSEEEKPKLLEEINRLREEAGRLERELLEK",
     ipDE: 1.716,
     ipSAE: 0.7182558250609481,
+    af2_iptm: 0.09, af2_ptm: 0.36, af2_plddt: 48.27,
     pdb_file: "data/rbx1_designs/design_0479_model_0.cif"},
   {
     id: "scaleup_0067", name: "beta_e2_10-003", campaign: "E2 Face",
@@ -2581,6 +2609,7 @@ const designs = [
     sequence: "DEKEEEEKRKKEEEEEKRRREEALRERLEEARERAREEERRAREEAE",
     ipDE: 1.958,
     ipSAE: 0.629347278736353,
+    af2_iptm: 0.08, af2_ptm: 0.3, af2_plddt: 47.75,
     pdb_file: "data/rbx1_designs/design_0067_model_0.cif"},
   {
     id: "scaleup_0189", name: "cul_med_100-033", campaign: "Cullin Face",
@@ -2592,6 +2621,7 @@ const designs = [
     sequence: "AAAAAAAAEAAREAAVDAAVEAARAAALEACAACPLCMHANEEEVLKELEEALKKAREALRAAAAALAAQLAALADDAAAQAALAAAAAAAAAAAAAAAALAVEAARA",
     ipDE: 1.781,
     ipSAE: 0.7724297591030321,
+    af2_iptm: 0.1, af2_ptm: 0.27, af2_plddt: 42.92,
     pdb_file: "data/rbx1_designs/design_0189_model_0.cif"},
   {
     id: "scaleup_0074", name: "beta_e2_10-010", campaign: "E2 Face",
@@ -2603,6 +2633,7 @@ const designs = [
     sequence: "REEEERRRREEEARARAEREAARELPVRERVEEIRRTVVGTPEEEAAIVAAFLEELKKLLG",
     ipDE: 0.764,
     ipSAE: 0.7258197969233658,
+    af2_iptm: 0.11, af2_ptm: 0.29, af2_plddt: 47.97,
     pdb_file: "data/rbx1_designs/design_0074_model_0.cif"},
   {
     id: "scaleup_0122", name: "cullin-018", campaign: "Cullin Face",
@@ -2614,6 +2645,7 @@ const designs = [
     sequence: "DEEEKKKKAEEKKKEKEKELKKKLEEELRRKAREEEEEERRRREEE",
     ipDE: 2.076,
     ipSAE: 0.6298965618932925,
+    af2_iptm: 0.08, af2_ptm: 0.3, af2_plddt: 47.85,
     pdb_file: "data/rbx1_designs/design_0122_model_0.cif"},
   {
     id: "scaleup_0305", name: "cul_small_100_1080ti-053", campaign: "Cullin Face",
@@ -2625,6 +2657,7 @@ const designs = [
     sequence: "DAEAARRAAEAAAREAARRVEEEAARRRQAALRAELERRAALE",
     ipDE: 1.477,
     ipSAE: 0.6167922229991072,
+    af2_iptm: 0.08, af2_ptm: 0.28, af2_plddt: 46.94,
     pdb_file: "data/rbx1_designs/design_0305_model_0.cif"},
   {
     id: "scaleup_0161", name: "cul_med_100-005", campaign: "Cullin Face",
@@ -2636,6 +2669,7 @@ const designs = [
     sequence: "PEISREELVALVEKNPLSEDSARVRILEREIEEDRAKRNKEAEERDKKELEKKKEELLKTLSEEEAKKALEELEKELEEEREKLKKELEEEIEKKRKEIEKIRKE",
     ipDE: 1.308,
     ipSAE: 0.7690364893877166,
+    af2_iptm: 0.07, af2_ptm: 0.24, af2_plddt: 44.74,
     pdb_file: "data/rbx1_designs/design_0161_model_0.cif"},
   {
     id: "scaleup_0355", name: "cul_small_10-015", campaign: "Cullin Face",
@@ -2647,6 +2681,7 @@ const designs = [
     sequence: "DAEKKEKEEKIKEEIKKQEEEVKKKKEEYRKKLKEELEKKKE",
     ipDE: 2.083,
     ipSAE: 0.5657222153880934,
+    af2_iptm: 0.08, af2_ptm: 0.29, af2_plddt: 45.2,
   },
   {
     id: "scaleup_0324", name: "cul_small_100-016", campaign: "Cullin Face",
@@ -2658,6 +2693,7 @@ const designs = [
     sequence: "LSEEELLERLEEREKLEEELKRRREEAAAELARRLAEAAAEAARAAEAAA",
     ipDE: 1.006,
     ipSAE: 0.618214217862471,
+    af2_iptm: 0.08, af2_ptm: 0.3, af2_plddt: 47.98,
   },
   {
     id: "scaleup_0215", name: "cul_med_10-003", campaign: "Cullin Face",
@@ -2669,6 +2705,7 @@ const designs = [
     sequence: "SEEEKEKKEIEEKTKEKLKKLEEEEKKKKEKEKKEGKELKKKFEELFEKIKKEYPELSEEECKELARKELEEEEEKKRKEKAQEIKLEVEKEAEKKKKEEEEKKKLEELLK",
     ipDE: 1.498,
     ipSAE: 0.7514659603880771,
+    af2_iptm: 0.09, af2_ptm: 0.38, af2_plddt: 58.55,
   },
   {
     id: "scaleup_0258", name: "cul_small_100_1080ti-006", campaign: "Cullin Face",
@@ -2680,6 +2717,7 @@ const designs = [
     sequence: "MSRDELLKKILEKKKEEIKKLKEEAKKAKEEDEEKAKKLEEEIKKLEEEVKELLKLP",
     ipDE: 1.820,
     ipSAE: 0.6617353044858693,
+    af2_iptm: 0.07, af2_ptm: 0.26, af2_plddt: 45.98,
   },
   {
     id: "scaleup_0013", name: "beta_e2_100-013", campaign: "E2 Face",
@@ -2691,6 +2729,7 @@ const designs = [
     sequence: "METVFLRVGVHPEDAEAVRERALALAEEAGLRLILRLEEAEAGTREEVVADIEAFLERQRAKLAA",
     ipDE: 1.294,
     ipSAE: 0.604774792228319,
+    af2_iptm: 0.09, af2_ptm: 0.25, af2_plddt: 36.44,
   },
   {
     id: "scaleup_0047", name: "beta_e2_100-047", campaign: "E2 Face",
@@ -2702,6 +2741,7 @@ const designs = [
     sequence: "EEELQRKLEELREKERRKEELERLRRLAEELARDPEAAKKRVEAALAAAAAAAAAAAAAAAAA",
     ipDE: 1.467,
     ipSAE: 0.6857263987972992,
+    af2_iptm: 0.09, af2_ptm: 0.29, af2_plddt: 45.18,
   },
   {
     id: "scaleup_0362", name: "cul_small_10-022", campaign: "Cullin Face",
@@ -2735,6 +2775,7 @@ const designs = [
     sequence: "LSEEELVERIEKREKLRKELEEAKKKAEEAAKKAAEEALRKLLEELLALL",
     ipDE: 1.010,
     ipSAE: 0.5824975759328902,
+    af2_iptm: 0.06, af2_ptm: 0.26, af2_plddt: 45.7,
   },
   {
     id: "scaleup_0372", name: "cul_small_10-032", campaign: "Cullin Face",
@@ -2757,6 +2798,7 @@ const designs = [
     sequence: "MEEEARERARREAEERFNREAEELGVLGVKSPEEQRKHLRNLAARRAAVEGREQELLEERVAAAL",
     ipDE: 1.168,
     ipSAE: 0.6550204738127162,
+    af2_iptm: 0.09, af2_ptm: 0.28, af2_plddt: 42.69,
   },
   {
     id: "scaleup_0019", name: "beta_e2_100-019", campaign: "E2 Face",
@@ -2790,6 +2832,7 @@ const designs = [
     sequence: "DLEKLLKEIEELEKEIEELEKKIKEIEEEIKKLEEIYKKLEEFKKRCESIVKRTEFVDKEKTEEVKKKMEEAIEEFEKENKKKIEEAKKKIEELKKKLEELKKKLEELKKKLEELKEKLE",
     ipDE: 1.115,
     ipSAE: 0.5717827903406846,
+    af2_iptm: 0.08, af2_ptm: 0.32, af2_plddt: 49.62,
   },
   {
     id: "scaleup_0554", name: "e2_small_100-078", campaign: "E2 Face",
@@ -2812,6 +2855,7 @@ const designs = [
     sequence: "REEEEKRRKEREKEEEERRLEEARRREEEERERLEELLPP",
     ipDE: 2.222,
     ipSAE: 0.56330539958648,
+    af2_iptm: 0.09, af2_ptm: 0.29, af2_plddt: 47.27,
   },
   {
     id: "scaleup_0551", name: "e2_small_100-075", campaign: "E2 Face",
@@ -2823,6 +2867,7 @@ const designs = [
     sequence: "EEEERREAERRAREEAEAALRAALREYLEGGRERRRRERLEEARRAAEP",
     ipDE: 1.480,
     ipSAE: 0.5768181247617379,
+    af2_iptm: 0.1, af2_ptm: 0.27, af2_plddt: 43.64,
   },
   {
     id: "scaleup_0199", name: "cul_med_100-043", campaign: "Cullin Face",
@@ -2834,6 +2879,7 @@ const designs = [
     sequence: "MTPEELEAAIEALEAARDAEIEAFRAALEAEREARLEAARAAGEEVSEEELEEMRRRMEEEIFRHEEEVTRRTAAELVNRLGSEEAARRLMEKLQREKEERKEELEEEEEE",
     ipDE: 1.622,
     ipSAE: 0.7351212378104336,
+    af2_iptm: 0.12, af2_ptm: 0.39, af2_plddt: 51.22,
   },
   {
     id: "scaleup_0147", name: "cul_med_100_1080ti-023", campaign: "Cullin Face",
@@ -2845,6 +2891,7 @@ const designs = [
     sequence: "SLRELEKKLLEKEIEKIKEKFPGLTEEEIEELIEFGKKNKEFALKYLEGEVKEEFESLPKEKQFALEEYAKVVKELEEKIKKLKEELEKIEE",
     ipDE: 1.831,
     ipSAE: 0.5643521589992796,
+    af2_iptm: 0.11, af2_ptm: 0.3, af2_plddt: 44.55,
   },
   {
     id: "scaleup_0022", name: "beta_e2_100-022", campaign: "E2 Face",
@@ -2867,6 +2914,7 @@ const designs = [
     sequence: "MEEELKEYEEAYAAVKDALLTELGRAEAAYAAALAASREAALAFLPELIALLEKLKEQIEKTLELFRKLGLEDSEEVKELEEQKAELEERIEELRAEAAAAAA",
     ipDE: 1.557,
     ipSAE: 0.6787101873760049,
+    af2_iptm: 0.1, af2_ptm: 0.4, af2_plddt: 49.19,
   },
   {
     id: "scaleup_0503", name: "e2_small_100-027", campaign: "E2 Face",
@@ -2889,6 +2937,7 @@ const designs = [
     sequence: "EEKKAKEEEEKKEEEKEKEKKEEEKKKREEEIKERLRKAEELEKKGELAEEARKIREEIERERAEAAQLAAAAAAAAAAAAAAAAAAAAA",
     ipDE: 1.214,
     ipSAE: 0.6623690400926168,
+    af2_iptm: 0.08, af2_ptm: 0.24, af2_plddt: 47.62,
   },
   {
     id: "scaleup_0017", name: "beta_e2_100-017", campaign: "E2 Face",
@@ -2911,6 +2960,7 @@ const designs = [
     sequence: "EEEEELLKRIREEYERFLRRIAPLEALPAVAAALARLREEARERGRELVREKFLTPEEQEDERYLEVATGLELESLLAPVLAVLAAAAELRAALE",
     ipDE: 1.651,
     ipSAE: 0.6271212402875089,
+    af2_iptm: 0.09, af2_ptm: 0.25, af2_plddt: 40.25,
   },
   {
     id: "scaleup_0315", name: "cul_small_100-007", campaign: "Cullin Face",
@@ -2933,6 +2983,7 @@ const designs = [
     sequence: "DEVVEALAAAARAAELAARAAAAAAAAAAEAAREAARRAAE",
     ipDE: 1.525,
     ipSAE: 0.5763849120557039,
+    af2_iptm: 0.09, af2_ptm: 0.27, af2_plddt: 38.09,
   },
   {
     id: "scaleup_0020", name: "beta_e2_100-020", campaign: "E2 Face",
@@ -2988,6 +3039,7 @@ const designs = [
     sequence: "MTPEELKKKIEEIEKEMEEKIERFRRELEEELRARLEAAAAAGEELSEEELLRLRLEREEEILRKEQEVTDEAAARILLELGSKEAANRLKTKLKKKKEEYEKKLKELEEK",
     ipDE: 2.064,
     ipSAE: 0.6096134990739123,
+    af2_iptm: 0.08, af2_ptm: 0.38, af2_plddt: 50.72,
   },
   {
     id: "scaleup_0209", name: "cul_med_100-053", campaign: "Cullin Face",
@@ -2999,6 +3051,7 @@ const designs = [
     sequence: "EEEEKLKKLEEEREKKLEEEAKKDPSVNKKLLEAKKKEKEIEKKIEELEKKKKELEEELELLKASEGDPEEKKKKIEELKKEIEEIEKEIEKLKEEKKKVEKEIEEAKKKKEELEKE",
     ipDE: 1.093,
     ipSAE: 0.7392567939007821,
+    af2_iptm: 0.08, af2_ptm: 0.37, af2_plddt: 55.6,
   },
   {
     id: "scaleup_0034", name: "beta_e2_100-034", campaign: "E2 Face",
@@ -3054,6 +3107,7 @@ const designs = [
     sequence: "KPSKELLDKIAENVLGLCELLEELAELVGSEKKEEIEKLKKEIKEAYEKGNLEELEKVLKKIEELFDELLKKTESFPPSEQEKIDELIERRRELLLKYKETLKEIE",
     ipDE: 1.455,
     ipSAE: 0.589017542425445,
+    af2_iptm: 0.09, af2_ptm: 0.36, af2_plddt: 48.1,
   },
   {
     id: "scaleup_0062", name: "beta_e2_100-062", campaign: "E2 Face",
@@ -3142,6 +3196,7 @@ const designs = [
     sequence: "MEEEKKKEEEEKKKEEEERKKEEEKKKEEEEKKKLEKVKEAIEEQRKKDLEKLE",
     ipDE: 1.727,
     ipSAE: 0.5701327615419213,
+    af2_iptm: 0.08, af2_ptm: 0.28, af2_plddt: 49.14,
   },
   {
     id: "scaleup_0242", name: "cul_med_10-030", campaign: "Cullin Face",
@@ -3175,6 +3230,7 @@ const designs = [
     sequence: "MEKEEEERRREEEERRERERKEEEERKRREEEEKERLARLEELRTNGAAAAAALEAALAALPDEAARAELRARFEAERAEVEAWAEEREKIINEIREEFLKE",
     ipDE: 1.194,
     ipSAE: 0.5757492112338943,
+    af2_iptm: 0.11, af2_ptm: 0.26, af2_plddt: 47.93,
   },
   {
     id: "scaleup_0220", name: "cul_med_10-008", campaign: "Cullin Face",
@@ -3197,6 +3253,7 @@ const designs = [
     sequence: "SAAAAAEKAKREVEEAQNAELGKLVVFTEDPELAKEYLEKKEEAEKEYEKLKKEVGEEEAEKKKKEWEEKEREKLAEEYRKWKEKLEKEKKEKEEKEK",
     ipDE: 2.088,
     ipSAE: 0.5744585042115923,
+    af2_iptm: 0.11, af2_ptm: 0.32, af2_plddt: 46.97,
   },
   {
     id: "scaleup_0300", name: "cul_small_100_1080ti-048", campaign: "Cullin Face",
@@ -3252,6 +3309,7 @@ const designs = [
     sequence: "MPSEKELEEERKHIEEYEEKLREEEKERREREEREEEERRRREEEARRRREEEEARRAA",
     ipDE: 1.413,
     ipSAE: 0.5674004392469255,
+    af2_iptm: 0.11, af2_ptm: 0.36, af2_plddt: 53.33,
   },
   {
     id: "scaleup_0030", name: "beta_e2_100-030", campaign: "E2 Face",
@@ -3296,6 +3354,7 @@ const designs = [
     sequence: "KEKEELKKKIEELKKKAEELEKKAEELKGLAESLKKEMEKRNEKLRKENEELRKEAEKLDAEEKAKVEAEIKRKEAEVESLEKYVKELEEKAKEIEEKAKELKEEAKKLEEEAK",
     ipDE: 3.211,
     ipSAE: 0.567544285302258,
+    af2_iptm: 0.07, af2_ptm: 0.27, af2_plddt: 55.14,
   },
   {
     id: "scaleup_0406", name: "e2_med_100-026", campaign: "E2 Face",
@@ -3318,6 +3377,7 @@ const designs = [
     sequence: "MEISREELVELREKRPLSDDSAEVSLLERRIETERAEENARLRERSRREGEEARRRLLATLSPEEAAEEIARLEERLRREREEARRELERKEEELRRKIAEIRAA",
     ipDE: 2.392,
     ipSAE: 0.5982893333301812,
+    af2_iptm: 0.07, af2_ptm: 0.28, af2_plddt: 46.11,
   },
   {
     id: "scaleup_0196", name: "cul_med_100-040", campaign: "Cullin Face",
@@ -3626,6 +3686,7 @@ const designs = [
     sequence: "EELKEKLEELKKELEEFEKEAEEELKKMKEELKKAGEEKEKYEEELKKFEEEVKKKLEEMKKEIEELETKPYKEYQEEKEKELREKDLEKKRKEEEEARRREE",
     ipDE: 1.484,
     ipSAE: 0.5588888086140779,
+    af2_iptm: 0.08, af2_ptm: 0.23, af2_plddt: 47.07,
   },
   {
     id: "scaleup_0468", name: "e2_med_10-032", campaign: "E2 Face",
@@ -6111,6 +6172,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
     ipTM: 0.889, pTM: 0.879, pLDDT: 0.79, ipDE: 1.03,
     ipSAE: 0.6556074793253629,
+    af2_iptm: 0.09, af2_ptm: 0.29, af2_plddt: 47.97,
     sequence: "SAEEAERAAEEAEREALEEKKREEEREEEELKRELAELEEKIKKLKEELEKKKKEGSKDIEKLEKELKELEKKKEELKKKLEEFEEKKKEKFERLEELEKFREEG"
   },
   {
@@ -6143,6 +6205,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.867, pTM: 0.862, pLDDT: 0.809, ipDE: 0.77,
     ipSAE: 0.5781859969287119,
+    af2_iptm: 0.08, af2_ptm: 0.27, af2_plddt: 44.82,
     sequence: "ISLEEGIEIESKKAKEKSEELAKIAKKELEEREKILKEMEELRK"
   },
   {
@@ -6319,6 +6382,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.928, pTM: 0.901, pLDDT: 0.795, ipDE: 0.77,
     ipSAE: 0.799176346498381,
+    af2_iptm: 0.1, af2_ptm: 0.34, af2_plddt: 47.55,
     sequence: "SAALEAARELALEFERIKERLEEKLKYYKEAYEKTGTGRSKEKAEEAEKKLEELKKKLAEELAAA",
     pdb_file: "data/rbx1_designs/design_0330_model_0.cif"},
   {
@@ -6327,6 +6391,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.928, pTM: 0.942, pLDDT: 0.639, ipDE: 0.79,
     ipSAE: 0.7602117255475613,
+    af2_iptm: 0.08, af2_ptm: 0.32, af2_plddt: 45.17,
     sequence: "AAAALAAALAARALALRLALLDAREAHYAAAAAETGTGRARQLAEAARQARAALEAAVAAALAAA",
     pdb_file: "data/rbx1_designs/design_0331_model_0.cif"},
   {
@@ -6351,6 +6416,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.881, pTM: 0.815, pLDDT: 0.674, ipDE: 1.8,
     ipSAE: 0.7065353543036121,
+    af2_iptm: 0.1, af2_ptm: 0.28, af2_plddt: 48.18,
     sequence: "SEEEEKLLKEVEEKRLELSPEYELERRRRREEEEEARRRAEAPARRAAAEAARRAAL"
   },
   {
@@ -6391,6 +6457,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.908, pTM: 0.861, pLDDT: 0.77, ipDE: 1.43,
     ipSAE: 0.7262256749401141,
+    af2_iptm: 0.08, af2_ptm: 0.26, af2_plddt: 42.29,
     sequence: "VKKLEEELEKLKEKKKEIEEALKSGKLKESMKNSVERNMFELEKKIKELEEEKERALKEK",
     pdb_file: "data/rbx1_designs/design_0339_model_0.cif"},
   {
@@ -6407,6 +6474,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.796, pTM: 0.798, pLDDT: 0.672, ipDE: 1.18,
     ipSAE: 0.5531764584847381,
+    af2_iptm: 0.08, af2_ptm: 0.31, af2_plddt: 43.46,
     sequence: "MEEEARKKAEAEAAAAAAAAAAAAAAAAAAAEAAAEAEAAEAARRAAEAAKEAEAAALLAE"
   },
   {
@@ -6519,6 +6587,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.847, pTM: 0.833, pLDDT: 0.686, ipDE: 1.93,
     ipSAE: 0.5929680110127095,
+    af2_iptm: 0.1, af2_ptm: 0.3, af2_plddt: 45.73,
     sequence: "MEEEKKREEEEKLEASPERKQLLLLRIEYNVRLLPESVSEEEREALLAAAKAALEAAL"
   },
   {
@@ -6559,6 +6628,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.926, pTM: 0.869, pLDDT: 0.733, ipDE: 1.31,
     ipSAE: 0.5833180850000131,
+    af2_iptm: 0.09, af2_ptm: 0.31, af2_plddt: 39.09,
     sequence: "MIDVGIRAETVGEAYKLMAEEVGEKDPEVLEKCLELTIDEKLEIDGVVLEMELA",
     pdb_file: "data/rbx1_designs/design_0084_model_0.cif"},
   {
@@ -6591,6 +6661,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.944, pTM: 0.907, pLDDT: 0.792, ipDE: 0.67,
     ipSAE: 0.8211776729211662,
+    af2_iptm: 0.07, af2_ptm: 0.25, af2_plddt: 43.19,
     sequence: "SREEHLEKQIELLKKQREEKKIAEENPDEKDTAVRLEEIEEEKKKQEELEKELKK",
     pdb_file: "data/rbx1_designs/design_0088_model_0.cif"},
   {
@@ -6639,6 +6710,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.908, pTM: 0.834, pLDDT: 0.74, ipDE: 1.27,
     ipSAE: 0.6267386606625919,
+    af2_iptm: 0.09, af2_ptm: 0.26, af2_plddt: 43.59,
     sequence: "SAAARAAAERERQEVIDRALELLAKDPSLSVEEKCLLQRAREDPEAQERIAELLKRREAAA",
     pdb_file: "data/rbx1_designs/design_0094_model_0.cif"},
   {
@@ -6759,6 +6831,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
     ipTM: 0.89, pTM: 0.905, pLDDT: 0.799, ipDE: 1.2,
     ipSAE: 0.7585614045182567,
+    af2_iptm: 0.1, af2_ptm: 0.37, af2_plddt: 52.81,
     sequence: "SAAAAAAAAAAAEAARRAREEELAERLRRAIETEEAREELYEEVLEEARLRREIAALLEQLAAETDPARRAELQARIDELLARLRALEEERRLAEAGLRRAAEAAAAA",
     pdb_file: "data/rbx1_designs/design_0389_model_0.cif"},
   {
@@ -6919,6 +6992,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
     ipTM: 0.814, pTM: 0.814, pLDDT: 0.784, ipDE: 1.66,
     ipSAE: 0.6756386243891468,
+    af2_iptm: 0.08, af2_ptm: 0.32, af2_plddt: 49.37,
     sequence: "KDENKMEEYLEAKRKAFEEKLKELEKEIKEKEEEIKKKEEEIKKLEEKIKENEEDPKAKELKEEVEKKKEEIEKEKKEIEEKKQEAAAERARLERLEKQL"
   },
   {
@@ -6967,6 +7041,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
     ipTM: 0.853, pTM: 0.856, pLDDT: 0.832, ipDE: 1.88,
     ipSAE: 0.6299855146878189,
+    af2_iptm: 0.11, af2_ptm: 0.34, af2_plddt: 45.3,
     sequence: "SAAEAERRKKEEEKKELEKLKKETLKEIEEEMKKFEEFLKKAKELVKEYPGRMEKILLEEFEKFKEEFKKKIEEKKEELKEDEEFLKYLEEVEKEVEEKYEEFKKFI"
   },
   {
@@ -7039,6 +7114,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Medium (66-100 AA)",
     ipTM: 0.793, pTM: 0.832, pLDDT: 0.753, ipDE: 1.51,
     ipSAE: 0.5630268225861019,
+    af2_iptm: 0.07, af2_ptm: 0.25, af2_plddt: 44.83,
     sequence: "SLEKEINDAVKKLQEEAKKKKEEIKKLEEEAKKGTEEEKEKKEKEIEKIKEELEKKQLELAENRRKLLEEAEEERKEEEEELEEELEELLERLEEEL"
   },
   {
@@ -7055,6 +7131,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
     ipTM: 0.853, pTM: 0.872, pLDDT: 0.852, ipDE: 1.57,
     ipSAE: 0.7298470722814454,
+    af2_iptm: 0.09, af2_ptm: 0.29, af2_plddt: 48.75,
     sequence: "KELEELKKKYDEKLAEARELELRIKIEGGKKREELEKEIKELYEKLLKEGTEEEAKKKAEELREKKEKEIEEEIEKLEKEKEELLKEAEEILAEIHRLEKKLKEE"
   },
   {
@@ -7087,6 +7164,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
     ipTM: 0.839, pTM: 0.880, pLDDT: 0.680, ipDE: 1.88,
     ipSAE: 0.5859737335197064,
+    af2_iptm: 0.1, af2_ptm: 0.26, af2_plddt: 44.51,
     sequence: "VVEQLQRKVDQLRRFREEVLEEKRRIEELEAGAPGQTDRSELERARERLEQLVRYILGENVEKEPELQALLAQSVEELEAALDERIAELEERLREAEEARRRAEEA"
   },
   {
@@ -7135,6 +7213,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
     ipTM: 0.812, pTM: 0.873, pLDDT: 0.748, ipDE: 2.03,
     ipSAE: 0.5683167482488938,
+    af2_iptm: 0.15, af2_ptm: 0.41, af2_plddt: 48.49,
     sequence: "SEEEKRAFEEELRARLAELKALGYKVSEVQRRLAESYRFLKQQLGEEEIKELREKGPEARAWILEMEACELLVEAEKLYKEAVEAGDSEEAKEKLEEAERILEEMNRRLEEEE"
   },
   {
@@ -7143,6 +7222,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
     ipTM: 0.867, pTM: 0.898, pLDDT: 0.707, ipDE: 1.54,
     ipSAE: 0.6416649322354107,
+    af2_iptm: 0.16, af2_ptm: 0.49, af2_plddt: 58.21,
     sequence: "AAAAAAAAAAAAAAAAQAAAFEAWDARHREIYAEIVKMKKEGIKTELEREVLKKKADLLQLMLRARVTDFRAELPRIEEAERELRELERRLREERRRREEEERARAEE"
   },
   {
@@ -7151,6 +7231,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
     ipTM: 0.872, pTM: 0.884, pLDDT: 0.689, ipDE: 1.72,
     ipSAE: 0.6042258726161085,
+    af2_iptm: 0.12, af2_ptm: 0.3, af2_plddt: 46.74,
     sequence: "DLEELLKKLLEELEKKYKEVLEELENRHKEIFKKIVEMEEKGIETEEEREVLQKAADLLQLILESYVGSLKETLPKIEEAEKELEALEKAREEKKAAEEAAAAAAAAA"
   },
   {
@@ -7303,6 +7384,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.865, pTM: 0.885, pLDDT: 0.662, ipDE: 1.06,
     ipSAE: 0.5639134938480336,
+    af2_iptm: 0.09, af2_ptm: 0.23, af2_plddt: 39.4,
     sequence: "DEAARLAAEAEAAARAAAAEAAEAARAEVLSPRLAEALEFYKKKLEEEKK"
   },
   {
@@ -7351,6 +7433,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.905, pTM: 0.839, pLDDT: 0.761, ipDE: 1.33,
     ipSAE: 0.6379453725657708,
+    af2_iptm: 0.1, af2_ptm: 0.29, af2_plddt: 45.01,
     sequence: "MVEELRAREPEALAALRARELATDPAGAAEKVAALRARIERAIEFLERAEA",
     pdb_file: "data/rbx1_designs/design_0510_model_0.cif"},
   {
@@ -7415,6 +7498,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.873, pTM: 0.885, pLDDT: 0.586, ipDE: 0.64,
     ipSAE: 0.5994377091308271,
+    af2_iptm: 0.17, af2_ptm: 0.35, af2_plddt: 51.8,
     sequence: "MTPEALAAAAAAAAAAARRAACEGLRQILNDAILKGKEALKELEELLAAAAAAAAAA"
   },
   {
@@ -7431,6 +7515,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.934, pTM: 0.943, pLDDT: 0.709, ipDE: 0.64,
     ipSAE: 0.7757378322837438,
+    af2_iptm: 0.09, af2_ptm: 0.27, af2_plddt: 42.41,
     sequence: "EAAEAERRAAAAKRAAEAAAAAARLAADPSIAVEIWKALPVEDRRRFREVLELE",
     pdb_file: "data/rbx1_designs/design_0520_model_0.cif"},
   {
@@ -7447,6 +7532,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.896, pTM: 0.926, pLDDT: 0.646, ipDE: 0.93,
     ipSAE: 0.5573495295487773,
+    af2_iptm: 0.09, af2_ptm: 0.27, af2_plddt: 41.67,
     sequence: "EEEVKEALEKAKKELEEKEKAAKKLAEDPSIAKEYIAKLPTEEKVRFKELRELE",
     pdb_file: "data/rbx1_designs/design_0522_model_0.cif"},
   {
@@ -7455,6 +7541,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.902, pTM: 0.864, pLDDT: 0.732, ipDE: 1.16,
     ipSAE: 0.6216724207192115,
+    af2_iptm: 0.11, af2_ptm: 0.29, af2_plddt: 42.84,
     sequence: "AEELEKALEELARRLAEAERAAAELAADPSILLEIIKSLPVEERLAFKHLLEHL",
     pdb_file: "data/rbx1_designs/design_0523_model_0.cif"},
   {
@@ -7551,6 +7638,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.886, pTM: 0.861, pLDDT: 0.775, ipDE: 0.94,
     ipSAE: 0.6320200838382719,
+    af2_iptm: 0.06, af2_ptm: 0.28, af2_plddt: 52.58,
     sequence: "EEEEERRRREEEERRKREKEEEEKRKEAEEKRKKLEEEKKKKEEEEE"
   },
   {
@@ -7599,6 +7687,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.923, pTM: 0.936, pLDDT: 0.692, ipDE: 0.66,
     ipSAE: 0.744663000486171,
+    af2_iptm: 0.1, af2_ptm: 0.27, af2_plddt: 43.61,
     sequence: "SAAEAARAAAEAAAEAAKLAEILASSYYDHPLEKKEIEEKAKEAREKEERERELREELERLLE",
     pdb_file: "data/rbx1_designs/design_0541_model_0.cif"},
   {
@@ -7639,6 +7728,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.852, pTM: 0.836, pLDDT: 0.691, ipDE: 1.25,
     ipSAE: 0.6394843629068037,
+    af2_iptm: 0.1, af2_ptm: 0.32, af2_plddt: 42.08,
     sequence: "SLITPEEREALEELARKREAEAEAAAAAAAAAAAAAAAAAAAAAAEEARRAAA"
   },
   {
@@ -7767,6 +7857,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.908, pTM: 0.868, pLDDT: 0.755, ipDE: 1.63,
     ipSAE: 0.6431395258357666,
+    af2_iptm: 0.12, af2_ptm: 0.3, af2_plddt: 44.83,
     sequence: "AAEEALKKQLEDIVLHLRQEMIREAVREGVSKEELEEREKELEKKIEELRKLLE",
     pdb_file: "data/rbx1_designs/design_0570_model_0.cif"},
   {
@@ -7823,6 +7914,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.879, pTM: 0.785, pLDDT: 0.695, ipDE: 3.37,
     ipSAE: 0.5580269071917582,
+    af2_iptm: 0.1, af2_ptm: 0.34, af2_plddt: 47.08,
     sequence: "MEEERRRELEEEEERRRAIEERRAALRAYLEANREALSPEEIARLQQEIAVLEAL"
   },
   {
@@ -7991,6 +8083,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.865, pTM: 0.854, pLDDT: 0.812, ipDE: 1.41,
     ipSAE: 0.6038230563165318,
+    af2_iptm: 0.08, af2_ptm: 0.31, af2_plddt: 47.42,
     sequence: "EEEEREKLRKKIEELRKEIEELRKRIEETLATGSPEDTEPLRARLEELEKELRELMRG"
   },
   {
@@ -8039,6 +8132,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.904, pTM: 0.881, pLDDT: 0.628, ipDE: 1.22,
     ipSAE: 0.5810360856691363,
+    af2_iptm: 0.08, af2_ptm: 0.29, af2_plddt: 41.15,
     sequence: "REELLRQARREENRLKLTSTEAEAEAWRTENVQLPEEERAAILAAAEEARAAA",
     pdb_file: "data/rbx1_designs/design_0604_model_0.cif"},
   {
@@ -8223,6 +8317,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.922, pTM: 0.902, pLDDT: 0.749, ipDE: 0.8,
     ipSAE: 0.7954260685602816,
+    af2_iptm: 0.09, af2_ptm: 0.27, af2_plddt: 38.81,
     sequence: "LAAAAAALARAQARLDAIAALSPEEQARARAEAEAAARRAEELARRQEENRRAREEAERAR",
     pdb_file: "data/rbx1_designs/design_0627_model_0.cif"},
   {
@@ -8239,6 +8334,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.849, pTM: 0.866, pLDDT: 0.718, ipDE: 1.1,
     ipSAE: 0.5793075424685241,
+    af2_iptm: 0.07, af2_ptm: 0.28, af2_plddt: 45.89,
     sequence: "AEAAARAAAALAALAAELEKIREEKTREELEKKKEELLKEKEEEKKKKELEELE"
   },
   {
@@ -8303,6 +8399,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.904, pTM: 0.844, pLDDT: 0.776, ipDE: 1.35,
     ipSAE: 0.6845957789080603,
+    af2_iptm: 0.09, af2_ptm: 0.28, af2_plddt: 45.91,
     sequence: "LAELLAAQAAALAAAAELLANRVEMLKLRQEAAEAARAARRAEEERRRLE",
     pdb_file: "data/rbx1_designs/design_0637_model_0.cif"},
   {
@@ -8487,6 +8584,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Large (>100 AA)",
     ipTM: 0.853, pTM: 0.884, pLDDT: 0.513, ipDE: 1.44,
     ipSAE: 0.5984551824646251,
+    af2_iptm: 0.1, af2_ptm: 0.23, af2_plddt: 34.06,
     sequence: "MAASGDVATAKELIEKYRAFTITVEFPPDVKIEKDPIDGELITEVSKEGKELGLGPTDPRNLILYGLDNIAYHFLSAAKWYNTKPVSPANGKPFVPRFAEM"
   },
   {
@@ -8495,6 +8593,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.901, pTM: 0.862, pLDDT: 0.728, ipDE: 1.09,
     ipSAE: 0.7065064496385491,
+    af2_iptm: 0.1, af2_ptm: 0.3, af2_plddt: 38.72,
     sequence: "KVTVEVVSNPPASPAAVEAAREAAVRALDERGATAAARAAAEAALAAMGDPKAAVFVRVEVE",
     pdb_file: "data/rbx1_designs/design_0661_model_0.cif"},
   {
@@ -8591,6 +8690,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.907, pTM: 0.87, pLDDT: 0.635, ipDE: 1.46,
     ipSAE: 0.6755139580764287,
+    af2_iptm: 0.13, af2_ptm: 0.4, af2_plddt: 43.97,
     sequence: "SAAAAAGEKAAAAAEAGASTDELAKLWVEAAKLAAASSDPAAANAAFIGIAKAIVIRMKRLLGL",
     pdb_file: "data/rbx1_designs/design_0673_model_0.cif"},
   {
@@ -8607,6 +8707,7 @@ const designs = [
     pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
     ipTM: 0.962, pTM: 0.903, pLDDT: 0.829, ipDE: 0.74,
     ipSAE: 0.7727758405887991,
+    af2_iptm: 0.11, af2_ptm: 0.37, af2_plddt: 50.91,
     sequence: "KTEEEIAEELSKKFGISLTAARAAVEAVRRILERHPDITAEELAERTGASLEEVEHLLELLK",
     pdb_file: "data/rbx1_designs/design_0675_model_0.cif"},
   // ---- Wave 2: RFdiffusion Gen10k E2 Face (Boltz-2 MSA-scored, 8065 designs on dashboard, 9336 queued) ----
@@ -80084,8 +80185,8 @@ function renderCard(d, showRank) {
         fmtMetric(d.ipSAE, 'ipSAE') +
         fmtMetric(d.pLDDT, 'pLDDT') +
         fmtMetric(d.pTM, 'pTM') +
-        fmtMetric(d.design_ptm, 'Design pTM') +
-        fmtMetric(d.min_pae, 'Min PAE') +
+        fmtMetric(d.af2_iptm, 'AF2 ipTM') +
+        fmtMetric(d.af2_plddt, 'AF2 pLDDT') +
       '</div>' +
       '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;font-weight:400;">' +
         'Size class: ' + d.size_class + ' &middot; Target: ' + d.target_length + ' res' +
