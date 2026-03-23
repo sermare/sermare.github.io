@@ -794,6 +794,7 @@
           <option value="design_ptm">Design pTM</option>
           <option value="pLDDT">pLDDT</option>
         </select>
+        <button id="sortDirBtn" onclick="toggleSortDir()" style="padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);cursor:pointer;font-family:inherit;font-size:14px;" title="Toggle sort direction"></button>
 
         <label for="filterCampaign">Campaign:</label>
         <select id="filterCampaign" onchange="filterTable()">
@@ -811,15 +812,15 @@
         <table class="all-structures-table" id="allStructuresTable">
           <thead>
             <tr>
-              <th onclick="sortByColumn('rank')">Rank <span class="sort-arrow"></span></th>
-              <th onclick="sortByColumn('name')">Design <span class="sort-arrow"></span></th>
-              <th onclick="sortByColumn('campaign')">Campaign <span class="sort-arrow"></span></th>
-              <th onclick="sortByColumn('binder_length')">Length <span class="sort-arrow"></span></th>
-              <th onclick="sortByColumn('ipTM')">ipTM <span class="sort-arrow"></span></th>
-              <th onclick="sortByColumn('ipSAE')">ipSAE <span class="sort-arrow"></span></th>
-              <th onclick="sortByColumn('pLDDT')">pLDDT <span class="sort-arrow"></span></th>
-              <th onclick="sortByColumn('design_ptm')">pTM <span class="sort-arrow"></span></th>
-              <th onclick="sortByColumn('pipeline')">Pipeline <span class="sort-arrow"></span></th>
+              <th data-col="rank" onclick="sortByColumn('rank')">Rank <span class="sort-arrow"></span></th>
+              <th data-col="name" onclick="sortByColumn('name')">Design <span class="sort-arrow"></span></th>
+              <th data-col="campaign" onclick="sortByColumn('campaign')">Campaign <span class="sort-arrow"></span></th>
+              <th data-col="binder_length" onclick="sortByColumn('binder_length')">Length <span class="sort-arrow"></span></th>
+              <th data-col="ipTM" onclick="sortByColumn('ipTM')">ipTM <span class="sort-arrow"></span></th>
+              <th data-col="ipSAE" onclick="sortByColumn('ipSAE')">ipSAE <span class="sort-arrow"></span></th>
+              <th data-col="pLDDT" onclick="sortByColumn('pLDDT')">pLDDT <span class="sort-arrow"></span></th>
+              <th data-col="design_ptm" onclick="sortByColumn('design_ptm')">pTM <span class="sort-arrow"></span></th>
+              <th data-col="pipeline" onclick="sortByColumn('pipeline')">Pipeline <span class="sort-arrow"></span></th>
               <th>Download</th>
             </tr>
           </thead>
@@ -831,6 +832,18 @@
 
       <div style="margin-top:20px;">
         <div class="section-heading" style="font-size:20px;font-weight:400;">All Structure Cards</div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+          <label style="font-size:14px;color:var(--text-secondary);">Sort cards by:</label>
+          <select id="cardSortSelect" onchange="changeCardSort()" style="padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg-alt);color:var(--text);font-size:14px;font-family:inherit;">
+            <option value="rank">Rank</option>
+            <option value="ipTM">ipTM</option>
+            <option value="ipSAE">ipSAE</option>
+            <option value="pLDDT">pLDDT</option>
+            <option value="binder_length">Binder Length</option>
+            <option value="name">Name</option>
+          </select>
+          <button id="cardSortDirBtn" onclick="toggleCardSortDir()" style="padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);cursor:pointer;font-family:inherit;font-size:14px;" title="Toggle sort direction"></button>
+        </div>
         <div id="paginationControls"></div>
         <div class="structure-grid" id="allStructureCards">
           <!-- Populated by JS -->
@@ -77222,7 +77235,8 @@ let cardsPage = 1;
 const CARDS_PER_PAGE = 50;
 
 function renderAllCards() {
-  const filtered = getFilteredData();
+  var filtered = getFilteredData();
+  sortData(filtered, cardSort, cardSortAsc);
   const totalPages = Math.ceil(filtered.length / CARDS_PER_PAGE);
   if (cardsPage > totalPages) cardsPage = totalPages;
   if (cardsPage < 1) cardsPage = 1;
@@ -77248,9 +77262,51 @@ function changeCardsPage(delta) {
   document.getElementById('paginationControls').scrollIntoView({behavior: 'smooth'});
 }
 
-// ===== Populate Table =====
+// ===== Sort State =====
 let currentSort = 'rank';
 let sortAsc = true;
+let cardSort = 'rank';
+let cardSortAsc = false;
+
+// Default directions: higher-is-better metrics sort descending first
+var defaultDesc = {ipTM: true, ipSAE: true, design_ptm: true, pLDDT: true, pTM: true};
+
+function toggleSortDir() {
+  sortAsc = !sortAsc;
+  updateSortDirBtn();
+  sortTable();
+}
+
+function updateSortDirBtn() {
+  var btn = document.getElementById('sortDirBtn');
+  if (btn) btn.textContent = sortAsc ? '\u2191 Asc' : '\u2193 Desc';
+}
+
+function toggleCardSortDir() {
+  cardSortAsc = !cardSortAsc;
+  updateCardSortDirBtn();
+  cardsPage = 1;
+  renderAllCards();
+}
+
+function updateCardSortDirBtn() {
+  var btn = document.getElementById('cardSortDirBtn');
+  if (btn) btn.textContent = cardSortAsc ? '\u2191 Asc' : '\u2193 Desc';
+}
+
+function changeCardSort() {
+  var newSort = document.getElementById('cardSortSelect').value;
+  cardSort = newSort;
+  cardSortAsc = !defaultDesc[newSort];
+  updateCardSortDirBtn();
+  cardsPage = 1;
+  renderAllCards();
+}
+
+// Init direction buttons after DOM ready
+setTimeout(function() { updateSortDirBtn(); updateCardSortDirBtn(); }, 0);
+
+// ===== Populate Table =====
 
 function renderTable(data) {
   const tbody = document.getElementById('allStructuresBody');
@@ -77306,39 +77362,56 @@ function getFilteredData() {
   return data;
 }
 
-function sortTable() {
-  const sortBy = document.getElementById('sortSelect').value;
-  currentSort = sortBy;
+var sortKeyMap = {
+  rank: function(d) { return d.rank; },
+  name: function(d) { return d.name; },
+  campaign: function(d) { return d.campaign; },
+  pipeline: function(d) { return d.pipeline; },
+  binder_length: function(d) { return d.binder_length; },
+  ipTM: function(d) { return d.ipTM != null ? d.ipTM : -Infinity; },
+  ipDE: function(d) { return d.ipDE != null ? d.ipDE : Infinity; },
+  ipSAE: function(d) { return d.ipSAE != null ? d.ipSAE : -Infinity; },
+  design_ptm: function(d) { return d.design_ptm != null ? d.design_ptm : -Infinity; },
+  pLDDT: function(d) { return d.pLDDT != null ? d.pLDDT : -Infinity; },
+  pTM: function(d) { return d.pTM != null ? d.pTM : -Infinity; }
+};
 
-  const keyMap = {
-    rank: function(d) { return d.rank; },
-    name: function(d) { return d.name; },
-    campaign: function(d) { return d.campaign; },
-    pipeline: function(d) { return d.pipeline; },
-    binder_length: function(d) { return d.binder_length; },
-    ipTM: function(d) { return d.ipTM != null ? d.ipTM : -Infinity; },
-    ipDE: function(d) { return d.ipDE != null ? d.ipDE : Infinity; },
-    ipSAE: function(d) { return d.ipSAE != null ? d.ipSAE : -Infinity; },
-    design_ptm: function(d) { return d.design_ptm != null ? d.design_ptm : -Infinity; },
-    pLDDT: function(d) { return d.pLDDT != null ? d.pLDDT : -Infinity; }
-  };
-
-  const descMetrics = ['ipTM', 'ipSAE', 'design_ptm', 'pLDDT'];
-  const ascending = !descMetrics.includes(sortBy);
-
-  let data = getFilteredData();
+function sortData(data, sortBy, ascending) {
   data.sort(function(a, b) {
-    const va = keyMap[sortBy](a);
-    const vb = keyMap[sortBy](b);
+    var fn = sortKeyMap[sortBy] || sortKeyMap.rank;
+    var va = fn(a);
+    var vb = fn(b);
     if (typeof va === 'string') return ascending ? va.localeCompare(vb) : vb.localeCompare(va);
     return ascending ? va - vb : vb - va;
   });
+  return data;
+}
 
+function sortTable() {
+  var sortBy = document.getElementById('sortSelect').value;
+  if (sortBy !== currentSort) {
+    currentSort = sortBy;
+    sortAsc = !defaultDesc[sortBy];
+    updateSortDirBtn();
+  }
+  var data = getFilteredData();
+  sortData(data, currentSort, sortAsc);
   renderTable(data);
+  // Update column header arrows
+  document.querySelectorAll('.all-structures-table th .sort-arrow').forEach(function(el) { el.textContent = ''; });
+  var activeHeader = document.querySelector('.all-structures-table th[data-col="' + currentSort + '"] .sort-arrow');
+  if (activeHeader) activeHeader.textContent = sortAsc ? ' \u2191' : ' \u2193';
 }
 
 function sortByColumn(col) {
+  if (col === currentSort) {
+    sortAsc = !sortAsc;
+  } else {
+    currentSort = col;
+    sortAsc = !defaultDesc[col];
+  }
   document.getElementById('sortSelect').value = col;
+  updateSortDirBtn();
   sortTable();
 }
 
