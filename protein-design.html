@@ -683,6 +683,7 @@
       <button class="tab-btn" onclick="switchTab('pipelines')">Pipelines</button>
       <button class="tab-btn" onclick="switchTab('evo')">Evolutionary Analysis</button>
       <button class="tab-btn" onclick="switchTab('dms')">ESM-2 DMS</button>
+      <button class="tab-btn" onclick="switchTab('af3insights')">AF3 Insights</button>
     </div>
 
     <!-- ============================================ -->
@@ -1481,6 +1482,95 @@ Campaigns:
           since these positions cannot easily mutate to escape binding. The DMS data also suggests that the N-terminal tail (residues 1&ndash;20)
           has low mutation sensitivity, confirming it is a poor target for binder design.
         </p>
+      </div>
+
+    </div>
+
+    <div class="tab-content" id="tab-af3insights">
+
+      <div class="section-heading" style="font-size:20px;font-weight:400;">AF3 Validation Insights</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;font-weight:400;">
+        Comprehensive analysis of what predicts AlphaFold3 validation success.
+        ~51 designs validated with AF3, analyzed using Lasso regression on sequence and structural features.
+        AF3 is our ground-truth orthogonal validation — Boltz-2 scores are heavily inflated for E2-face RFdiffusion designs.
+      </p>
+
+      <!-- Summary stats -->
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-value">~51</div><div class="stat-label">AF3 Validated</div></div>
+        <div class="stat-card"><div class="stat-value">7</div><div class="stat-label">Top Hits (>=0.7)</div></div>
+        <div class="stat-card"><div class="stat-value">5</div><div class="stat-label">Promote (0.5-0.7)</div></div>
+        <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">Review (0.4-0.5)</div></div>
+        <div class="stat-card"><div class="stat-value">35</div><div class="stat-label">Discard (<0.4)</div></div>
+      </div>
+
+      <!-- Lasso Regression -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">Lasso Regression: What Predicts AF3 Success?</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
+        LassoCV regression on 20 sequence and design features to predict AF3 ipTM. Features with non-zero
+        coefficients are the strongest predictors after regularization. Positive = helps AF3 validation,
+        negative = hurts.
+      </p>
+      <div class="plot-img-container" style="margin-bottom:24px;">
+        <img src="data/rbx1_plots/af3_lasso_coefs.png" alt="Lasso coefficients" style="max-width:100%;">
+        <div class="plot-caption">Lasso regression coefficients (standardized). The strongest predictor of AF3 success
+        is being a BoltzGen design (untargeted, diverse topology), followed by sequence features like aromatic content
+        and lower alanine fraction. High Boltz-2 ipTM is actually a weak or negative predictor — designs with inflated
+        Boltz scores tend to fail AF3 validation.</div>
+      </div>
+
+      <!-- Feature Importance -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;">Top Feature Correlations</div>
+      <div class="plot-img-container" style="margin-bottom:24px;">
+        <img src="data/rbx1_plots/af3_feature_importance.png" alt="Feature importance scatter" style="max-width:100%;">
+        <div class="plot-caption">Top 8 features correlated with AF3 ipTM. Each subplot shows one feature vs AF3 score
+        with Ridge regression line and Pearson r. Points colored by pipeline (blue=RFdiff E2, red=RFdiff Cullin, green=BoltzGen).</div>
+      </div>
+
+      <!-- Success vs Failure -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;">What Distinguishes Success from Failure?</div>
+      <div class="plot-img-container" style="margin-bottom:24px;">
+        <img src="data/rbx1_plots/af3_success_vs_fail.png" alt="Success vs failure comparison" style="max-width:100%;">
+        <div class="plot-caption">Comparison of successful designs (AF3 ipTM >= 0.5) vs failed designs (AF3 ipTM < 0.3)
+        across key features. Successful designs tend to have higher sequence entropy (more diverse amino acid usage),
+        more aromatic residues, and lower alanine content.</div>
+      </div>
+
+      <!-- Sequence Composition -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;">Amino Acid Composition</div>
+      <div class="plot-img-container" style="margin-bottom:24px;">
+        <img src="data/rbx1_plots/af3_sequence_analysis.png" alt="AA composition" style="max-width:100%;">
+        <div class="plot-caption">Amino acid frequency comparison between AF3-validated (ipTM >= 0.5) and
+        AF3-failed (ipTM < 0.2) designs. Successful designs are enriched in structurally important residues
+        (F, W, Y aromatics; charged residues) and depleted in simple residues (A, G).</div>
+      </div>
+
+      <!-- Pipeline Comparison -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;">BoltzGen vs RFdiffusion in AF3</div>
+      <div class="plot-img-container" style="margin-bottom:24px;">
+        <img src="data/rbx1_plots/af3_boltzgen_vs_rfdiff.png" alt="Pipeline comparison" style="max-width:100%;">
+        <div class="plot-caption">BoltzGen designs show dramatically better AF3 validation than RFdiffusion+MPNN
+        designs. BoltzGen mean AF3 ipTM is 2-3x higher, despite lower Boltz-2 scores. This suggests RFdiffusion+MPNN
+        designs may be optimizing for Boltz-2 scoring artifacts rather than genuine binding.</div>
+      </div>
+
+      <!-- Key Findings -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;">Key Findings</div>
+      <div style="font-size:14px;color:var(--text);line-height:1.8;padding:16px;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;margin-bottom:24px;font-weight:400;">
+        <p style="margin-bottom:10px;">1. BoltzGen designs validate significantly better than RFdiffusion+MPNN designs in AF3,
+        despite having lower Boltz-2 scores. This is the single strongest predictor of AF3 success.</p>
+        <p style="margin-bottom:10px;">2. Sequence diversity matters: designs with higher Shannon entropy (more diverse AA usage)
+        and more unique amino acids tend to validate better. Low-complexity sequences rich in alanine and glycine
+        consistently fail.</p>
+        <p style="margin-bottom:10px;">3. Aromatic residues (F, W, Y) are enriched in successful designs — these contribute to
+        specific hydrophobic contacts at the interface that AF3 can validate.</p>
+        <p style="margin-bottom:10px;">4. High Boltz-2 ipTM is NOT predictive of AF3 success — in fact, it may be slightly
+        anti-correlated. Designs with Boltz ipTM > 0.95 mostly fail AF3 validation (delta > 0.7).</p>
+        <p style="margin-bottom:10px;">5. Cullin-face designs show better AF3 agreement than E2-face designs, though the sample
+        size is small. The one Cullin design tested (design_0357) has AF3 ipTM = 0.78 with low delta.</p>
+        <p style="margin-bottom:0;">6. For future campaigns: prioritize BoltzGen-style generation, increase aromatic content in
+        ProteinMPNN sampling, and reduce alanine/glycine bias. Consider Cullin-face targeting which appears more
+        AF3-compatible.</p>
       </div>
 
     </div>
