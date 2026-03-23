@@ -1105,8 +1105,52 @@ Campaigns:
         <div class="plot-img-container">
           <h3>Binder Length Distribution</h3>
           <img src="data/rbx1_plots/binder_length.png" alt="Binder length distribution">
-          <div class="plot-caption">Binder length distribution across all 4,296 designs colored by campaign. The majority are small binders (40-65 AA) from E2 face campaigns.</div>
+          <div class="plot-caption">Binder length distribution across all designs colored by campaign. The majority are small binders (40-65 AA) from E2 face campaigns.</div>
         </div>
+      </div>
+
+      <!-- Hotspot Analysis Section -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:32px;">Hotspot Set Analysis</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;font-weight:400;">
+        Each RFdiffusion campaign was conditioned on a specific set of RBX1 hotspot residues. Four distinct hotspot sets were used:
+      </p>
+      <div style="font-size:13px;color:var(--text);line-height:1.8;margin-bottom:20px;padding:12px 16px;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;font-family:monospace;">
+        E2 Enhanced (+DMS): A44, A45, A46, A51, A54, A56, A57, A79, A83, A84, A87, A95, A96, A42, A53 (11,336 designs)<br>
+        E2 Standard:        A44, A45, A46, A51, A56, A57, A79, A83, A87, A95, A96 (400 designs)<br>
+        E2 Core:            A44, A45, A46, A51, A54, A56, A57, A79, A83, A84, A87, A95, A96 (256 designs)<br>
+        Cullin:             A27, A29, A30, A31, A33, A35, A36, A73, A75, A101 (276 designs)<br>
+        BoltzGen:           No hotspot conditioning (1,240 designs)
+      </div>
+
+      <div class="plot-img-container" style="margin-bottom:24px;">
+        <h3 style="font-weight:400;">ipSAE vs ipTM by hotspot set</h3>
+        <img src="data/rbx1_plots/scatter_marginal_ipsae_iptm.png" alt="ipSAE vs ipTM scatter with marginal distributions" style="max-width:100%;">
+        <div class="plot-caption">Joint distribution of ipSAE and ipTM colored by hotspot set. Marginal histograms show per-set density. Stars mark the best design in each set. The E2 Enhanced set (with ESM-2 DMS-derived residues I54, I84, C42, C53) produces the highest ipSAE values, suggesting that adding mutation-sensitive residues to the hotspot specification improves interface quality.</div>
+      </div>
+
+      <div class="plot-img-container" style="margin-bottom:24px;">
+        <h3 style="font-weight:400;">ipSAE vs binder length by hotspot set</h3>
+        <img src="data/rbx1_plots/scatter_marginal_ipsae_length.png" alt="ipSAE vs binder length with marginals" style="max-width:100%;">
+        <div class="plot-caption">Binder length vs ipSAE by hotspot set. Small binders (40-65 AA) dominate the E2 Enhanced set. BoltzGen designs span a wider length range but achieve lower ipSAE. No strong correlation between length and interface quality within any set, though medium-length binders (50-60 AA) appear slightly enriched among top performers.</div>
+      </div>
+
+      <div class="dist-grid">
+        <div class="plot-img-container">
+          <h3 style="font-weight:400;">Hit rate by hotspot set</h3>
+          <img src="data/rbx1_plots/hitrate_by_hotspot.png" alt="Hit rate by hotspot set">
+          <div class="plot-caption">Fraction of designs exceeding ipSAE thresholds for each hotspot set. The E2 Enhanced set maintains the highest hit rate at all thresholds. The Cullin set shows competitive hit rates despite targeting a different face, while BoltzGen has the highest fraction above ipSAE=0.3 but drops off sharply above 0.5.</div>
+        </div>
+        <div class="plot-img-container">
+          <h3 style="font-weight:400;">Efficiency frontier: ipSAE vs pLDDT</h3>
+          <img src="data/rbx1_plots/pareto_ipsae_plddt.png" alt="Pareto front ipSAE vs pLDDT">
+          <div class="plot-caption">Pareto front (dashed line) of designs optimizing both ipSAE and pLDDT. Designs on the frontier achieve the best trade-off between interface quality and structural confidence. Most frontier designs are from the E2 Enhanced set, but a few Cullin and E2 Standard designs appear at high pLDDT.</div>
+        </div>
+      </div>
+
+      <div class="plot-img-container" style="margin-bottom:24px;max-width:100%;">
+        <h3 style="font-weight:400;">Amino acid composition by ipSAE quality tier</h3>
+        <img src="data/rbx1_plots/aa_composition_by_tier.png" alt="Amino acid composition by tier" style="max-width:100%;">
+        <div class="plot-caption">Amino acid frequency comparison between top-tier (ipSAE > 0.7), mid-tier (0.3-0.7), and failed (ipSAE &lt; 0.1) designs. Blue = charged (R,K,D,E), red = hydrophobic (F,L,I,M,V,W), green = polar (S,T,C,N,Q,Y). Top-tier designs show higher glutamate (E) and leucine (L) frequency, while failed designs are enriched in alanine (A) and glycine (G), suggesting that oversimplified sequences with low complexity correlate with poor interface formation.</div>
       </div>
 
     </div>
