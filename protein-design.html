@@ -993,6 +993,20 @@ Campaigns:
       <!-- Section 1: Scoring Bias -->
       <div class="section-heading" style="font-size:20px;font-weight:400;">Cross-Validation: Scoring Bias</div>
       <p style="font-size:14px;color:var(--text-secondary);font-weight:400;margin-bottom:16px;">
+        The primary competition metric (ipSAE) and Boltz-2 ipTM show no correlation with AF3 ground-truth validation.
+        AF3 does correlate with OF3, suggesting both capture real structural features that Boltz-2 misses.
+      </p>
+
+      <div class="plot-img-container" style="margin-bottom:28px;">
+        <img src="data/rbx1_plots/pipe_ipsae_vs_af3.png" style="max-width:100%;">
+        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+          <span style="color:var(--text);">Figure 0.</span> ipSAE (Boltz-2 competition metric) vs AF3 ipTM for 60 validated designs.
+          Pearson r = -0.044 (p = 0.741), Spearman rho = -0.233. ipSAE has no predictive value for AF3 validation.
+          Marginal boxplots show per-face distributions. Edge color: black = top hit, green = promote, orange = review, gray = discard.
+          This is the central finding: the competition ranking metric does not predict real binding as assessed by AF3.
+        </div>
+      </div>
+      <p style="font-size:14px;color:var(--text-secondary);font-weight:400;margin-bottom:16px;">
         Three independent structure prediction methods -- Boltz-2 (scoring), OpenFold3, and AlphaFold3 --
         show dramatically different agreement patterns. AF3 is the ground-truth orthogonal validation.
       </p>
@@ -1715,7 +1729,7 @@ const designs = [
     af3_ptm: 0.49,
     af3_delta: 0.489,
     af3_flag: "review",
-    of3_iptm: null,
+    of3_iptm: 0.424,
     of3_ptm: null,
     sequence: "EKRYLVVAVPAGKTFNEILKAALEGKALESKLFDDRDEAVAYAAEIVRKLGPDKVNVLIFEVES",
     pdb_file: null
@@ -1913,7 +1927,7 @@ const designs = [
     af3_ptm: 0.51,
     af3_delta: 0.587,
     af3_flag: "discard",
-    of3_iptm: null,
+    of3_iptm: 0.142,
     of3_ptm: null,
     sequence: "SEERKELLKKLREALAAGDVEKAAEIWSKLFGISLEEARAAVEAVL",
     pdb_file: null
@@ -11043,7 +11057,7 @@ const designs = [
     af3_ptm: 0.4,
     af3_delta: 0.407,
     af3_flag: "discard",
-    of3_iptm: null,
+    of3_iptm: 0.509,
     of3_ptm: null,
     sequence: "KYTAFVFDAKTGKGLGIAEGDSEEEALEEASKLVGGAKVVKEERSGNVGIAFLEK",
     pdb_file: null
@@ -26729,7 +26743,7 @@ const designs = [
     af3_ptm: 0.49,
     af3_delta: 0.402,
     af3_flag: "discard",
-    of3_iptm: null,
+    of3_iptm: 0.063,
     of3_ptm: null,
     sequence: "MASFEEAMESAIETGEQAVAVAREAGHDVVAAGAERLLAEIRELGA",
     pdb_file: null
@@ -182863,7 +182877,7 @@ const designs = [
     af3_ptm: 0.66,
     af3_delta: null,
     af3_flag: "top hit",
-    of3_iptm: null,
+    of3_iptm: 0.16,
     of3_ptm: null,
     sequence: "AKAAMGVASVPEGATAEQARADAALAARAAAAKAKEGELAGAFITGLSGGKAYGAAYAV",
     pdb_file: null
