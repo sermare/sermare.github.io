@@ -1491,13 +1491,13 @@ Campaigns:
       <div class="section-heading" style="font-size:20px;font-weight:400;">AF3 Validation Insights</div>
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;font-weight:400;">
         Comprehensive analysis of what predicts AlphaFold3 validation success.
-        ~51 designs validated with AF3, analyzed using Lasso regression on sequence and structural features.
+        60 designs validated with AF3, analyzed using Lasso regression on sequence and structural features.
         AF3 is our ground-truth orthogonal validation — Boltz-2 scores are heavily inflated for E2-face RFdiffusion designs.
       </p>
 
       <!-- Summary stats -->
       <div class="stats-row">
-        <div class="stat-card"><div class="stat-value">~51</div><div class="stat-label">AF3 Validated</div></div>
+        <div class="stat-card"><div class="stat-value">60</div><div class="stat-label">AF3 Validated</div></div>
         <div class="stat-card"><div class="stat-value">7</div><div class="stat-label">Top Hits (>=0.7)</div></div>
         <div class="stat-card"><div class="stat-value">5</div><div class="stat-label">Promote (0.5-0.7)</div></div>
         <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">Review (0.4-0.5)</div></div>
@@ -1513,7 +1513,7 @@ Campaigns:
       </p>
       <div class="plot-img-container" style="margin-bottom:24px;">
         <img src="data/rbx1_plots/af3_lasso_coefs.png" alt="Lasso coefficients" style="max-width:100%;">
-        <div class="plot-caption">Lasso regression coefficients (standardized). The strongest predictor of AF3 success
+        <div class="plot-caption">Feature correlations with AF3 ipTM. The strongest predictor of AF3 success
         is being a BoltzGen design (untargeted, diverse topology), followed by sequence features like aromatic content
         and lower alanine fraction. High Boltz-2 ipTM is actually a weak or negative predictor — designs with inflated
         Boltz scores tend to fail AF3 validation.</div>
@@ -1557,7 +1557,7 @@ Campaigns:
       <!-- Key Findings -->
       <div class="section-heading" style="font-size:20px;font-weight:400;">Key Findings</div>
       <div style="font-size:14px;color:var(--text);line-height:1.8;padding:16px;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;margin-bottom:24px;font-weight:400;">
-        <p style="margin-bottom:10px;">1. BoltzGen designs validate significantly better than RFdiffusion+MPNN designs in AF3,
+        <p style="margin-bottom:10px;">1. Aspartate (D) content is the strongest positive predictor of AF3 success (r=+0.35), while glutamate (E) is the strongest negative predictor (r=-0.33). BoltzGen designs tend to validate better in AF3,
         despite having lower Boltz-2 scores. This is the single strongest predictor of AF3 success.</p>
         <p style="margin-bottom:10px;">2. Sequence diversity matters: designs with higher Shannon entropy (more diverse AA usage)
         and more unique amino acids tend to validate better. Low-complexity sequences rich in alanine and glycine
