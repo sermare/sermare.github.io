@@ -673,7 +673,7 @@
 
     <div class="page-title">RBX1 Binder Design</div>
     <div class="page-subtitle">De novo protein binder design for RBX1 (RING Box Protein 1, 108 AA) &mdash; GEM Workshop / ICLR 2026</div>
-    <div class="last-updated">Last updated: 2026-03-22 (scan 7) &mdash; 9,322 designs</div>
+    <div class="last-updated">Last updated: 2026-03-22 (scan 8) &mdash; 9,683 designs</div>
 
     <!-- ===== Tabs ===== -->
     <div class="tabs">
@@ -693,11 +693,11 @@
       <!-- Summary Stats -->
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-value">9,322</div>
+          <div class="stat-value">9,683</div>
           <div class="stat-label">Total Designs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value">9,322</div>
+          <div class="stat-value">9,683</div>
           <div class="stat-label">Scored</div>
         </div>
         <div class="stat-card">
@@ -860,14 +860,14 @@
 
       <!-- Info Banner -->
       <div class="info-banner">
-        Analysis and Interpretation (March 22, 2026 &mdash; wave2 scan 7):<br>
-        Wave 2 scoring progress: 9,232 designs in master CSV (up from 7,815). Best overall ipTM: 0.964 (wave2 design_7713). 9,322 total designs on dashboard. 9 jobs running on Savio (incl. rank_upd and af2_top1).
+        Analysis and Interpretation (March 22, 2026 &mdash; scan 8):<br>
+        Master CSV: 9,593 rows (up from 9,232). Wave 3 added: 361 new designs (w3_design_0000-0434). Best w3 ipTM: 0.937. Best overall ipTM: 0.964 (wave2 design_7713). 9,683 total designs on dashboard.
         <br><br>
-        Boltz-2 scoring progress: Scale-up: 686/686 complete. Wave 2 (gen10k): 9,232 in master CSV. 9,322 total designs on dashboard. No new designs added this scan (CSV unchanged vs dashboard).
+        Boltz-2 scoring progress: Scale-up: 686/686 complete. Wave 2: 8,336 designs. Wave 3: 361 designs. BoltzGen: 220 designs. 8 jobs queued on Savio (w3s series, pending priority).
         <br><br>
-        Top 5 hits (all-time): design_7713/wave2 (ipTM=0.964), design_2723/wave2 (0.962), design_7672/wave2 (0.962), design_3900/wave2 (0.962), design_3138/wave2 (0.961). AF2 validation: 146 designs complete (up from 13).
+        Top 5 hits (all-time): design_7713/wave2 (ipTM=0.964), design_2723/wave2 (0.962), design_7672/wave2 (0.962), design_3900/wave2 (0.962), design_3138/wave2 (0.961). AF2 validation: 1,208 files. Best w3 hit: w3_design_0332 (ipTM=0.937).
         <br><br>
-        Recommendation: With 146 AF2 validations complete, cross-validate Boltz-2 vs AF2 rankings. 9 jobs running (rank_upd may update CSV soon). Apply thresholds: ipTM &gt; 0.85 AND pLDDT &gt; 0.7 for top tier candidates.
+        Recommendation: Wave 3 producing strong hits (ipTM=0.937). Continue w3 scoring (8 jobs queued). Cross-validate top w3 designs with AF2. Apply thresholds: ipTM &gt; 0.85 AND pLDDT &gt; 0.7 for top tier candidates.
       </div>
 
       <!-- Naming Convention -->
@@ -890,12 +890,12 @@ Campaigns:
 
       <!-- Analysis Section (detailed) -->
       <div class="analysis-section" id="analysisSection">
-        <h2>Analysis &mdash; March 22, 2026 (scan 7)</h2>
+        <h2>Analysis &mdash; March 22, 2026 (scan 8)</h2>
 
         <h3>Summary</h3>
         <p>
-          9,322 total designs on dashboard (60 pilot/BoltzGen + 676 scale-up + 8,586 wave2 gen10k). Scale-up scoring 100% complete (686/686). Master CSV: 9,232 rows. No new designs added this scan (dashboard already covers full ID range through design_9335).
-          Wave 2 (gen10k): 9,232 E2-face designs in master CSV. Best ipTM=0.964. 9 jobs running on Savio (rank_upd active).
+          9,683 total designs on dashboard (60 pilot/BoltzGen + 676 scale-up + 8,586 wave2 gen10k + 361 wave3). Scale-up scoring 100% complete (686/686). Master CSV: 9,593 rows (up from 9,232). 361 wave3 designs added this scan.
+          Wave 3: 361 new E2-face designs scored. Best w3 ipTM=0.937 (w3_design_0332). 8 jobs queued on Savio (w3s series).
           BoltzGen pipeline: 20 designs unchanged (5 small pilot + 10 small_10, 5 medium pilot).
           AF2 validation: 146 designs complete (up from 13 at scan 6). Top hit unchanged: design_7713 (ipTM=0.964).
         </p>
@@ -77088,6 +77088,2894 @@ const designs = [
     ipTM: 0.644, pTM: 0.722, pLDDT: 0.721,
     sequence: "MEEERRRREEEERRREEEEREREEEERKKKEEEEEKKKKKEEENVEKVVKAME",
     ipSAE: 0.11362700493114258
+  },
+  {
+    id: "wave3_9336", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_132", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.937, pTM: 0.932, pLDDT: 0.661,
+    sequence: "YDEDELLRLSARRARLAAEVHAAPGEDPEALARRAEEAAALARELEALREEIRRAIEEARRAAAE",
+    ipSAE: 0.825788
+  },
+  {
+    id: "wave3_9337", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_181", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.891, pTM: 0.886, pLDDT: 0.707,
+    sequence: "SEKEEERERNRKLCEEDKLKALQDLLAEDSEELREEREKILQELKEKERKEKEKKEEEELKKKLE",
+    ipSAE: 0.722838
+  },
+  {
+    id: "wave3_9338", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_015", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.918, pTM: 0.885, pLDDT: 0.720,
+    sequence: "CNLSPEQQEELKKLMLKRAEEIRRDLEARAAAEAAAAEAAAAA",
+    ipSAE: 0.702829
+  },
+  {
+    id: "wave3_9339", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_023", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.893, pTM: 0.882, pLDDT: 0.822,
+    sequence: "SNIKETIEKLKEEKEKFEKEKLEELEKNKEKLSEEELEKKKKLLEKKLKVVDELIERMEKLLEES",
+    ipSAE: 0.698966
+  },
+  {
+    id: "wave3_9340", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_030", campaign: "E2 Face (W3)",
+    binder_length: 49, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.931, pTM: 0.925, pLDDT: 0.659,
+    sequence: "DERKEELEKLEKKEKEEFEELKKLVSDEEAEKILKVHELLKKNLLEKLK",
+    ipSAE: 0.693129
+  },
+  {
+    id: "wave3_9341", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_013", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.906, pTM: 0.807, pLDDT: 0.697,
+    sequence: "PDLSPEVREELRRRVLENAEKIRRDLAARAAAEAAALAALLAL",
+    ipSAE: 0.674536
+  },
+  {
+    id: "wave3_9342", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_061", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.871, pTM: 0.871, pLDDT: 0.676,
+    sequence: "DEEKKKKEEELKKLAEEKKKREEEIKRLEEEAKRLLEKGEDELKAIELRGEAIRKKVEEYEKAK",
+    ipSAE: 0.673171
+  },
+  {
+    id: "wave3_9343", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_002", campaign: "E2 Face (W3)",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.855, pTM: 0.794, pLDDT: 0.836,
+    sequence: "EEEEKRKREEEERRRKEEEEERERRRREEAQERRRRWAEEARERAERLRREREER",
+    ipSAE: 0.664273
+  },
+  {
+    id: "wave3_9344", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_028", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.893, pTM: 0.895, pLDDT: 0.756,
+    sequence: "SELLKKLEELKERLKELEEEAERNKTPEAEVELRRARAEVRQLEEELEKLLE",
+    ipSAE: 0.656944
+  },
+  {
+    id: "wave3_9345", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_144", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.897, pTM: 0.851, pLDDT: 0.704,
+    sequence: "EFDEELERERERERARLETELGAEEVRKRLEEELKKRLEE",
+    ipSAE: 0.656484
+  },
+  {
+    id: "wave3_9346", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_014", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.916, pTM: 0.812, pLDDT: 0.708,
+    sequence: "AAARLSLPVESLRRLAELARAAGHEEMAAALEADAAALEAA",
+    ipSAE: 0.653442
+  },
+  {
+    id: "wave3_9347", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_128", campaign: "E2 Face (W3)",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.904, pTM: 0.828, pLDDT: 0.749,
+    sequence: "SRKPFEELLSKEEIEEIKKEKEKEKEELEKKIEEIRKKKEEERRRKEELE",
+    ipSAE: 0.640331
+  },
+  {
+    id: "wave3_9348", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_029", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.911, pTM: 0.785, pLDDT: 0.810,
+    sequence: "SAALARLEELRRRLEELRKKAEEDKSPENELALLQAEAEVRRLERELAEALA",
+    ipSAE: 0.632269
+  },
+  {
+    id: "wave3_9349", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_138", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.882, pTM: 0.802, pLDDT: 0.700,
+    sequence: "KEEEEKELEEYFKKREEYEKIEEERLRKKAEEEGLPLEEVRERAEKERAEERKRRLEREEEER",
+    ipSAE: 0.630714
+  },
+  {
+    id: "wave3_9350", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_136", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.890, pTM: 0.873, pLDDT: 0.785,
+    sequence: "EEEEKKELEKYFKEREEYKEMVEKAVKKEAEEKGKPLEEAKEEYEKKEAERREEELKREEEER",
+    ipSAE: 0.630202
+  },
+  {
+    id: "wave3_9351", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_031", campaign: "E2 Face (W3)",
+    binder_length: 49, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.917, pTM: 0.923, pLDDT: 0.702,
+    sequence: "SEREKEMEEAERKFKEEMERLKKKLSEEEVKKILEVEKLLKERALELLK",
+    ipSAE: 0.625108
+  },
+  {
+    id: "wave3_9352", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_083", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.879, pTM: 0.795, pLDDT: 0.823,
+    sequence: "EEEERRRREREELRERQERRLEEVRRVSEERRRRAEREAEEARRRAE",
+    ipSAE: 0.624267
+  },
+  {
+    id: "wave3_9353", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_121", campaign: "E2 Face (W3)",
+    binder_length: 45, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.890, pTM: 0.868, pLDDT: 0.748,
+    sequence: "EEEEERERREREERERREEEERERRRRAAEAERKRRAEEEEAKAK",
+    ipSAE: 0.614784
+  },
+  {
+    id: "wave3_9354", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_162", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.896, pTM: 0.797, pLDDT: 0.805,
+    sequence: "SAKRKRKKKKRKAREKRKKRRKKRREELKKYEERKRLAEEILE",
+    ipSAE: 0.607804
+  },
+  {
+    id: "wave3_9355", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_068", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.839, pTM: 0.828, pLDDT: 0.787,
+    sequence: "AEAAARAEAAAAAEAAERKRREEELAEEEKRREVLKITEERRKELE",
+    ipSAE: 0.598268
+  },
+  {
+    id: "wave3_9356", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_158", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.876, pTM: 0.813, pLDDT: 0.723,
+    sequence: "EEEERRRRERVETLLVRRRAEAEARAAAAAAAAAAAAAAALAA",
+    ipSAE: 0.594033
+  },
+  {
+    id: "wave3_9357", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_055", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.894, pTM: 0.929, pLDDT: 0.673,
+    sequence: "SEEFKLTEEFLEEKKKNEEKLKELKKELEEKKKKLEEELKKELEEKKKEEEEKK",
+    ipSAE: 0.579478
+  },
+  {
+    id: "wave3_9358", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_034", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.848, pTM: 0.847, pLDDT: 0.697,
+    sequence: "EDPEAERRELEERRERVARLAEERRSEAAARAEAAAAAAAAAAREAAERLAAA",
+    ipSAE: 0.57536
+  },
+  {
+    id: "wave3_9359", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_070", campaign: "E2 Face (W3)",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.810, pTM: 0.821, pLDDT: 0.704,
+    sequence: "SVAEARLEAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAEAARRAAEARRAAEAAA",
+    ipSAE: 0.573632
+  },
+  {
+    id: "wave3_9360", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_035", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.875, pTM: 0.798, pLDDT: 0.721,
+    sequence: "EKKSLEELLKERVEEAARAAARAAAAAAAAAAAAAAAAAAAAA",
+    ipSAE: 0.572978
+  },
+  {
+    id: "wave3_9361", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_145", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.904, pTM: 0.796, pLDDT: 0.818,
+    sequence: "EFDEKEKLEEERKFARLARERGREEVEEEERRRREKELAE",
+    ipSAE: 0.572651
+  },
+  {
+    id: "wave3_9362", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_011", campaign: "E2 Face (W3)",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.844, pTM: 0.785, pLDDT: 0.746,
+    sequence: "EEEKKKKEKEKEEEEKRAKLRERLEAEEARRRAEERREEERRRREEERRRREEEE",
+    ipSAE: 0.565761
+  },
+  {
+    id: "wave3_9363", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_180", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.880, pTM: 0.900, pLDDT: 0.746,
+    sequence: "SEEEEKRKKNRELGENDKKKAEDELLATDSPELAEERKKLLEKREEEKKKKEEEEKEKKLKEELE",
+    ipSAE: 0.564771
+  },
+  {
+    id: "wave3_9364", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_167", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.883, pTM: 0.865, pLDDT: 0.704,
+    sequence: "EEELERLLRERERELELFELEAANALKKGAKLEDLRRELERKREEIERELARFLEELERG",
+    ipSAE: 0.558654
+  },
+  {
+    id: "wave3_9365", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_035", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.844, pTM: 0.809, pLDDT: 0.715,
+    sequence: "MSPEAEKEEEEKRRREVKKLAEERRSEKLKEKEAAEAAARAAAARAAAEAALA",
+    ipSAE: 0.556289
+  },
+  {
+    id: "wave3_9366", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_031", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.876, pTM: 0.785, pLDDT: 0.832,
+    sequence: "DELEKLLEEMRKELERLEEEARRDGSPEKRVELLKARARVRRLEERIAELLA",
+    ipSAE: 0.551262
+  },
+  {
+    id: "wave3_9367", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_047", campaign: "E2 Face (W3)",
+    binder_length: 45, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.884, pTM: 0.809, pLDDT: 0.736,
+    sequence: "SEKDLEELQLQYLLELCTEENRKKLEEEEKKEEEERRKKLEEEEK",
+    ipSAE: 0.543822
+  },
+  {
+    id: "wave3_9368", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_008", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.829, pTM: 0.839, pLDDT: 0.710,
+    sequence: "EGEEDVLTQRVEDALIFSEIRKELEEMLKKVNELVKEGKIEEAKKVYEETMKKIKKKIEELK",
+    ipSAE: 0.538973
+  },
+  {
+    id: "wave3_9369", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_100", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.868, pTM: 0.875, pLDDT: 0.723,
+    sequence: "SKEEIEELKKRYEEIREKAEFLKKIEKEKEEKKRKEEEEKK",
+    ipSAE: 0.533196
+  },
+  {
+    id: "wave3_9370", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_111", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.830, pTM: 0.830, pLDDT: 0.711,
+    sequence: "MVDVEGLLERLRRELEERLRRELEELERRFREIERRRELAEELLAEEEARREAA",
+    ipSAE: 0.527975
+  },
+  {
+    id: "wave3_9371", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_120", campaign: "E2 Face (W3)",
+    binder_length: 45, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.848, pTM: 0.770, pLDDT: 0.743,
+    sequence: "MKEEEEEERRKREEEEAERRREERRERARKAEEERRKLEEEAKAE",
+    ipSAE: 0.524175
+  },
+  {
+    id: "wave3_9372", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_107", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.875, pTM: 0.840, pLDDT: 0.686,
+    sequence: "SADEELERNRAAAEELVARGDARAAEAARTLALCDIQDEIREELEK",
+    ipSAE: 0.520155
+  },
+  {
+    id: "wave3_9373", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_016", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.822, pTM: 0.849, pLDDT: 0.740,
+    sequence: "SALERLRRRVREELEALAREILAAGVAPEEARLLLRAETARLAAEVGPFVEEVAEEVLARLLAEL",
+    ipSAE: 0.517071
+  },
+  {
+    id: "wave3_9374", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_046", campaign: "E2 Face (W3)",
+    binder_length: 45, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.853, pTM: 0.790, pLDDT: 0.817,
+    sequence: "EEKKEELLQLEYLLELASEEARKKRREEEEKRRREEEERRKELEE",
+    ipSAE: 0.515594
+  },
+  {
+    id: "wave3_9375", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_163", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.854, pTM: 0.801, pLDDT: 0.658,
+    sequence: "AAAAAAAAAAAAAAAAEAARRAARAAALARYAERQRLAEEVLK",
+    ipSAE: 0.512323
+  },
+  {
+    id: "wave3_9376", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_060", campaign: "E2 Face (W3)",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.818, pTM: 0.819, pLDDT: 0.812,
+    sequence: "EEEEERERKAKEELKKEIEEANKKLTLEKLEKVRKEILEKCKEKIPEIKEKLEEALK",
+    ipSAE: 0.510634
+  },
+  {
+    id: "wave3_9377", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_134", campaign: "E2 Face (W3)",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.835, pTM: 0.846, pLDDT: 0.784,
+    sequence: "KSIEEILEENLKKELEERIEKLKKELEKLEKEKKEKELEEKLKK",
+    ipSAE: 0.506793
+  },
+  {
+    id: "wave3_9378", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_030", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.886, pTM: 0.833, pLDDT: 0.663,
+    sequence: "MDLKKKIEEEREKRIKELLERSEAYRALEEAAAAAAAAAE",
+    ipSAE: 0.504438
+  },
+  {
+    id: "wave3_9379", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_000", campaign: "E2 Face (W3)",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.806, pTM: 0.757, pLDDT: 0.753,
+    sequence: "EEEEEEEERRRREEEERRRREEEERKEKEAQEEVEKWRNKRQEEAEKKKKEEEEK",
+    ipSAE: 0.500478
+  },
+  {
+    id: "wave3_9380", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_049", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.889, pTM: 0.794, pLDDT: 0.779,
+    sequence: "MEEERKRREEEERKREEEELKERIELAEKREKELEEELLG",
+    ipSAE: 0.498907
+  },
+  {
+    id: "wave3_9381", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_025", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.782, pTM: 0.804, pLDDT: 0.701,
+    sequence: "WEKRIEEAKRRREEFKKEEEKRKKEEEEAKRAAEAAAREAAAAAAAAAAAAAAAAAAA",
+    ipSAE: 0.497981
+  },
+  {
+    id: "wave3_9382", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_110", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.886, pTM: 0.900, pLDDT: 0.662,
+    sequence: "GIDVAGRAERARAEEEARRRAELEKLREEMERREEVKEKCEEILEEEEEEWEEE",
+    ipSAE: 0.490585
+  },
+  {
+    id: "wave3_9383", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_082", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.867, pTM: 0.786, pLDDT: 0.844,
+    sequence: "EEEERREEERKKKKEEQEKRLEEVRKVSEEKRREEEERRRREEEEEE",
+    ipSAE: 0.486369
+  },
+  {
+    id: "wave3_9384", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_042", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.882, pTM: 0.912, pLDDT: 0.671,
+    sequence: "SLYEEIKEKKKKEEERFKEALKKEKEELEKKKEEEKRKKEEEK",
+    ipSAE: 0.483743
+  },
+  {
+    id: "wave3_9385", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_040", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.843, pTM: 0.774, pLDDT: 0.821,
+    sequence: "SLAEEVEKKEEEEKKRLEEAKEKEKKALEEKKKKKEEEEKKKL",
+    ipSAE: 0.482052
+  },
+  {
+    id: "wave3_9386", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_027", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.727, pTM: 0.752, pLDDT: 0.811,
+    sequence: "WEERIEEAERRRRRLREERKREEEEKREKERKEEEERRRREKEKREEEERRRRREEEE",
+    ipSAE: 0.480382
+  },
+  {
+    id: "wave3_9387", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_157", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.863, pTM: 0.793, pLDDT: 0.778,
+    sequence: "KEEEERREKRIKEYLIERRREAEERRKRRERERREREERRRLE",
+    ipSAE: 0.480028
+  },
+  {
+    id: "wave3_9388", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_014", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.868, pTM: 0.796, pLDDT: 0.668,
+    sequence: "PKLSPEALEEQRKIVEKNAEEIRKNLAARRAKEAAELAAKLAK",
+    ipSAE: 0.476033
+  },
+  {
+    id: "wave3_9389", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_161", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.868, pTM: 0.912, pLDDT: 0.603,
+    sequence: "SALAEAIKAAQEAVEAARREELLAAGKLPEEAAARAAAAAAAAAAAAAAAAA",
+    ipSAE: 0.472832
+  },
+  {
+    id: "wave3_9390", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_005", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.819, pTM: 0.845, pLDDT: 0.665,
+    sequence: "MSEEERRRREEEERERERAEEEERRRREALEAALRAAEEAARRAAAEEAARAAALAAL",
+    ipSAE: 0.471903
+  },
+  {
+    id: "wave3_9391", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_024", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.842, pTM: 0.777, pLDDT: 0.717,
+    sequence: "SAAAAAAAAALAALAAALREAERRENDKRYEELLKKAEEARRKAEE",
+    ipSAE: 0.470749
+  },
+  {
+    id: "wave3_9392", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_016", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.787, pTM: 0.794, pLDDT: 0.694,
+    sequence: "GPNKEEEEFLERFKEVEERARLAAAQEAAARAAAEAARRAAELEELRRRLLELL",
+    ipSAE: 0.470022
+  },
+  {
+    id: "wave3_9393", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_143", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.730, pTM: 0.744, pLDDT: 0.786,
+    sequence: "SERIEEVEKNIEEILEKEKNKEEVERKKAEEAERRAREEEERRERRRREEEERRRRRREEE",
+    ipSAE: 0.459497
+  },
+  {
+    id: "wave3_9394", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_128", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.853, pTM: 0.841, pLDDT: 0.723,
+    sequence: "SVSDYYLQSVEEAKEEAERARREAEERARRRAEEERRRLA",
+    ipSAE: 0.457224
+  },
+  {
+    id: "wave3_9395", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_106", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.872, pTM: 0.866, pLDDT: 0.772,
+    sequence: "SAEAELARNRAAAEELVARGGPRRAEAERTLRLCEEQERIRAELKE",
+    ipSAE: 0.452937
+  },
+  {
+    id: "wave3_9396", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_061", campaign: "E2 Face (W3)",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.861, pTM: 0.891, pLDDT: 0.769,
+    sequence: "SKEEEARKKAEEELKKRIEEASREARLKKLEEIREEILEKNKEKIPKLKEEREKALK",
+    ipSAE: 0.450198
+  },
+  {
+    id: "wave3_9397", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_113", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.784, pTM: 0.774, pLDDT: 0.827,
+    sequence: "DAEAEARRRAEAAAEARAAEEEAARRADWRARVRALLEAKEREEREERRRKEEEERRRERLEEE",
+    ipSAE: 0.449278
+  },
+  {
+    id: "wave3_9398", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_005", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.848, pTM: 0.785, pLDDT: 0.750,
+    sequence: "SPEEEARRRAERERRAAEEAAAAAAAAAAAAAAAAAEAAAAAA",
+    ipSAE: 0.444752
+  },
+  {
+    id: "wave3_9399", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_135", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.815, pTM: 0.812, pLDDT: 0.712,
+    sequence: "FDREAFIEKSARRAALSSEVLRSPGEDEEEKRRKCEEAARLREELEAEKKAWKEAIEEARRAAEA",
+    ipSAE: 0.443914
+  },
+  {
+    id: "wave3_9400", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_060", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.866, pTM: 0.911, pLDDT: 0.691,
+    sequence: "EEEERRKREELEKEAEEKKKLKEEIEELREEARRLLEEGKDVLRAIELRARAIELEVELYKEAK",
+    ipSAE: 0.438862
+  },
+  {
+    id: "wave3_9401", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_068", campaign: "E2 Face (W3)",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.776, pTM: 0.780, pLDDT: 0.763,
+    sequence: "SVYEEKKKKEEEAAKAAAAAAAAAAAAAAAAAAEAAAAARAKEEEERRREEEEKER",
+    ipSAE: 0.43466
+  },
+  {
+    id: "wave3_9402", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_017", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.842, pTM: 0.799, pLDDT: 0.781,
+    sequence: "SSEEEELRRRAEEEVRALLDAGTAAARAAGSEEALEQARRLAEALRAALEAEIEEELRRREEE",
+    ipSAE: 0.433546
+  },
+  {
+    id: "wave3_9403", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_173", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.766, pTM: 0.804, pLDDT: 0.716,
+    sequence: "AAAAAAAAAEQAALEAARARLREEAEAARRRAEEERRRREERRREEEERRRE",
+    ipSAE: 0.432714
+  },
+  {
+    id: "wave3_9404", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_009", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.795, pTM: 0.788, pLDDT: 0.717,
+    sequence: "EGVVDRNDLAVENVLIEAKVRELKEKMLKEVLKLVEEGRVEEAKKLKEEAEKEIKEIIKALE",
+    ipSAE: 0.428808
+  },
+  {
+    id: "wave3_9405", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_022", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.887, pTM: 0.858, pLDDT: 0.726,
+    sequence: "MKEEEEEERRRREEEERRRREREEEERRRREEEEEEERRRELEKKEEERKRREELLEEVREKLK",
+    ipSAE: 0.427998
+  },
+  {
+    id: "wave3_9406", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_065", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.760, pTM: 0.745, pLDDT: 0.726,
+    sequence: "MREEEERRRRREREEEERRREEERREREERVRKLRERMASGEYVEELK",
+    ipSAE: 0.423581
+  },
+  {
+    id: "wave3_9407", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_032", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.800, pTM: 0.793, pLDDT: 0.817,
+    sequence: "PSPEAKREAERRRLEEVARLAAERRSAAAEAARAAAEAAARAAAEEAARRALE",
+    ipSAE: 0.421046
+  },
+  {
+    id: "wave3_9408", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_103", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.833, pTM: 0.763, pLDDT: 0.717,
+    sequence: "SPEEEQALLERAEEIRRAARELEERRRAEEAARAAEAAAAA",
+    ipSAE: 0.415119
+  },
+  {
+    id: "wave3_9409", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_116", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.794, pTM: 0.779, pLDDT: 0.711,
+    sequence: "EEEEEREKYEPIREENERLREEEERRRAEALAAAAAARAAALAAAAAAAALAA",
+    ipSAE: 0.408697
+  },
+  {
+    id: "wave3_9410", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_006", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.785, pTM: 0.757, pLDDT: 0.739,
+    sequence: "MSEEELEELKKKEEEKRKEEEEERRRIEELRRLLEALAAEAARRAAEEARRRAEEAAR",
+    ipSAE: 0.408642
+  },
+  {
+    id: "wave3_9411", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_166", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.935, pTM: 0.724, pLDDT: 0.816,
+    sequence: "EKEEEILREKLERELELAELEARNALRDGADLEELRRRLEELRKRIERELEEFEKKKKEG",
+    ipSAE: 0.408588
+  },
+  {
+    id: "wave3_9412", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_019", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.832, pTM: 0.854, pLDDT: 0.728,
+    sequence: "SPNKEEEEQKKRFEEVRKRAEEARKQEEAREEERRRREEERRREEELKKLLEEL",
+    ipSAE: 0.408575
+  },
+  {
+    id: "wave3_9413", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_109", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.759, pTM: 0.776, pLDDT: 0.716,
+    sequence: "MIDLAGAAAAAAEAAAAAALAELLAQLKKMKEVEEVKKKCEEILEEYEKKLKKE",
+    ipSAE: 0.407318
+  },
+  {
+    id: "wave3_9414", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_022", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.820, pTM: 0.889, pLDDT: 0.701,
+    sequence: "SNIEKLIEKLKKKVKEEEEKKKAELEEKKEELSEEEIEKLKEKLEKKLKTKEELIEFMEKKLKES",
+    ipSAE: 0.406868
+  },
+  {
+    id: "wave3_9415", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_165", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.783, pTM: 0.801, pLDDT: 0.770,
+    sequence: "MDKAGKELEKKKEKMEEKLKEAKERSEEEAKKKEKALEKFEELLKKLEEEKKE",
+    ipSAE: 0.39823
+  },
+  {
+    id: "wave3_9416", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_052", campaign: "E2 Face (W3)",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.798, pTM: 0.799, pLDDT: 0.693,
+    sequence: "DARAAEEAARRAALEAQAAKAAAEAPKAEAEYKERYREILEARP",
+    ipSAE: 0.398199
+  },
+  {
+    id: "wave3_9417", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_139", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.850, pTM: 0.895, pLDDT: 0.669,
+    sequence: "DKEEEEEMKKYFEERKKYEELKEAELREKAEKEGKPLEEVKEEAKKKEEERRRERLREEEEAR",
+    ipSAE: 0.388465
+  },
+  {
+    id: "wave3_9418", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_160", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.852, pTM: 0.853, pLDDT: 0.662,
+    sequence: "FELAENIKKAQEEVDKLVEEERIEKGELPEKKAREEAEAAARAAAAAAAAAA",
+    ipSAE: 0.388042
+  },
+  {
+    id: "wave3_9419", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_164", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.834, pTM: 0.832, pLDDT: 0.763,
+    sequence: "AEEEARLRRELERRLRLAELEAANALLAGAAREELRRRMEELRRRAEEELRRFEEQRAAG",
+    ipSAE: 0.386621
+  },
+  {
+    id: "wave3_9420", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_167", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.827, pTM: 0.823, pLDDT: 0.690,
+    sequence: "MDEDLKILEEKLKKMEERVKKAKEESEEEAKKMEKALEEMKKKLEEEKKELEE",
+    ipSAE: 0.384737
+  },
+  {
+    id: "wave3_9421", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_003", campaign: "E2 Face (W3)",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.790, pTM: 0.805, pLDDT: 0.809,
+    sequence: "REKEREEKERREEERKRKEEEKRRREKEEAQREVEEFREKARREAEELLRKLEEE",
+    ipSAE: 0.383816
+  },
+  {
+    id: "wave3_9422", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_010", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.791, pTM: 0.775, pLDDT: 0.743,
+    sequence: "EEEKRREELEEKEKKKKEEEERKLLELQVEAYRAKVEKYLEEKARKEAEEERRRREEELE",
+    ipSAE: 0.381458
+  },
+  {
+    id: "wave3_9423", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_012", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.841, pTM: 0.757, pLDDT: 0.831,
+    sequence: "MDLPEEKRKEQEKIMEENVERIRRDLEAARARAAAAAAAAAAA",
+    ipSAE: 0.380957
+  },
+  {
+    id: "wave3_9424", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_146", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.856, pTM: 0.861, pLDDT: 0.731,
+    sequence: "EEERRREEEERRRREEERRRREEENREKYFEGLKELFEKRL",
+    ipSAE: 0.380155
+  },
+  {
+    id: "wave3_9425", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_003", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.867, pTM: 0.904, pLDDT: 0.697,
+    sequence: "SEEDELEKKKKEEEEKKKEEEEKEREKRREEEALKRLLEKYLELLKE",
+    ipSAE: 0.379024
+  },
+  {
+    id: "wave3_9426", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_106", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.827, pTM: 0.845, pLDDT: 0.778,
+    sequence: "SELDKLESHLRLEIYRLRLEAERLRREAEELEDEAERRRLLEEARRLEEEARRLEELLRKLREE",
+    ipSAE: 0.378022
+  },
+  {
+    id: "wave3_9427", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_140", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.803, pTM: 0.828, pLDDT: 0.805,
+    sequence: "MEEDEEEREEREKKEEEEKAIEEAKKRIEEFRKERFEKLLKEREEA",
+    ipSAE: 0.376747
+  },
+  {
+    id: "wave3_9428", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_015", campaign: "E2 Face (W3)",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.835, pTM: 0.896, pLDDT: 0.739,
+    sequence: "SAEELLKEREERERKRKEEEEELLEKLRKGSVEEAAKKYEEILREREEERERREAE",
+    ipSAE: 0.374776
+  },
+  {
+    id: "wave3_9429", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_018", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.790, pTM: 0.821, pLDDT: 0.753,
+    sequence: "SAMEEEERFKKRCEEVEKNAELARAQAEAEEAARRAAEEAERLREKLAEELAKA",
+    ipSAE: 0.373608
+  },
+  {
+    id: "wave3_9430", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_036", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.809, pTM: 0.815, pLDDT: 0.667,
+    sequence: "MDLEELKKELEEELKKKEEEFEKKLKEAAKEPEKVKEVEEKLKKEREELLKENKEKLLEVLRE",
+    ipSAE: 0.371091
+  },
+  {
+    id: "wave3_9431", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_145", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.844, pTM: 0.879, pLDDT: 0.695,
+    sequence: "MEKKRREEEERRRREEEERREREERREEYFKELEEVYEKRL",
+    ipSAE: 0.36437
+  },
+  {
+    id: "wave3_9432", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_134", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.816, pTM: 0.825, pLDDT: 0.758,
+    sequence: "FDEEEFIRMSAEYARLSAEVHAMPGEDEEKKRELCERAAELKRELERYREEVEEEIRRKREEEEE",
+    ipSAE: 0.362943
+  },
+  {
+    id: "wave3_9433", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_126", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.862, pTM: 0.884, pLDDT: 0.650,
+    sequence: "EEEELEKIKKLIEEHFKELEEERRKKEEEERRRREEEEERRRREEEEEEARRRE",
+    ipSAE: 0.359244
+  },
+  {
+    id: "wave3_9434", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_073", campaign: "E2 Face (W3)",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.772, pTM: 0.787, pLDDT: 0.763,
+    sequence: "SLSLEELIDERLKEIKERKKLEEEMKKAEEEAARAAAAAAALERLAAELAA",
+    ipSAE: 0.353274
+  },
+  {
+    id: "wave3_9435", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_182", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.804, pTM: 0.834, pLDDT: 0.680,
+    sequence: "SEEEEKRKKNEELCENDKKKKLDELLKDNSPELKKEREELLKKIEEEKKEEEKKKEEEEKKKKEE",
+    ipSAE: 0.340808
+  },
+  {
+    id: "wave3_9436", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_079", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.803, pTM: 0.831, pLDDT: 0.671,
+    sequence: "VEEKEKKLEEELKKKEEELKKAIELEKIQKEILEEYEEEL",
+    ipSAE: 0.340596
+  },
+  {
+    id: "wave3_9437", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_034", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.782, pTM: 0.758, pLDDT: 0.752,
+    sequence: "MKKSLEELLKERVEREKKARERREKARKKAKEKKKAKAAKKKA",
+    ipSAE: 0.338033
+  },
+  {
+    id: "wave3_9438", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_129", campaign: "E2 Face (W3)",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.822, pTM: 0.797, pLDDT: 0.759,
+    sequence: "ARKPYEERVSEEELEKEKKEEEEEEKKREEIIKKAEEERKKKEEEKKLEE",
+    ipSAE: 0.331046
+  },
+  {
+    id: "wave3_9439", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_174", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.800, pTM: 0.786, pLDDT: 0.715,
+    sequence: "EEEKEKLEKELEELKERLEALREKAEATRAAAAERAAAAAAAAAAAAAAAAA",
+    ipSAE: 0.322294
+  },
+  {
+    id: "wave3_9440", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_020", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.773, pTM: 0.787, pLDDT: 0.788,
+    sequence: "SKIEEAIKKLREEMERERERFLRELEERREELSEEELRRLLEEREREEEVVREVIEFMEEKLKKS",
+    ipSAE: 0.31617
+  },
+  {
+    id: "wave3_9441", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_018", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.775, pTM: 0.823, pLDDT: 0.661,
+    sequence: "SMAVEEARRRLEAEVAALLEAGVRAAEAAGSEKLREQALARAEALRRRLRAELEAAVAAAAAA",
+    ipSAE: 0.31142
+  },
+  {
+    id: "wave3_9442", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_170", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.800, pTM: 0.762, pLDDT: 0.769,
+    sequence: "AAAAAAAREAARAERLAALTEALGDETMAENIVRAEERRELTVGAKEAAEAAAA",
+    ipSAE: 0.310632
+  },
+  {
+    id: "wave3_9443", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_126", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.786, pTM: 0.829, pLDDT: 0.695,
+    sequence: "SEIKFLRPEEEWSKEFKELLEREKKEKASPEYEEVKKKEEEEKKKKEEEEERRRKEEEEER",
+    ipSAE: 0.30682
+  },
+  {
+    id: "wave3_9444", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_150", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.801, pTM: 0.775, pLDDT: 0.729,
+    sequence: "DAEARAAEEAARAAAAAEEAEERRRRQFEERLAAAREAEALEEALKEE",
+    ipSAE: 0.30256
+  },
+  {
+    id: "wave3_9445", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_055", campaign: "E2 Face (W3)",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.864, pTM: 0.885, pLDDT: 0.647,
+    sequence: "AEAEAARAAREAALKAKAAEAEAAAPKAREEYERRYRERLLARP",
+    ipSAE: 0.3016
+  },
+  {
+    id: "wave3_9446", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_015", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.863, pTM: 0.923, pLDDT: 0.652,
+    sequence: "SKARLSLPVESLRRLAELCRAMGHEEMAELLREDARAKEAE",
+    ipSAE: 0.290419
+  },
+  {
+    id: "wave3_9447", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_105", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.786, pTM: 0.806, pLDDT: 0.709,
+    sequence: "SELDKEISHKILEIYRLELEAKALEEKAKELKDEEEKKKLEEEAERLKKEAEKLREEIEKKKKE",
+    ipSAE: 0.289989
+  },
+  {
+    id: "wave3_9448", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_168", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.821, pTM: 0.889, pLDDT: 0.711,
+    sequence: "EKKKKEEEEKEREEELKELTEKLGDREMAENIVKARERYRKTVEEREKKELEAK",
+    ipSAE: 0.287174
+  },
+  {
+    id: "wave3_9449", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_178", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.821, pTM: 0.897, pLDDT: 0.605,
+    sequence: "MRNEEEERRRKEEEEKKAKELLEKIKKTKKYKEYLEKKKKEEEKRLEILKKIKELNEKRL",
+    ipSAE: 0.28649
+  },
+  {
+    id: "wave3_9450", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_002", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.793, pTM: 0.843, pLDDT: 0.701,
+    sequence: "SEEERKKEMLKKIEEKKKLEKELEEKEKRREEEKKEREKKKKKEKEEKEKKEKEEKKKEEEKKK",
+    ipSAE: 0.28069
+  },
+  {
+    id: "wave3_9451", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_103", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.760, pTM: 0.740, pLDDT: 0.606,
+    sequence: "AAAAAAAAAAAAAAAAAAALAAAAAAARQEELEALWKELKE",
+    ipSAE: 0.279413
+  },
+  {
+    id: "wave3_9452", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_016", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.720, pTM: 0.784, pLDDT: 0.735,
+    sequence: "SEELEKLRREAEEEVEALLRAGLEAARAAGSEAAAERARRMAEALRRAKEAEIEELVKKKEEE",
+    ipSAE: 0.272723
+  },
+  {
+    id: "wave3_9453", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_026", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.777, pTM: 0.759, pLDDT: 0.742,
+    sequence: "DEAAREAARRLEELRERLKKEEEEKNREKLEEMLEKIREEEELEKE",
+    ipSAE: 0.265848
+  },
+  {
+    id: "wave3_9454", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_169", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.798, pTM: 0.849, pLDDT: 0.724,
+    sequence: "AAEEAAKRAAERAERLAELTEALGSEERARNIVEAIEWYEETVKKAEEEKKKAL",
+    ipSAE: 0.265595
+  },
+  {
+    id: "wave3_9455", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_081", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.820, pTM: 0.857, pLDDT: 0.694,
+    sequence: "EEEERRKKEIEELKKKQEEHLEQLREVSERKRREEREREERERRERE",
+    ipSAE: 0.264451
+  },
+  {
+    id: "wave3_9456", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_141", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.808, pTM: 0.786, pLDDT: 0.714,
+    sequence: "DERIKEVEKNIEELIEREENREEVEREREERRRAEEERRRREEERRRREEERRRREEEERE",
+    ipSAE: 0.263908
+  },
+  {
+    id: "wave3_9457", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_139", campaign: "E2 Face (W3)",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.795, pTM: 0.827, pLDDT: 0.707,
+    sequence: "EEEERRRREREEEEERRKKEEEELKELEERMEEYKKLLEEQKKLKELVKA",
+    ipSAE: 0.26022
+  },
+  {
+    id: "wave3_9458", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_050", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.802, pTM: 0.827, pLDDT: 0.751,
+    sequence: "EEEEERERREREEEEEKKRLEERIELAKKRKEALLAEIEG",
+    ipSAE: 0.258219
+  },
+  {
+    id: "wave3_9459", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_163", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.814, pTM: 0.860, pLDDT: 0.634,
+    sequence: "MELAENIKKAQEAVDELERQERLERGELPEEKEKLEKEKKEEEEALKKKLEE",
+    ipSAE: 0.253306
+  },
+  {
+    id: "wave3_9460", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_001", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.741, pTM: 0.736, pLDDT: 0.800,
+    sequence: "SEEEEEEERRRRREEEEEERREKEREELLAEKRMEELLKKYLEKLEE",
+    ipSAE: 0.247464
+  },
+  {
+    id: "wave3_9461", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_074", campaign: "E2 Face (W3)",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.756, pTM: 0.869, pLDDT: 0.711,
+    sequence: "MEKEEFKKKLEEEKEKKKKEIESLEEISEEVKERRIAKLDEELKEKLKKYEEELKAL",
+    ipSAE: 0.246873
+  },
+  {
+    id: "wave3_9462", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_175", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.732, pTM: 0.711, pLDDT: 0.748,
+    sequence: "MEEEEERRRKEEELRERRERLRREAAAAREAAERRRAEREAAARAAAEAALR",
+    ipSAE: 0.246302
+  },
+  {
+    id: "wave3_9463", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_066", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.763, pTM: 0.768, pLDDT: 0.758,
+    sequence: "DKKKREEEERRRKREEEERKRKEEEERLKRREELRELMRSGKLVEALK",
+    ipSAE: 0.244437
+  },
+  {
+    id: "wave3_9464", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_065", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.653, pTM: 0.705, pLDDT: 0.716,
+    sequence: "AAAAAAALEAALAALAAALAELLEELEELEEEEEEEEKLEELEEEELEEREEERREEE",
+    ipSAE: 0.241327
+  },
+  {
+    id: "wave3_9465", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_117", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.712, pTM: 0.758, pLDDT: 0.773,
+    sequence: "KKEEEEKKYKPVKEKNEEIIEEEREKREAEIRAVEERRRELEAREEAERAARA",
+    ipSAE: 0.240632
+  },
+  {
+    id: "wave3_9466", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_149", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.712, pTM: 0.725, pLDDT: 0.793,
+    sequence: "MDIFKKLEERLEKEEKKEEEEKEAKEKEEEEKRREEEEREEKKRLEEE",
+    ipSAE: 0.239347
+  },
+  {
+    id: "wave3_9467", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_023", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.769, pTM: 0.796, pLDDT: 0.729,
+    sequence: "SMEEEERERRRREEEEREREEKKREEEERRKEEEKRREEEERAKEEEERKKLEELLEEVRKLLE",
+    ipSAE: 0.236993
+  },
+  {
+    id: "wave3_9468", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_117", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.744, pTM: 0.733, pLDDT: 0.829,
+    sequence: "SAAEAARRALEEARRAAEERRREELEKEREKVREKMEEEEEKRRRREEEELERE",
+    ipSAE: 0.2343
+  },
+  {
+    id: "wave3_9469", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_063", campaign: "E2 Face (W3)",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.769, pTM: 0.823, pLDDT: 0.726,
+    sequence: "DAAAAAAEAAAAALAAAIAAANRAATQAEIDKIRNEILEKNKEKIPEIKEALEKALK",
+    ipSAE: 0.233804
+  },
+  {
+    id: "wave3_9470", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_048", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.766, pTM: 0.853, pLDDT: 0.704,
+    sequence: "SELYILRKEIEKVEEEIKRLKEEKEKASPEEQKELEKKIEELEKKREELKEEYE",
+    ipSAE: 0.221693
+  },
+  {
+    id: "wave3_9471", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_023", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.779, pTM: 0.851, pLDDT: 0.714,
+    sequence: "KLEELAKKAEKEAEELKKKKEEVLKEGGEETAKNTIKKLEAQILYLESRAKELREEYEKK",
+    ipSAE: 0.221608
+  },
+  {
+    id: "wave3_9472", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_058", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.732, pTM: 0.814, pLDDT: 0.728,
+    sequence: "SEEELKKKAKELEEKIEELDKLLEQLKEESEELYEENKERLESQKRCAETQKLYLEKLLEEL",
+    ipSAE: 0.220512
+  },
+  {
+    id: "wave3_9473", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_072", campaign: "E2 Face (W3)",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.702, pTM: 0.751, pLDDT: 0.801,
+    sequence: "SELEEIKKKLEEELKKKKEEILKDEEISEEVKERRIAELEEELKKKLEELKKKLEEL",
+    ipSAE: 0.21999
+  },
+  {
+    id: "wave3_9474", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_179", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.772, pTM: 0.846, pLDDT: 0.677,
+    sequence: "MRDLEAEREKEEKLKEELEKKLKEILATPEAKAYLAEKEKEEEERRKRLERIRELDEELR",
+    ipSAE: 0.218163
+  },
+  {
+    id: "wave3_9475", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_131", campaign: "E2 Face (W3)",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.798, pTM: 0.878, pLDDT: 0.672,
+    sequence: "ERPPLEELLSPEEIEAIKKEEEEEEKERKKIIEEKEKEKKKKEEEEELKK",
+    ipSAE: 0.212013
+  },
+  {
+    id: "wave3_9476", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_171", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.767, pTM: 0.866, pLDDT: 0.676,
+    sequence: "EEKEKKEREEEREKELKELEEKLGNKKMAENIVKMRERYRETVEKKRREEEEEE",
+    ipSAE: 0.211499
+  },
+  {
+    id: "wave3_9477", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_037", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.724, pTM: 0.746, pLDDT: 0.640,
+    sequence: "MDLEKKKEELKKEIEELLKKHQKLLEEAAKQPEVLPAVKKEIEEELKKLLEKYKEELRKILDE",
+    ipSAE: 0.208905
+  },
+  {
+    id: "wave3_9478", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_114", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.705, pTM: 0.788, pLDDT: 0.723,
+    sequence: "EEERRREEEERRRREEEEKRERERQAEDWRRRVEEKLKSLEEKKRKEEEEKRRKEEELRKELEE",
+    ipSAE: 0.205866
+  },
+  {
+    id: "wave3_9479", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_084", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.732, pTM: 0.741, pLDDT: 0.701,
+    sequence: "AARAAALAAVHEAYAPLPAIKAELEAKIKEAAADPAEAERLRAELKGLEVDYERALQAYLEE",
+    ipSAE: 0.204391
+  },
+  {
+    id: "wave3_9480", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_037", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.780, pTM: 0.826, pLDDT: 0.780,
+    sequence: "ELKLKLSHLRCEIFRLEKLKKAEKSEEEKKKLEEEIKKKEEEAERIEREIEELK",
+    ipSAE: 0.203489
+  },
+  {
+    id: "wave3_9481", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_154", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.770, pTM: 0.744, pLDDT: 0.765,
+    sequence: "SPEEAVREALERGLELLKELKEKEEERKKLEELREEELKAK",
+    ipSAE: 0.19991
+  },
+  {
+    id: "wave3_9482", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_041", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.738, pTM: 0.798, pLDDT: 0.711,
+    sequence: "SVEEEIKKFEELVKKAAEKTGLKEVIEENIKKIEKEREEKEKEEKEKKEREEEEERRRREEEEE",
+    ipSAE: 0.198542
+  },
+  {
+    id: "wave3_9483", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_115", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.784, pTM: 0.843, pLDDT: 0.659,
+    sequence: "KEKEEKEKEKKLKEEEEKKSEEEKLEEKKKEAEEYRKKLLEELEKK",
+    ipSAE: 0.197769
+  },
+  {
+    id: "wave3_9484", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_011", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.718, pTM: 0.785, pLDDT: 0.709,
+    sequence: "EGEEDRNTLRVLEVLKEAEIRDLVEKTLKEVNELVKKGKVEEAKKLLEEAEKEIEKILKELE",
+    ipSAE: 0.194724
+  },
+  {
+    id: "wave3_9485", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_123", campaign: "E2 Face (W3)",
+    binder_length: 45, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.804, pTM: 0.863, pLDDT: 0.732,
+    sequence: "MEEEERERRRREEEERRRREEEEERRRAEEAEEKFEKELEKAKEE",
+    ipSAE: 0.19085
+  },
+  {
+    id: "wave3_9486", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_045", campaign: "E2 Face (W3)",
+    binder_length: 45, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.783, pTM: 0.855, pLDDT: 0.648,
+    sequence: "SEKEEELEQLKYLLERCSEEALEKREEEERRREEERRRREEEERA",
+    ipSAE: 0.190493
+  },
+  {
+    id: "wave3_9487", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_142", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.776, pTM: 0.758, pLDDT: 0.730,
+    sequence: "DERIKKVEENIEEILEKEKNKEEVEKKEKEKKEEEEKKKKEEEEKKKEEEEKKKKKEEEEK",
+    ipSAE: 0.188129
+  },
+  {
+    id: "wave3_9488", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_148", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.723, pTM: 0.773, pLDDT: 0.808,
+    sequence: "MEKEKKEKEEEEKKKKEEEERERFKKEFEEKLKEREEKEEKERKEKEE",
+    ipSAE: 0.186557
+  },
+  {
+    id: "wave3_9489", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_012", campaign: "E2 Face (W3)",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.707, pTM: 0.726, pLDDT: 0.733,
+    sequence: "SVEEKLKKLEEEKKKKEEEKKKILEELNKLSKKEAFEKYKKLLEEEEKKKKEEFEK",
+    ipSAE: 0.184564
+  },
+  {
+    id: "wave3_9490", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_155", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.638, pTM: 0.697, pLDDT: 0.620,
+    sequence: "MVSEEELHEEAEKAREALLEKIKAAKEKSPIQQHILDREEEKRRELAAAAAAALAAAAAAAA",
+    ipSAE: 0.183999
+  },
+  {
+    id: "wave3_9491", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_137", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.739, pTM: 0.812, pLDDT: 0.705,
+    sequence: "EKEKKEELEEYFKKLEEYKKLKEEKIKKEAEEKGIPLEEAKKKAEEEEAKERKKRLEEEKLKK",
+    ipSAE: 0.183452
+  },
+  {
+    id: "wave3_9492", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_001", campaign: "E2 Face (W3)",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.712, pTM: 0.786, pLDDT: 0.627,
+    sequence: "MEEERRRREEEEERRRREEEEEEERKRREALEERRRWREERRAAAAAAAAAAAAA",
+    ipSAE: 0.180884
+  },
+  {
+    id: "wave3_9493", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_018", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.671, pTM: 0.752, pLDDT: 0.664,
+    sequence: "SALEELRREVRERLERLAEELKKKGVSEEEARALIRARTTELARELGPFVEEVAREVLEKLLKEL",
+    ipSAE: 0.173167
+  },
+  {
+    id: "wave3_9494", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_107", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.705, pTM: 0.781, pLDDT: 0.736,
+    sequence: "SELEKEISYKRIEIYQLEIRAEALEAEAEALEDEEERRRLLAEAERLRKEAEKLREEIEKKEKE",
+    ipSAE: 0.173155
+  },
+  {
+    id: "wave3_9495", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_161", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.720, pTM: 0.762, pLDDT: 0.790,
+    sequence: "DLAKKLAELKKKKAEEAAKKEAEREAALKKAEERKKLAKEVLE",
+    ipSAE: 0.172895
+  },
+  {
+    id: "wave3_9496", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_038", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.761, pTM: 0.846, pLDDT: 0.792,
+    sequence: "SLELELSYLRCKIYRLRELAKMEKSEEEKKKLLEKIKEAEKKAEEIEKKLEELK",
+    ipSAE: 0.171798
+  },
+  {
+    id: "wave3_9497", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_002", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.742, pTM: 0.785, pLDDT: 0.761,
+    sequence: "SEEEEKERKEREEREEEERRRKEELEEFKKKKLPEILLKRALELREE",
+    ipSAE: 0.171516
+  },
+  {
+    id: "wave3_9498", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_026", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.738, pTM: 0.776, pLDDT: 0.662,
+    sequence: "SKEIEELKKKIVELTVELINEEEEYEYLIKKNPEKAEEYKEKLKKKTEELEKEIKELEEKIKKL",
+    ipSAE: 0.171401
+  },
+  {
+    id: "wave3_9499", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_007", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.732, pTM: 0.805, pLDDT: 0.769,
+    sequence: "MEEEERKRREEELKKKLEEEKEELREKRQKELEEAEEKKKKEEEKKKKEEEE",
+    ipSAE: 0.170912
+  },
+  {
+    id: "wave3_9500", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_021", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.725, pTM: 0.747, pLDDT: 0.718,
+    sequence: "KLKELAEKLEKKAEELRKKKEEVLKQAGEEVAKNTIRKLDAQILTLESQAEELRKKAEEE",
+    ipSAE: 0.16864
+  },
+  {
+    id: "wave3_9501", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_142", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.746, pTM: 0.722, pLDDT: 0.782,
+    sequence: "MEVDEEEREREEERRRREEALEERRKLIEEIRKKEEEKLKKEKEEE",
+    ipSAE: 0.167039
+  },
+  {
+    id: "wave3_9502", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_080", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.742, pTM: 0.733, pLDDT: 0.761,
+    sequence: "EEEEEKEKKKKELEKEQEKRLEEIRKVSEAKEKAEEEAKRREELEEE",
+    ipSAE: 0.16633
+  },
+  {
+    id: "wave3_9503", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_125", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.672, pTM: 0.736, pLDDT: 0.627,
+    sequence: "KKIELLRKLEELPECVLELLKEEEEEKKSPEYEKKKKEEEKEEKKREEEEKKRREEEEEEK",
+    ipSAE: 0.164924
+  },
+  {
+    id: "wave3_9504", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_105", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.751, pTM: 0.750, pLDDT: 0.732,
+    sequence: "MVEERLKEDRLAAEELVRRGDERAEEAKRKLELCKIVDEVKEELEK",
+    ipSAE: 0.162658
+  },
+  {
+    id: "wave3_9505", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_006", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.759, pTM: 0.862, pLDDT: 0.697,
+    sequence: "SEEEKKKELEERLKKEKEELEEEKKKKEEEEEKEKEEKKKAEE",
+    ipSAE: 0.162262
+  },
+  {
+    id: "wave3_9506", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_177", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.754, pTM: 0.769, pLDDT: 0.762,
+    sequence: "MKDKKKEKKEKAKKEKEKKKKLKKKLKTKKTKEYLEKKKKEEKKREEIQKKVKELDEKLK",
+    ipSAE: 0.157913
+  },
+  {
+    id: "wave3_9507", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_025", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.701, pTM: 0.788, pLDDT: 0.678,
+    sequence: "EKEKENLENEILKLKVELINKEREYEYLIKKNEEKKEEYEKKKEEETKKLEEEIKKKEKEIKEL",
+    ipSAE: 0.156226
+  },
+  {
+    id: "wave3_9508", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_141", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.738, pTM: 0.802, pLDDT: 0.703,
+    sequence: "SVLDLEELKKKEEEEKKRKAEEEALKRIEKVQAEREAALRREREEA",
+    ipSAE: 0.155354
+  },
+  {
+    id: "wave3_9509", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_024", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.700, pTM: 0.777, pLDDT: 0.686,
+    sequence: "SEELEELKRKILELTVELINAEEEYEYLIKKNPEKREEYEKKKKEKTAELEKEIEELKEKIKKL",
+    ipSAE: 0.153204
+  },
+  {
+    id: "wave3_9510", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_017", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.724, pTM: 0.799, pLDDT: 0.622,
+    sequence: "SPNKEEEEFEKRFEEVEENAKKWKEQEKKKEEEKKAAEEAKKEEEERKKLEEEA",
+    ipSAE: 0.150013
+  },
+  {
+    id: "wave3_9511", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_043", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.733, pTM: 0.792, pLDDT: 0.634,
+    sequence: "SLAEKVKKEKEELAKRLAAAAEAAAAAAAAAAEEAARAAAAAL",
+    ipSAE: 0.148211
+  },
+  {
+    id: "wave3_9512", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_165", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.686, pTM: 0.775, pLDDT: 0.675,
+    sequence: "EKKEEKFERELKRELRLLELEAANKLKEGADREELREELEKKKEEIKKKKEKFKEELEKG",
+    ipSAE: 0.147979
+  },
+  {
+    id: "wave3_9513", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_029", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.789, pTM: 0.789, pLDDT: 0.678,
+    sequence: "EDIKAKEEELFEKRLKELLERSEAYRRQKEAAEEAAEAAE",
+    ipSAE: 0.147186
+  },
+  {
+    id: "wave3_9514", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_150", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.703, pTM: 0.762, pLDDT: 0.757,
+    sequence: "MDIFAALKERMKKEEEEKKKKEEEEKKKEEEEKKKKLEEEKKKKEEEE",
+    ipSAE: 0.146867
+  },
+  {
+    id: "wave3_9515", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_162", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.751, pTM: 0.810, pLDDT: 0.655,
+    sequence: "MELAENIERARKEVEELRLEEKIEKGELPELKEKREKLEAEEERRREELERE",
+    ipSAE: 0.140872
+  },
+  {
+    id: "wave3_9516", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_027", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.702, pTM: 0.797, pLDDT: 0.685,
+    sequence: "SEELEKLKREIIKLTVELINEEERLDYEIEKNPEKKEEYEKEKEEKTKELEKKIKELEEKIKKL",
+    ipSAE: 0.140759
+  },
+  {
+    id: "wave3_9517", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_053", campaign: "E2 Face (W3)",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.765, pTM: 0.843, pLDDT: 0.680,
+    sequence: "AEEAARAAAERAALEAKAAEAEARAAEARAAYEENYQKILEERP",
+    ipSAE: 0.140349
+  },
+  {
+    id: "wave3_9518", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_078", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.754, pTM: 0.717, pLDDT: 0.753,
+    sequence: "VAAAAAAAAAAAAAAAAALARARAAAAIQAELREARAAAL",
+    ipSAE: 0.139748
+  },
+  {
+    id: "wave3_9519", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_133", campaign: "E2 Face (W3)",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.767, pTM: 0.743, pLDDT: 0.775,
+    sequence: "MSIEERLQENLEKKLKERIEELKKLLEKKKEEEKKKKEKEKKEK",
+    ipSAE: 0.13916
+  },
+  {
+    id: "wave3_9520", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_148", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.697, pTM: 0.777, pLDDT: 0.732,
+    sequence: "MDIFKSLEERLEEEEEAKKAAEEARRREEEEREREERRREEEERRRRA",
+    ipSAE: 0.137176
+  },
+  {
+    id: "wave3_9521", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_039", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.623, pTM: 0.708, pLDDT: 0.748,
+    sequence: "EKEEEEEKRKKEEERKKEEEKKKEEEEWKERIKKVEEKEKKLEEELEKEKEEKEKKKKEEEEKK",
+    ipSAE: 0.13504
+  },
+  {
+    id: "wave3_9522", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_021", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.654, pTM: 0.756, pLDDT: 0.723,
+    sequence: "SKIAEAIAKLEAALAEEKAAFEAWLEANREALSEEEIARLRRLQEERFAVRERLIARMRAKLEEA",
+    ipSAE: 0.133432
+  },
+  {
+    id: "wave3_9523", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_147", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.763, pTM: 0.840, pLDDT: 0.732,
+    sequence: "MEERRRREREEEERRRREEREREEREEERFKKLRERFEKKL",
+    ipSAE: 0.133431
+  },
+  {
+    id: "wave3_9524", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_062", campaign: "E2 Face (W3)",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.672, pTM: 0.728, pLDDT: 0.715,
+    sequence: "EEEKKKKEEAKKKLEEEIKKAGKEKRMEKLEKIRKEVLEKCKEEIEKLLKEHEEKLK",
+    ipSAE: 0.131387
+  },
+  {
+    id: "wave3_9525", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_122", campaign: "E2 Face (W3)",
+    binder_length: 45, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.724, pTM: 0.809, pLDDT: 0.673,
+    sequence: "DEEEKRRREEERREEERRRREEEERRRAAEAERERRAEEEAARAA",
+    ipSAE: 0.129936
+  },
+  {
+    id: "wave3_9526", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_008", campaign: "E2 Face (W3)",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.671, pTM: 0.771, pLDDT: 0.733,
+    sequence: "KEEEEKEKKKKEEEERLKKILEKLEKAEEEEKKRKEEEEKEREKREEEERRREEE",
+    ipSAE: 0.129348
+  },
+  {
+    id: "wave3_9527", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_125", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.713, pTM: 0.793, pLDDT: 0.723,
+    sequence: "MEEKLKKEKEEIEELEKKREEEEEKKRKAEEEKKKKEEEERKKEAEEKAKLAEA",
+    ipSAE: 0.124353
+  },
+  {
+    id: "wave3_9528", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_043", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.653, pTM: 0.757, pLDDT: 0.702,
+    sequence: "SIEEEIKRREELLKEAGEATGRPELIEERLRAREEEARRRAERERREAEERRRREEERRRREEE",
+    ipSAE: 0.123965
+  },
+  {
+    id: "wave3_9529", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_009", campaign: "E2 Face (W3)",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.686, pTM: 0.807, pLDDT: 0.735,
+    sequence: "EEEEKKKKEEELEKERRKKRLEERERAAREAAREAERRRREEEREAARRARLEAE",
+    ipSAE: 0.12342
+  },
+  {
+    id: "wave3_9530", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_033", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.659, pTM: 0.762, pLDDT: 0.687,
+    sequence: "MDPEAERRREEERRRRLKELAEKNRSEELEKKEKEEKEKKEKEEKEKKKEEEE",
+    ipSAE: 0.122255
+  },
+  {
+    id: "wave3_9531", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_033", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.651, pTM: 0.742, pLDDT: 0.780,
+    sequence: "MEEEEEKKKKEEEEKKKKEEEELLKKEEEEREKLEKEEKEEEERRKEKEEKEREEERRREE",
+    ipSAE: 0.11969
+  },
+  {
+    id: "wave3_9532", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_168", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.721, pTM: 0.850, pLDDT: 0.751,
+    sequence: "FEPSAYEKAEEELKKAKEEEEKLKKEEKEKKKKEEEEKKK",
+    ipSAE: 0.114812
+  },
+  {
+    id: "wave3_9533", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_122", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.654, pTM: 0.744, pLDDT: 0.748,
+    sequence: "MSEEEEEIKELEKKIAELKEKRDELLKKKGDEEKAKELQKELEKAEERKKKLEEKLRKEALE",
+    ipSAE: 0.114469
+  },
+  {
+    id: "wave3_9534", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_057", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.613, pTM: 0.684, pLDDT: 0.641,
+    sequence: "SREELEKKKEELEKKIKELEELLEKYKKLSEELYEKNKKRLETLKRCYEVQKKRLEKLLEEL",
+    ipSAE: 0.113975
+  },
+  {
+    id: "wave3_9535", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_062", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.621, pTM: 0.708, pLDDT: 0.720,
+    sequence: "DAEAAAAAAAAAAEAARREAFRRRIEELRREAERLLEEGKDEKEAIALRAEAIRMEVEAWRAAA",
+    ipSAE: 0.10864
+  },
+  {
+    id: "wave3_9536", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_110", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.687, pTM: 0.712, pLDDT: 0.728,
+    sequence: "PVEEAERRRREERERREREERARKEAEERERRARRAAEAA",
+    ipSAE: 0.108493
+  },
+  {
+    id: "wave3_9537", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_104", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.671, pTM: 0.761, pLDDT: 0.739,
+    sequence: "SELDKLLSHKRLEIYRLRLEAEKLEKEAEELEDEEEKEKLRKKAEELRKKAEKLEREMKELEEK",
+    ipSAE: 0.106053
+  },
+  {
+    id: "wave3_9538", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_046", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.696, pTM: 0.791, pLDDT: 0.757,
+    sequence: "MVPEELLEAARLAAEVAELKAEAEKNELTEEEREKIEELEARREELLKKLEEKE",
+    ipSAE: 0.103888
+  },
+  {
+    id: "wave3_9539", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_170", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.711, pTM: 0.818, pLDDT: 0.701,
+    sequence: "FEPSKVEKEEEKLKEAKKKEEELKRKEEEKEKKEKELEEK",
+    ipSAE: 0.103769
+  },
+  {
+    id: "wave3_9540", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_022", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.652, pTM: 0.681, pLDDT: 0.676,
+    sequence: "KLEELAREAEEKAEELRKEKEEVLKQASEEVAKNFIRKADAQILYLESRAEELRREAEEA",
+    ipSAE: 0.103523
+  },
+  {
+    id: "wave3_9541", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_013", campaign: "E2 Face (W3)",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.579, pTM: 0.639, pLDDT: 0.692,
+    sequence: "SAEELLEERKKREEKEAEELKKILEELSKLSMEEAYKKYLELLKERKEERRKREAE",
+    ipSAE: 0.102612
+  },
+  {
+    id: "wave3_9542", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_010", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.555, pTM: 0.682, pLDDT: 0.649,
+    sequence: "EGEKDKNSLSVENALIFSKIRELLEKMLEEVNKLVEEGKIEEAEEIYKKTKEEIDKIIKELE",
+    ipSAE: 0.100584
+  },
+  {
+    id: "wave3_9543", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_032", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.646, pTM: 0.712, pLDDT: 0.688,
+    sequence: "EEISVDELIAERVRNRARATAAREAAARAAAAAAAAAAAAAAA",
+    ipSAE: 0.100354
+  },
+  {
+    id: "wave3_9544", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_077", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.681, pTM: 0.706, pLDDT: 0.722,
+    sequence: "MDPEAERRREAEERERRREELLKERREARQAYLEAKAAAAA",
+    ipSAE: 0.096687
+  },
+  {
+    id: "wave3_9545", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_102", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.689, pTM: 0.774, pLDDT: 0.739,
+    sequence: "SEEEEKELEERAKEIREAAEELEKRRKELEEKLEELLRELE",
+    ipSAE: 0.0958013
+  },
+  {
+    id: "wave3_9546", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_077", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.749, pTM: 0.870, pLDDT: 0.681,
+    sequence: "AAAAEAARAAAEAARAEQLKLALQAEKEQKEIHEERLKEL",
+    ipSAE: 0.0945595
+  },
+  {
+    id: "wave3_9547", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_121", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.621, pTM: 0.737, pLDDT: 0.758,
+    sequence: "MSEKEEEIKELEKEIERLEAEEKKLLEEEGDEEKAKELEEKRKKALEKKEKLKKELEEEKKK",
+    ipSAE: 0.0911571
+  },
+  {
+    id: "wave3_9548", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_172", campaign: "E2 Face (W3)",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.621, pTM: 0.684, pLDDT: 0.609,
+    sequence: "GEEEKKEEEKKKEEEKKRSEEYLKENEEKYEKEFEERVKELEEIARLRLK",
+    ipSAE: 0.0904558
+  },
+  {
+    id: "wave3_9549", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_012", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.747, pTM: 0.754, pLDDT: 0.638,
+    sequence: "MKAKLSLPVESLKYLARLALAAGHEEMAEELREDAKAKEAE",
+    ipSAE: 0.0898608
+  },
+  {
+    id: "wave3_9550", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_025", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.697, pTM: 0.800, pLDDT: 0.654,
+    sequence: "EEEEKKKKEELEKKLEELKKKEEEENEKKLKELEEKKKKKEEEEKE",
+    ipSAE: 0.0871992
+  },
+  {
+    id: "wave3_9551", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_004", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.611, pTM: 0.724, pLDDT: 0.728,
+    sequence: "KEEEEEKKKKEEEEKKLEEEKEELRKKRQEELEKLKKEKKEKEEKEKLLEEE",
+    ipSAE: 0.0862229
+  },
+  {
+    id: "wave3_9552", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_072", campaign: "E2 Face (W3)",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.609, pTM: 0.707, pLDDT: 0.722,
+    sequence: "KLSLEELIEKRIEEIKKKKELEKKRKEAKKKAKEKKRKKEEKEEKEKKKKE",
+    ipSAE: 0.0848806
+  },
+  {
+    id: "wave3_9553", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_123", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.572, pTM: 0.723, pLDDT: 0.780,
+    sequence: "ESEKEEEIKELEKKIKELREKREKLLKELGDKEKAEELEKKLKEAEEKKKKLEEELEEEKKK",
+    ipSAE: 0.0839829
+  },
+  {
+    id: "wave3_9554", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_040", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.626, pTM: 0.685, pLDDT: 0.776,
+    sequence: "KIKEEIEKQKKLLEESAKETGRKEVIEANLKKREEERREARERREREERERREREERRRREELE",
+    ipSAE: 0.0814301
+  },
+  {
+    id: "wave3_9555", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_075", campaign: "E2 Face (W3)",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.636, pTM: 0.806, pLDDT: 0.731,
+    sequence: "DEEEEFKKKLEEEAEKKKEEILKDETISEEVKERRIEEIEKELEKKLEEYKKKLEEK",
+    ipSAE: 0.0809143
+  },
+  {
+    id: "wave3_9556", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_100", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.709, pTM: 0.704, pLDDT: 0.822,
+    sequence: "EEEERRERERREEERRRRELEEAARRAQEKELEALKEELEK",
+    ipSAE: 0.0802226
+  },
+  {
+    id: "wave3_9557", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_146", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.732, pTM: 0.852, pLDDT: 0.714,
+    sequence: "GFSLERARELELERARLERELGAEEVEARLAEELAEAAEA",
+    ipSAE: 0.0801933
+  },
+  {
+    id: "wave3_9558", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_044", campaign: "E2 Face (W3)",
+    binder_length: 45, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.680, pTM: 0.812, pLDDT: 0.747,
+    sequence: "DEKKEEELQLEYLKELLTEEARKELEEKEKKEEEERLRKELEEEL",
+    ipSAE: 0.0799587
+  },
+  {
+    id: "wave3_9559", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_073", campaign: "E2 Face (W3)",
+    binder_length: 57, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.625, pTM: 0.710, pLDDT: 0.679,
+    sequence: "SALEAVRAALRAAMEAEKAAIEADPEISESVKRRRIAELEARLAAELAALDAEVAAL",
+    ipSAE: 0.077727
+  },
+  {
+    id: "wave3_9560", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_074", campaign: "E2 Face (W3)",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.620, pTM: 0.729, pLDDT: 0.696,
+    sequence: "SLSLEELIEERLKEIKERKKLEEEMKKAKEKKEEKKKEEERKKKEKKKKEE",
+    ipSAE: 0.0758311
+  },
+  {
+    id: "wave3_9561", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_131", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.640, pTM: 0.700, pLDDT: 0.768,
+    sequence: "SISDYYLEKVKEAEKEKKEKEEEEKRKKEEEERRKKELEE",
+    ipSAE: 0.0756888
+  },
+  {
+    id: "wave3_9562", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_152", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.560, pTM: 0.681, pLDDT: 0.603,
+    sequence: "PVTPEELQRRAEEARARVLAAAEAAERLSPALARFLERRRAALAAARAAAAAAAAAAAAAAA",
+    ipSAE: 0.0749824
+  },
+  {
+    id: "wave3_9563", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_017", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.579, pTM: 0.706, pLDDT: 0.733,
+    sequence: "SAEEELKEEVRKRLEELAEELLKKGLSPEEVRYAIRAETTKLIRELGEFVREIADEVLEELLKKL",
+    ipSAE: 0.0748029
+  },
+  {
+    id: "wave3_9564", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_054", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.603, pTM: 0.746, pLDDT: 0.768,
+    sequence: "SAEHQLTLELLAKKKKEEELLKLRRKLEEEARRRRRRRREEERRARREAARRAR",
+    ipSAE: 0.0741511
+  },
+  {
+    id: "wave3_9565", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_038", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.515, pTM: 0.651, pLDDT: 0.661,
+    sequence: "RDIEALKEELEREFARLLEEQRERLAEAAKTPEVLPAVREELARELARLREERKEELRKVLNE",
+    ipSAE: 0.0736241
+  },
+  {
+    id: "wave3_9566", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_154", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.569, pTM: 0.695, pLDDT: 0.619,
+    sequence: "MVSKEELAKEQEEARKKVLEAAEAAEELSPIMKRFVEREKKREEELREAARAAAEAAAAAAA",
+    ipSAE: 0.0727798
+  },
+  {
+    id: "wave3_9567", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_000", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.529, pTM: 0.628, pLDDT: 0.666,
+    sequence: "SEEERRREEEEARLREEEERRREELEELRREEAPRRRLERELERRAE",
+    ipSAE: 0.0707538
+  },
+  {
+    id: "wave3_9568", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_137", campaign: "E2 Face (W3)",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.578, pTM: 0.697, pLDDT: 0.677,
+    sequence: "KKKEEEEKKKKEEEEKKKKEKEKEEKLKKKYEEYLKKLKEKEELKKLVEE",
+    ipSAE: 0.0706646
+  },
+  {
+    id: "wave3_9569", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_048", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.645, pTM: 0.741, pLDDT: 0.710,
+    sequence: "KEKEEEERRKREEEKRKEELEKRIKEAEELKKKLEEELKG",
+    ipSAE: 0.0703167
+  },
+  {
+    id: "wave3_9570", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_007", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.560, pTM: 0.713, pLDDT: 0.775,
+    sequence: "MSEEERRREEERRRREREREEKEREKREEIEKLLKEEEEKKKKKKEEEEKKKKEKEEE",
+    ipSAE: 0.0698961
+  },
+  {
+    id: "wave3_9571", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_153", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.580, pTM: 0.714, pLDDT: 0.617,
+    sequence: "MVTPEELQEEAERARQALLARAEAAAELSPIEAHILARERERRRRLEEEARRLLEELRELLE",
+    ipSAE: 0.0698545
+  },
+  {
+    id: "wave3_9572", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_130", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.537, pTM: 0.624, pLDDT: 0.732,
+    sequence: "SMSDYLLESVERKKEEEKKEKEKKEKEEKEKKEKEKKEKE",
+    ipSAE: 0.0694872
+  },
+  {
+    id: "wave3_9573", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_029", campaign: "E2 Face (W3)",
+    binder_length: 49, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.586, pTM: 0.713, pLDDT: 0.649,
+    sequence: "SARAERLAALEAEEARRLAALAELMSPEEVERLKQVRDLLRQRLLELLA",
+    ipSAE: 0.0687621
+  },
+  {
+    id: "wave3_9574", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_032", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.603, pTM: 0.772, pLDDT: 0.765,
+    sequence: "EEEEKRRKELEEEEKKKEEEKKKLEELKKKREELLEKERKEKEEEERKRREEREREEREKE",
+    ipSAE: 0.0650333
+  },
+  {
+    id: "wave3_9575", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_143", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.625, pTM: 0.748, pLDDT: 0.660,
+    sequence: "EEEDEEEEEREEEEKEREERIREARKRIEKFRKEYEEKLREEELEK",
+    ipSAE: 0.0640167
+  },
+  {
+    id: "wave3_9576", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_114", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.634, pTM: 0.774, pLDDT: 0.700,
+    sequence: "MEEEKERKEREEREKEEEKSEEEKLEEEIKKAEERRKAIEEKLKAL",
+    ipSAE: 0.0638565
+  },
+  {
+    id: "wave3_9577", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_014", campaign: "E2 Face (W3)",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.523, pTM: 0.657, pLDDT: 0.660,
+    sequence: "SVEELLKEREERRREAEEERKRLLEELRKLSMEEALAKFEAALAEAAAEEAKREAA",
+    ipSAE: 0.0632515
+  },
+  {
+    id: "wave3_9578", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_021", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.508, pTM: 0.643, pLDDT: 0.740,
+    sequence: "MKEEEEEKRRREEEERRERERRREEEERRRREEEERKRAEELAKKLKEEEERERLLEEVRRQLL",
+    ipSAE: 0.0630627
+  },
+  {
+    id: "wave3_9579", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_147", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.598, pTM: 0.685, pLDDT: 0.686,
+    sequence: "AFSEELARLAERELARLETERGREAVEAELAAALAAALAA",
+    ipSAE: 0.0630505
+  },
+  {
+    id: "wave3_9580", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_042", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.526, pTM: 0.648, pLDDT: 0.783,
+    sequence: "EVEELIKKFEELLEKSAEWTGRKDLIEKRLEEREKKRKEKEEEEKRKKEEEEKRKKEELEKKLE",
+    ipSAE: 0.0625719
+  },
+  {
+    id: "wave3_9581", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_164", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.489, pTM: 0.570, pLDDT: 0.712,
+    sequence: "MDEDLKKLEEKRKEMEEAVKEAERKSPELAEEKKKALKKFEELLEKLKKEREE",
+    ipSAE: 0.0620144
+  },
+  {
+    id: "wave3_9582", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_039", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.594, pTM: 0.669, pLDDT: 0.677,
+    sequence: "ELELKKSYLRCEIFRLEAEKKMEKSEEEKKELEKKIKEKEEELKEIEKEIKEKE",
+    ipSAE: 0.0595765
+  },
+  {
+    id: "wave3_9583", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_155", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.579, pTM: 0.671, pLDDT: 0.748,
+    sequence: "SKEEEIEAAIKKAEELKKKLEELEKLRKKIEELVKEELEKA",
+    ipSAE: 0.0593713
+  },
+  {
+    id: "wave3_9584", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_120", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.547, pTM: 0.637, pLDDT: 0.726,
+    sequence: "MSEKEKEIERLDKEIEELEEKRRKLLEELGDEEKAEELEEKIKEAEERKKKLLKEIEEEKKS",
+    ipSAE: 0.057045
+  },
+  {
+    id: "wave3_9585", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_019", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.504, pTM: 0.623, pLDDT: 0.688,
+    sequence: "SAMEALEREVRERLRALAEEIREAGVSPEEAELLLRRETARLERELGPFVRAVAEEVLRELLEEL",
+    ipSAE: 0.0557575
+  },
+  {
+    id: "wave3_9586", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_172", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.539, pTM: 0.688, pLDDT: 0.708,
+    sequence: "DKEKEEKEKKEKELKEIRKELRERAEKEREKARKEEEERRRREERERRELLE",
+    ipSAE: 0.0554702
+  },
+  {
+    id: "wave3_9587", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_166", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.529, pTM: 0.680, pLDDT: 0.720,
+    sequence: "MDRAGKKLEEKLKKMEERLKEAEKKSKEEAKKMEEALKKMEELLKKLEKEREE",
+    ipSAE: 0.0554434
+  },
+  {
+    id: "wave3_9588", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_136", campaign: "E2 Face (W3)",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.540, pTM: 0.680, pLDDT: 0.671,
+    sequence: "MEEEERRRREEEERRRREERERRERELRERMEEYKKLLEEKEKLKELVKE",
+    ipSAE: 0.0551734
+  },
+  {
+    id: "wave3_9589", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_171", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.581, pTM: 0.667, pLDDT: 0.750,
+    sequence: "YEPSVYQQAKRRLEEARRAEEERRRREEERRRREAERRRR",
+    ipSAE: 0.0545415
+  },
+  {
+    id: "wave3_9590", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_160", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.599, pTM: 0.747, pLDDT: 0.686,
+    sequence: "RRKRRRRRRRERREKRRRKRRKKREEELKKYEERKKLAEEVLE",
+    ipSAE: 0.053775
+  },
+  {
+    id: "wave3_9591", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_169", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.551, pTM: 0.686, pLDDT: 0.634,
+    sequence: "AEPCVYQRAKEKLEEARRREEEIRARREAEERRRRALEAA",
+    ipSAE: 0.0512333
+  },
+  {
+    id: "wave3_9592", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_037", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.498, pTM: 0.661, pLDDT: 0.715,
+    sequence: "MEEEERERRRREEEERERRRREEEERRRRERIKKVEEREKEEKEKEEEEKKKKEEEERREEELE",
+    ipSAE: 0.0506438
+  },
+  {
+    id: "wave3_9593", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_051", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.468, pTM: 0.732, pLDDT: 0.772,
+    sequence: "SEVYILRKEIEETEKRIKELEEEKKKASPEEQKKIDKEIEKLKEERAKLEEELE",
+    ipSAE: 0.0503048
+  },
+  {
+    id: "wave3_9594", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_076", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.603, pTM: 0.773, pLDDT: 0.657,
+    sequence: "MNPYEEKLKEALELEKKREELLEKKRAARKAYEEKLAAEAA",
+    ipSAE: 0.0469913
+  },
+  {
+    id: "wave3_9595", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_109", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.634, pTM: 0.765, pLDDT: 0.706,
+    sequence: "SVEEEEKKRKEEKEKKEKKEKEEEEKKKKEEEAARKKAEE",
+    ipSAE: 0.0461593
+  },
+  {
+    id: "wave3_9596", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_054", campaign: "E2 Face (W3)",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.570, pTM: 0.695, pLDDT: 0.651,
+    sequence: "EEERRRREEERARRREAAARAAAEAAAARAAAAAARRARLEARP",
+    ipSAE: 0.0435402
+  },
+  {
+    id: "wave3_9597", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_076", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.563, pTM: 0.713, pLDDT: 0.711,
+    sequence: "SAAEEAARAAAEAKRQEELEKAKEAEKIRKEILEELEKEL",
+    ipSAE: 0.0432482
+  },
+  {
+    id: "wave3_9598", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_173", campaign: "E2 Face (W3)",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.554, pTM: 0.680, pLDDT: 0.640,
+    sequence: "GPEEERRRREEEERRREESERKLEEEREKYEKRFEERVKELEEIGRELEK",
+    ipSAE: 0.0420352
+  },
+  {
+    id: "wave3_9599", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_053", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.494, pTM: 0.656, pLDDT: 0.708,
+    sequence: "SKEEELTRKFLEKKKLDKELLEKLKKELEEAKKELEELLEKLKKELEELKKKLE",
+    ipSAE: 0.0407986
+  },
+  {
+    id: "wave3_9600", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_041", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.559, pTM: 0.747, pLDDT: 0.675,
+    sequence: "SLAEEYQKKKEELKKEMEEAEKKKKELEEKKKEEEEREKKEKE",
+    ipSAE: 0.0407644
+  },
+  {
+    id: "wave3_9601", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_004", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.498, pTM: 0.631, pLDDT: 0.733,
+    sequence: "MSEEELRRKEEEEKKKEEEERKKREEREKIEELLKKLEEEKRRKEEEERKEEEARREE",
+    ipSAE: 0.0406671
+  },
+  {
+    id: "wave3_9602", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_116", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.509, pTM: 0.658, pLDDT: 0.699,
+    sequence: "EEEERRREELEKEEEERRRREEEERERERALVEEKLKEIEEEKEKKRREEELEK",
+    ipSAE: 0.0404889
+  },
+  {
+    id: "wave3_9603", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_006", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.494, pTM: 0.647, pLDDT: 0.703,
+    sequence: "DEEEERRRREEEEKKELEKRKEELAKERQEELEKLLEEKKKEEEEKEKLEEE",
+    ipSAE: 0.0400209
+  },
+  {
+    id: "wave3_9604", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_057", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.556, pTM: 0.737, pLDDT: 0.657,
+    sequence: "SCLSEEEWEELEEEERRRREEEERRRREEERRREEEERRRRELERRLR",
+    ipSAE: 0.0393992
+  },
+  {
+    id: "wave3_9605", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_152", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.576, pTM: 0.790, pLDDT: 0.624,
+    sequence: "SAADAVEEARRRAEELEKKLKEKEEEQKKIDELREEERKKA",
+    ipSAE: 0.0384907
+  },
+  {
+    id: "wave3_9606", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_064", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.473, pTM: 0.641, pLDDT: 0.705,
+    sequence: "MEEEKKRKEEEEKERKKKEEEEERKERLKEREERRKLMDSGEYVEFLK",
+    ipSAE: 0.0383086
+  },
+  {
+    id: "wave3_9607", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_011", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.487, pTM: 0.656, pLDDT: 0.738,
+    sequence: "EREEEERRRREEEAERRAREERELRELRRQALLEKVEEELRRREEEERRREEEERRRAEE",
+    ipSAE: 0.0380949
+  },
+  {
+    id: "wave3_9608", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_158", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.569, pTM: 0.719, pLDDT: 0.693,
+    sequence: "MEEKRKREEEERRRREEEERRRREEEERRRREMERRREELRKELLAE",
+    ipSAE: 0.03789
+  },
+  {
+    id: "wave3_9609", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_056", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.484, pTM: 0.627, pLDDT: 0.677,
+    sequence: "RCLSEEEWEELEKKKKEREEKKKKEEEKKKEEEKKRKEEEERRAKELE",
+    ipSAE: 0.0378576
+  },
+  {
+    id: "wave3_9610", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_129", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.543, pTM: 0.689, pLDDT: 0.692,
+    sequence: "SVSDYYLESVKKAKKEEEEKKRKEEEEEKRKKEEEARKKE",
+    ipSAE: 0.0376638
+  },
+  {
+    id: "wave3_9611", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_047", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.456, pTM: 0.652, pLDDT: 0.672,
+    sequence: "MMSEKLLKARELERKVAELKARCKKEPLTEEEKKEIEELEKEKKELEKELEEKE",
+    ipSAE: 0.036695
+  },
+  {
+    id: "wave3_9612", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_001", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.545, pTM: 0.657, pLDDT: 0.698,
+    sequence: "SEEKRKEEMKKKIEERKKLEEKLEELKKKKEEEKKKREKKKKEELEKKKKEEEEKKKKKEEEEK",
+    ipSAE: 0.0354729
+  },
+  {
+    id: "wave3_9613", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_056", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.477, pTM: 0.607, pLDDT: 0.699,
+    sequence: "SKEELEKEKKELEEKIKELDELLEKYKKESEELYEKNKERLESEKRCLEVRKLTLEEKLKEL",
+    ipSAE: 0.0347535
+  },
+  {
+    id: "wave3_9614", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_020", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.386, pTM: 0.564, pLDDT: 0.681,
+    sequence: "KLKELAEELRKKAEELEKKKKEYLEQASEEVAKNYIRKTDAQILTLKSAAEELEKKAEEA",
+    ipSAE: 0.0344421
+  },
+  {
+    id: "wave3_9615", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_112", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.512, pTM: 0.676, pLDDT: 0.741,
+    sequence: "EKEEKEKEEEERKRREEEKEEEERRREDYRARVEAKLKALEEKKRREREAKEREERERERKERE",
+    ipSAE: 0.0334455
+  },
+  {
+    id: "wave3_9616", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_031", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.588, pTM: 0.768, pLDDT: 0.647,
+    sequence: "MDLEAAREAAFERRLAELEARSAAVRALEEARRAAAEAAA",
+    ipSAE: 0.0332158
+  },
+  {
+    id: "wave3_9617", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_050", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.446, pTM: 0.653, pLDDT: 0.734,
+    sequence: "SELYKLRKEIEELKKKKKELEEKLKKASEEEKKKIEEEIKKIEEEIKKLEEEYE",
+    ipSAE: 0.0323518
+  },
+  {
+    id: "wave3_9618", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_059", campaign: "E2 Face (W3)",
+    binder_length: 62, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.412, pTM: 0.623, pLDDT: 0.679,
+    sequence: "SLEKLKEELEKLKKKIEELKKKLEELKKLSEELYEKNKERLEMLKRCYEVRAKRLEELIKKL",
+    ipSAE: 0.0298945
+  },
+  {
+    id: "wave3_9619", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_157", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.546, pTM: 0.720, pLDDT: 0.740,
+    sequence: "SEKERKEREEEEERRKKEEEERRRLEKEREELREKKRKELIKEKLER",
+    ipSAE: 0.0287371
+  },
+  {
+    id: "wave3_9620", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_019", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.353, pTM: 0.582, pLDDT: 0.647,
+    sequence: "SAELERRRAEAEAKVEAELAAGVAAAEAAGSEAARERARLRAEALRAALEAEIAEEEARAAAE",
+    ipSAE: 0.0282351
+  },
+  {
+    id: "wave3_9621", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_028", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.531, pTM: 0.663, pLDDT: 0.632,
+    sequence: "MDVEAAEEALFAEREAALRRRAAEVAAAAAAAAAAAAAAA",
+    ipSAE: 0.0278657
+  },
+  {
+    id: "wave3_9622", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_140", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.451, pTM: 0.562, pLDDT: 0.661,
+    sequence: "DELIKEVEKNIEKIKEEYKNKEEVEKKKKEEKKKEEEEKKKEEEEKKKEEEAKRKEEEKKK",
+    ipSAE: 0.0278085
+  },
+  {
+    id: "wave3_9623", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_156", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.469, pTM: 0.635, pLDDT: 0.689,
+    sequence: "SAERAEREKRIRTYLVEKNEEAERRKREKEERRREEEERRRRE",
+    ipSAE: 0.0271296
+  },
+  {
+    id: "wave3_9624", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_101", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.510, pTM: 0.687, pLDDT: 0.650,
+    sequence: "EEEERRRREEEERRRRAAELEEAARRARLEELEALKEELEK",
+    ipSAE: 0.0246124
+  },
+  {
+    id: "wave3_9625", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_127", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.575, pTM: 0.738, pLDDT: 0.698,
+    sequence: "EEEKLKKEEEKIKEHRKKLEEKERKKREAEERAREERERREREEREREERERRE",
+    ipSAE: 0.024075
+  },
+  {
+    id: "wave3_9626", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_104", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.399, pTM: 0.589, pLDDT: 0.596,
+    sequence: "DAEARLAANRAAAEALVALGDARAAEAARTLRLCAEVEQIRRKLEE",
+    ipSAE: 0.022469
+  },
+  {
+    id: "wave3_9627", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_049", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.469, pTM: 0.719, pLDDT: 0.743,
+    sequence: "SKLYELKLEIEETKKKIEELKKKLKKASPEEQKKLQKEIEELEKKLKELEEEYE",
+    ipSAE: 0.0223837
+  },
+  {
+    id: "wave3_9628", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_067", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.418, pTM: 0.621, pLDDT: 0.650,
+    sequence: "MEEEEKEREERRRREEEERRRREEEERLKRREELREKMDKGELVETLK",
+    ipSAE: 0.0222188
+  },
+  {
+    id: "wave3_9629", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_008", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.445, pTM: 0.642, pLDDT: 0.710,
+    sequence: "DKEKEEEEKKKKEAEEEEKKKKELKELQRKKYLEKVKKLLEEKEKKEKEEEEEKKKKEEE",
+    ipSAE: 0.0200985
+  },
+  {
+    id: "wave3_9630", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_038", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.456, pTM: 0.609, pLDDT: 0.775,
+    sequence: "DKKKEEEEKKRKEEEEKEKKKKEEEEEREKRIKEYEEKKKKEEKELEKKKKEEEEEKKLKEELE",
+    ipSAE: 0.0194688
+  },
+  {
+    id: "wave3_9631", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_064", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.439, pTM: 0.608, pLDDT: 0.762,
+    sequence: "KEKKEEEKKKKLEELKKKEEEKKKKEEEEKKEEENKEKLEKLEKEELEERKKKKEEEE",
+    ipSAE: 0.018164
+  },
+  {
+    id: "wave3_9632", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_132", campaign: "E2 Face (W3)",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.475, pTM: 0.622, pLDDT: 0.774,
+    sequence: "KSIEEILEENRQKKIEERIEKLKKELEKKKEEAKKKEEEEKRKA",
+    ipSAE: 0.0179969
+  },
+  {
+    id: "wave3_9633", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_153", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.493, pTM: 0.669, pLDDT: 0.682,
+    sequence: "SAEDKKKEEKEKSEKLKKELEEKEKLRKELEELRKKELEEE",
+    ipSAE: 0.0167115
+  },
+  {
+    id: "wave3_9634", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_059", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.506, pTM: 0.668, pLDDT: 0.706,
+    sequence: "ECLSEEELKKLEEEEEKKKKKEEEEKKEEEERKRREERRREEERRREE",
+    ipSAE: 0.0144158
+  },
+  {
+    id: "wave3_9635", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_124", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.392, pTM: 0.563, pLDDT: 0.528,
+    sequence: "MKIEYLRPLEELSESFLKLLERKKKAEASPEYAEVAAARAAAAAAAAAAAAAAAAAAAAAA",
+    ipSAE: 0.0124829
+  },
+  {
+    id: "wave3_9636", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_119", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.448, pTM: 0.642, pLDDT: 0.673,
+    sequence: "EEKEEKERWEKVRKENEKIIEEEKKKKEEELKAEEEKRRELLEELKKKKEEEE",
+    ipSAE: 0.0123491
+  },
+  {
+    id: "wave3_9637", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_044", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.369, pTM: 0.582, pLDDT: 0.702,
+    sequence: "AMSEKELRRRRLEREVTELEAECKEREMTEEEKKKIEEMREEAKKLEEELKKKE",
+    ipSAE: 0.0122552
+  },
+  {
+    id: "wave3_9638", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_075", campaign: "E2 Face (W3)",
+    binder_length: 51, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.402, pTM: 0.592, pLDDT: 0.728,
+    sequence: "KLSLEELIEERIKEIEERKKKEKEREEAKRKEEEERRRREEREEEERRRRE",
+    ipSAE: 0.0122399
+  },
+  {
+    id: "wave3_9639", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_005", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.437, pTM: 0.609, pLDDT: 0.753,
+    sequence: "DAEARAAAAAAAAEAARKEREEKLREERQKELEEAEKEKKEKEEKKKKEELE",
+    ipSAE: 0.0111367
+  },
+  {
+    id: "wave3_9640", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_135", campaign: "E2 Face (W3)",
+    binder_length: 44, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.417, pTM: 0.626, pLDDT: 0.693,
+    sequence: "MSIEEILKENLEKKIEEAIKKKEEERKKREEEEEAKRRAAEEAA",
+    ipSAE: 0.0108739
+  },
+  {
+    id: "wave3_9641", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_118", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.438, pTM: 0.626, pLDDT: 0.750,
+    sequence: "SLLEELEKLLKELLEKLKEEEEKKLKEIREKTKKELEEIEKKKEEAEREKKEKE",
+    ipSAE: 0.00963559
+  },
+  {
+    id: "wave3_9642", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_039", campaign: "E2 Face (W3)",
+    binder_length: 63, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.293, pTM: 0.511, pLDDT: 0.752,
+    sequence: "MSLEELKKKLEEEFEKFLKEQKKKLEEASKNPEKLEEVKKKIEEELKKLEEERKEKLRKVLEE",
+    ipSAE: 0.00883816
+  },
+  {
+    id: "wave3_9643", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_108", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.352, pTM: 0.555, pLDDT: 0.726,
+    sequence: "MIDVEGLAKELEEKEKEELEKKLEELEKKKKEVEEVEKLNEEILEEEKEEREKE",
+    ipSAE: 0.00807941
+  },
+  {
+    id: "wave3_9644", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_051", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.423, pTM: 0.658, pLDDT: 0.620,
+    sequence: "DAEAAAAAAAAAAAAAAEERAKRIEEAKKREEELLKEIEG",
+    ipSAE: 0.00801141
+  },
+  {
+    id: "wave3_9645", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_176", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.441, pTM: 0.545, pLDDT: 0.737,
+    sequence: "MIDLEELKKKKEEEEKKKKKLLEELLKTEKVKEYLEKKKEEEEERRKKLARVPKLNEELR",
+    ipSAE: 0.00763311
+  },
+  {
+    id: "wave3_9646", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_130", campaign: "E2 Face (W3)",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.423, pTM: 0.714, pLDDT: 0.676,
+    sequence: "PLPPFEEVLSPEELEELEKEKEEEEKELKELIEEAEERRREEEERREREE",
+    ipSAE: 0.00755001
+  },
+  {
+    id: "wave3_9647", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_020", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.469, pTM: 0.625, pLDDT: 0.744,
+    sequence: "SEEERRRREEEERRRRREEEEERRRKEEEEEKRKEEEEKEKKEEEEKKKKEKEELLKKVREKLL",
+    ipSAE: 0.00753515
+  },
+  {
+    id: "wave3_9648", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_115", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.430, pTM: 0.671, pLDDT: 0.698,
+    sequence: "EEEEEERKKKEEEEEKKKEEEEEKKRKDWLERVKAKLEALEEKKRREEERRRREEERRRREEEA",
+    ipSAE: 0.00686649
+  },
+  {
+    id: "wave3_9649", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_151", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.325, pTM: 0.574, pLDDT: 0.649,
+    sequence: "MEEEERERREEEERRRREEERKRRREAFKRRLEEEERRREEEERKKKE",
+    ipSAE: 0.00665534
+  },
+  {
+    id: "wave3_9650", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_149", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.456, pTM: 0.745, pLDDT: 0.735,
+    sequence: "EEEEEEKKKKEEEEKKKKEELKKKKEENEKKLKEYEEKKKKEEAEKKK",
+    ipSAE: 0.0065222
+  },
+  {
+    id: "wave3_9651", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_144", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.376, pTM: 0.582, pLDDT: 0.700,
+    sequence: "SEEERERERRRRREEEERRRREEEELPERFEALRRLFEERL",
+    ipSAE: 0.00629114
+  },
+  {
+    id: "wave3_9652", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_119", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.368, pTM: 0.602, pLDDT: 0.610,
+    sequence: "EEEAERLAALAAALAAAAAEAEAARAAELAKVEEALAARRAAAEAAARAAAAAA",
+    ipSAE: 0.00625813
+  },
+  {
+    id: "wave3_9653", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_000", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.304, pTM: 0.543, pLDDT: 0.709,
+    sequence: "SKEEREQEMLKKIEEREKLLKELEEAKKRKKEEEEKRKKKREEEERRREEERRRREEERRRREE",
+    ipSAE: 0.00607594
+  },
+  {
+    id: "wave3_9654", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_138", campaign: "E2 Face (W3)",
+    binder_length: 50, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.398, pTM: 0.608, pLDDT: 0.703,
+    sequence: "DEEEERRRREEEERRREEEERRREEELKKRLEEYKKKLKEEEELKALVES",
+    ipSAE: 0.00598832
+  },
+  {
+    id: "wave3_9655", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_004", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.401, pTM: 0.657, pLDDT: 0.718,
+    sequence: "SEEEKRREEEERREREKEREEKKREEEERRKREEEEKKRKEEE",
+    ipSAE: 0.00593907
+  },
+  {
+    id: "wave3_9656", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_070", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.397, pTM: 0.705, pLDDT: 0.735,
+    sequence: "SEKKRREEKKKKEEEEKEKEEKKKKEEEEKLKEVQKEIEERRKELE",
+    ipSAE: 0.00592655
+  },
+  {
+    id: "wave3_9657", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_069", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.380, pTM: 0.667, pLDDT: 0.691,
+    sequence: "SLAEEERRRREEEERRRREEEERRREEEERRRELLKYIEERRKELD",
+    ipSAE: 0.00588928
+  },
+  {
+    id: "wave3_9658", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_101", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.306, pTM: 0.595, pLDDT: 0.660,
+    sequence: "SKEKEEELIKRYEEIRERRKAIEERRRKEEKEEEEEEEEEE",
+    ipSAE: 0.00583717
+  },
+  {
+    id: "wave3_9659", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_118", campaign: "E2 Face (W3)",
+    binder_length: 53, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.356, pTM: 0.574, pLDDT: 0.640,
+    sequence: "EKKKKEEEYKPALEKNEELIEKEEKEREEEKERARRKAAELRAAAEAAAAAAA",
+    ipSAE: 0.00581621
+  },
+  {
+    id: "wave3_9660", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_009", campaign: "E2 Face (W3)",
+    binder_length: 60, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.336, pTM: 0.553, pLDDT: 0.689,
+    sequence: "DEREREEREREERRRREEKEEEELLEKAREAYLAKVEEFRKRREEEERRRREEEERRRRE",
+    ipSAE: 0.00580527
+  },
+  {
+    id: "wave3_9661", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_111", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.367, pTM: 0.606, pLDDT: 0.688,
+    sequence: "SVEERRREEEERRAREERRREEERRRREREREERRRREEE",
+    ipSAE: 0.0057386
+  },
+  {
+    id: "wave3_9662", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_027", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.362, pTM: 0.629, pLDDT: 0.704,
+    sequence: "KKKKKEAKKRAKEEKKKLREEEEEENRKKLKEILEKIEKEKKEKEE",
+    ipSAE: 0.00570972
+  },
+  {
+    id: "wave3_9663", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_113", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.317, pTM: 0.557, pLDDT: 0.691,
+    sequence: "DKEEEEKKKEEELEEEKKLSEEEKLEKRLKEAEERRKAILEELAKK",
+    ipSAE: 0.00564696
+  },
+  {
+    id: "wave3_9664", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_036", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.395, pTM: 0.714, pLDDT: 0.744,
+    sequence: "DLELKLSYLRCEIYRLKLLAEEEKSEKEKEELLKKIEEKEKEREEIEKEIKELE",
+    ipSAE: 0.00559536
+  },
+  {
+    id: "wave3_9665", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_030", campaign: "E2 Face (W3)",
+    binder_length: 52, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.354, pTM: 0.578, pLDDT: 0.723,
+    sequence: "DELEELLREKERELERLREEARRNKTPEAELRLLEAEAEVRRLKELLEELLK",
+    ipSAE: 0.00556628
+  },
+  {
+    id: "wave3_9666", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_124", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.319, pTM: 0.666, pLDDT: 0.722,
+    sequence: "DEEEKEKEIKLIEEHREELKKEEEKRRREEEERRKREEERERREREERERLERL",
+    ipSAE: 0.00545945
+  },
+  {
+    id: "wave3_9667", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_066", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.265, pTM: 0.535, pLDDT: 0.701,
+    sequence: "DKKEKKKKKKKKKEKKKKKKKKKEKEEEKKKEKENEEKLKELEEKELKEREKRREEEE",
+    ipSAE: 0.00545595
+  },
+  {
+    id: "wave3_9668", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_045", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.281, pTM: 0.540, pLDDT: 0.675,
+    sequence: "PVSADLLRARELAARVARLRAEMRRHPATPAELEEIARLEAERAALEARLEAAR",
+    ipSAE: 0.00540113
+  },
+  {
+    id: "wave3_9669", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_156", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.229, pTM: 0.516, pLDDT: 0.698,
+    sequence: "EEERRREEERRRREEEERRRRREEEEEARRREREEKRRKKKKERLEK",
+    ipSAE: 0.0053933
+  },
+  {
+    id: "wave3_9670", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_159", campaign: "E2 Face (W3)",
+    binder_length: 47, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.272, pTM: 0.544, pLDDT: 0.711,
+    sequence: "MEEEERERRRREEEERRRRRREEEERARREKAREEKRKELKKKKLEE",
+    ipSAE: 0.00533324
+  },
+  {
+    id: "wave3_9671", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_013", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.241, pTM: 0.537, pLDDT: 0.662,
+    sequence: "MEARLNLPVESLEYLAQLAKAAGHEEMAELLEKDAEAKKAE",
+    ipSAE: 0.00532345
+  },
+  {
+    id: "wave3_9672", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_007", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.345, pTM: 0.632, pLDDT: 0.683,
+    sequence: "SPEEERRRLEEEREREARERREERERRERRRREEEERRRREAE",
+    ipSAE: 0.00531998
+  },
+  {
+    id: "wave3_9673", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_151", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.231, pTM: 0.531, pLDDT: 0.737,
+    sequence: "MDIFKELRERLEKEERERREKREREERERRERERRRREEEERRRRAEE",
+    ipSAE: 0.00527947
+  },
+  {
+    id: "wave3_9674", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_069", campaign: "E2 Face (W3)",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.352, pTM: 0.569, pLDDT: 0.708,
+    sequence: "SIYEEKLKKEEEEKKEEEERRRRREEEERRRRERREEEERRRREEEERRRRREELE",
+    ipSAE: 0.0052504
+  },
+  {
+    id: "wave3_9675", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_036", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.342, pTM: 0.536, pLDDT: 0.694,
+    sequence: "MEEEEREREERRRREEERRAEEEEKRELEERRKRVEEREEKEEEEEKEREEEEEEEEEEEEEEE",
+    ipSAE: 0.00516971
+  },
+  {
+    id: "wave3_9676", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_102", campaign: "E2 Face (W3)",
+    binder_length: 41, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.342, pTM: 0.630, pLDDT: 0.691,
+    sequence: "DEEKKKKEEEEKKKKLEEELLKASKEKREEELEKLKEELEK",
+    ipSAE: 0.00512622
+  },
+  {
+    id: "wave3_9677", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_028", campaign: "E2 Face (W3)",
+    binder_length: 49, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.249, pTM: 0.552, pLDDT: 0.611,
+    sequence: "EERKRRLEELEREEKERLEEYAKKNSEEEVKKRKEIRELLREKLLEELE",
+    ipSAE: 0.00512588
+  },
+  {
+    id: "wave3_9678", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_112", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.332, pTM: 0.616, pLDDT: 0.737,
+    sequence: "MEEERRRELEERRRREEERSEEEKLEERLEEAKKRREAILEELKKK",
+    ipSAE: 0.00509573
+  },
+  {
+    id: "wave3_9679", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_133", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.327, pTM: 0.563, pLDDT: 0.564,
+    sequence: "YNEDELIEKSAERARLRSEVHRAPGEDEEAKQEKAERAKKLEEELKKEKEEIKEEIEKKKKLEEE",
+    ipSAE: 0.00502785
+  },
+  {
+    id: "wave3_9680", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_010", campaign: "E2 Face (W3)",
+    binder_length: 55, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.270, pTM: 0.570, pLDDT: 0.729,
+    sequence: "KEEEEKKKKEEEEKKRLEKLLKEREEEEKKKKEEEERKEKERKEREEEERRRREE",
+    ipSAE: 0.0049419
+  },
+  {
+    id: "wave3_9681", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_071", campaign: "E2 Face (W3)",
+    binder_length: 56, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.350, pTM: 0.592, pLDDT: 0.715,
+    sequence: "SIYEEKLKEKEEKKKKKEEERKKKEEEKKAEEEKRREEERRRAEEEERRRREEAER",
+    ipSAE: 0.00492829
+  },
+  {
+    id: "wave3_9682", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_033", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.271, pTM: 0.552, pLDDT: 0.680,
+    sequence: "MEVSVEELLKEIVKKKKKTTKRKEEEKKKKEKEEEEARKKAAA",
+    ipSAE: 0.00490437
+  },
+  {
+    id: "wave3_9683", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_035", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.290, pTM: 0.541, pLDDT: 0.731,
+    sequence: "MEEEKRKKEEEEKKKKEEEEEKLLKEREKKREKLEEERKKKEEEEKEKKKKEEEEKRRKEE",
+    ipSAE: 0.00489319
+  },
+  {
+    id: "wave3_9684", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_024", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.250, pTM: 0.491, pLDDT: 0.691,
+    sequence: "WEEKVKEAQEKLEKFKKELEEKKKKEEEEAKEKKKKEEEEKKKKEEEEKKEKEKKEKE",
+    ipSAE: 0.00468626
+  },
+  {
+    id: "wave3_9685", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_063", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.282, pTM: 0.488, pLDDT: 0.679,
+    sequence: "EEEERRRKEELEEKAEKLKEYEEEIKRLEEEARRLLEKGEDELKAIEKRVEAIRKKVEAYKEAK",
+    ipSAE: 0.00468015
+  },
+  {
+    id: "wave3_9686", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_067", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.224, pTM: 0.530, pLDDT: 0.749,
+    sequence: "EEEEKEKEEKEKKEKEEKKKEREEKRKEEEKEKELKKKLEELEEEELKKRLEEKKKRE",
+    ipSAE: 0.00462247
+  },
+  {
+    id: "wave3_9687", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_159", campaign: "E2 Face (W3)",
+    binder_length: 43, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.232, pTM: 0.499, pLDDT: 0.642,
+    sequence: "KKKEEEEKKRVKELLIEKTKEREERLERKEEEERRREEEEEKE",
+    ipSAE: 0.00455039
+  },
+  {
+    id: "wave3_9688", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_003", campaign: "E2 Face (W3)",
+    binder_length: 64, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.223, pTM: 0.507, pLDDT: 0.695,
+    sequence: "SEEERKKEMEEKVKKKKELKKKLEENKKREEEDKKELEEKEKEEKEKKEKEEKEKKKKEKEEEE",
+    ipSAE: 0
+  },
+  {
+    id: "wave3_9689", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_058", campaign: "E2 Face (W3)",
+    binder_length: 48, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.102, pTM: 0.545, pLDDT: 0.733,
+    sequence: "SCLSEEELEELEKKEEKRKKEEKEREEEEKRRREEEERRRREEEERRE",
+    ipSAE: 0
+  },
+  {
+    id: "wave3_9690", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_071", campaign: "E2 Face (W3)",
+    binder_length: 46, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.170, pTM: 0.511, pLDDT: 0.710,
+    sequence: "SEEEKLKKLLEKLEKEKEEEEKKKKEEEEKRRKVEKETKERREELE",
+    ipSAE: 0
+  },
+  {
+    id: "wave3_9691", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_108", campaign: "E2 Face (W3)",
+    binder_length: 40, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.225, pTM: 0.530, pLDDT: 0.695,
+    sequence: "SVEEAERRRREEEERRRREEERRRREEERRREEERRRREA",
+    ipSAE: 0
+  },
+  {
+    id: "wave3_9692", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_127", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.146, pTM: 0.438, pLDDT: 0.643,
+    sequence: "MEIKLLRPEEALPASFKELLAELEKELASPEIAARLAEEEKERRERERREEEERRRREEEE",
+    ipSAE: 0
+  },
+  {
+    id: "wave3_9693", name: "rfdiff_gen10k_e2_sm_j49_savio3_gpu_binder_183", campaign: "E2 Face (W3)",
+    binder_length: 65, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.228, pTM: 0.565, pLDDT: 0.625,
+    sequence: "SEEQKKIEENKELKEKDKEEAVNKLLATDSPETKEEREKLLEEIAREEARRREEKLKEELEEELE",
+    ipSAE: 0
+  },
+  {
+    id: "wave3_9694", name: "rfdiff_gen10k_e2_sm_j4_savio2_1080ti_binder_052", campaign: "E2 Face (W3)",
+    binder_length: 54, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.228, pTM: 0.624, pLDDT: 0.675,
+    sequence: "SKEFEYTEEFLEKLKKEKELLEKRKKELEELKKKLEEELKKILEKLREELEKLE",
+    ipSAE: 0
+  },
+  {
+    id: "wave3_9695", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_026", campaign: "E2 Face (W3)",
+    binder_length: 58, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.185, pTM: 0.473, pLDDT: 0.708,
+    sequence: "WEKKVEEAKKRREEFKKERKEKEEEERRKKEEEERERRERERREEEERREREERERRE",
+    ipSAE: 0
+  },
+  {
+    id: "wave3_9696", name: "rfdiff_gen10k_e2_sm_j4_savio3_gpu_binder_034", campaign: "E2 Face (W3)",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.244, pTM: 0.523, pLDDT: 0.721,
+    sequence: "EEKKKKEEEEKKKKEEEEERKKKLEELEKERKEYEEEREKKEKEEREEEEKKKLEEELAKL",
+    ipSAE: 0
   }
 ];
 
