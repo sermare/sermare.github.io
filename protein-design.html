@@ -793,6 +793,7 @@
           <option value="ipSAE">ipSAE</option>
           <option value="design_ptm">Design pTM</option>
           <option value="pLDDT">pLDDT</option>
+          <option value="af3_iptm">AF3 ipTM</option>
         </select>
         <button id="sortDirBtn" onclick="toggleSortDir()" style="padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);cursor:pointer;font-family:inherit;font-size:14px;" title="Toggle sort direction"></button>
 
@@ -822,7 +823,7 @@
               <th data-col="ipSAE" onclick="sortByColumn('ipSAE')">ipSAE <span class="sort-arrow"></span></th>
               <th data-col="pLDDT" onclick="sortByColumn('pLDDT')">pLDDT <span class="sort-arrow"></span></th>
               <th data-col="design_ptm" onclick="sortByColumn('design_ptm')">pTM <span class="sort-arrow"></span></th>
-              <th data-col="af2_iptm" onclick="sortByColumn('af2_iptm')">AF2 ipTM <span class="sort-arrow"></span></th>
+              <th data-col="af3_iptm" onclick="sortByColumn('af3_iptm')">AF3 ipTM <span class="sort-arrow"></span></th>
               <th data-col="pipeline" onclick="sortByColumn('pipeline')">Pipeline <span class="sort-arrow"></span></th>
               <th>Download</th>
             </tr>
@@ -842,6 +843,7 @@
             <option value="ipTM">ipTM</option>
             <option value="ipSAE">ipSAE</option>
             <option value="pLDDT">pLDDT</option>
+          <option value="af3_iptm">AF3 ipTM</option>
             <option value="binder_length">Binder Length</option>
             <option value="name">Name</option>
           </select>
@@ -1529,6 +1531,7 @@ const designs = [
     ipSAE: 0.877363,
     ipDE: null,
     sequence: "DLFEEIKKVFREIEELEKEAEALESEEERKKLLEERDEKLRKLFKELRELL",
+    af3_iptm: 0.32, af3_ptm: 0.49, af3_delta: 0.642, af3_flag: "discard",
     pdb_file: "data/rbx1_designs/design_7672_model_0.cif"
   },
   {
@@ -1563,6 +1566,7 @@ const designs = [
     ipSAE: 0.860403,
     ipDE: null,
     sequence: "MSKIKEEAEKLKKEIERLAEETGLPREEAEKLALEELREKRNEELAKEAAK",
+    af3_iptm: 0.23, af3_ptm: 0.48, af3_delta: 0.729, af3_flag: "discard",
     pdb_file: "data/rbx1_designs/design_1722_model_0.cif"
   },
   {
@@ -1801,9 +1805,9 @@ const designs = [
     ipSAE: 0.821178,
     ipDE: null,
     sequence: "SREEHLEKQIELLKKQREEKKIAEENPDEKDTAVRLEEIEEEKKKQEELEKELKK",
+    af3_iptm: 0.22, af3_ptm: 0.45, af3_delta: 0.724, af3_flag: "discard",
     pdb_file: "data/rbx1_designs/design_0088_model_0.cif",
-    af2_iptm: 0.07,
-    af2_ptm: 0.25
+    af3_iptm: 0.07
   },
   {
     id: "design_7162",
@@ -2126,6 +2130,7 @@ const designs = [
     ipSAE: 0.808667,
     ipDE: null,
     sequence: "SAEEIKKTKLGALEEAKKKLEEHLEELKERVPEDEEMHKAMEEYVEEKKKEIEKLIEEIKKQLE",
+    af3_iptm: 0.22, af3_ptm: 0.43, af3_delta: 0.735, af3_flag: "discard",
     pdb_file: null
   },
   {
@@ -2262,9 +2267,9 @@ const designs = [
     ipSAE: 0.805131,
     ipDE: null,
     sequence: "SRMEENRRARAERAEALRAAGDLAALEALLAAEAAAQAALAAAAERERAERERRRAEEEA",
+    af3_iptm: 0.78, af3_ptm: 0.67, af3_delta: 0.165, af3_flag: "promote",
     pdb_file: "data/rbx1_designs/design_0357_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_1089",
@@ -2435,8 +2440,7 @@ const designs = [
     ipDE: null,
     sequence: "SAAAAAARAAAERQAALNAELGRLVVATLDPAYARELLAEQERRREEVARLAAEVGEEAARRWEAEWERERERRAAEAFRAFKAEEEERKRKREEEEE",
     pdb_file: "data/rbx1_designs/design_0463_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_0283",
@@ -2522,8 +2526,7 @@ const designs = [
     ipDE: null,
     sequence: "SAALEAARELALEFERIKERLEEKLKYYKEAYEKTGTGRSKEKAEEAEKKLEELKKKLAEELAAA",
     pdb_file: "data/rbx1_designs/design_0330_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.34
+    af3_iptm: 0.1
   },
   {
     id: "design_5730",
@@ -2626,8 +2629,7 @@ const designs = [
     ipDE: null,
     sequence: "LAAAAAALARAQARLDAIAALSPEEQARARAEAEAAARRAEELARRQEENRRAREEAERAR",
     pdb_file: "data/rbx1_designs/design_0627_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_4047",
@@ -2696,8 +2698,7 @@ const designs = [
     ipDE: null,
     sequence: "DAAAAAAAARAAEEAARRAREERERRRRELAEAAEEAERFLRDLVENEENLEERKKKKEAVLKALKDGKEPEELKKEEKEEEEKKKAELERLQELCALRSAAVAERARAAA",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_7031",
@@ -2731,6 +2732,7 @@ const designs = [
     ipSAE: 0.792392,
     ipDE: null,
     sequence: "MRRVTELLRRALEVHRTGSAEEAQAFLREAAAELERLSESPGSEGLLASLAAARIRELLP",
+    af3_iptm: 0.17, af3_ptm: 0.43, af3_delta: 0.794, af3_flag: "discard",
     pdb_file: null
   },
   {
@@ -2766,8 +2768,7 @@ const designs = [
     ipDE: null,
     sequence: "MKTVFLEVKAHKEDIEEIKKKALEIAKKYGLKLILDLKEEKAGTKEEIIKNIEAFFKKEKKKLEE",
     pdb_file: "data/rbx1_designs/design_0012_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_7870",
@@ -2836,8 +2837,7 @@ const designs = [
     ipDE: null,
     sequence: "MEKKLKELEKLYAEVVNFELTELGRIEAEYEKALEESEEKALEILPKLIKKLEEAIEKIEELLKKMEELGETDSEKVEEAKERLYELKQKLEELKKKLEEAKA",
     pdb_file: "data/rbx1_designs/design_0471_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.4
+    af3_iptm: 0.1
   },
   {
     id: "design_5899",
@@ -2872,8 +2872,7 @@ const designs = [
     ipDE: null,
     sequence: "SRERRMYENLLALAKEKAEKTYPEDEEKRKEYLAKLEAEIDARYAELARPEP",
     pdb_file: "data/rbx1_designs/design_0071_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.34
+    af3_iptm: 0.11
   },
   {
     id: "design_1869",
@@ -3163,8 +3162,7 @@ const designs = [
     ipDE: null,
     sequence: "SNKLTPEEIEEQRRLELALLLSRFMMETGVDRETLEAMSEEEREALRREFERRLEEEYRRLEESG",
     pdb_file: "data/rbx1_designs/design_0637_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_0681",
@@ -3318,8 +3316,7 @@ const designs = [
     ipDE: null,
     sequence: "EAAEAERRAAAAKRAAEAAAAAARLAADPSIAVEIWKALPVEDRRRFREVLELE",
     pdb_file: "data/rbx1_designs/design_0520_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_1412",
@@ -3354,8 +3351,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEREKLKERIRELLKELREAGFTEEVDRLEKRLETNSDLPLEEYEELLKECEERIAQIKAALPP",
     pdb_file: "data/rbx1_designs/design_0003_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_6394",
@@ -3440,9 +3436,9 @@ const designs = [
     ipSAE: 0.772776,
     ipDE: null,
     sequence: "KTEEEIAEELSKKFGISLTAARAAVEAVRRILERHPDITAEELAERTGASLEEVEHLLELLK",
+    af3_iptm: 0.57, af3_ptm: 0.58, af3_delta: 0.392, af3_flag: "review",
     pdb_file: "data/rbx1_designs/design_0675_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.37
+    af3_iptm: 0.11
   },
   {
     id: "design_0189",
@@ -3460,8 +3456,7 @@ const designs = [
     ipDE: null,
     sequence: "AAAAAAAAEAAREAAVDAAVEAARAAALEACAACPLCMHANEEEVLKELEEALKKAREALRAAAAALAAQLAALADDAAAQAALAAAAAAAAAAAAAAAALAVEAARA",
     pdb_file: "data/rbx1_designs/design_0189_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_7844",
@@ -3513,8 +3508,7 @@ const designs = [
     ipDE: null,
     sequence: "LRELRLYEGLVELAKEKAEETYPENEEEREKYLKELLEEIEEHFKKIEKPIP",
     pdb_file: "data/rbx1_designs/design_0068_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.34
+    af3_iptm: 0.11
   },
   {
     id: "design_2585",
@@ -3600,8 +3594,7 @@ const designs = [
     ipDE: null,
     sequence: "PEISREELVALVEKNPLSEDSARVRILEREIEEDRAKRNKEAEERDKKELEKKKEELLKTLSEEEAKKALEELEKELEEEREKLKKELEEEIEKKRKEIEKIRKE",
     pdb_file: "data/rbx1_designs/design_0161_model_0.cif",
-    af2_iptm: 0.07,
-    af2_ptm: 0.24
+    af3_iptm: 0.07
   },
   {
     id: "design_1175",
@@ -3738,8 +3731,7 @@ const designs = [
     ipDE: null,
     sequence: "SGRKELEEGIKKILEGYPLEDESFIERAKDKSVIVEYYKEAKDLL",
     pdb_file: "data/rbx1_designs/design_0026_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.25
+    af3_iptm: 0.09
   },
   {
     id: "design_2359",
@@ -3927,8 +3919,7 @@ const designs = [
     ipDE: null,
     sequence: "GPKKKTGVKKEEVEAAIEKFLKDEKNKEIIKEIEERKREELERRFEEERLEEELE",
     pdb_file: "data/rbx1_designs/design_0005_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.31
+    af3_iptm: 0.11
   },
   {
     id: "design_1690",
@@ -3980,8 +3971,7 @@ const designs = [
     ipDE: null,
     sequence: "MKTVFLEVGVHPEHKEEIKERALEIAKEYGLDVILDLKEEEAGTVEEVIADIEALFKKKVEELKA",
     pdb_file: "data/rbx1_designs/design_0015_model_0.cif",
-    af2_iptm: 0.07,
-    af2_ptm: 0.3
+    af3_iptm: 0.07
   },
   {
     id: "design_3647",
@@ -4135,8 +4125,7 @@ const designs = [
     ipDE: null,
     sequence: "AAAALAAALAARALALRLALLDAREAHYAAAAAETGTGRARQLAEAARQARAALEAAVAAALAAA",
     pdb_file: "data/rbx1_designs/design_0331_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_3016",
@@ -4188,8 +4177,7 @@ const designs = [
     ipDE: null,
     sequence: "SKEVQAVKLQILLEYRRFMRELGEALNESIEKGLEVLKRFCKWLEEVAEKYPEVRPLAGELMLRAIEEFKEWTGEELSEEMQELLEKAREAAEEGRRARP",
     pdb_file: "data/rbx1_designs/design_0074_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.29
+    af3_iptm: 0.11
   },
   {
     id: "design_2653",
@@ -4275,8 +4263,7 @@ const designs = [
     ipDE: null,
     sequence: "SAAAAAAAAAAAEAARRAREEELAERLRRAIETEEAREELYEEVLEEARLRREIAALLEQLAAETDPARRAELQARIDELLARLRALEEERRLAEAGLRRAAEAAAAA",
     pdb_file: "data/rbx1_designs/design_0389_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.37
+    af3_iptm: 0.1
   },
   {
     id: "design_2596",
@@ -4311,8 +4298,7 @@ const designs = [
     ipDE: null,
     sequence: "MTKKDEFERRVGELEIRLRELEARLAAARAELEARRAALAPEIERLLAEDPAATEALRAELAAEERRVAGYEDLVRRVREELERMRREEEEA",
     pdb_file: "data/rbx1_designs/design_0243_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_1512",
@@ -4415,8 +4401,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEAERLAAALAAAAAAAAAAAAAAAFFEGGRRRRREELERERRARELE",
     pdb_file: "data/rbx1_designs/design_0550_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.3
+    af3_iptm: 0.09
   },
   {
     id: "design_1267",
@@ -4553,8 +4538,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEKEKKEIEEKTKEKLKKLEEEEKKKKEKEKKEGKELKKKFEELFEKIKKEYPELSEEECKELARKELEEEEEKKRKEKAQEIKLEVEKEAEKKKKEEEEKKKLEELLK",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.38
+    af3_iptm: 0.09
   },
   {
     id: "design_5268",
@@ -4708,8 +4692,7 @@ const designs = [
     ipDE: null,
     sequence: "SEALELARLRALERRRVLSRLDAAYAHYKAAYEKTGTGRSKELADAYEEKKAAYEAAVAAEEAAA",
     pdb_file: "data/rbx1_designs/design_0328_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.36
+    af3_iptm: 0.08
   },
   {
     id: "design_6041",
@@ -4931,8 +4914,7 @@ const designs = [
     ipDE: null,
     sequence: "SAAEAARAAAEAAAEAAKLAEILASSYYDHPLEKKEIEEKAKEAREKEERERELREELERLLE",
     pdb_file: "data/rbx1_designs/design_0541_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_6139",
@@ -5222,8 +5204,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEEKLKKLEEEREKKLEEEAKKDPSVNKKLLEAKKKEKEIEKKIEELEKKKKELEEELELLKASEGDPEEKKKKIEELKKEIEEIEKEIEKLKEEKKKVEKEIEEAKKKKEELEKE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.37
+    af3_iptm: 0.08
   },
   {
     id: "design_6032",
@@ -5428,8 +5409,7 @@ const designs = [
     ipDE: null,
     sequence: "MTPEELEAAIEALEAARDAEIEAFRAALEAEREARLEAARAAGEEVSEEELEEMRRRMEEEIFRHEEEVTRRTAAELVNRLGSEEAARRLMEKLQREKEERKEELEEEEEE",
     pdb_file: null,
-    af2_iptm: 0.12,
-    af2_ptm: 0.39
+    af3_iptm: 0.12
   },
   {
     id: "design_8813",
@@ -5838,8 +5818,7 @@ const designs = [
     ipDE: null,
     sequence: "KELEELKKKYDEKLAEARELELRIKIEGGKKREELEKEIKELYEKLLKEGTEEEAKKKAEELREKKEKEIEEEIEKLEKEKEELLKEAEEILAEIHRLEKKLKEE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_2914",
@@ -5992,6 +5971,7 @@ const designs = [
     ipSAE: 0.72686,
     ipDE: null,
     sequence: "KYTAFVFDAKTGKGLGIAEGDSEEEALEEASKLVGGAKVVKEERSGNVGIAFLEK",
+    af3_iptm: 0.32, af3_ptm: 0.4, af3_delta: 0.407, af3_flag: "discard",
     pdb_file: null
   },
   {
@@ -6061,8 +6041,7 @@ const designs = [
     ipDE: null,
     sequence: "VKKLEEELEKLKEKKKEIEEALKSGKLKESMKNSVERNMFELEKKIKELEEEKERALKEK",
     pdb_file: "data/rbx1_designs/design_0339_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.26
+    af3_iptm: 0.08
   },
   {
     id: "design_0672",
@@ -6131,8 +6110,7 @@ const designs = [
     ipDE: null,
     sequence: "REEEERRRREEEARARAEREAARELPVRERVEEIRRTVVGTPEEEAAIVAAFLEELKKLLG",
     pdb_file: "data/rbx1_designs/design_0074_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.29
+    af3_iptm: 0.11
   },
   {
     id: "design_4584",
@@ -6218,8 +6196,7 @@ const designs = [
     ipDE: null,
     sequence: "TQEEAQERLARRNELNKKIEEALAPLEERIRELERELRELEERARERGEDVSEELEALRREIEELRRKMVEIIEKAEEEARRKEEEEEREREAE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_3131",
@@ -6645,8 +6622,7 @@ const designs = [
     ipDE: null,
     sequence: "EAERRLEERRRRREAFLRRHAGEAERLRAAAAAAAAAAAAAAAAAAAAAAAALAA",
     pdb_file: "data/rbx1_designs/design_0058_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.28
+    af3_iptm: 0.11
   },
   {
     id: "design_2493",
@@ -6834,8 +6810,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEALLERAEKLIRVNELTREAERLEKELASVSEEEKPKLLEEINRLREEAGRLERELLEK",
     pdb_file: "data/rbx1_designs/design_0479_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.36
+    af3_iptm: 0.09
   },
   {
     id: "design_0492",
@@ -6921,8 +6896,7 @@ const designs = [
     ipDE: null,
     sequence: "SSKPKAVVLVRTKRNGEVTFEIYRGVSYEEAAKLAEELSKEENGEVRVVRVFEE",
     pdb_file: "data/rbx1_designs/design_0033_model_0.cif",
-    af2_iptm: 0.12,
-    af2_ptm: 0.3
+    af3_iptm: 0.12
   },
   {
     id: "design_2333",
@@ -7059,8 +7033,7 @@ const designs = [
     ipDE: null,
     sequence: "KEVEEQARIEFRARKDYSKAELEKNPEEILEEAKKKLEEDLERHKTLEEWRKKME",
     pdb_file: "data/rbx1_designs/design_0265_model_0.cif",
-    af2_iptm: 0.68,
-    af2_ptm: 0.54
+    af3_iptm: 0.68
   },
   {
     id: "design_8841",
@@ -7571,8 +7544,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEQRLLAELYEQKKKELEEFLREEFRLRLEAEKLEKTDPEKAKEIIEELKEKKKAFFETFKELKQLSKEQRAELRVALLRYGNEIEPEIEEEVRKEAEEEEAK",
     pdb_file: "data/rbx1_designs/design_0067_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.3
+    af3_iptm: 0.08
   },
   {
     id: "design_4931",
@@ -7675,8 +7647,7 @@ const designs = [
     ipDE: null,
     sequence: "MSEEERERREAEERRRARREAARRAAARAARAAAEEARRRAEEAL",
     pdb_file: "data/rbx1_designs/design_0314_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_1611",
@@ -7745,8 +7716,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEEKLLKEVEEKRLELSPEYELERRRRREEEEEARRRAEAPARRAAAEAARRAAL",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.28
+    af3_iptm: 0.1
   },
   {
     id: "design_1710",
@@ -7780,9 +7750,9 @@ const designs = [
     ipSAE: 0.706506,
     ipDE: null,
     sequence: "KVTVEVVSNPPASPAAVEAAREAAVRALDERGATAAARAAAEAALAAMGDPKAAVFVRVEVE",
+    af3_iptm: 0.56, af3_ptm: 0.58, af3_delta: 0.341, af3_flag: "review",
     pdb_file: "data/rbx1_designs/design_0661_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.3
+    af3_iptm: 0.1
   },
   {
     id: "design_8784",
@@ -8225,8 +8195,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEEEERRREEEREEERERLLREIEEALASKKYEELLEKELKEELEKKLAE",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.23
+    af3_iptm: 0.1
   },
   {
     id: "design_2994",
@@ -8941,8 +8910,7 @@ const designs = [
     ipDE: null,
     sequence: "EEKEEKEKKEKEKKEEEEEKKKLKEEIEELQARRPERRAAELAALA",
     pdb_file: "data/rbx1_designs/design_0501_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.22
+    af3_iptm: 0.08
   },
   {
     id: "design_2941",
@@ -9164,8 +9132,7 @@ const designs = [
     ipDE: null,
     sequence: "SAAEAAARAAAAAREAEIEAKTARALEALRASDPEAAEVLEARLAAL",
     pdb_file: "data/rbx1_designs/design_0021_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.31
+    af3_iptm: 0.1
   },
   {
     id: "design_2715",
@@ -9234,8 +9201,7 @@ const designs = [
     ipDE: null,
     sequence: "KEVEEEERRKLREAALAAREAAAKARAAREAEERARREALA",
     pdb_file: "data/rbx1_designs/design_0263_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_1481",
@@ -9304,8 +9270,7 @@ const designs = [
     ipDE: null,
     sequence: "LRERVEEERRRVEELKREEEERKKKAEELNKKIKEEEKEKE",
     pdb_file: "data/rbx1_designs/design_0350_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_0682",
@@ -9374,8 +9339,7 @@ const designs = [
     ipDE: null,
     sequence: "EEELQRKLEELREKERRKEELERLRRLAEELARDPEAAKKRVEAALAAAAAAAAAAAAAAAAA",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_0145",
@@ -9478,8 +9442,7 @@ const designs = [
     ipDE: null,
     sequence: "LAELLAAQAAALAAAAELLANRVEMLKLRQEAAEAARAARRAEEERRRLE",
     pdb_file: "data/rbx1_designs/design_0637_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_8811",
@@ -10058,8 +10021,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEELKEYEEAYAAVKDALLTELGRAEAAYAAALAASREAALAFLPELIALLEKLKEQIEKTLELFRKLGLEDSEEVKELEEQKAELEERIEELRAEAAAAAA",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.4
+    af3_iptm: 0.1
   },
   {
     id: "design_7000",
@@ -10315,8 +10277,7 @@ const designs = [
     ipDE: null,
     sequence: "KDENKMEEYLEAKRKAFEEKLKELEKEIKEKEEEIKKKEEEIKKLEEKIKENEEDPKAKELKEEVEKKKEEIEKEKKEIEEKKQEAAAERARLERLEKQL",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_0673",
@@ -10333,9 +10294,9 @@ const designs = [
     ipSAE: 0.675514,
     ipDE: null,
     sequence: "SAAAAAGEKAAAAAEAGASTDELAKLWVEAAKLAAASSDPAAANAAFIGIAKAIVIRMKRLLGL",
+    af3_iptm: 0.85, af3_ptm: 0.73, af3_delta: 0.057, af3_flag: "top hit",
     pdb_file: "data/rbx1_designs/design_0673_model_0.cif",
-    af2_iptm: 0.13,
-    af2_ptm: 0.4
+    af3_iptm: 0.13
   },
   {
     id: "design_1217",
@@ -10676,8 +10637,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEKKKKEEELKKLAEEKKKREEEIKRLEEEAKRLLEKGEDELKAIELRGEAIRKKVEEYEKAK",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_7712",
@@ -11222,8 +11182,7 @@ const designs = [
     ipDE: null,
     sequence: "GEKKLEEMCKDPESTLRRLSGAKAAAALAAALAAAAAALAAAAAAA",
     pdb_file: "data/rbx1_designs/design_0501_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.22
+    af3_iptm: 0.08
   },
   {
     id: "design_4286",
@@ -11700,8 +11659,7 @@ const designs = [
     ipDE: null,
     sequence: "EEKKAKEEEEKKEEEKEKEKKEEEKKKREEEIKERLRKAEELEKKGELAEEARKIREEIERERAEAAQLAAAAAAAAAAAAAAAAAAAAA",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.24
+    af3_iptm: 0.08
   },
   {
     id: "design_1861",
@@ -11821,8 +11779,7 @@ const designs = [
     ipDE: null,
     sequence: "MSRDELLKKILEKKKEEIKKLKEEAKKAKEEDEEKAKKLEEEIKKLEEEVKELLKLP",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.26
+    af3_iptm: 0.07
   },
   {
     id: "design_2133",
@@ -12180,8 +12137,7 @@ const designs = [
     ipDE: null,
     sequence: "SELLKKLEELKERLKELEEEAERNKTPEAEVELRRARAEVRQLEEELEKLLE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.24
+    af3_iptm: 0.08
   },
   {
     id: "design_6450",
@@ -12318,8 +12274,7 @@ const designs = [
     ipDE: null,
     sequence: "SAEEAERAAEEAEREALEEKKREEEREEEELKRELAELEEKIKKLKEELEKKKKEGSKDIEKLEKELKELEKKKEELKKKLEEFEEKKKEKFERLEELEKFREEG",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_5078",
@@ -12371,8 +12326,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEARERARREAEERFNREAEELGVLGVKSPEEQRKHLRNLAARRAAVEGREQELLEERVAAAL",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_4005",
@@ -12628,8 +12582,7 @@ const designs = [
     ipDE: null,
     sequence: "AAAAAAAAAEQAALEAARARLREEAEAARRRAEEERRRREERRREEEERRRE",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.27
+    af3_iptm: 0.07
   },
   {
     id: "design_1472",
@@ -13480,8 +13433,7 @@ const designs = [
     ipDE: null,
     sequence: "AAEEALKKQLEDIVLHLRQEMIREAVREGVSKEELEEREKELEKKIEELRKLLE",
     pdb_file: "data/rbx1_designs/design_0570_model_0.cif",
-    af2_iptm: 0.12,
-    af2_ptm: 0.3
+    af3_iptm: 0.12
   },
   {
     id: "design_0153",
@@ -13499,8 +13451,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEKERELEELKKRAGELRLEKANLEKKAEALKKNAEAMKKVLEKDPNNVNAKAELKKLEEKAKELEKKAKELGEEAEKIEKKLKEAEEE",
     pdb_file: "data/rbx1_designs/scaleup_0153.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.43
+    af3_iptm: 0.08
   },
   {
     id: "design_1520",
@@ -13654,8 +13605,7 @@ const designs = [
     ipDE: null,
     sequence: "AAAAAAAAAAAAAAAAQAAAFEAWDARHREIYAEIVKMKKEGIKTELEREVLKKKADLLQLMLRARVTDFRAELPRIEEAERELRELERRLREERRRREEEERARAEE",
     pdb_file: null,
-    af2_iptm: 0.16,
-    af2_ptm: 0.49
+    af3_iptm: 0.16
   },
   {
     id: "design_8869",
@@ -13996,8 +13946,7 @@ const designs = [
     ipDE: null,
     sequence: "SLITPEEREALEELARKREAEAEAAAAAAAAAAAAAAAAAAAAAAEEARRAAA",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.32
+    af3_iptm: 0.1
   },
   {
     id: "design_1570",
@@ -14168,8 +14117,7 @@ const designs = [
     ipDE: null,
     sequence: "MVEELRAREPEALAALRARELATDPAGAAEKVAALRARIERAIEFLERAEA",
     pdb_file: "data/rbx1_designs/design_0510_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.29
+    af3_iptm: 0.1
   },
   {
     id: "design_6693",
@@ -14323,8 +14271,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEREKLRKEILELLEKLKKEGITEEVDRLLTRLETNEDLPLEELEKIKKECEELLKLIEEAKPP",
     pdb_file: "data/rbx1_designs/scaleup_0000.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_6637",
@@ -14835,8 +14782,7 @@ const designs = [
     ipDE: null,
     sequence: "LSPELEERLRRLGARLRALKKLYEEAKKAEEKGDEEKLLKVFECLSSLKKEDVEKLAKKTGKSLKEAALEAMEKELERLEEEYARLQEELLERLLAALLA",
     pdb_file: "data/rbx1_designs/design_0071_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.34
+    af3_iptm: 0.11
   },
   {
     id: "design_0291",
@@ -14956,8 +14902,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEEERRRREEEERRKREKEEEEKRKEAEEKRKKLEEEKKKKEEEEE",
     pdb_file: null,
-    af2_iptm: 0.06,
-    af2_ptm: 0.28
+    af3_iptm: 0.06
   },
   {
     id: "design_5306",
@@ -15281,8 +15226,7 @@ const designs = [
     ipDE: null,
     sequence: "SAAEAERRKKEEEKKELEKLKKETLKEIEEEMKKFEEFLKKAKELVKEYPGRMEKILLEEFEKFKEEFKKKIEEKKEELKEDEEFLKYLEEVEKEVEEKYEEFKKFI",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.34
+    af3_iptm: 0.11
   },
   {
     id: "design_0122",
@@ -15300,8 +15244,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEEKKKKAEEKKKEKEKELKKKLEEELRRKAREEEEEERRRREEE",
     pdb_file: "data/rbx1_designs/design_0122_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.3
+    af3_iptm: 0.08
   },
   {
     id: "design_3740",
@@ -15404,8 +15347,7 @@ const designs = [
     ipDE: null,
     sequence: "DEKEEEEKRKKEEEEEKRRREEALRERLEEARERAREEERRAREEAE",
     pdb_file: "data/rbx1_designs/design_0067_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.3
+    af3_iptm: 0.08
   },
   {
     id: "design_2756",
@@ -15729,8 +15671,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEEELLKRIREEYERFLRRIAPLEALPAVAAALARLREEARERGRELVREKFLTPEEQEDERYLEVATGLELESLLAPVLAVLAAAAELRAALE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.25
+    af3_iptm: 0.09
   },
   {
     id: "design_0806",
@@ -15799,8 +15740,7 @@ const designs = [
     ipDE: null,
     sequence: "SAAARAAAERERQEVIDRALELLAKDPSLSVEEKCLLQRAREDPEAQERIAELLKRREAAA",
     pdb_file: "data/rbx1_designs/design_0094_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_3199",
@@ -16634,8 +16574,7 @@ const designs = [
     ipDE: null,
     sequence: "AEELEKALEELARRLAEAERAAAELAADPSILLEIIKSLPVEERLAFKHLLEHL",
     pdb_file: "data/rbx1_designs/design_0523_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.29
+    af3_iptm: 0.11
   },
   {
     id: "design_1688",
@@ -16874,8 +16813,7 @@ const designs = [
     ipDE: null,
     sequence: "SLEARRQRLLELYKEKLDYELNVVKGKELEDKLSEEEKKKILEEEYEKRMKEVEEELEALLAAKA",
     pdb_file: null,
-    af2_iptm: 0.06,
-    af2_ptm: 0.28
+    af3_iptm: 0.06
   },
   {
     id: "design_6249",
@@ -17114,8 +17052,7 @@ const designs = [
     ipDE: null,
     sequence: "LSEEELLERLEEREKLEEELKRRREEAAAELARRLAEAAAEAARAAEAAA",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.3
+    af3_iptm: 0.08
   },
   {
     id: "design_7911",
@@ -17303,8 +17240,7 @@ const designs = [
     ipDE: null,
     sequence: "DAEAARRAAEAAAREAARRVEEEAARRRQAALRAELERRAALE",
     pdb_file: "data/rbx1_designs/design_0305_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_6560",
@@ -18325,8 +18261,7 @@ const designs = [
     ipDE: null,
     sequence: "MTPEELKKKIEEIEKEMEEKIERFRRELEEELRARLEAAAAAGEELSEEELLRLRLEREEEILRKEQEVTDEAAARILLELGSKEAANRLKTKLKKKKEEYEKKLKELEEK",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.38
+    af3_iptm: 0.08
   },
   {
     id: "design_1492",
@@ -19211,8 +19146,7 @@ const designs = [
     ipDE: null,
     sequence: "METVFLRVGVHPEDAEAVRERALALAEEAGLRLILRLEEAEAGTREEVVADIEAFLERQRAKLAA",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.25
+    af3_iptm: 0.09
   },
   {
     id: "design_1214",
@@ -19315,8 +19249,7 @@ const designs = [
     ipDE: null,
     sequence: "DLEELLKKLLEELEKKYKEVLEELENRHKEIFKKIVEMEEKGIETEEEREVLQKAADLLQLILESYVGSLKETLPKIEEAEKELEALEKAREEKKAAEEAAAAAAAAA",
     pdb_file: null,
-    af2_iptm: 0.12,
-    af2_ptm: 0.3
+    af3_iptm: 0.12
   },
   {
     id: "design_8349",
@@ -19385,8 +19318,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEEREKLRKKIEELRKEIEELRKRIEETLATGSPEDTEPLRARLEELEKELRELMRG",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.31
+    af3_iptm: 0.08
   },
   {
     id: "design_1042",
@@ -19948,8 +19880,7 @@ const designs = [
     ipDE: null,
     sequence: "MTPEALAAAAAAAAAAARRAACEGLRQILNDAILKGKEALKELEELLAAAAAAAAAA",
     pdb_file: null,
-    af2_iptm: 0.17,
-    af2_ptm: 0.35
+    af3_iptm: 0.17
   },
   {
     id: "design_0927",
@@ -20154,8 +20085,7 @@ const designs = [
     ipDE: null,
     sequence: "MAASGDVATAKELIEKYRAFTITVEFPPDVKIEKDPIDGELITEVSKEGKELGLGPTDPRNLILYGLDNIAYHFLSAAKWYNTKPVSPANGKPFVPRFAEM",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.23
+    af3_iptm: 0.1
   },
   {
     id: "design_2541",
@@ -20190,8 +20120,7 @@ const designs = [
     ipDE: null,
     sequence: "MEISREELVELREKRPLSDDSAEVSLLERRIETERAEENARLRERSRREGEEARRRLLATLSPEEAAEEIARLEERLRREREEARRELERKEEELRRKIAEIRAA",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.28
+    af3_iptm: 0.07
   },
   {
     id: "design_6308",
@@ -20362,8 +20291,7 @@ const designs = [
     ipDE: null,
     sequence: "MTEEELKKTEELLELKKKDPENFAETYKKKLEEEKERKKKEEEERRKEEE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.38
+    af3_iptm: 0.09
   },
   {
     id: "design_6428",
@@ -20976,8 +20904,7 @@ const designs = [
     ipDE: null,
     sequence: "AEAAARAEAAAAAEAAERKRREEELAEEEKRREVLKITEERRKELE",
     pdb_file: "data/rbx1_designs/design_0068_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.34
+    af3_iptm: 0.11
   },
   {
     id: "design_3459",
@@ -21012,8 +20939,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEKKREEEEKLEASPERKQLLLLRIEYNVRLLPESVSEEEREALLAAAKAALEAAL",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.3
+    af3_iptm: 0.1
   },
   {
     id: "design_1137",
@@ -21065,8 +20991,7 @@ const designs = [
     ipDE: null,
     sequence: "PLSEEEKKEIEEKLNKRIEELLKEREEERRREEERRRLAELLRELLA",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.32
+    af3_iptm: 0.1
   },
   {
     id: "design_1140",
@@ -21662,8 +21587,7 @@ const designs = [
     ipDE: null,
     sequence: "KPSKELLDKIAENVLGLCELLEELAELVGSEKKEEIEKLKKEIKEAYEKGNLEELEKVLKKIEELFDELLKKTESFPPSEQEKIDELIERRRELLLKYKETLKEIE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.36
+    af3_iptm: 0.09
   },
   {
     id: "design_1175",
@@ -22174,8 +22098,7 @@ const designs = [
     ipDE: null,
     sequence: "VVEQLQRKVDQLRRFREEVLEEKRRIEELEAGAPGQTDRSELERARERLEQLVRYILGENVEKEPELQALLAQSVEELEAALDERIAELEERLREAEEARRRAEEA",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.26
+    af3_iptm: 0.1
   },
   {
     id: "design_4219",
@@ -22669,8 +22592,7 @@ const designs = [
     ipDE: null,
     sequence: "MIDVGIRAETVGEAYKLMAEEVGEKDPEVLEKCLELTIDEKLEIDGVVLEMELA",
     pdb_file: "data/rbx1_designs/design_0084_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.31
+    af3_iptm: 0.09
   },
   {
     id: "design_2219",
@@ -22824,8 +22746,7 @@ const designs = [
     ipDE: null,
     sequence: "LSEEELVERIEKREKLRKELEEAKKKAEEAAKKAAEEALRKLLEELLALL",
     pdb_file: null,
-    af2_iptm: 0.06,
-    af2_ptm: 0.26
+    af3_iptm: 0.06
   },
   {
     id: "design_4978",
@@ -23081,8 +23002,7 @@ const designs = [
     ipDE: null,
     sequence: "REELLRQARREENRLKLTSTEAEAEAWRTENVQLPEEERAAILAAAEEARAAA",
     pdb_file: "data/rbx1_designs/design_0604_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.29
+    af3_iptm: 0.08
   },
   {
     id: "design_7051",
@@ -23253,8 +23173,7 @@ const designs = [
     ipDE: null,
     sequence: "AEAAARAAAALAALAAELEKIREEKTREELEKKKEELLKEKEEEKKKKELEELE",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.28
+    af3_iptm: 0.07
   },
   {
     id: "design_1268",
@@ -23357,8 +23276,7 @@ const designs = [
     ipDE: null,
     sequence: "ISLEEGIEIESKKAKEKSEELAKIAKKELEEREKILKEMEELRK",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.27
+    af3_iptm: 0.08
   },
   {
     id: "design_6363",
@@ -23580,8 +23498,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEERREAERRAREEAEAALRAALREYLEGGRERRRRERLEEARRAAEP",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_1287",
@@ -23633,8 +23550,7 @@ const designs = [
     ipDE: null,
     sequence: "DEVVEALAAAARAAELAARAAAAAAAAAAEAAREAARRAAE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_1290",
@@ -23754,8 +23670,7 @@ const designs = [
     ipDE: null,
     sequence: "MEKEEEERRREEEERRERERKEEEERKRREEEEKERLARLEELRTNGAAAAAALEAALAALPDEAARAELRARFEAERAEVEAWAEEREKIINEIREEFLKE",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.26
+    af3_iptm: 0.11
   },
   {
     id: "design_1297",
@@ -24011,8 +23926,7 @@ const designs = [
     ipDE: null,
     sequence: "SAAAAAEKAKREVEEAQNAELGKLVVFTEDPELAKEYLEKKEEAEKEYEKLKKEVGEEEAEKKKKEWEEKEREKLAEEYRKWKEKLEKEKKEKEEKEK",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.32
+    af3_iptm: 0.11
   },
   {
     id: "design_7796",
@@ -24183,8 +24097,7 @@ const designs = [
     ipDE: null,
     sequence: "SADEYLKEQEEVLKEFLEKHKGEAEKLEREAAEEAARRAAREAEEAARLAALLAS",
     pdb_file: "data/rbx1_designs/design_0057_model_0.cif",
-    af2_iptm: 0.12,
-    af2_ptm: 0.31
+    af3_iptm: 0.12
   },
   {
     id: "design_0270",
@@ -24541,9 +24454,9 @@ const designs = [
     ipSAE: 0.571783,
     ipDE: null,
     sequence: "DLEKLLKEIEELEKEIEELEKKIKEIEEEIKKLEEIYKKLEEFKKRCESIVKRTEFVDKEKTEEVKKKMEEAIEEFEKENKKKIEEAKKKIEELKKKLEELKKKLEELKKKLEELKEKLE",
+    af3_iptm: 0.11, af3_ptm: 0.37, af3_delta: 0.764, af3_flag: "discard",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_1343",
@@ -24901,8 +24814,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEKKKEEEEKKKEEEERKKEEEKKKEEEEKKKLEKVKEAIEEQRKKDLEKLE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_6754",
@@ -25277,8 +25189,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEKRAFEEELRARLAELKALGYKVSEVQRRLAESYRFLKQQLGEEEIKELREKGPEARAWILEMEACELLVEAEKLYKEAVEAGDSEEAKEKLEEAERILEEMNRRLEEEE",
     pdb_file: null,
-    af2_iptm: 0.15,
-    af2_ptm: 0.41
+    af3_iptm: 0.15
   },
   {
     id: "design_1184",
@@ -25381,8 +25292,7 @@ const designs = [
     ipDE: null,
     sequence: "KEKEELKKKIEELKKKAEELEKKAEELKGLAESLKKEMEKRNEKLRKENEELRKEAEKLDAEEKAKVEAEIKRKEAEVESLEKYVKELEEKAKEIEEKAKELKEEAKKLEEEAK",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.27
+    af3_iptm: 0.07
   },
   {
     id: "design_0507",
@@ -25400,8 +25310,7 @@ const designs = [
     ipDE: null,
     sequence: "MPSEKELEEERKHIEEYEEKLREEEKERREREEREEEERRRREEEARRRREEEEARRAA",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.36
+    af3_iptm: 0.11
   },
   {
     id: "design_1310",
@@ -25572,8 +25481,7 @@ const designs = [
     ipDE: null,
     sequence: "DAEKKEKEEKIKEEIKKQEEEVKKKKEEYRKKLKEELEKKKE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.29
+    af3_iptm: 0.08
   },
   {
     id: "design_9328",
@@ -25812,8 +25720,7 @@ const designs = [
     ipDE: null,
     sequence: "SLRELEKKLLEKEIEKIKEKFPGLTEEEIEELIEFGKKNKEFALKYLEGEVKEEFESLPKEKQFALEEYAKVVKELEEKIKKLKEELEKIEE",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.3
+    af3_iptm: 0.11
   },
   {
     id: "design_4826",
@@ -25916,8 +25823,7 @@ const designs = [
     ipDE: null,
     sequence: "DEAARLAAEAEAAARAAAAEAAEAARAEVLSPRLAEALEFYKKKLEEEKK",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.23
+    af3_iptm: 0.09
   },
   {
     id: "design_1423",
@@ -26037,8 +25943,7 @@ const designs = [
     ipDE: null,
     sequence: "REEEEKRRKEREKEEEERRLEEARRREEEERERLEELLPP",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_0431",
@@ -26056,8 +25961,7 @@ const designs = [
     ipDE: null,
     sequence: "SLEKEINDAVKKLQEEAKKKKEEIKKLEEEAKKGTEEEKEKKEKEIEKIKEELEKKQLELAENRRKLLEEAEEERKEEEEELEEELEELLERLEEEL",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.25
+    af3_iptm: 0.07
   },
   {
     id: "design_3734",
@@ -26313,8 +26217,7 @@ const designs = [
     ipDE: null,
     sequence: "REAEERRRREERLREAIERIEKLREETEKKIAEDPEKAEEYMNELLEELRRIREELEA",
     pdb_file: "data/rbx1_designs/design_0673_model_0.cif",
-    af2_iptm: 0.13,
-    af2_ptm: 0.4
+    af3_iptm: 0.13
   },
   {
     id: "design_2729",
@@ -26570,8 +26473,7 @@ const designs = [
     ipDE: null,
     sequence: "DLKEKIEKEKEELKKLKEEEGVLSEKTVERRLKELERELKEAEAKE",
     pdb_file: "data/rbx1_designs/design_0510_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.29
+    af3_iptm: 0.1
   },
   {
     id: "design_6232",
@@ -26793,8 +26695,7 @@ const designs = [
     ipDE: null,
     sequence: "EELKEKLEELKKELEEFEKEAEEELKKMKEELKKAGEEKEKYEEELKKFEEEVKKKLEEMKKEIEELETKPYKEYQEEKEKELREKDLEKKRKEEEEARRREE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.23
+    af3_iptm: 0.08
   },
   {
     id: "design_7318",
@@ -26914,8 +26815,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEERRRELEEEEERRRAIEERRAALRAYLEANREALSPEEIARLQQEIAVLEAL",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.34
+    af3_iptm: 0.1
   },
   {
     id: "design_4301",
@@ -27052,8 +26952,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEVKEALEKAKKELEEKEKAAKKLAEDPSIAKEYIAKLPTEEKVRFKELRELE",
     pdb_file: "data/rbx1_designs/design_0522_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_1660",
@@ -27581,8 +27480,7 @@ const designs = [
     ipDE: null,
     sequence: "SGREELLKGVLDIVRGAEQPDKSFLEKAKEEPVVVKYIEEKKDLL",
     pdb_file: "data/rbx1_designs/design_0024_model_0.cif",
-    af2_iptm: 0.14,
-    af2_ptm: 0.23
+    af3_iptm: 0.14
   },
   {
     id: "design_1883",
@@ -27770,8 +27668,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEARKKAEAEAAAAAAAAAAAAAAAAAAAEAAAEAEAAEAARRAAEAAKEAEAAALLAE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.31
+    af3_iptm: 0.08
   },
   {
     id: "design_1531",
@@ -31784,8 +31681,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEERRERERREREREERLKRYEALEEVQKEMKEELEKELKEKKEKE",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.26
+    af3_iptm: 0.1
   },
   {
     id: "design_1767",
@@ -32568,8 +32464,7 @@ const designs = [
     ipDE: null,
     sequence: "DLVEEVLEEIRPELEKLEEEIERAKDDPEMAEALRRKLEALLLLTAHRLAQLA",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.32
+    af3_iptm: 0.11
   },
   {
     id: "design_6487",
@@ -34253,8 +34148,7 @@ const designs = [
     ipDE: null,
     sequence: "ELPEEELKALKEGAKERVEKVLKEEEEKKKEEEEKKREEEEEARRREEEKRRAEEEARRK",
     pdb_file: "data/rbx1_designs/design_0357_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_0522",
@@ -34272,8 +34166,7 @@ const designs = [
     ipDE: null,
     sequence: "MEERRREEEERRRREREAEEREREERARREAARAKAMAKA",
     pdb_file: "data/rbx1_designs/design_0522_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_1758",
@@ -34988,8 +34881,7 @@ const designs = [
     ipDE: null,
     sequence: "SALERLRRRVREELEALAREILAAGVAPEEARLLLRAETARLAAEVGPFVEEVAEEVLARLLAEL",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_2180",
@@ -37863,8 +37755,7 @@ const designs = [
     ipDE: null,
     sequence: "AAAAAEAERRARAREVAARVRAAEEEMLAKIAADPEKRREYIDELLELKRRLRAELEA",
     pdb_file: "data/rbx1_designs/design_0675_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.37
+    af3_iptm: 0.11
   },
   {
     id: "design_0121",
@@ -41384,8 +41275,7 @@ const designs = [
     ipDE: null,
     sequence: "DAAAYRARADELRAAAERARRAAEEEARRRREEEERRRREEERRRREEERRRE",
     pdb_file: "data/rbx1_designs/design_0189_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_6740",
@@ -43001,8 +42891,7 @@ const designs = [
     ipDE: null,
     sequence: "KEEEERREKRIKEYLIERRREAEERRKRRERERREREERRRLE",
     pdb_file: "data/rbx1_designs/design_0357_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_2426",
@@ -44295,8 +44184,7 @@ const designs = [
     ipDE: null,
     sequence: "MLSKEELEKLKKEEEERKKEEEKKRKEEEKKRKEEEERKKKEEEEKEKEEEKKKKELEEKVKEYLKKLEEEEKRREEARGVVEEEERERRRRREEERRRREEE",
     pdb_file: "data/rbx1_designs/design_0024_model_0.cif",
-    af2_iptm: 0.14,
-    af2_ptm: 0.23
+    af3_iptm: 0.14
   },
   {
     id: "design_2502",
@@ -44773,8 +44661,7 @@ const designs = [
     ipDE: null,
     sequence: "MSGVERLEEERERAARAAAAAAAAAARAAELAAAAAAAAAAAAAAARAAAEAAAAAAAAAAAA",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.38
+    af3_iptm: 0.08
   },
   {
     id: "design_1178",
@@ -45132,8 +45019,7 @@ const designs = [
     ipDE: null,
     sequence: "SALAEAIKAAQEAVEAARREELLAAGKLPEEAAARAAAAAAAAAAAAAAAAA",
     pdb_file: "data/rbx1_designs/design_0161_model_0.cif",
-    af2_iptm: 0.07,
-    af2_ptm: 0.24
+    af3_iptm: 0.07
   },
   {
     id: "design_0744",
@@ -45406,8 +45292,7 @@ const designs = [
     ipDE: null,
     sequence: "MSEEERRRREEEERERERAEEEERRRREALEAALRAAEEAARRAAAEEAARAAALAAL",
     pdb_file: "data/rbx1_designs/design_0005_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.31
+    af3_iptm: 0.11
   },
   {
     id: "design_2567",
@@ -45527,8 +45412,7 @@ const designs = [
     ipDE: null,
     sequence: "SALEEERRRREREERERREEERRRREEEEERRKREEEERRR",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.23
+    af3_iptm: 0.1
   },
   {
     id: "design_6298",
@@ -48232,8 +48116,7 @@ const designs = [
     ipDE: null,
     sequence: "KKEKKKKKKKKKKEKKKKEEEAAKEVEEEKKRREELLELVRE",
     pdb_file: "data/rbx1_designs/design_0122_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.3
+    af3_iptm: 0.08
   },
   {
     id: "design_2733",
@@ -48591,8 +48474,7 @@ const designs = [
     ipDE: null,
     sequence: "SVSDYYLQSVEEAKEEAERARREAEERARRRAEEERRRLA",
     pdb_file: "data/rbx1_designs/design_0328_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.36
+    af3_iptm: 0.08
   },
   {
     id: "design_3733",
@@ -51381,8 +51263,7 @@ const designs = [
     ipDE: null,
     sequence: "MMTMEEIRELSEEWRERAAREARAAELAAEAAARAPEVAARAAAAAAAAAAAAAAAAAA",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_5425",
@@ -51672,8 +51553,7 @@ const designs = [
     ipDE: null,
     sequence: "SMKKEEGLKLRKEFEDFILDLVVGGKKKAKAEGREEHPIDEEEFIKKVAEFFKSLSEEEKELMKISYEYLEENMEEFVKRCKESEELKVLLEFEEKLKEILLKVEKLE",
     pdb_file: "data/rbx1_designs/design_0094_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_5963",
@@ -51776,8 +51656,7 @@ const designs = [
     ipDE: null,
     sequence: "EKEKEELEKKLKELLEKIKELIEKAFEEERKKRLEELEKA",
     pdb_file: null,
-    af2_iptm: 0.15,
-    af2_ptm: 0.41
+    af3_iptm: 0.15
   },
   {
     id: "design_2941",
@@ -56147,8 +56026,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEMKKEIEKRLKEIEERKKKIEEAKKEEKEREEEEKKRKEEEEKRRREEEER",
     pdb_file: "data/rbx1_designs/design_0314_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_0809",
@@ -56455,8 +56333,7 @@ const designs = [
     ipDE: null,
     sequence: "SEQEKIILENAESRRAAREAAERAARAAAEAAARAAAAAAAAAAAAAAAAAAAAALA",
     pdb_file: null,
-    af2_iptm: 0.17,
-    af2_ptm: 0.35
+    af3_iptm: 0.17
   },
   {
     id: "design_2287",
@@ -59432,8 +59309,7 @@ const designs = [
     ipDE: null,
     sequence: "MEKEKREEEEKEEEEKKKKEEEEEERKRRERSVLYREEQRRAAEEAARRA",
     pdb_file: "data/rbx1_designs/design_0265_model_0.cif",
-    af2_iptm: 0.68,
-    af2_ptm: 0.54
+    af3_iptm: 0.68
   },
   {
     id: "design_3391",
@@ -64007,8 +63883,7 @@ const designs = [
     ipDE: null,
     sequence: "SAAAEEEERRRRLAEAREEREKELEEEIEKKLKENPEETEKKLKEIEEKEKEKKEKEEKKRKEEE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_7866",
@@ -65896,8 +65771,7 @@ const designs = [
     ipDE: null,
     sequence: "DKEEEEEMKKYFEERKKYEELKEAELREKAEKEGKPLEEVKEEAKKKEEERRRERLREEEEAR",
     pdb_file: "data/rbx1_designs/design_0339_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.26
+    af3_iptm: 0.08
   },
   {
     id: "design_7467",
@@ -68907,8 +68781,7 @@ const designs = [
     ipDE: null,
     sequence: "SAEELLKEREERERKRKEEEEELLEKLRKGSVEEAAKKYEEILREREEERERREAE",
     pdb_file: "data/rbx1_designs/design_0015_model_0.cif",
-    af2_iptm: 0.07,
-    af2_ptm: 0.3
+    af3_iptm: 0.07
   },
   {
     id: "design_0425",
@@ -69555,8 +69428,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEEEERKKKLEEELKRRFDDLEASLPLLLEEYKKKLEELKEKNEEESEEALEKVEKLYKETEEKMKKGTEEERRKLLIEFRLEVEELLKELEKKLKE",
     pdb_file: "data/rbx1_designs/design_0058_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.28
+    af3_iptm: 0.11
   },
   {
     id: "design_3986",
@@ -70934,8 +70806,7 @@ const designs = [
     ipDE: null,
     sequence: "EEYEKRLEELKEEFKKRKAEEERAAAEAAAAAAAAAAAAAAAAAAAAAAAA",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.3
+    af3_iptm: 0.08
   },
   {
     id: "design_3019",
@@ -71361,8 +71232,7 @@ const designs = [
     ipDE: null,
     sequence: "SLEEEERRRKEEEEKERREKEYEENKKELEALDPSTEEDRKRIRELENKLAKIELEKKKE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.37
+    af3_iptm: 0.08
   },
   {
     id: "design_0554",
@@ -71550,8 +71420,7 @@ const designs = [
     ipDE: null,
     sequence: "FDEEEFIRMSAEYARLSAEVHAMPGEDEEKKRELCERAAELKRELERYREEVEEEIRRKREEEEE",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.28
+    af3_iptm: 0.1
   },
   {
     id: "design_6011",
@@ -72266,8 +72135,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEELEKIKKLIEEHFKELEEERRKKEEEERRRREEEEERRRREEEEEEARRRE",
     pdb_file: null,
-    af2_iptm: 0.06,
-    af2_ptm: 0.26
+    af3_iptm: 0.06
   },
   {
     id: "design_1770",
@@ -72353,8 +72221,7 @@ const designs = [
     ipDE: null,
     sequence: "DREKRFEEIREEVRLAEIERLSPEEAERLRAERAAAAAAAAAAAAA",
     pdb_file: "data/rbx1_designs/design_0510_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.29
+    af3_iptm: 0.1
   },
   {
     id: "design_4150",
@@ -73494,8 +73361,7 @@ const designs = [
     ipDE: null,
     sequence: "DEAARAAEAAAAARAAAEAAAALLAALRAEQEAERIEKGRELRKIAEKKKKE",
     pdb_file: "data/rbx1_designs/design_0604_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.29
+    af3_iptm: 0.08
   },
   {
     id: "design_4217",
@@ -74159,8 +74025,7 @@ const designs = [
     ipDE: null,
     sequence: "MSLAEKEARIAELRRRIAALQADAAAAAAAAQAALEKMKTEEGIAKTVLERLELERARKDAAVQAELARLQAELARLEAEVARERAAEEARRRAEEERRRRALEAA",
     pdb_file: "data/rbx1_designs/design_0015_model_0.cif",
-    af2_iptm: 0.07,
-    af2_ptm: 0.3
+    af3_iptm: 0.07
   },
   {
     id: "design_6407",
@@ -74195,8 +74060,7 @@ const designs = [
     ipDE: null,
     sequence: "SAAAAAALAAAAAAAAQEEAYRAHYARLLAEEKERLEKEGKKDELELHILANARVIERELAAR",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.23
+    af3_iptm: 0.09
   },
   {
     id: "design_3082",
@@ -74486,8 +74350,7 @@ const designs = [
     ipDE: null,
     sequence: "KKKEEKKRLEEEKKKKEEERAKEEEKIAEEAREEKMNKKYEEYLKAL",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.27
+    af3_iptm: 0.08
   },
   {
     id: "design_4275",
@@ -75644,8 +75507,7 @@ const designs = [
     ipDE: null,
     sequence: "KVNELVVLSEEVNKAYEESKEKAEELEKEFYEYFKKLVEEIKKKKEEEELE",
     pdb_file: "data/rbx1_designs/design_0389_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.37
+    af3_iptm: 0.1
   },
   {
     id: "design_1303",
@@ -76581,8 +76443,7 @@ const designs = [
     ipDE: null,
     sequence: "MPTMEEILKKSEEVKKKLEEEKRKEEIEEERRRREPEIERRRRAEEERRARLAAELAAL",
     pdb_file: "data/rbx1_designs/design_0550_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.3
+    af3_iptm: 0.09
   },
   {
     id: "design_5254",
@@ -79031,8 +78892,7 @@ const designs = [
     ipDE: null,
     sequence: "MLPREQIRAAMLATPACQAEAARLGVAAEEVLDRREEEERRRREEEEREREEREREEEERRRELE",
     pdb_file: "data/rbx1_designs/design_0094_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_8677",
@@ -81940,8 +81800,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEERRREERRREEERRRREEEEEEERKLKKEVEEIAKEE",
     pdb_file: "data/rbx1_designs/design_0570_model_0.cif",
-    af2_iptm: 0.12,
-    af2_ptm: 0.3
+    af3_iptm: 0.12
   },
   {
     id: "design_0792",
@@ -82129,8 +81988,7 @@ const designs = [
     ipDE: null,
     sequence: "MEELIKKLEELKEEFLKKIKELKEKYPEYSEFLDKFEKAVDEAFELLKELIKEGAIEEGLRKALTLLRLETARVCKEIEEESSEEDKEKTEKVIKELKELTHELVKKLKELFEKYK",
     pdb_file: "data/rbx1_designs/design_0084_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.31
+    af3_iptm: 0.09
   },
   {
     id: "design_1918",
@@ -83627,8 +83485,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEEKEREERRRREEEERRRREEEERLKRREELREKMDKGELVETLK",
     pdb_file: "data/rbx1_designs/design_0067_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.3
+    af3_iptm: 0.08
   },
   {
     id: "design_4812",
@@ -84666,8 +84523,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEKKLKEWFEKKKEREKKEKEEERRRAEREREEEEREREREEEE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_4873",
@@ -84702,8 +84558,7 @@ const designs = [
     ipDE: null,
     sequence: "DAEARAAEEAARAAAAAEEAEERRRRQFEERLAAAREAEALEEALKEE",
     pdb_file: "data/rbx1_designs/design_0350_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_0390",
@@ -84942,8 +84797,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEKKKKELEERKKKLEEEEEKFNKLKEELEKAGDYSKDELLKLEETELEVEKFRLEQE",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.3
+    af3_iptm: 0.11
   },
   {
     id: "design_8882",
@@ -85590,8 +85444,7 @@ const designs = [
     ipDE: null,
     sequence: "MSLAELRERIRRLEREIRERREEIEREEKEREEELRRLREEEGVAEVVIAELEVERARELARKEAELRRLEEELRRLREELERLEAARAAAEAAAAAAAAAAAAAA",
     pdb_file: "data/rbx1_designs/design_0012_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_4927",
@@ -87377,8 +87230,7 @@ const designs = [
     ipDE: null,
     sequence: "SKARLSLPVESLRRLAELCRAMGHEEMAELLREDARAKEAE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.38
+    af3_iptm: 0.09
   },
   {
     id: "design_5032",
@@ -87464,8 +87316,7 @@ const designs = [
     ipDE: null,
     sequence: "SELDKEISHKILEIYRLELEAKALEEKAKELKDEEEKKKLEEEAERLKKEAEKLREEIEKKKKE",
     pdb_file: "data/rbx1_designs/design_0305_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_6020",
@@ -87670,8 +87521,7 @@ const designs = [
     ipDE: null,
     sequence: "MSPEREERRQRVGARLRSLEVLAERAEEAVAAGDEARLLAVVDCVTELSREEIEERAKATGVSLAEAALAALRERLERLRAEYARLQAEELEALLAALLA",
     pdb_file: "data/rbx1_designs/design_0068_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.34
+    af3_iptm: 0.11
   },
   {
     id: "design_2817",
@@ -89100,8 +88950,7 @@ const designs = [
     ipDE: null,
     sequence: "MKKEVKEKIKELEIEKKIEEIEKEAEKNPELREEAEEKIKKIREE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.23
+    af3_iptm: 0.09
   },
   {
     id: "design_1469",
@@ -91278,8 +91127,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEEKRKKNEELCENDKKKKLDELLKDNSPELKKEREELLKKIEEEKKEEEKKKEEEEKKKKEE",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.26
+    af3_iptm: 0.11
   },
   {
     id: "design_0202",
@@ -92759,8 +92607,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEKLKKLLEKLEKEKEEEEKKKKEEEEKRRKVEKETKERREELE",
     pdb_file: "data/rbx1_designs/design_0071_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.34
+    af3_iptm: 0.11
   },
   {
     id: "design_6814",
@@ -93407,8 +93254,7 @@ const designs = [
     ipDE: null,
     sequence: "DERIKEVEKNIEELIEREENREEVEREREERRRAEEERRRREEERRRREEERRRREEEERE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_5386",
@@ -93817,8 +93663,7 @@ const designs = [
     ipDE: null,
     sequence: "SLLQLLRLELLTLESQLELVELLKEKLREKGYTEEVEKAEKIRKEIVEELKASTGDPLEAMLKKLKEAEKKLKEVLGEEFEEFKELILKELLAECGKIVLEK",
     pdb_file: "data/rbx1_designs/design_0005_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.31
+    af3_iptm: 0.11
   },
   {
     id: "design_0247",
@@ -93836,8 +93681,7 @@ const designs = [
     ipDE: null,
     sequence: "MERRRREEEERRRREEEEERERRRREALEAAEERLRELAEKLKREEWRKLLEEMKKAK",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_1803",
@@ -95793,8 +95637,7 @@ const designs = [
     ipDE: null,
     sequence: "VDAAAAAAARAAAAAAAAAAAARDAALAAYRERQEKAEKALK",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.38
+    af3_iptm: 0.08
   },
   {
     id: "design_1454",
@@ -96084,8 +95927,7 @@ const designs = [
     ipDE: null,
     sequence: "MELAENIKKAQEAVDELERQERLERGELPEEKEKLEKEKKEEEEALKKKLEE",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.28
+    af3_iptm: 0.07
   },
   {
     id: "design_2603",
@@ -96800,8 +96642,7 @@ const designs = [
     ipDE: null,
     sequence: "KKEEEELRARTEEAVEKLLEVAEKKAKELKSKEEAEKLLKKAEEEAKLILEETKEKL",
     pdb_file: "data/rbx1_designs/design_0501_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.22
+    af3_iptm: 0.08
   },
   {
     id: "design_7430",
@@ -97754,8 +97595,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEKREKKAKEFQEKLEELKRKKEEERRRKEEEEERRRRREREEEERRRRRELE",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.32
+    af3_iptm: 0.1
   },
   {
     id: "design_1917",
@@ -98436,8 +98276,7 @@ const designs = [
     ipDE: null,
     sequence: "SENKEKLEKGLKRREELERKEAIEAAERALEEARRAAAAAAAAAAAAAA",
     pdb_file: "data/rbx1_designs/design_0479_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.36
+    af3_iptm: 0.09
   },
   {
     id: "design_4713",
@@ -98761,8 +98600,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEEERRRRAEEERKRAEEALRELERLEREREEKARKLQEEE",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.32
+    af3_iptm: 0.11
   },
   {
     id: "design_2786",
@@ -98933,8 +98771,7 @@ const designs = [
     ipDE: null,
     sequence: "SMEEEEKRRREEKEREEKEKEEEEKRKEEEERKKEFEEKLERLKKKEKFEAETSGYTELAEELKKRIDEVASLEEILKDKEFGPKDEEKWKKAEEVLKENKKELEKALKEEEEKKKKEE",
     pdb_file: "data/rbx1_designs/scaleup_0000.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_3319",
@@ -99173,8 +99010,7 @@ const designs = [
     ipDE: null,
     sequence: "AAAAAAALEAALAALAAALAELLEELEELEEEEEEEEKLEELEEEELEEREEERREEE",
     pdb_file: "data/rbx1_designs/design_0265_model_0.cif",
-    af2_iptm: 0.68,
-    af2_ptm: 0.54
+    af3_iptm: 0.68
   },
   {
     id: "design_0650",
@@ -99668,8 +99504,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEEAERARREAEEAARRKEEQKERLKEAEEKLKEKMEAAEL",
     pdb_file: "data/rbx1_designs/design_0350_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_1372",
@@ -101217,8 +101052,7 @@ const designs = [
     ipDE: null,
     sequence: "PDPLAEAAAARAAELAAKRAAERAALLAKYEEREKLIKEALE",
     pdb_file: null,
-    af2_iptm: 0.12,
-    af2_ptm: 0.39
+    af3_iptm: 0.12
   },
   {
     id: "design_0317",
@@ -101525,8 +101359,7 @@ const designs = [
     ipDE: null,
     sequence: "SEELLEELLEEYEKKLKELGILEKEEEEEKKKKEEEERERREREERRRREEEER",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.4
+    af3_iptm: 0.1
   },
   {
     id: "design_2468",
@@ -101833,8 +101666,7 @@ const designs = [
     ipDE: null,
     sequence: "SEELLNELLEEYEKKLRERGVLEKEEEERRRKEEEEEEERRRREEEEERRRREE",
     pdb_file: "data/rbx1_designs/design_0471_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.4
+    af3_iptm: 0.1
   },
   {
     id: "design_6905",
@@ -102073,8 +101905,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEKKKRYKEVEEELEKKKEEEEKKKKEEEEEKKKKKELEE",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.26
+    af3_iptm: 0.11
   },
   {
     id: "design_1736",
@@ -104931,8 +104762,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEERERERREKKEKEEEEKRKKELEKIREEARKKKLEELLK",
     pdb_file: "data/rbx1_designs/design_0627_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_0379",
@@ -105273,8 +105103,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEELKKKAKELEEKIEELDKLLEQLKEESEELYEENKERLESQKRCAETQKLYLEKLLEEL",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.26
+    af3_iptm: 0.07
   },
   {
     id: "design_1769",
@@ -108250,8 +108079,7 @@ const designs = [
     ipDE: null,
     sequence: "MEKEKKLEELKKKIEELKKKYKELEREYRELEREAKLLEEELKKAEEELKKSKPEDEELKKKVEELKKKVEELRKKAEEVKKKAQEVKEEIKKLEEEIKKLE",
     pdb_file: "data/rbx1_designs/design_0088_model_0.cif",
-    af2_iptm: 0.07,
-    af2_ptm: 0.25
+    af3_iptm: 0.07
   },
   {
     id: "design_1315",
@@ -108388,8 +108216,7 @@ const designs = [
     ipDE: null,
     sequence: "MDLEKKKEELKKEIEELLKKHQKLLEEAAKQPEVLPAVKKEIEEELKKLLEKYKEELRKILDE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_0106",
@@ -108883,8 +108710,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEEKRKKEEEEKKKEEEEKKKEEEKKEIEEIKEFLEKVREEREERERKREELE",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.36
+    af3_iptm: 0.11
   },
   {
     id: "design_6294",
@@ -110007,8 +109833,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEEKKKKEEEEEKKEREEREKRRREAEEARRELEERRERARREEE",
     pdb_file: "data/rbx1_designs/design_0161_model_0.cif",
-    af2_iptm: 0.07,
-    af2_ptm: 0.24
+    af3_iptm: 0.07
   },
   {
     id: "design_5547",
@@ -110111,8 +109936,7 @@ const designs = [
     ipDE: null,
     sequence: "ELKLKLSHLRCEIFRLEKLKKAEKSEEEKKKLEEEIKKKEEEAERIEREIEELK",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.36
+    af3_iptm: 0.09
   },
   {
     id: "design_7985",
@@ -111269,8 +111093,7 @@ const designs = [
     ipDE: null,
     sequence: "SAFAEELARLEAELRARAAAAAAASGADPAAAAARTAAEIEVLRRRAELKEEL",
     pdb_file: "data/rbx1_designs/design_0520_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_6434",
@@ -112291,8 +112114,7 @@ const designs = [
     ipDE: null,
     sequence: "KEVEELKKEIGEELEKLRKEIERAADNPEMKAALERKLQALLLLTGLELERKK",
     pdb_file: "data/rbx1_designs/design_0463_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_6584",
@@ -113483,8 +113305,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEERRRRRREEEERRRREIEEAEEKLRELKEKKEKELE",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.28
+    af3_iptm: 0.07
   },
   {
     id: "design_6758",
@@ -114828,8 +114649,7 @@ const designs = [
     ipDE: null,
     sequence: "MSGVEILEKRRKELEELRKLLEELLKNLEKILKEKKEEEEAKKEEEKKKKEEEEKKKEELEKK",
     pdb_file: null,
-    af2_iptm: 0.12,
-    af2_ptm: 0.39
+    af3_iptm: 0.12
   },
   {
     id: "design_3058",
@@ -115051,8 +114871,7 @@ const designs = [
     ipDE: null,
     sequence: "MTPEELRARRERLEEERRRLEEERERRRREEEREARERAEEARKRQEIIDELRKEME",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.34
+    af3_iptm: 0.11
   },
   {
     id: "design_0012",
@@ -115070,8 +114889,7 @@ const designs = [
     ipDE: null,
     sequence: "SVEEKLKKLEEEKKKKEEEKKKILEELNKLSKKEAFEKYKKLLEEEEKKKKEEFEK",
     pdb_file: "data/rbx1_designs/design_0012_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_1258",
@@ -115293,8 +115111,7 @@ const designs = [
     ipDE: null,
     sequence: "MVSEEELHEEAEKAREALLEKIKAAKEKSPIQQHILDREEEKRRELAAAAAAALAAAAAAAA",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.29
+    af3_iptm: 0.08
   },
   {
     id: "design_4958",
@@ -115958,8 +115775,7 @@ const designs = [
     ipDE: null,
     sequence: "SERERREREERERRRREEEERRREEEERRREEERRARERAKELEEELERLKEEKRRREREELEKL",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.28
+    af3_iptm: 0.07
   },
   {
     id: "design_6709",
@@ -117031,8 +116847,7 @@ const designs = [
     ipDE: null,
     sequence: "VEEKEKKLEEELKKKEEELKKAIELEKIQKEILEEYEEEL",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.27
+    af3_iptm: 0.08
   },
   {
     id: "design_4731",
@@ -118376,8 +118191,7 @@ const designs = [
     ipDE: null,
     sequence: "NTVKEKLEKEEKEKREEEERKRREEEEERRRREEEEERRRREREELEE",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.36
+    af3_iptm: 0.11
   },
   {
     id: "design_1607",
@@ -119636,8 +119450,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEEEEKKRKEKEKEEKERKEKEEEEEKLRKELEKRKEEYEKLKKELEEEEKRRLEELLAEL",
     pdb_file: null,
-    af2_iptm: 0.15,
-    af2_ptm: 0.41
+    af3_iptm: 0.15
   },
   {
     id: "design_7086",
@@ -119689,8 +119502,7 @@ const designs = [
     ipDE: null,
     sequence: "SKEIEELKKKIVELTVELINEEEEYEYLIKKNPEKAEEYKEKLKKKTEELEKEIKELEEKIKKL",
     pdb_file: "data/rbx1_designs/design_0026_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.25
+    af3_iptm: 0.09
   },
   {
     id: "design_0480",
@@ -125692,8 +125504,7 @@ const designs = [
     ipDE: null,
     sequence: "SVLDLEELKKKEEEEKKRKAEEEALKRIEKVQAEREAALRREREEA",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.31
+    af3_iptm: 0.08
   },
   {
     id: "design_4205",
@@ -126340,8 +126151,7 @@ const designs = [
     ipDE: null,
     sequence: "SEELEELKRKILELTVELINAEEEYEYLIKKNPEKREEYEKKKKEKTAELEKEIEELKEKIKKL",
     pdb_file: "data/rbx1_designs/design_0024_model_0.cif",
-    af2_iptm: 0.14,
-    af2_ptm: 0.23
+    af3_iptm: 0.14
   },
   {
     id: "design_0977",
@@ -127991,8 +127801,7 @@ const designs = [
     ipDE: null,
     sequence: "SLAEKVKKEKEELAKRLAAAAEAAAAAAAAAAEEAARAAAAAL",
     pdb_file: "data/rbx1_designs/design_0243_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_0540",
@@ -129999,8 +129808,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEEEEERRKEEEEREREERRKRREEAERLREELRKREEEEKRREE",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.28
+    af3_iptm: 0.07
   },
   {
     id: "design_7072",
@@ -130052,8 +129860,7 @@ const designs = [
     ipDE: null,
     sequence: "MNEKEEELKKALEKEKNREKDLAAKREARRAYEARLAEEAA",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.3
+    af3_iptm: 0.1
   },
   {
     id: "design_4812",
@@ -131992,8 +131799,7 @@ const designs = [
     ipDE: null,
     sequence: "SAAAEKAKKAFEEDLAKAEKEVKENKEEIEIERYLLEQKLKRMEVERKKASPEKQPEIEKQMEEESKAAQERLNEIEEKAKEKEEAAKKAKEAAEKAAA",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_1009",
@@ -132317,8 +132123,7 @@ const designs = [
     ipDE: null,
     sequence: "DAEAAAAAAAAAAAAAAEERAKRIEEAKKREEELLKEIEG",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_5939",
@@ -132982,8 +132787,7 @@ const designs = [
     ipDE: null,
     sequence: "SKIAEAIAKLEAALAEEKAAFEAWLEANREALSEEEIARLRRLQEERFAVRERLIARMRAKLEEA",
     pdb_file: "data/rbx1_designs/design_0021_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.31
+    af3_iptm: 0.1
   },
   {
     id: "design_0347",
@@ -135704,8 +135508,7 @@ const designs = [
     ipDE: null,
     sequence: "RKEKKREEAERRKKKKEEEEKRKELEEELKKKEEELREREEEARRRREEEERRRREEERLRELLE",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.28
+    af3_iptm: 0.1
   },
   {
     id: "design_2140",
@@ -136182,8 +135985,7 @@ const designs = [
     ipDE: null,
     sequence: "MEKEEKEKKKKEEEEKKKEKEKEEEEKKKEEEKKKKEEEKIEEELKKRKKENK",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.34
+    af3_iptm: 0.1
   },
   {
     id: "design_7754",
@@ -137306,8 +137108,7 @@ const designs = [
     ipDE: null,
     sequence: "MDPEAERRREEERRRRLKELAEKNRSEELEKKEKEEKEKKEKEEKEKKKEEEE",
     pdb_file: "data/rbx1_designs/design_0033_model_0.cif",
-    af2_iptm: 0.12,
-    af2_ptm: 0.3
+    af3_iptm: 0.12
   },
   {
     id: "design_5592",
@@ -138192,8 +137993,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEEEKKKKEEEEKKKKEEEELLKKEEEEREKLEKEEKEEEERRKEKEEKEREEERRREE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_5686",
@@ -139775,8 +139575,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEKEKEEKRKKEEEEKKEKEELEKLIKKKEEEKKEEEKKKKEEEEKKKKE",
     pdb_file: "data/rbx1_designs/design_0627_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_0358",
@@ -140202,8 +140001,7 @@ const designs = [
     ipDE: null,
     sequence: "MSEEEEEIKELEKKIAELKEKRDELLKKKGDEEKAKELQKELEKAEERKKKLEEKLRKEALE",
     pdb_file: "data/rbx1_designs/design_0122_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.3
+    af3_iptm: 0.08
   },
   {
     id: "design_2665",
@@ -142754,8 +142552,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEARRRHRELMGRLAALLGALREEIDRAAAALERLDETPDAGVAAAREALAAARETLERLREVIRELEADEELKELAEFYRELLEELERELERLAAELEAAVAARRAAAAAAAA",
     pdb_file: "data/rbx1_designs/design_0033_model_0.cif",
-    af2_iptm: 0.12,
-    af2_ptm: 0.3
+    af3_iptm: 0.12
   },
   {
     id: "design_1263",
@@ -143147,8 +142944,7 @@ const designs = [
     ipDE: null,
     sequence: "GDEELQKAIEIHKEEYEELKKKLKKEEEEKKKKEEEERRKEEEEEKEKKEAE",
     pdb_file: null,
-    af2_iptm: 0.12,
-    af2_ptm: 0.3
+    af3_iptm: 0.12
   },
   {
     id: "design_5130",
@@ -144730,8 +144526,7 @@ const designs = [
     ipDE: null,
     sequence: "SEKDLEELQLQYLLELCTEENRKKLEEEEKKEEEERRKKLEEEEK",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_1229",
@@ -144902,8 +144697,7 @@ const designs = [
     ipDE: null,
     sequence: "SYLEEKKKEEEKKKEEEKRKKEEEERERERRRREEEERRRR",
     pdb_file: "data/rbx1_designs/design_0661_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.3
+    af3_iptm: 0.1
   },
   {
     id: "design_6021",
@@ -145006,8 +144800,7 @@ const designs = [
     ipDE: null,
     sequence: "KLEELAREAEEKAEELRKEKEEVLKQASEEVAKNFIRKADAQILYLESRAEELRREAEEA",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.34
+    af3_iptm: 0.11
   },
   {
     id: "design_0351",
@@ -145229,8 +145022,7 @@ const designs = [
     ipDE: null,
     sequence: "SAEELLEERKKREEKEAEELKKILEELSKLSMEEAYKKYLELLKERKEERRKREAE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.25
+    af3_iptm: 0.09
   },
   {
     id: "design_5390",
@@ -145299,8 +145091,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEEELKKEREERKEKVRRILEEKERREREEEERRRREEREREERRREE",
     pdb_file: "data/rbx1_designs/design_0189_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_0263",
@@ -145318,8 +145109,7 @@ const designs = [
     ipDE: null,
     sequence: "MNSKELEKLKKEKAAKEAERRAAEEERERRRAEEARRRAAEAAA",
     pdb_file: "data/rbx1_designs/design_0263_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_3869",
@@ -146969,8 +146759,7 @@ const designs = [
     ipDE: null,
     sequence: "MEAERRERERRRAEEEARRRRREEEERREEERRREFEERLEREEKARRFFAETSGLLELAKEVEEELEKVMSREEILRDKEFGPRDEEKWKKAEEALEEAKKKLEEALAAEEAARRAAE",
     pdb_file: "data/rbx1_designs/design_0003_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_8622",
@@ -148331,8 +148120,7 @@ const designs = [
     ipDE: null,
     sequence: "SCLSEEELEELEKKEEKRKKEEKEREEEEKRRREEEERRRREEEERRE",
     pdb_file: "data/rbx1_designs/design_0058_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.28
+    af3_iptm: 0.11
   },
   {
     id: "design_5824",
@@ -150441,8 +150229,7 @@ const designs = [
     ipDE: null,
     sequence: "MEKRRREEEERRRRREREEEERRRREEELRRRLEALRRALEEAEKRERERREILES",
     pdb_file: "data/rbx1_designs/design_0471_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.4
+    af3_iptm: 0.1
   },
   {
     id: "design_2209",
@@ -153282,8 +153069,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEEEEKRREEEEKKREEERKEREEREKKIEEARELLKE",
     pdb_file: "data/rbx1_designs/design_0084_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.31
+    af3_iptm: 0.09
   },
   {
     id: "design_2095",
@@ -157109,8 +156895,7 @@ const designs = [
     ipDE: null,
     sequence: "SISDYYLEKVKEAEKEKKEKEEEEKRKKEEEERRKKELEE",
     pdb_file: "data/rbx1_designs/design_0331_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_6984",
@@ -158777,8 +158562,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEFQEKLKKELEEKEEKEKKENEELKKKLEKLKEERKKKVEEAKKKLEEEKKKK",
     pdb_file: "data/rbx1_designs/design_0331_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_2753",
@@ -159306,8 +159090,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEKEKWEKFKEEMKKEAYEELEKVKDDEEKKKVAEETLEKIEKALEELEKMVEAARL",
     pdb_file: null,
-    af2_iptm: 0.12,
-    af2_ptm: 0.3
+    af3_iptm: 0.12
   },
   {
     id: "design_4904",
@@ -160209,8 +159992,7 @@ const designs = [
     ipDE: null,
     sequence: "ELEELEEELKKAEKELEELKKKLEETGEATPEELSKIKVLEKKKEELKKKIEEKKKKKEEEEK",
     pdb_file: null,
-    af2_iptm: 0.06,
-    af2_ptm: 0.28
+    af3_iptm: 0.06
   },
   {
     id: "design_0137",
@@ -160262,8 +160044,7 @@ const designs = [
     ipDE: null,
     sequence: "MKSEEEAYKEFKEKVEEKEKKEKEKKEEEERKKEEERRREEERRREAERRAEEEARRRAE",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.27
+    af3_iptm: 0.07
   },
   {
     id: "design_3472",
@@ -160927,8 +160708,7 @@ const designs = [
     ipDE: null,
     sequence: "SMSDYLLESVERKKEEEKKEKEKKEKEEKEKKEKEKKEKE",
     pdb_file: "data/rbx1_designs/design_0330_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.34
+    af3_iptm: 0.1
   },
   {
     id: "design_1407",
@@ -160997,8 +160777,7 @@ const designs = [
     ipDE: null,
     sequence: "KEEEEKKKKEEEEKKKELEELRKKREEEEKAEEEKRKAEEEAE",
     pdb_file: "data/rbx1_designs/design_0339_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.26
+    af3_iptm: 0.08
   },
   {
     id: "design_5566",
@@ -163736,8 +163515,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEKKKEEEERKKKEEEEKKKKKEEEEKKKNLEELYKELLEEQKKREEEKKKLEEEKKK",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.34
+    af3_iptm: 0.1
   },
   {
     id: "design_1986",
@@ -164231,8 +164009,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEERREREEEERERRERERRRKEAEERMEKILEELKKEEEEEKKKKEEEEEEKKKKEEEEKEK",
     pdb_file: "data/rbx1_designs/design_0088_model_0.cif",
-    af2_iptm: 0.07,
-    af2_ptm: 0.25
+    af3_iptm: 0.07
   },
   {
     id: "design_2557",
@@ -164539,8 +164316,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEKERKEREEREKEEEKSEEEKLEEEIKKAEERRKAIEEKLKAL",
     pdb_file: "data/rbx1_designs/design_0314_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_6183",
@@ -165187,8 +164963,7 @@ const designs = [
     ipDE: null,
     sequence: "AFSEELARLAERELARLETERGREAVEAELAAALAAALAA",
     pdb_file: null,
-    af2_iptm: 0.11,
-    af2_ptm: 0.3
+    af3_iptm: 0.11
   },
   {
     id: "design_1821",
@@ -165716,8 +165491,7 @@ const designs = [
     ipDE: null,
     sequence: "MDLLKKEEEEERRREEERRRAEEEERRRREEEERRAEERRREEERRRREEERRRREEE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.23
+    af3_iptm: 0.08
   },
   {
     id: "design_1188",
@@ -171328,8 +171102,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEELKREEEEKRRKEKEEEEKKKREEKIRKALEELRKKKLEESKELLK",
     pdb_file: "data/rbx1_designs/design_0570_model_0.cif",
-    af2_iptm: 0.12,
-    af2_ptm: 0.3
+    af3_iptm: 0.12
   },
   {
     id: "design_1631",
@@ -172248,8 +172021,7 @@ const designs = [
     ipDE: null,
     sequence: "LDLEELKKKKEEEEKEEKKKKEEEEKKEKEREEEERKRKEEEEKRRREEEEKE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.36
+    af3_iptm: 0.09
   },
   {
     id: "design_7464",
@@ -172981,8 +172753,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEERERRRREEEERERRRREEEERRRRERIKKVEEREKEEKEKEEEEKKKKEEEERREEELE",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.26
+    af3_iptm: 0.1
   },
   {
     id: "design_7614",
@@ -174785,8 +174556,7 @@ const designs = [
     ipDE: null,
     sequence: "MEAEEREREERRRREEEERARSEFDIALEEALKRGEILRAREEEKKREEEERELERLLEE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_7170",
@@ -177320,8 +177090,7 @@ const designs = [
     ipDE: null,
     sequence: "SLEELLEELEKKIKEIEEKIKELEEEREKVVAALREKGLEELAKAFEKLVDNTIALLKAELAASL",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.31
+    af3_iptm: 0.08
   },
   {
     id: "design_0234",
@@ -177441,8 +177210,7 @@ const designs = [
     ipDE: null,
     sequence: "KKKEIEELYEKLEEELKEVSERQKELEEKKKEIEEKMKAGEDVSEEMKELIKRLKEQAEYERKLAEELAEKAEEARKKGDEEKAEALERLAKEEWRHAEELEREAKELEKKLEEEEKKK",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_1069",
@@ -177596,8 +177364,7 @@ const designs = [
     ipDE: null,
     sequence: "SEELEKFLEELKKKIEEEEEKEKKKKEEEEKKKLEEELKKQ",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.29
+    af3_iptm: 0.08
   },
   {
     id: "design_2966",
@@ -177768,8 +177535,7 @@ const designs = [
     ipDE: null,
     sequence: "AEEEARLAAEEAALRAAARAEAARSGADLAAVEAETAAALAVRRRRAELKRRL",
     pdb_file: "data/rbx1_designs/design_0522_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_0311",
@@ -178943,8 +178709,7 @@ const designs = [
     ipDE: null,
     sequence: "SAEAERWAAFREALLAPARAALAAAAADPAARAAAEAALARIEAGLARLEEQMAAARA",
     pdb_file: null,
-    af2_iptm: 0.16,
-    af2_ptm: 0.49
+    af3_iptm: 0.16
   },
   {
     id: "design_1775",
@@ -180220,8 +179985,7 @@ const designs = [
     ipDE: null,
     sequence: "MEKEEFKKKLEEEKEKKKKEIESLEEISEEVKERRIAKLDEELKEKLKKYEEELKAL",
     pdb_file: "data/rbx1_designs/design_0074_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.29
+    af3_iptm: 0.11
   },
   {
     id: "design_0972",
@@ -180851,8 +180615,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEKKKEEEEKEKYLEELFKDLEDSLPLKLEELKKKIEKYKEKDEEKSEELLKKVEELYKKTLEEMEKGTKEERRYLLIKFLLECEALMKEYEEELKK",
     pdb_file: "data/rbx1_designs/design_0057_model_0.cif",
-    af2_iptm: 0.12,
-    af2_ptm: 0.31
+    af3_iptm: 0.12
   },
   {
     id: "design_0796",
@@ -182689,8 +182452,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEERRRREERRRREEEERRRREEELERQEAAEKKNLAKE",
     pdb_file: "data/rbx1_designs/design_0520_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_4405",
@@ -183541,8 +183303,7 @@ const designs = [
     ipDE: null,
     sequence: "MMSEKLLKARELERKVAELKARCKKEPLTEEEKKEIEELEKEKKELEKELEEKE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.29
+    af3_iptm: 0.09
   },
   {
     id: "design_2823",
@@ -183594,8 +183355,7 @@ const designs = [
     ipDE: null,
     sequence: "DEELKKEEEELSKELEELEEKYKKEVEEKGYKIELQVKLLEFKNEVREKLKELEKKKKE",
     pdb_file: "data/rbx1_designs/scaleup_0153.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.43
+    af3_iptm: 0.08
   },
   {
     id: "design_2374",
@@ -185908,8 +185668,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEEERRRREEEERRERLREVEERRKRLRERVEKKRKEEEEKRREEE",
     pdb_file: "data/rbx1_designs/design_0389_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.37
+    af3_iptm: 0.1
   },
   {
     id: "design_7127",
@@ -186029,8 +185788,7 @@ const designs = [
     ipDE: null,
     sequence: "MDLEAAREAAFERRLAELEARSAAVRALEEARRAAAEAAA",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.25
+    af3_iptm: 0.07
   },
   {
     id: "design_7540",
@@ -186745,8 +186503,7 @@ const designs = [
     ipDE: null,
     sequence: "DEYEKKLEELKEEYKKKVEKEKKEKEEKKRREEEERRRREEEERERRRLEE",
     pdb_file: null,
-    af2_iptm: 0.06,
-    af2_ptm: 0.26
+    af3_iptm: 0.06
   },
   {
     id: "design_1081",
@@ -187206,8 +186963,7 @@ const designs = [
     ipDE: null,
     sequence: "MESELKIQEEEFEKLKKEVEEKIKELEEFAREFKENKEELIKKRGEEGEKLLAEIEKEREKLLEEIKKLLEELRKYKRLLPEVLELETKLKKAEELAKKLLEEVKKEIEEEA",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.3
+    af3_iptm: 0.1
   },
   {
     id: "design_3972",
@@ -189894,8 +189650,7 @@ const designs = [
     ipDE: null,
     sequence: "DKEEKERKEKEEREKLREKKLEEEKKRKESKAYEEELKKEEEEAKKKLEEL",
     pdb_file: "data/rbx1_designs/design_0661_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.3
+    af3_iptm: 0.1
   },
   {
     id: "design_5891",
@@ -192752,8 +192507,7 @@ const designs = [
     ipDE: null,
     sequence: "MELSEETKRALELYERALELRAAGDEEGAERLFKELERLLEEHPEARELLEEATGARFEREVDLIISILKRLDPEETFAIYEERLASGPSRAAAERIIAAVKAALS",
     pdb_file: "data/rbx1_designs/design_0021_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.31
+    af3_iptm: 0.1
   },
   {
     id: "design_0327",
@@ -194352,8 +194106,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEKKKLEEEKKEEEKKKKEKLEELKKKKEEEEEKARELQLER",
     pdb_file: "data/rbx1_designs/design_0463_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_1252",
@@ -194966,8 +194719,7 @@ const designs = [
     ipDE: null,
     sequence: "SEERRREEEERRRRREEEERREREERERLERRLKALKEALAKLLEEQKELEEILNE",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.4
+    af3_iptm: 0.1
   },
   {
     id: "design_2581",
@@ -195461,8 +195213,7 @@ const designs = [
     ipDE: null,
     sequence: "SEAERRLREEEEEIRRRAREEAERTGADMEEVEKETEEKIEVLRRRAELKARL",
     pdb_file: "data/rbx1_designs/design_0523_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.29
+    af3_iptm: 0.11
   },
   {
     id: "design_6688",
@@ -197044,8 +196795,7 @@ const designs = [
     ipDE: null,
     sequence: "KSIEEILEENRQKKIEERIEKLKKELEKKKEEAKKKEEEEKRKA",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.25
+    af3_iptm: 0.09
   },
   {
     id: "design_1851",
@@ -197930,8 +197680,7 @@ const designs = [
     ipDE: null,
     sequence: "MEELKKKLEERRKKLEEKRKKEEEEKKKKEELEKLLEELS",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.31
+    af3_iptm: 0.08
   },
   {
     id: "design_0662",
@@ -198034,8 +197783,7 @@ const designs = [
     ipDE: null,
     sequence: "SAEDKKKEEKEKSEKLKKELEEKEKLRKELEELRKKELEEE",
     pdb_file: "data/rbx1_designs/scaleup_0153.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.43
+    af3_iptm: 0.08
   },
   {
     id: "design_0873",
@@ -198733,8 +198481,7 @@ const designs = [
     ipDE: null,
     sequence: "MNKEELEKEKKKEEEEKKKEEKKKKEEEEKKKKEEEEKKKKEEE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.27
+    af3_iptm: 0.09
   },
   {
     id: "design_4408",
@@ -202798,8 +202545,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEEEKRRKEEIEKNKEEIEKKKKEEEERKKEEEERRKKELEKKREEAFRKELEEKLKEL",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.25
+    af3_iptm: 0.09
   },
   {
     id: "design_5479",
@@ -203888,8 +203634,7 @@ const designs = [
     ipDE: null,
     sequence: "KEEEIKEKMEKHIEKLLEEQKKLKKELRRRRKRRRRARERRRRRRRRRRERRRRA",
     pdb_file: "data/rbx1_designs/design_0550_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.3
+    af3_iptm: 0.09
   },
   {
     id: "design_2059",
@@ -204485,8 +204230,7 @@ const designs = [
     ipDE: null,
     sequence: "KKEEIKKKMEEYIEEKLEEKKKKEKELKKKEEKKKKKEEKKKKKKKKKLEKLKKK",
     pdb_file: null,
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_4532",
@@ -206255,8 +205999,7 @@ const designs = [
     ipDE: null,
     sequence: "EKEEEERKRREEEEKREKEKKEEEEREKQKKAREKMEKVK",
     pdb_file: "data/rbx1_designs/design_0523_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.29
+    af3_iptm: 0.11
   },
   {
     id: "design_1394",
@@ -206716,8 +206459,7 @@ const designs = [
     ipDE: null,
     sequence: "SCLSEEEWEELEEEERRRREEEERRRREEERRREEEERRRRELERRLR",
     pdb_file: "data/rbx1_designs/design_0057_model_0.cif",
-    af2_iptm: 0.12,
-    af2_ptm: 0.31
+    af3_iptm: 0.12
   },
   {
     id: "design_8344",
@@ -207415,8 +207157,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEKRKEEEEEKKKKEEEKKKEEKKKKEEEEKKKKEEEYEKEKKKKEEELRKIRE",
     pdb_file: "data/rbx1_designs/design_0673_model_0.cif",
-    af2_iptm: 0.13,
-    af2_ptm: 0.4
+    af3_iptm: 0.13
   },
   {
     id: "design_2269",
@@ -208318,8 +208059,7 @@ const designs = [
     ipDE: null,
     sequence: "SLGGKLSEEDREKLEEELKKKLEEGLKKALEEKKKEEEERKRLEKE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.24
+    af3_iptm: 0.08
   },
   {
     id: "design_7693",
@@ -209357,8 +209097,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEKKKEEEEKKKKEEKEKKAREEALKKRKEEEEEKKKEEEEKAKKEEEEKKEEEKKKLEEL",
     pdb_file: "data/rbx1_designs/design_0637_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_1997",
@@ -211195,8 +210934,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEERRRREEEERRREEEERRRREEEERKKELEEKQKEYEEEKEKKEKELKEIRE",
     pdb_file: "data/rbx1_designs/design_0675_model_0.cif",
-    af2_iptm: 0.11,
-    af2_ptm: 0.37
+    af3_iptm: 0.11
   },
   {
     id: "design_7883",
@@ -212523,8 +212261,7 @@ const designs = [
     ipDE: null,
     sequence: "SKEEREQEMLKKIEEREKLLKELEEAKKRKKEEEEKRKKKREEEERRREEERRRREEERRRREE",
     pdb_file: "data/rbx1_designs/scaleup_0000.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.26
+    af3_iptm: 0.09
   },
   {
     id: "design_1740",
@@ -212848,8 +212585,7 @@ const designs = [
     ipDE: null,
     sequence: "SAEEEELRKSQERLEELRKEVEEELKKKKEEEKKREEEKRKEEEALR",
     pdb_file: "data/rbx1_designs/design_0541_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_4552",
@@ -214261,8 +213997,7 @@ const designs = [
     ipDE: null,
     sequence: "SKEKEEELIKRYEEIRERRKAIEERRRKEEKEEEEEEEEEE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_7819",
@@ -214467,8 +214202,7 @@ const designs = [
     ipDE: null,
     sequence: "DEREREEREREERRRREEKEEEELLEKAREAYLAKVEEFRKRREEEERRRREEEERRRRE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.37
+    af3_iptm: 0.08
   },
   {
     id: "design_1429",
@@ -216424,8 +216158,7 @@ const designs = [
     ipDE: null,
     sequence: "SDEEREREIKRRLELLERREEEERKRREEELEEKRKELKEKVEKAKKELEKKLEEL",
     pdb_file: "data/rbx1_designs/design_0328_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.36
+    af3_iptm: 0.08
   },
   {
     id: "design_7818",
@@ -217004,8 +216737,7 @@ const designs = [
     ipDE: null,
     sequence: "LSPKARAALEEALRRAAEARRRALEEARRAEEEFREYKEREKELQELLDEA",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_0317",
@@ -217125,8 +216857,7 @@ const designs = [
     ipDE: null,
     sequence: "DEEEKEKEIKLIEEHREELKKEEEKRRREEEERRKREEERERREREERERLERL",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.3
+    af3_iptm: 0.08
   },
   {
     id: "design_0266",
@@ -217552,8 +217283,7 @@ const designs = [
     ipDE: null,
     sequence: "SDPKELEEKKKKEEEEEKKKKEEESYKKVKEWQEELKKALEE",
     pdb_file: "data/rbx1_designs/design_0541_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.27
+    af3_iptm: 0.1
   },
   {
     id: "design_5031",
@@ -218149,8 +217879,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEERERKKKEEEERKKEKEERKNRNLIGRKEEEEKAKKEELEKKE",
     pdb_file: "data/rbx1_designs/design_0604_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.29
+    af3_iptm: 0.08
   },
   {
     id: "design_1534",
@@ -218406,8 +218135,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEERERRRREEEERRRRRREEEERARREKAREEKRKELKKKKLEE",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_4436",
@@ -221672,8 +221400,7 @@ const designs = [
     ipDE: null,
     sequence: "MDEEEEKKKKEEEEKEKKEKEEKEEEEKKKIEKAREEYEEKLLKEKEEREEERRRAEE",
     pdb_file: "data/rbx1_designs/design_0479_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.36
+    af3_iptm: 0.09
   },
   {
     id: "design_3015",
@@ -223816,8 +223543,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEEEKKKLEEFEKEKEEREKRERAEEEKRLEELRAARAAEVARALAELAAALAAL",
     pdb_file: "data/rbx1_designs/design_0330_model_0.cif",
-    af2_iptm: 0.1,
-    af2_ptm: 0.34
+    af3_iptm: 0.1
   },
   {
     id: "design_1446",
@@ -224379,8 +224105,7 @@ const designs = [
     ipDE: null,
     sequence: "EIKKLIEEKKKEAEEIKKKAEELLKEGNEEEAKELLEKAKLIEEQVKNWEDLLK",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_2491",
@@ -226795,8 +226520,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEERRRKEELEEKAEKLKEYEEEIKRLEEEARRLLEKGEDELKAIEKRVEAIRKKVEAYKEAK",
     pdb_file: "data/rbx1_designs/design_0263_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_6702",
@@ -227460,8 +227184,7 @@ const designs = [
     ipDE: null,
     sequence: "MLSPEERERREREERERAERRREEERRRREEERRRREEEERRRAEERRRREEERRRYEEEVEERLKELKAIEERRERARGVVREEEERRRAERERERRRLEAL",
     pdb_file: "data/rbx1_designs/design_0026_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.25
+    af3_iptm: 0.09
   },
   {
     id: "design_4907",
@@ -227904,8 +227627,7 @@ const designs = [
     ipDE: null,
     sequence: "ELEEEKKKLEEELKKFEEKLLEKARAEGGMEKIEEAEKKIEEKKKEIEEKLKKIEEEYKKL",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.31
+    af3_iptm: 0.08
   },
   {
     id: "design_2898",
@@ -228348,8 +228070,7 @@ const designs = [
     ipDE: null,
     sequence: "MSLEELKKKIEELKKEIEEKKKKFEKELEEKEKELKELKEENIVSKTVIEKLELELAKKKAEYEKELEELEKELEKLEKEYKERVAAEKERAAAEAARAAAAAAEA",
     pdb_file: null,
-    af2_iptm: 0.09,
-    af2_ptm: 0.25
+    af3_iptm: 0.09
   },
   {
     id: "design_0039",
@@ -228435,8 +228156,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEERRREEEERLERVKLLEELLKEGKGREEFERRLAEREEARAAAAAAAAAAAAAAAAELAA",
     pdb_file: "data/rbx1_designs/design_0243_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.32
+    af3_iptm: 0.08
   },
   {
     id: "design_0254",
@@ -228471,8 +228191,7 @@ const designs = [
     ipDE: null,
     sequence: "DEKEKKEKEEEEKKKKEEEEKKEKEEKEIEEAIKKAEEEERKRREEEEEEE",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.26
+    af3_iptm: 0.07
   },
   {
     id: "design_0260",
@@ -228507,8 +228226,7 @@ const designs = [
     ipDE: null,
     sequence: "EEEKKRKEEEERRKKEKEKEEEEKKKEEEEKKKKLEELAEK",
     pdb_file: "data/rbx1_designs/design_0305_model_0.cif",
-    af2_iptm: 0.08,
-    af2_ptm: 0.28
+    af3_iptm: 0.08
   },
   {
     id: "design_0382",
@@ -228560,8 +228278,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEERERRRREEERRRREEEERRRREEEERKRREEEREKEERERWEE",
     pdb_file: null,
-    af2_iptm: 0.07,
-    af2_ptm: 0.25
+    af3_iptm: 0.07
   },
   {
     id: "design_0468",
@@ -228630,8 +228347,7 @@ const designs = [
     ipDE: null,
     sequence: "MEEEKRKREEEERRKREEERREEEERKRREEELKRLAEEREEEFKKLEEEKRKLE",
     pdb_file: null,
-    af2_iptm: 0.17,
-    af2_ptm: 0.35
+    af3_iptm: 0.17
   },
   {
     id: "design_0603",
@@ -232168,8 +231884,7 @@ const designs = [
     ipDE: null,
     sequence: "SEEERKKEMEEKVKKKKELKKKLEENKKREEEDKKELEEKEKEEKEKKEKEEKEKKKKEKEEEE",
     pdb_file: "data/rbx1_designs/design_0003_model_0.cif",
-    af2_iptm: 0.09,
-    af2_ptm: 0.28
+    af3_iptm: 0.09
   },
   {
     id: "design_0081",
@@ -232238,8 +231953,7 @@ const designs = [
     ipDE: null,
     sequence: "MEIKLLRPEEALPASFKELLAELEKELASPEIAARLAEEEKERRERERREEEERRRREEEE",
     pdb_file: null,
-    af2_iptm: 0.08,
-    af2_ptm: 0.23
+    af3_iptm: 0.08
   },
   {
     id: "design_0195",
@@ -232325,8 +232039,7 @@ const designs = [
     ipDE: null,
     sequence: "GEEELKKAKEVHKEEVEKREEELKKKKEEEEEKKKKEKEEEEKKKLEELKKE",
     pdb_file: null,
-    af2_iptm: 0.16,
-    af2_ptm: 0.49
+    af3_iptm: 0.16
   },
   {
     id: "design_0451",
@@ -233789,27 +233502,34 @@ const designs = [
     ipDE: null,
     sequence: "MTKEEIEERLKNREKEREARERAKREAEERLRREEEEEKRRKEEEE",
     pdb_file: null
+  },
+  {
+    id: "design_11316", name: "gen10k_e2_sm_j60", campaign: "E2 Face",
+    binder_length: 61, target_length: 108,
+    pipeline: "RFdiffusion+MPNN", stage: "Scored", size_class: "Small (40-65 AA)",
+    ipTM: 0.947, pTM: null, pLDDT: null, ipSAE: null, ipDE: null,
+    sequence: null,
+    af3_iptm: 0.18, af3_ptm: 0.44, af3_delta: 0.727, af3_flag: "discard"
   }
 ];
 
 // ===== Rank designs by composite score =====
 function rankDesigns(arr) {
-  const sorted = [...arr].sort((a, b) => {
-    // Scored designs first
-    const aScored = a.ipTM != null;
-    const bScored = b.ipTM != null;
-    if (aScored && !bScored) return -1;
-    if (!aScored && bScored) return 1;
-    if (aScored && bScored) {
-      // Prefer ipSAE when available, fall back to ipTM
-      const aVal = a.ipSAE != null ? a.ipSAE : a.ipTM;
-      const bVal = b.ipSAE != null ? b.ipSAE : b.ipTM;
-      return bVal - aVal;
-    }
-    // Both unscored: rank by rfdiff_conf
-    return (b.rfdiff_conf || 0) - (a.rfdiff_conf || 0);
+  var sorted = arr.slice().sort(function(a, b) {
+    // 1. AF3 ipTM (higher better, designs with AF3 first)
+    var a3 = a.af3_iptm != null ? a.af3_iptm : -1;
+    var b3 = b.af3_iptm != null ? b.af3_iptm : -1;
+    if (a3 !== b3) return b3 - a3;
+    // 2. ipSAE (higher better)
+    var aS = a.ipSAE != null ? a.ipSAE : -1;
+    var bS = b.ipSAE != null ? b.ipSAE : -1;
+    if (aS !== bS) return bS - aS;
+    // 3. ipTM (higher better)
+    var aT = a.ipTM != null ? a.ipTM : -1;
+    var bT = b.ipTM != null ? b.ipTM : -1;
+    return bT - aT;
   });
-  sorted.forEach((d, i) => d.rank = i + 1);
+  sorted.forEach(function(d, i) { d.rank = i + 1; });
   return sorted;
 }
 
@@ -233897,8 +233617,8 @@ function renderCard(d, showRank) {
         fmtMetric(d.ipSAE, 'ipSAE') +
         fmtMetric(d.pLDDT, 'pLDDT') +
         fmtMetric(d.pTM, 'pTM') +
-        fmtMetric(d.af2_iptm, 'AF2 ipTM') +
-        fmtMetric(d.af2_plddt, 'AF2 pLDDT') +
+        fmtMetric(d.af3_iptm, 'AF3 ipTM') +
+        fmtMetric(d.af3_flag, 'AF3 Flag') +
       '</div>' +
       '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;font-weight:400;">' +
         'Size class: ' + d.size_class + ' &middot; Target: ' + d.target_length + ' res' +
@@ -233970,7 +233690,7 @@ let cardSort = 'rank';
 let cardSortAsc = false;
 
 // Default directions: higher-is-better metrics sort descending first
-var defaultDesc = {ipTM: true, ipSAE: true, design_ptm: true, pLDDT: true, pTM: true, af2_iptm: true};
+var defaultDesc = {ipTM: true, ipSAE: true, design_ptm: true, pLDDT: true, pTM: true, af3_iptm: true};
 
 function toggleSortDir() {
   sortAsc = !sortAsc;
@@ -234038,7 +233758,7 @@ function renderTable(data) {
       '<td>' + ipSAE + '</td>' +
       '<td>' + fmtVal(d.pLDDT) + '</td>' +
       '<td>' + fmtVal(d.pTM) + '</td>' +
-      '<td>' + fmtVal(d.af2_iptm) + '</td>' +
+      '<td>' + fmtVal(d.af3_iptm) + '</td>' +
       '<td>' + d.pipeline + '</td>' +
       '<td>' + downloadCell + '</td>' +
     '</tr>';
@@ -234076,7 +233796,7 @@ var sortKeyMap = {
   design_ptm: function(d) { return d.design_ptm != null ? d.design_ptm : -Infinity; },
   pLDDT: function(d) { return d.pLDDT != null ? d.pLDDT : -Infinity; },
   pTM: function(d) { return d.pTM != null ? d.pTM : -Infinity; },
-  af2_iptm: function(d) { return d.af2_iptm != null ? d.af2_iptm : -Infinity; }
+  af3_iptm: function(d) { return d.af3_iptm != null ? d.af3_iptm : -Infinity; }
 };
 
 function sortData(data, sortBy, ascending) {
@@ -235028,7 +234748,8 @@ function populateDmsTables() {
     var sorted = [].concat(dmsData).sort(function(a, b) { return b[2] - a[2]; }).slice(0, 30);
     sensBody.innerHTML = sorted.map(function(row) {
       var role = getResidueRole(row[0]);
-      var cd = conservationData.find(function(c) { return c.num === row[0]; });
+      var cd = conservationData.find(function(c) { return c.num === row[0
+]; });
       return '<tr>' +
         '<td>' + row[0] + '</td>' +
         '<td style="font-family:monospace;">' + row[1] + '</td>' +
