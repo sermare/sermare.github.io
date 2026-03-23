@@ -819,11 +819,12 @@
               <th data-col="name" onclick="sortByColumn('name')">Design <span class="sort-arrow"></span></th>
               <th data-col="campaign" onclick="sortByColumn('campaign')">Campaign <span class="sort-arrow"></span></th>
               <th data-col="binder_length" onclick="sortByColumn('binder_length')">Length <span class="sort-arrow"></span></th>
-              <th data-col="ipTM" onclick="sortByColumn('ipTM')">ipTM <span class="sort-arrow"></span></th>
+              <th data-col="ipTM" onclick="sortByColumn('ipTM')">Boltz ipTM <span class="sort-arrow"></span></th>
               <th data-col="ipSAE" onclick="sortByColumn('ipSAE')">ipSAE <span class="sort-arrow"></span></th>
-              <th data-col="pLDDT" onclick="sortByColumn('pLDDT')">pLDDT <span class="sort-arrow"></span></th>
-              <th data-col="design_ptm" onclick="sortByColumn('design_ptm')">pTM <span class="sort-arrow"></span></th>
+              <th data-col="pLDDT" onclick="sortByColumn('pLDDT')">Boltz pLDDT <span class="sort-arrow"></span></th>
+              <th data-col="design_ptm" onclick="sortByColumn('design_ptm')">Boltz pTM <span class="sort-arrow"></span></th>
               <th data-col="af3_iptm" onclick="sortByColumn('af3_iptm')">AF3 ipTM <span class="sort-arrow"></span></th>
+              <th data-col="af3_ptm" onclick="sortByColumn('af3_ptm')">AF3 pTM <span class="sort-arrow"></span></th>
               <th data-col="pipeline" onclick="sortByColumn('pipeline')">Pipeline <span class="sort-arrow"></span></th>
               <th>Download</th>
             </tr>
@@ -233616,11 +233617,11 @@ function renderCard(d, showRank) {
       '</div>' +
       confBar +
       '<div class="metrics-grid">' +
-        fmtMetric(d.ipTM, 'ipTM') +
+        fmtMetric(d.ipTM, 'Boltz ipTM') +
+        fmtMetric(d.pTM, 'Boltz pTM') +
         fmtMetric(d.ipSAE, 'ipSAE') +
-        fmtMetric(d.pLDDT, 'pLDDT') +
-        fmtMetric(d.pTM, 'pTM') +
         fmtMetric(d.af3_iptm, 'AF3 ipTM') +
+        fmtMetric(d.af3_ptm, 'AF3 pTM') +
         fmtMetric(d.af3_flag, 'AF3 Flag') +
       '</div>' +
       '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;font-weight:400;">' +
@@ -233693,7 +233694,7 @@ let cardSort = 'rank';
 let cardSortAsc = false;
 
 // Default directions: higher-is-better metrics sort descending first
-var defaultDesc = {ipTM: true, ipSAE: true, design_ptm: true, pLDDT: true, pTM: true, af3_iptm: true};
+var defaultDesc = {ipTM: true, ipSAE: true, design_ptm: true, pLDDT: true, pTM: true, af3_iptm: true, af3_ptm: true};
 
 function toggleSortDir() {
   sortAsc = !sortAsc;
@@ -233762,6 +233763,7 @@ function renderTable(data) {
       '<td>' + fmtVal(d.pLDDT) + '</td>' +
       '<td>' + fmtVal(d.pTM) + '</td>' +
       '<td>' + fmtVal(d.af3_iptm) + '</td>' +
+      '<td>' + fmtVal(d.af3_ptm) + '</td>' +
       '<td>' + d.pipeline + '</td>' +
       '<td>' + downloadCell + '</td>' +
     '</tr>';
@@ -233799,7 +233801,8 @@ var sortKeyMap = {
   design_ptm: function(d) { return d.design_ptm != null ? d.design_ptm : -Infinity; },
   pLDDT: function(d) { return d.pLDDT != null ? d.pLDDT : -Infinity; },
   pTM: function(d) { return d.pTM != null ? d.pTM : -Infinity; },
-  af3_iptm: function(d) { return d.af3_iptm != null ? d.af3_iptm : -Infinity; }
+  af3_iptm: function(d) { return d.af3_iptm != null ? d.af3_iptm : -Infinity; },
+  af3_ptm: function(d) { return d.af3_ptm != null ? d.af3_ptm : -Infinity; }
 };
 
 function sortData(data, sortBy, ascending) {
