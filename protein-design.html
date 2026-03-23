@@ -80258,7 +80258,7 @@ let cardSort = 'rank';
 let cardSortAsc = false;
 
 // Default directions: higher-is-better metrics sort descending first
-var defaultDesc = {ipTM: true, ipSAE: true, design_ptm: true, pLDDT: true, pTM: true};
+var defaultDesc = {ipTM: true, ipSAE: true, design_ptm: true, pLDDT: true, pTM: true, af2_iptm: true};
 
 function toggleSortDir() {
   sortAsc = !sortAsc;
@@ -80326,6 +80326,7 @@ function renderTable(data) {
       '<td>' + ipSAE + '</td>' +
       '<td>' + fmtVal(d.pLDDT) + '</td>' +
       '<td>' + fmtVal(d.pTM) + '</td>' +
+      '<td>' + fmtVal(d.af2_iptm) + '</td>' +
       '<td>' + d.pipeline + '</td>' +
       '<td>' + downloadCell + '</td>' +
     '</tr>';
@@ -80362,7 +80363,8 @@ var sortKeyMap = {
   ipSAE: function(d) { return d.ipSAE != null ? d.ipSAE : -Infinity; },
   design_ptm: function(d) { return d.design_ptm != null ? d.design_ptm : -Infinity; },
   pLDDT: function(d) { return d.pLDDT != null ? d.pLDDT : -Infinity; },
-  pTM: function(d) { return d.pTM != null ? d.pTM : -Infinity; }
+  pTM: function(d) { return d.pTM != null ? d.pTM : -Infinity; },
+  af2_iptm: function(d) { return d.af2_iptm != null ? d.af2_iptm : -Infinity; }
 };
 
 function sortData(data, sortBy, ascending) {
