@@ -894,32 +894,6 @@ Campaigns:
 - e2_small / e2_med: E2 face, small / medium binders
 - BoltzGen: Designs from BoltzGen generative model (not RFdiffusion)</div>
 
-      <!-- AF3 Validation Section -->
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">AlphaFold3 Validation</div>
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;font-weight:400;">
-        28 top designs validated with AlphaFold3. AF3 ipTM is the ground-truth orthogonal validation.
-        Most RFdiffusion+MPNN E2 face designs show massive Boltz-2 score inflation (delta 0.5-0.86).
-        BoltzGen designs targeting the full RBX1 surface show better AF3 agreement.
-      </p>
-
-      <div class="plot-img-container" style="margin-bottom:24px;">
-        <h3 style="font-weight:400;">Boltz-2 vs AF3 ipTM</h3>
-        <img src="data/rbx1_plots/af3_vs_boltz.png" alt="Boltz vs AF3 scatter" style="max-width:100%;">
-        <div class="plot-caption">Each point is one validated design. Dashed line = perfect agreement. BoltzGen designs (green) cluster near the diagonal, while RFdiffusion+MPNN E2 designs (blue) show extreme inflation. Edge color indicates AF3 flag: black = top hit, green = promote, orange = review, gray = discard.</div>
-      </div>
-
-      <div class="plot-img-container" style="margin-bottom:24px;">
-        <h3 style="font-weight:400;">AF3 vs Boltz ipTM per design</h3>
-        <img src="data/rbx1_plots/af3_ranked_bars.png" alt="AF3 ranked bar chart" style="max-width:100%;">
-        <div class="plot-caption">Solid bars = AF3 ipTM, faded bars = Boltz ipTM. Sorted by AF3 score. Only design_0673 (AF3=0.85) and design_0357 (AF3=0.78) pass the ipTM > 0.5 threshold. The gap between solid and faded bars reveals the Boltz-2 score inflation per design.</div>
-      </div>
-
-      <div class="plot-img-container" style="margin-bottom:24px;">
-        <h3 style="font-weight:400;">Score inflation by pipeline</h3>
-        <img src="data/rbx1_plots/af3_delta_by_pipeline.png" alt="Delta by pipeline" style="max-width:100%;">
-        <div class="plot-caption">Delta = Boltz ipTM minus AF3 ipTM (lower = more trustworthy). BoltzGen designs have delta 0.05-0.4, RFdiff+MPNN E2 designs have delta 0.5-0.86. The Cullin-face RFdiff design (0357) has low delta (0.165), suggesting Cullin-targeting may be more reliable than E2-targeting with the current protocol.</div>
-      </div>
-
       <!-- Analysis Section (detailed) -->
       <div class="analysis-section" id="analysisSection">
         <h2>Analysis &mdash; March 22, 2026 (scan 10)</h2>
@@ -1086,7 +1060,34 @@ Campaigns:
     <!-- ============================================ -->
     <div class="tab-content" id="tab-pipelines">
 
-      <div class="section-heading" style="font-size:20px;font-weight:400;">Pipeline Performance Comparison</div>
+      <!-- AF3 Validation Section -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;">AlphaFold3 Validation</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;font-weight:400;">
+        28 top designs validated with AlphaFold3. AF3 ipTM is the ground-truth orthogonal validation.
+        Most RFdiffusion+MPNN E2 face designs show massive Boltz-2 score inflation (delta 0.5-0.86).
+        BoltzGen designs targeting the full RBX1 surface show better AF3 agreement.
+      </p>
+
+      <div class="plot-img-container" style="margin-bottom:24px;">
+        <h3 style="font-weight:400;">Boltz-2 vs AF3 ipTM</h3>
+        <img src="data/rbx1_plots/af3_vs_boltz.png" alt="Boltz vs AF3 scatter" style="max-width:100%;">
+        <div class="plot-caption">Each point is one validated design. Dashed line = perfect agreement. BoltzGen designs (green) cluster near the diagonal, while RFdiffusion+MPNN E2 designs (blue) show extreme inflation. Edge color indicates AF3 flag: black = top hit, green = promote, orange = review, gray = discard.</div>
+      </div>
+
+      <div class="dist-grid">
+        <div class="plot-img-container">
+          <h3 style="font-weight:400;">AF3 vs Boltz ipTM per design</h3>
+          <img src="data/rbx1_plots/af3_ranked_bars.png" alt="AF3 ranked bar chart" style="max-width:100%;">
+          <div class="plot-caption">Solid bars = AF3 ipTM, faded bars = Boltz ipTM. Sorted by AF3 score. Only design_0673 (AF3=0.85) and design_0357 (AF3=0.78) pass ipTM > 0.5.</div>
+        </div>
+        <div class="plot-img-container">
+          <h3 style="font-weight:400;">Score inflation by pipeline</h3>
+          <img src="data/rbx1_plots/af3_delta_by_pipeline.png" alt="Delta by pipeline" style="max-width:100%;">
+          <div class="plot-caption">Delta = Boltz ipTM - AF3 ipTM. BoltzGen: delta 0.05-0.4. RFdiff+MPNN E2: delta 0.5-0.86. Cullin RFdiff (0357): delta 0.165.</div>
+        </div>
+      </div>
+
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:32px;">Pipeline Performance Comparison</div>
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;font-weight:400;">
         Meta-analysis of design pipelines across campaigns. All plots generated from Python analysis scripts.
       </p>
