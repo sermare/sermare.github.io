@@ -873,18 +873,95 @@
     <!-- ============================================ -->
     <div class="tab-content" id="tab-analysis">
 
-      <div class="section-heading" style="font-size:20px;font-weight:400;">Analysis and Lab Notebook</div>
+      <div class="section-heading" style="font-size:20px;font-weight:400;">Campaign Summary</div>
 
-      <!-- Info Banner -->
-      <div class="info-banner">
-        Analysis and Interpretation (March 22, 2026 &mdash; scan 10):<br>
-        Master CSV: 11,797 rows (up from 10,992). Wave 3: +1,310 new designs (2,670 total on dashboard). 12,612 total designs on dashboard.
-        <br><br>
-        Boltz-2 scoring progress: Scale-up: 686/686. Wave 2: 8,336. Wave 3: 2,670 (+1,310). BoltzGen: 620. Active jobs: rank_upd running, bg_s1-s3 running, 1 w3s job queued (priority).
-        <br><br>
-        Top 5 hits (all-time): design_7713/wave2 (ipTM=0.964), design_2723/wave2 (0.962), design_7672/wave2 (0.962), design_3900/wave2 (0.962), design_3138/wave2 (0.961). Best new w3 hit: w3_design_2134 (ipTM=0.955). Best w3 ipSAE: w3_design_1646 (ipSAE=0.837, ipTM=0.947).
-        <br><br>
-        Recommendation: Wave 3 now producing hits above ipTM=0.95 (67 above 0.9, 356 above 0.8). Continue w3 scoring. Cross-validate top w3 designs with AF2. Apply thresholds: ipTM &gt; 0.85 AND pLDDT &gt; 0.7 for top tier candidates.
+      <!-- Campaign Configuration Table -->
+      <div class="table-wrapper" style="margin-bottom:24px;">
+        <table class="all-structures-table" style="font-size:13px;">
+          <thead>
+            <tr>
+              <th>Campaign</th>
+              <th>Pipeline</th>
+              <th>Hotspots</th>
+              <th>Size</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>RFdiff E2 small</td><td>RFdiff+MPNN</td><td style="font-family:monospace;font-size:11px;">A44,A45,A46,A51,A54,A56,A57,A79,A83,A84,A87,A95,A96</td><td>40-65 AA</td></tr>
+            <tr><td>RFdiff E2 med</td><td>RFdiff+MPNN</td><td style="font-family:monospace;font-size:11px;">A44,A45,A46,A51,A54,A56,A57,A79,A83,A84,A87,A95,A96</td><td>90-120 AA</td></tr>
+            <tr><td>RFdiff E2 enhanced</td><td>RFdiff+MPNN</td><td style="font-family:monospace;font-size:11px;">Above + A42,A53 (ESM-2 DMS additions)</td><td>40-65 AA</td></tr>
+            <tr><td>RFdiff Beta E2</td><td>RFdiff+MPNN</td><td style="font-family:monospace;font-size:11px;">A44,A45,A46,A51,A56,A57,A79,A83,A87,A95,A96</td><td>40-65 AA</td></tr>
+            <tr><td>RFdiff Cullin small</td><td>RFdiff+MPNN</td><td style="font-family:monospace;font-size:11px;">A27,A29,A30,A31,A33,A35,A36,A73,A75,A101</td><td>40-65 AA</td></tr>
+            <tr><td>RFdiff Cullin med</td><td>RFdiff+MPNN</td><td style="font-family:monospace;font-size:11px;">A27,A29,A30,A31,A33,A35,A36,A73,A75,A101</td><td>90-120 AA</td></tr>
+            <tr><td>RFdiff Beta Cullin</td><td>RFdiff+MPNN</td><td style="font-family:monospace;font-size:11px;">A27,A29,A30,A31,A33,A35,A36,A73,A75,A101</td><td>40-65 AA</td></tr>
+            <tr><td>BoltzGen small</td><td>BoltzGen</td><td>None (untargeted)</td><td>40-65 AA</td></tr>
+            <tr><td>BoltzGen medium</td><td>BoltzGen</td><td>None (untargeted)</td><td>90-120 AA</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Campaign Scoring Results -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;">Scoring Results by Campaign</div>
+      <div class="table-wrapper" style="margin-bottom:24px;">
+        <table class="all-structures-table" style="font-size:13px;">
+          <thead>
+            <tr>
+              <th>Campaign</th>
+              <th>Scored</th>
+              <th>iPSAE mean</th>
+              <th>iPSAE max</th>
+              <th>&gt;0.7</th>
+              <th>&gt;0.5</th>
+              <th>Best len</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>RFdiff E2 small</td><td>11,792</td><td>0.226</td><td>0.877</td><td>355</td><td>1,790</td><td>51</td></tr>
+            <tr><td>RFdiff E2 med</td><td>196</td><td>0.252</td><td>0.801</td><td>8</td><td>31</td><td>98</td></tr>
+            <tr><td>RFdiff Beta E2</td><td>104</td><td>0.313</td><td>0.821</td><td>11</td><td>24</td><td>55</td></tr>
+            <tr><td>RFdiff Cullin small</td><td>128</td><td>0.240</td><td>0.805</td><td>8</td><td>24</td><td>60</td></tr>
+            <tr><td>RFdiff Cullin med</td><td>128</td><td>0.278</td><td>0.793</td><td>7</td><td>25</td><td>111</td></tr>
+            <tr><td>BoltzGen (untargeted)</td><td>1,840</td><td>0.378</td><td>0.773</td><td>3</td><td>418</td><td>62</td></tr>
+            <tr><td>Other/pilot</td><td>40</td><td>0.174</td><td>0.685</td><td>0</td><td>2</td><td>50</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Totals -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;">Totals</div>
+      <div style="font-size:14px;color:var(--text);line-height:1.8;padding:16px;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;margin-bottom:24px;">
+        <div>Total RFdiffusion backbones: 9,964</div>
+        <div style="padding-left:20px;">E2 face: 5,649 &mdash; Cullin face: 1,709 &mdash; Beta model: 110</div>
+        <div>Total BoltzGen designs: 1,820 complete + 1,400 resuming</div>
+        <div>Total scored in master: 14,228</div>
+        <div>Total with OF3 validation: 248</div>
+        <div>Total with AF3 validation: 32</div>
+      </div>
+
+      <!-- Hotspot Details -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;">Hotspot Details</div>
+      <div style="font-size:13px;color:var(--text);line-height:1.9;padding:16px;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;margin-bottom:24px;">
+        <div style="margin-bottom:12px;">
+          <span style="color:var(--link);">E2 Face</span> (from PDB 4P5O UBC12 interface + ESM-2 DMS):<br>
+          <span style="padding-left:20px;">Core: A44(I), A45(C), A46(R), A51(D), A56(C), A57(Q)</span><br>
+          <span style="padding-left:20px;">Extended: A54(I*), A79(F), A83(C), A84(I*), A87(W), A95(P), A96(L)</span><br>
+          <span style="padding-left:20px;color:var(--text-secondary);">* I54, I84 added from ESM-2 DMS (mutation-sensitive, missed by conservation)</span>
+        </div>
+        <div style="margin-bottom:12px;">
+          <span style="color:#E06666;">Cullin Face</span> (from PDB 4P5O Cullin-1 interface):<br>
+          <span style="padding-left:20px;">Core: A27(W), A29(A), A30(V), A31(A), A33(W), A35(W)</span><br>
+          <span style="padding-left:20px;">Extended: A36(D), A73(G), A75(C), A101(W)</span>
+        </div>
+        <div>
+          <span style="color:#6AA84F;">BoltzGen</span>: No hotspot conditioning &mdash; binder targets determined by model
+        </div>
+      </div>
+
+      <!-- RFdiffusion Checkpoints -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;">RFdiffusion Checkpoints</div>
+      <div style="font-size:13px;color:var(--text);line-height:1.8;padding:16px;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;margin-bottom:24px;">
+        <div><span style="font-family:monospace;">Complex_base_ckpt.pt</span> &mdash; standard binder design (mostly helical)</div>
+        <div><span style="font-family:monospace;">Complex_beta_ckpt.pt</span> &mdash; diverse topology binder design (mixed sheet/helix)</div>
       </div>
 
       <!-- Naming Convention -->
@@ -904,165 +981,6 @@ Campaigns:
 - cul_small / cul_med: Cullin face, small (40-65 AA) / medium (90-120 AA) binders
 - e2_small / e2_med: E2 face, small / medium binders
 - BoltzGen: Designs from BoltzGen generative model (not RFdiffusion)</div>
-
-      <!-- Analysis Section (detailed) -->
-      <div class="analysis-section" id="analysisSection">
-        <h2>Analysis &mdash; March 22, 2026 (scan 10)</h2>
-
-        <h3>Summary</h3>
-        <p>
-          12,612 total designs on dashboard (40 pilot + 676 scale-up + 8,586 wave2 + 2,670 wave3 + 620 BoltzGen + 20 rbx1 pilot). Master CSV: 11,797 rows (up from 10,992). 1,310 designs added this scan (all wave 3).
-          Wave 3: 2,670 E2-face designs on dashboard (1,310 new this scan). Best new w3 ipTM=0.955 (w3_design_2134). 67 new above 0.9, 356 new above 0.8. Active scoring jobs on Savio.
-          BoltzGen pipeline: 620 designs (unchanged). BoltzGen scoring jobs (bg_s1-s3) running.
-          AF2 validation: ongoing. Top hit unchanged: design_7713 (ipTM=0.964).
-        </p>
-
-        <h3>Breakthrough Results</h3>
-        <p>
-          Wave 2 design_7713 holds overall best at ipTM = 0.964. design_7672 enters top 3 with ipTM=0.962, ipSAE=0.877 (highest ipSAE among top 5).
-          Wave 2 top 5: design_7713 (0.964), design_2723 (0.962), design_7672 (0.962), design_3900 (0.962), design_3138 (0.961). All small E2-face binders.
-          411 wave2 designs exceed ipTM 0.9 from 7,815 in CSV (5.3% hit rate at 0.9+), consistent with scale-up performance.
-          AF2 validation initiated on top 100 designs: 13 AlphaFold2 multimer results available so far.
-        </p>
-
-        <h3>Wave 2 Analysis (8,336 Scored of 9,336 Queued)</h3>
-        <p>
-          Mean ipTM = 0.659 across 7,815 wave2 designs in master CSV (8,336 scored on disk). All E2-face.
-          2,240 above ipTM 0.8, 411 above 0.9. Top hit design_7713 at ipTM=0.964.
-          Performance closely matches scale-up campaign, confirming robust design quality across the gen10k backbone set.
-        </p>
-
-        <h3>Pipeline Comparison</h3>
-        <p>
-          Scale-up (686 scored): Mean ipTM=0.660, best=0.962. 196 above 0.8.
-          Wave 2 gen10k (8,065 on dashboard, 7,815 in CSV): Mean ipTM=0.659, best=0.964. 2,240 above 0.8.
-          BoltzGen: best ipTM=0.582, far below MPNN pipelines.
-          E2 face vs Cullin face: E2 face dominates all top ranks. Cullin face best: 0.944 (cul_small_10-017).
-        </p>
-
-        <h3 class="red-flag">Red Flags</h3>
-        <p>
-          <span class="red-flag">1. Wave 2 scoring is 89.3% complete.</span> 8,336/9,336 designs scored on disk, 7,815 in master CSV. 9 jobs running on Savio.
-        </p>
-        <p>
-          <span class="red-flag">2. MSA vs no-MSA scoring inconsistency persists.</span> Pilot 40 designs scored without MSA (lower ipTM). All scale-up and wave2 use MSA. Cross-pipeline comparison unreliable.
-        </p>
-        <p>
-          <span class="red-flag">3. Very high ipTM values warrant caution.</span> 411 wave2 designs above ipTM 0.9 from 7,815 in CSV. Verify genuine binding predictions vs MSA artifacts.
-        </p>
-        <p>
-          <span class="red-flag">4. No filtering or submission prep started.</span> 04_filtered and 05_submission remain empty. With 2,432 designs above ipTM 0.8, filtering is overdue.
-        </p>
-
-        <h3 class="rec">Recommendations</h3>
-        <p>
-          <span class="rec">1. Begin filtering immediately on scale-up results.</span> Do not wait for wave2 completion. Apply ipTM &gt; 0.85 AND pLDDT &gt; 0.7 to current 676 scale-up designs.
-        </p>
-        <p>
-          <span class="rec">2. Monitor wave2 scoring queue.</span> 9 jobs running. Scoring at 89.3% and nearing completion.
-        </p>
-        <p>
-          <span class="rec">3. Validate top hits structurally.</span> Run ipSAE analysis, structural inspection, and PLIP contact analysis on top 20 designs across all campaigns.
-        </p>
-        <p>
-          <span class="rec">4. Plan diversity filtering.</span> With 9,336 wave2 binders eventually scoring, automated filtering pipeline is essential. Pre-build filtering script now.
-        </p>
-
-        <h3>Pipeline Progress</h3>
-        <p>
-          Estimated overall completion: 82%.
-          Evolutionary analysis (100%), RFdiffusion generation (100%), ProteinMPNN (100%), BoltzGen pilots (100%).
-          Boltz-2 scoring: pilot complete (no-MSA), scale-up 100% (686/686), wave2 89.3% (8,336/9,336). AF2 validation started (13/100). Filtering (0%), submission (0%).
-        </p>
-        <div class="progress-bar-container">
-          <div class="progress-bar-fill" style="width: 82%;"></div>
-        </div>
-      </div>
-
-      <!-- Pipeline Status Cards -->
-      <div class="pipeline-section">
-        <div class="section-heading" style="font-size:20px;font-weight:400;">Pipeline Status</div>
-        <div class="pipeline-grid">
-          <div class="pipeline-card">
-            <div class="pipeline-card-header">
-              <span class="pipeline-name">Pipeline A: RFdiffusion &rarr; ProteinMPNN (Pilot)</span>
-              <span class="tag tag-finished">SCORED</span>
-            </div>
-            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (10 pilot designs)</div>
-            <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (40 sequences, 4 per backbone)</div>
-            <div class="pipeline-step step-done">&#10003; Boltz-2 complex prediction (40/40 complete)</div>
-            <div class="pipeline-step step-done">&#10003; Score extraction &mdash; best ipTM=0.645 (design_0039)</div>
-          </div>
-          <div class="pipeline-card">
-            <div class="pipeline-card-header">
-              <span class="pipeline-name">Pipeline A: RFdiffusion Scale-up</span>
-              <span class="tag tag-reading">IN PROGRESS</span>
-            </div>
-            <div class="pipeline-step step-done">&#10003; RFdiffusion backbone generation (1,416 backbones &mdash; 362 core + satellite campaigns)</div>
-            <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (676 binders)</div>
-            <div class="pipeline-step step-done">&#10003; Boltz-2 scoring with MSA (14/14 batches complete: 686/686 designs, 100% &mdash; best ipTM=0.962)</div>
-            <div class="pipeline-step step-pending">&#9675; Filtering &amp; submission (after scoring completes)</div>
-          </div>
-          <div class="pipeline-card">
-            <div class="pipeline-card-header">
-              <span class="pipeline-name">Pipeline A: Wave 2 (Gen10k)</span>
-              <span class="tag tag-reading">IN PROGRESS</span>
-            </div>
-            <div class="pipeline-step step-done">&#10003; RFdiffusion gen10k backbone generation (9,336 binders from E2-face campaigns)</div>
-            <div class="pipeline-step step-done">&#10003; ProteinMPNN sequence design (9,336 binders)</div>
-            <div class="pipeline-step step-active">&#9654; Boltz-2 scoring with MSA (7,610/9,336 scored, 81.5% &mdash; 84/94 batches, best ipTM=0.964)</div>
-            <div class="pipeline-step step-pending">&#9675; Remaining ~10 batches queued (42 jobs pending on Savio)</div>
-          </div>
-          <div class="pipeline-card">
-            <div class="pipeline-card-header">
-              <span class="pipeline-name">Pipeline B: BoltzGen (Small)</span>
-              <span class="tag tag-finished">COMPLETE</span>
-            </div>
-            <div class="pipeline-step step-done">&#10003; Structure generation (5 designs)</div>
-            <div class="pipeline-step step-done">&#10003; Inverse folding &amp; sequence design</div>
-            <div class="pipeline-step step-done">&#10003; Boltz-2 scoring &amp; refolding</div>
-            <div class="pipeline-step step-done">&#10003; Final ranking (5 designs ranked)</div>
-          </div>
-          <div class="pipeline-card">
-            <div class="pipeline-card-header">
-              <span class="pipeline-name">Pipeline B: BoltzGen (Medium)</span>
-              <span class="tag tag-finished">COMPLETE</span>
-            </div>
-            <div class="pipeline-step step-done">&#10003; Structure generation (5 designs)</div>
-            <div class="pipeline-step step-done">&#10003; Inverse folding &amp; sequence design</div>
-            <div class="pipeline-step step-done">&#10003; Boltz-2 scoring &amp; refolding</div>
-            <div class="pipeline-step step-done">&#10003; Final ranking (5 designs ranked)</div>
-          </div>
-          <div class="pipeline-card">
-            <div class="pipeline-card-header">
-              <span class="pipeline-name">Pipeline B: BoltzGen Scale-up</span>
-              <span class="tag tag-reading">IN PROGRESS</span>
-            </div>
-            <div class="pipeline-step step-done">&#10003; small_10: 10 designs &mdash; fully scored &amp; ranked (best ipTM=0.582)</div>
-            <div class="pipeline-step step-active">&#9654; small_100: 69/100 inverse-folded, 59/100 refolded (bgen_s100 running)</div>
-            <div class="pipeline-step step-active">&#9654; medium_100: 28/100 inverse-folded, 24/100 refolded (bgen_m100 running)</div>
-            <div class="pipeline-step step-pending">&#9675; small_100 final scoring &amp; ranking</div>
-            <div class="pipeline-step step-pending">&#9675; medium_100 final scoring &amp; ranking</div>
-          </div>
-          <div class="pipeline-card">
-            <div class="pipeline-card-header">
-              <span class="pipeline-name">Pipeline C: ESM3</span>
-              <span class="tag" style="background:var(--bg);color:var(--text-secondary);border:1px solid var(--border);font-size:11px;">STRETCH</span>
-            </div>
-            <div class="pipeline-step step-pending">&#9675; Not yet started (stretch goal)</div>
-          </div>
-          <div class="pipeline-card">
-            <div class="pipeline-card-header">
-              <span class="pipeline-name">Evolutionary Analysis</span>
-              <span class="tag tag-finished">COMPLETE</span>
-            </div>
-            <div class="pipeline-step step-done">&#10003; 1155-seq MSA (MAFFT)</div>
-            <div class="pipeline-step step-done">&#10003; Conservation scoring (108 residues)</div>
-            <div class="pipeline-step step-done">&#10003; Interface mapping (E2: 35 res, Cullin: 31 res)</div>
-            <div class="pipeline-step step-done">&#10003; Hotspot selection</div>
-          </div>
-        </div>
-      </div>
 
     </div>
 
