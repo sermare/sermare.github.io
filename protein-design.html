@@ -804,6 +804,8 @@
           <option value="pLDDT">pLDDT</option>
           <option value="af3_iptm">AF3 ipTM</option>
           <option value="of3_iptm">OF3 ipTM</option>
+          <option value="pb_ipsae">Pb ipSAE</option>
+          <option value="pb_iptm">Pb ipTM</option>
         </select>
         <button id="sortDirBtn" onclick="toggleSortDir()" style="padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);cursor:pointer;font-family:inherit;font-size:14px;" title="Toggle sort direction"></button>
 
@@ -837,6 +839,8 @@
               <th data-col="af3_ptm" onclick="sortByColumn('af3_ptm')">AF3 pTM <span class="sort-arrow"></span></th>
               <th data-col="of3_iptm" onclick="sortByColumn('of3_iptm')">OF3 ipTM <span class="sort-arrow"></span></th>
               <th data-col="of3_ptm" onclick="sortByColumn('of3_ptm')">OF3 pTM <span class="sort-arrow"></span></th>
+              <th data-col="pb_ipsae" onclick="sortByColumn('pb_ipsae')">Pb ipSAE <span class="sort-arrow"></span></th>
+              <th data-col="pb_iptm" onclick="sortByColumn('pb_iptm')">Pb ipTM <span class="sort-arrow"></span></th>
               <th data-col="pipeline" onclick="sortByColumn('pipeline')">Pipeline <span class="sort-arrow"></span></th>
               <th>Download</th>
             </tr>
@@ -858,6 +862,8 @@
             <option value="pLDDT">pLDDT</option>
           <option value="af3_iptm">AF3 ipTM</option>
           <option value="of3_iptm">OF3 ipTM</option>
+          <option value="pb_ipsae">Pb ipSAE</option>
+          <option value="pb_iptm">Pb ipTM</option>
             <option value="binder_length">Binder Length</option>
             <option value="name">Name</option>
           </select>
@@ -3164,6 +3170,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5659,
     of3_ptm: 0.5667,
+    pb_ipsae: 0.54, pb_iptm: 0.82,
     sequence: "GLSQEELNKILAEYQEIKQETMLETYFKLPESLSSAERLALARRIGEEKAREELARRLAA",
     pdb_file: null
   },
@@ -3384,6 +3391,7 @@ const designs = [
     af3_flag: "top hit",
     of3_iptm: 0.7762,
     of3_ptm: 0.6713,
+    pb_ipsae: 0.76, pb_iptm: 0.91,
     sequence: "MDELERHYSVLLAQCEVLGLEDEIERLEATKELSPEEQFEELGRIDKEIKAKIEALKAAAEGPAE",
     pdb_file: "data/rbx1_designs/design_1459_model_0.cif"
   },
@@ -3450,6 +3458,7 @@ const designs = [
     af3_flag: "promote",
     of3_iptm: 0.1473,
     of3_ptm: 0.4207,
+    pb_ipsae: 0.69, pb_iptm: 0.82,
     sequence: "SRMEENRRARAERAEALRAAGDLAALEALLAAEAAAQAALAAAAERERAERERRRAEEEA",
     pdb_file: "data/rbx1_designs/design_0357_model_0.cif"
   },
@@ -3582,6 +3591,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5677,
     of3_ptm: 0.5815,
+    pb_ipsae: 0.66, pb_iptm: 0.87,
     sequence: "SAAEEEARRRAEEAKRAEEEDKRLREEQVARLAEARAAAAAAGAPESALRPVVAEIMAEIRAYLE",
     pdb_file: "data/rbx1_designs/design_2308_model_0.cif"
   },
@@ -3780,6 +3790,7 @@ const designs = [
     af3_flag: "top hit",
     of3_iptm: 0.7485,
     of3_ptm: 0.622,
+    pb_ipsae: 0.71, pb_iptm: 0.92,
     sequence: "LDELMKKLKEELEELREKLREAVKAGDEEKAEELRKRLFDCIIELSKLK",
     pdb_file: "data/rbx1_designs/design_0283_model_0.cif"
   },
@@ -4374,6 +4385,7 @@ const designs = [
     af3_flag: "discard",
     of3_iptm: 0.5404,
     of3_ptm: 0.56,
+    pb_ipsae: 0.02, pb_iptm: 0.34,
     sequence: "MRRVTELLRRALEVHRTGSAEEAQAFLREAAAELERLSESPGSEGLLASLAAARIRELLP",
     pdb_file: "data/rbx1_designs/design_7713_model_0.cif"
   },
@@ -4682,6 +4694,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5675,
     of3_ptm: 0.5611,
+    pb_ipsae: 0.09, pb_iptm: 0.53,
     sequence: "MEPLKLSEEERRQRLVDQLEALRREGKELRVEALLSSLSEEEREELEEAIRARREAR",
     pdb_file: "data/rbx1_designs/design_7921_model_0.cif"
   },
@@ -6200,6 +6213,7 @@ const designs = [
     af3_flag: "review",
     of3_iptm: 0.1923,
     of3_ptm: 0.4262,
+    pb_ipsae: 0.21, pb_iptm: 0.7,
     sequence: "KTEEEIAEELSKKFGISLTAARAAVEAVRRILERHPDITAEELAERTGASLEEVEHLLELLK",
     pdb_file: "data/rbx1_designs/design_0675_model_0.cif"
   },
@@ -6706,6 +6720,7 @@ const designs = [
     af3_flag: "promote",
     of3_iptm: 0.5792,
     of3_ptm: 0.5772,
+    pb_ipsae: 0.1, pb_iptm: 0.57,
     sequence: "SKEYKLLLESIKKKAKEFVAKLGEENAEKLYEEFLAFLEEIEKEREKL",
     pdb_file: "data/rbx1_designs/design_4048_model_0.cif"
   },
@@ -7058,6 +7073,7 @@ const designs = [
     af3_flag: "top hit",
     of3_iptm: 0.123,
     of3_ptm: 0.4075,
+    pb_ipsae: 0.13, pb_iptm: 0.62,
     sequence: "SAAAAAGEKAAAAAEAGASTDELAKLWVEAAKLAAASSDPAAANAAFIGIAKAIVIRMKRLLGL",
     pdb_file: "data/rbx1_designs/design_0673_model_0.cif"
   },
@@ -7542,6 +7558,7 @@ const designs = [
     af3_flag: "top hit",
     of3_iptm: 0.7297,
     of3_ptm: 0.6519,
+    pb_ipsae: 0.18, pb_iptm: 0.64,
     sequence: "PKDRKTLEELKKELEERRERAEELLKSPSPSTQSLGKAQLLVCEEAEEKIKKLEEELRKEEEA",
     pdb_file: "data/rbx1_designs/design_5499_model_0.cif"
   },
@@ -7564,6 +7581,7 @@ const designs = [
     af3_flag: "promote",
     of3_iptm: 0.6181,
     of3_ptm: 0.581,
+    pb_ipsae: 0.39, pb_iptm: 0.81,
     sequence: "MTAIEVLEEHEARTSAALAAARAAGASAEELARLEAERARMPDVVRARMEEDRIAAL",
     pdb_file: "data/rbx1_designs/design_0743_model_0.cif"
   },
@@ -7762,6 +7780,7 @@ const designs = [
     af3_flag: "promote",
     of3_iptm: 0.2669,
     of3_ptm: 0.4521,
+    pb_ipsae: 0.69, pb_iptm: 0.86,
     sequence: "SAAAAAAAAAAAEAARRAREEELAERLRRAIETEEAREELYEEVLEEARLRREIAALLEQLAAETDPARRAELQARIDELLARLRALEEERRLAEAGLRRAAEAAAAA",
     pdb_file: "data/rbx1_designs/design_0389_model_0.cif"
   },
@@ -8224,6 +8243,7 @@ const designs = [
     af3_flag: "top hit",
     of3_iptm: 0.6257,
     of3_ptm: 0.5738,
+    pb_ipsae: 0.76, pb_iptm: 0.88,
     sequence: "LKEEFERQEELEKFREELIEEARREEEERERRRAEEERRLAEE",
     pdb_file: "data/rbx1_designs/design_3538_model_0.cif"
   },
@@ -8576,6 +8596,7 @@ const designs = [
     af3_flag: "promote",
     of3_iptm: 0.1013,
     of3_ptm: 0.4071,
+    pb_ipsae: 0.05, pb_iptm: 0.47,
     sequence: "SLEERIAQREKLLRSALLQKYSEEETKKLVEKAREEERARAARRA",
     pdb_file: null
   },
@@ -9038,6 +9059,7 @@ const designs = [
     af3_flag: "promote",
     of3_iptm: 0.7026,
     of3_ptm: 0.6235,
+    pb_ipsae: 0.43, pb_iptm: 0.8,
     sequence: "VDEEKRKKENEELLKEFEERKKKGEDEEEVLEEIYDKRFEELQARVAARRALAEAAAAAAAAAA",
     pdb_file: "data/rbx1_designs/design_4025_model_0.cif"
   },
@@ -9214,6 +9236,7 @@ const designs = [
     af3_flag: "promote",
     of3_iptm: 0.6413,
     of3_ptm: 0.5853,
+    pb_ipsae: 0.11, pb_iptm: 0.6,
     sequence: "AAAAAAAAAAALAAAQQEQFKRQEELEKLREEFKKKLLEKL",
     pdb_file: "data/rbx1_designs/design_6139_model_0.cif"
   },
@@ -9632,6 +9655,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5262,
     of3_ptm: 0.5584,
+    pb_ipsae: 0.66, pb_iptm: 0.89,
     sequence: "MVDEEKEFEELKKKVKELSFKIVTLQGELGPEKCTPEQAEEYKKLKEEFEELAKKLKEMVKK",
     pdb_file: null
   },
@@ -10248,6 +10272,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.8107,
     of3_ptm: 0.6677,
+    pb_ipsae: 0.83, pb_iptm: 0.94,
     sequence: "MDLVGELEAQLARAERDLAALDAVAERNGWSPAEVEGQRALLEFQLARVREALEKLK",
     pdb_file: null
   },
@@ -10358,6 +10383,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.7459,
     of3_ptm: 0.6885,
+    pb_ipsae: 0.81, pb_iptm: 0.92,
     sequence: "LSEEELEELERERRELEELREELERKIEEAESEEEKKELEKKLEEVEAHIRCLEARELILEAAEP",
     pdb_file: null
   },
@@ -11216,6 +11242,7 @@ const designs = [
     af3_flag: "discard",
     of3_iptm: 0.509,
     of3_ptm: null,
+    pb_ipsae: 0.26, pb_iptm: 0.71,
     sequence: "KYTAFVFDAKTGKGLGIAEGDSEEEALEEASKLVGGAKVVKEERSGNVGIAFLEK",
     pdb_file: null
   },
@@ -11260,6 +11287,7 @@ const designs = [
     af3_flag: "top hit",
     of3_iptm: 0.5877,
     of3_ptm: 0.6048,
+    pb_ipsae: 0.6, pb_iptm: 0.88,
     sequence: "LDPKELEKLEEEMKNLEAAIEALKKKIEEAESEEEKKKLEEKLKEYEQHKSVLEARVLLYEAALP",
     pdb_file: null
   },
@@ -12228,6 +12256,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5405,
     of3_ptm: 0.5439,
+    pb_ipsae: 0.72, pb_iptm: 0.87,
     sequence: "EKSQLEVFREEELARRRAELEAEVEARVAAAGGDREALRAELEARLARELAEYEERLRLRAEERA",
     pdb_file: null
   },
@@ -13570,6 +13599,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5533,
     of3_ptm: 0.5586,
+    pb_ipsae: 0.7, pb_iptm: 0.91,
     sequence: "EEEEEERKKLEEIKKNIEEAKKFLGEEVLEFRERAEREEAERARRLAE",
     pdb_file: null
   },
@@ -13790,6 +13820,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5196,
     of3_ptm: 0.5507,
+    pb_ipsae: 0.52, pb_iptm: 0.83,
     sequence: "GMLDEAALEAEIAALQAELAALQRRLEDGSLSMDERIELLARIREVRARLAELQAL",
     pdb_file: null
   },
@@ -14450,6 +14481,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6787,
     of3_ptm: 0.5892,
+    pb_ipsae: 0.67, pb_iptm: 0.89,
     sequence: "LEELFKLQKELEEFREELEREAEEKRRKEEEERRREEERRRRE",
     pdb_file: null
   },
@@ -14516,6 +14548,7 @@ const designs = [
     af3_flag: "review",
     of3_iptm: 0.3404,
     of3_ptm: 0.4297,
+    pb_ipsae: 0.6, pb_iptm: 0.9,
     sequence: "KVTVEVVSNPPASPAAVEAAREAAVRALDERGATAAARAAAEAALAAMGDPKAAVFVRVEVE",
     pdb_file: "data/rbx1_designs/design_0661_model_0.cif"
   },
@@ -15110,6 +15143,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5093,
     of3_ptm: 0.5504,
+    pb_ipsae: 0.38, pb_iptm: 0.7,
     sequence: "SAAEEARRRALAEAAARAAEEAAKRAAALAAEVAAGAELEKIREEVREEMEKKAKAKREKEAEE",
     pdb_file: null
   },
@@ -16056,6 +16090,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5691,
     of3_ptm: 0.5762,
+    pb_ipsae: 0.5, pb_iptm: 0.71,
     sequence: "DEAAAAAAAAAAAAAAAAAAAAAAARAAALERRRAENQEILELARKKEEEKKLLE",
     pdb_file: null
   },
@@ -16078,6 +16113,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6272,
     of3_ptm: 0.5895,
+    pb_ipsae: 0.66, pb_iptm: 0.84,
     sequence: "SDPLDELKELQEKLFEEYERKREEEREKRLEELRKLAEEL",
     pdb_file: null
   },
@@ -16562,6 +16598,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5412,
     of3_ptm: 0.5363,
+    pb_ipsae: 0.69, pb_iptm: 0.88,
     sequence: "PPSSANGAEELLRERLARRLAEARAAAAEAAAATGDEAAAAEAVAAAEEAAAAEAADFAALQAEL",
     pdb_file: null
   },
@@ -16804,6 +16841,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5629,
     of3_ptm: 0.5797,
+    pb_ipsae: 0.52, pb_iptm: 0.8,
     sequence: "LAALEEQIELARRERRVLEARAEIYPELKEARERIAEVEECLRRLEAELEALKAA",
     pdb_file: null
   },
@@ -16980,6 +17018,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6615,
     of3_ptm: 0.5981,
+    pb_ipsae: 0.67, pb_iptm: 0.87,
     sequence: "AAAAAAAAAARAAAAALARYAEQQARIEETREELRREAEEERRRRLEEELE",
     pdb_file: null
   },
@@ -17090,6 +17129,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5081,
     of3_ptm: 0.5468,
+    pb_ipsae: 0.08, pb_iptm: 0.43,
     sequence: "MTEEDKKRREKLKKEAEAVKKAFEEDPEAYLEKLLEKRKEEVKEEEKKKEEEKRKEELE",
     pdb_file: null
   },
@@ -17288,6 +17328,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5405,
     of3_ptm: 0.5439,
+    pb_ipsae: 0.09, pb_iptm: 0.42,
     sequence: "EKEKEHEELLKKREKEREEIIEIAKRNAEERARRLAEALARAAAAAAEAAAAAAA",
     pdb_file: null
   },
@@ -17662,6 +17703,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6961,
     of3_ptm: 0.6003,
+    pb_ipsae: 0.72, pb_iptm: 0.87,
     sequence: "DEKKKQEEIYKRLEEFREELRKEAEEERKRKEEEERRKEEE",
     pdb_file: null
   },
@@ -17816,6 +17858,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6969,
     of3_ptm: 0.6049,
+    pb_ipsae: 0.71, pb_iptm: 0.85,
     sequence: "SEEELEEARKKLLEELKKREEEIEEVREELRREAERRRREE",
     pdb_file: null
   },
@@ -17992,6 +18035,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6851,
     of3_ptm: 0.6163,
+    pb_ipsae: 0.7, pb_iptm: 0.9,
     sequence: "MNIVEELKKKVEEAERGLEALDEVAARNGWSAEEVAAQRALLEWQLERYREALEKLE",
     pdb_file: null
   },
@@ -18080,6 +18124,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6622,
     of3_ptm: 0.5861,
+    pb_ipsae: 0.15, pb_iptm: 0.47,
     sequence: "LAELLAAQAAALAAAAELLANRVEMLKLRQEAAEAARAARRAEEERRRLE",
     pdb_file: null
   },
@@ -18256,6 +18301,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5587,
     of3_ptm: 0.5612,
+    pb_ipsae: 0.7, pb_iptm: 0.8,
     sequence: "AAAAAAAAAELAEESERNKESQERIDKFREETYGEKLKELEEEERERREKERREEEE",
     pdb_file: null
   },
@@ -18476,6 +18522,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5249,
     of3_ptm: 0.5056,
+    pb_ipsae: 0.28, pb_iptm: 0.7,
     sequence: "MSEEELKAKEKKEQEDLKSFTKVIEEELEPVREKKRKEEEERRRREEEERRRRE",
     pdb_file: null
   },
@@ -20258,6 +20305,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5599,
     of3_ptm: 0.5728,
+    pb_ipsae: 0.51, pb_iptm: 0.76,
     sequence: "DPAAAAEAARRAAEEAAERLRESWKRLEEFHKELEEEIRKKEEEKRRKEEEERRRREE",
     pdb_file: null
   },
@@ -21556,6 +21604,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5724,
     of3_ptm: 0.5602,
+    pb_ipsae: 0.75, pb_iptm: 0.9,
     sequence: "EEEERLKEVYERLEEFRKELEEEYKKKKEEEKKKKEELEKE",
     pdb_file: null
   },
@@ -23162,6 +23211,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.549,
     of3_ptm: 0.5554,
+    pb_ipsae: 0.6, pb_iptm: 0.87,
     sequence: "MEEELRRRYEEELEKARREIREQVLEGKISVAEGRRRLAEIEAELDARL",
     pdb_file: null
   },
@@ -23294,6 +23344,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.7548,
     of3_ptm: 0.6944,
+    pb_ipsae: 0.36, pb_iptm: 0.81,
     sequence: "MITEEELWEKQIETAELKGKARKEYEEIEKEGKNKEEEYKKKSEVAEKAKKAEEELEKLIKEYLA",
     pdb_file: null
   },
@@ -23514,6 +23565,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.65,
     of3_ptm: 0.6072,
+    pb_ipsae: 0.63, pb_iptm: 0.84,
     sequence: "DEEEARRAAEEARREEARRRAEEARRELERIRAEAAEAERNRETVSEEELEKIRRELLLAEARVG",
     pdb_file: null
   },
@@ -24086,6 +24138,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5398,
     of3_ptm: 0.5577,
+    pb_ipsae: 0.0, pb_iptm: 0.28,
     sequence: "SAAEAARRAEAEAKREARERELRERREREERARRAAEEAAR",
     pdb_file: null
   },
@@ -24526,6 +24579,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5196,
     of3_ptm: 0.5507,
+    pb_ipsae: 0.05, pb_iptm: 0.38,
     sequence: "VEAELLARYHRRLATLRERTAIRLSILPGSEEERAELERLEARRLAELRAALEAELAALR",
     pdb_file: null
   },
@@ -42742,6 +42796,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.8107,
     of3_ptm: 0.6677,
+    pb_ipsae: 0.68, pb_iptm: 0.85,
     sequence: "EEEKKKEEENKKLLEERNRERKEKTRLAALLAGLLAALAAALA",
     pdb_file: null
   },
@@ -69340,6 +69395,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5587,
     of3_ptm: 0.5612,
+    pb_ipsae: 0.65, pb_iptm: 0.81,
     sequence: "VEEKRRKVEEERREAEERELEENREEIERARREAERLRAELEAARAAIEAAAREALLG",
     pdb_file: null
   },
@@ -74224,6 +74280,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5262,
     of3_ptm: 0.5584,
+    pb_ipsae: 0.01, pb_iptm: 0.31,
     sequence: "SAEEAVKKRLELEKEFLKKECERLAKASPEKLEEVKKELEEERKKLLEELLK",
     pdb_file: null
   },
@@ -100844,6 +100901,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.549,
     of3_ptm: 0.5554,
+    pb_ipsae: 0.2, pb_iptm: 0.61,
     sequence: "DLVDEALRKKKEDEEAARAMAEARAAAAAAAAAALAAAAAAAA",
     pdb_file: null
   },
@@ -102868,6 +102926,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.627,
     of3_ptm: 0.594,
+    pb_ipsae: 0.07, pb_iptm: 0.43,
     sequence: "MEELRRKTEEEEREKREEEEERNREERRRRAEREAREAAAREAARAAAAAAAAAAAAG",
     pdb_file: null
   },
@@ -104408,6 +104467,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5724,
     of3_ptm: 0.5602,
+    pb_ipsae: 0.22, pb_iptm: 0.59,
     sequence: "DEAAERARREEEERRARAAREESLRRALEELEEKKKKEEEEELAKVEEKKKKEEEEKKALE",
     pdb_file: null
   },
@@ -109820,6 +109880,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5865,
     of3_ptm: 0.5832,
+    pb_ipsae: 0.68, pb_iptm: 0.85,
     sequence: "MHPEMEKLIEEAKKKAEEEAERRRREEEERRRAAAEAEEAARRAAEEAAR",
     pdb_file: null
   },
@@ -114242,6 +114303,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5093,
     of3_ptm: 0.5504,
+    pb_ipsae: 0.79, pb_iptm: 0.87,
     sequence: "MDVLGARAALRAAAEAAAAAAAAAAAAAAAAAARAAAEAAA",
     pdb_file: null
   },
@@ -117498,6 +117560,7 @@ const designs = [
     af3_flag: "promote",
     of3_iptm: 0.5865,
     of3_ptm: 0.5832,
+    pb_ipsae: 0.74, pb_iptm: 0.91,
     sequence: "PKFEVKILGASNLTEEEKKELEKKIKELLEEEDLTPVEALARAVKELGEKKGKFIAVIAEVTRI",
     pdb_file: null
   },
@@ -118532,6 +118595,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5412,
     of3_ptm: 0.5363,
+    pb_ipsae: 0.61, pb_iptm: 0.84,
     sequence: "SEDPEKIYDEKVKEVREAVEARRRRREEAREAAESAAAAAAA",
     pdb_file: null
   },
@@ -130236,6 +130300,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5865,
     of3_ptm: 0.5832,
+    pb_ipsae: 0.52, pb_iptm: 0.75,
     sequence: "GVELAEKRRAIAAAAAAAAAAAAAAARAAAEAAAAAEAAAAREAAAREAARAAA",
     pdb_file: null
   },
@@ -134482,6 +134547,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5724,
     of3_ptm: 0.5602,
+    pb_ipsae: 0.65, pb_iptm: 0.79,
     sequence: "SAMEEEERFKKRCEEVEKNAELARAQAEAEEAARRAAEEAERLREKLAEELAKA",
     pdb_file: null
   },
@@ -151818,6 +151884,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5127,
     of3_ptm: 0.5283,
+    pb_ipsae: 0.6, pb_iptm: 0.85,
     sequence: "MEEERREEERRRREEEERRRILEEGREEVERRKKEQEEELEKEFEE",
     pdb_file: null
   },
@@ -178130,6 +178197,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5093,
     of3_ptm: 0.5504,
+    pb_ipsae: 0.42, pb_iptm: 0.68,
     sequence: "MTLTDEELEELRRVEEKVKEREERERRAREFPEEVERKRREERERREEERRRRREEEERRRREEE",
     pdb_file: null
   },
@@ -181254,6 +181322,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5877,
     of3_ptm: 0.6048,
+    pb_ipsae: 0.5, pb_iptm: 0.81,
     sequence: "INLEELLKKFEEEAAKELEEFKKLAEELKKLTGSPIGDELIEKKKKEIEEKKKKLLEELKKKL",
     pdb_file: null
   },
@@ -183036,6 +183105,7 @@ const designs = [
     af3_flag: "top hit",
     of3_iptm: 0.16,
     of3_ptm: null,
+    pb_ipsae: 0.11, pb_iptm: 0.59,
     sequence: "AKAAMGVASVPEGATAEQARADAALAARAAAAKAKEGELAGAFITGLSGGKAYGAAYAV",
     pdb_file: null
   },
@@ -212208,6 +212278,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5599,
     of3_ptm: 0.5728,
+    pb_ipsae: 0.08, pb_iptm: 0.44,
     sequence: "DEEERKKEEELKKAKEEALEKALAEYEKKLEEERKAREEARKAA",
     pdb_file: null
   },
@@ -219424,6 +219495,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6851,
     of3_ptm: 0.6163,
+    pb_ipsae: 0.73, pb_iptm: 0.86,
     sequence: "SAAAAEAEARARAAAEAAAAARAAALAAAAARAARVLGEEVGKAALEALLEKE",
     pdb_file: null
   },
@@ -235946,6 +236018,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.8107,
     of3_ptm: 0.6677,
+    pb_ipsae: 0.21, pb_iptm: 0.62,
     sequence: "SAAAAEAERRAAAAAAALEKAKAEALKKFEEKAKKVLDEEVGAKKKKEKLEKE",
     pdb_file: null
   },
@@ -239664,6 +239737,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6272,
     of3_ptm: 0.5895,
+    pb_ipsae: 0.06, pb_iptm: 0.4,
     sequence: "EKEKEEKEKKEKEEEKKEKEEKEKKEEELKEEHERRQEELLKKLLE",
     pdb_file: null
   },
@@ -242370,6 +242444,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6787,
     of3_ptm: 0.5892,
+    pb_ipsae: 0.53, pb_iptm: 0.74,
     sequence: "MSKKELEEKLLKIMEPSIKARKEREERRRREEERRRREEEAR",
     pdb_file: null
   },
@@ -264942,6 +265017,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5691,
     of3_ptm: 0.5762,
+    pb_ipsae: 0.08, pb_iptm: 0.55,
     sequence: "DEEERRRRRREEEERRREAARRAAERDRAAAEAAKRREEELAELKKE",
     pdb_file: null
   },
@@ -267890,6 +267966,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5599,
     of3_ptm: 0.5728,
+    pb_ipsae: 0.57, pb_iptm: 0.8,
     sequence: "EELKKEEEKKILERAEEVEKAVKAELERKKKKEEEEKEKKEKEKKEEEEKKKE",
     pdb_file: null
   },
@@ -288526,6 +288603,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5629,
     of3_ptm: 0.5797,
+    pb_ipsae: 0.36, pb_iptm: 0.68,
     sequence: "KEEKKKKKKEKKEELKKKEKEASLEKYLKEIEERYEELLKSE",
     pdb_file: null
   },
@@ -306830,6 +306908,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6969,
     of3_ptm: 0.6049,
+    pb_ipsae: 0.16, pb_iptm: 0.47,
     sequence: "MEKEKKEEEEKKKKEKEEKEKEEKKKEEEEKKKEEKEKELKKLLEE",
     pdb_file: null
   },
@@ -309492,6 +309571,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5196,
     of3_ptm: 0.5507,
+    pb_ipsae: 0.09, pb_iptm: 0.49,
     sequence: "MEEEEREREERERREREEERRKKEEEEEERKLKEEYEERQMAKLRAEAAAAAAAAAAAAAEAA",
     pdb_file: null
   },
@@ -333868,6 +333948,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5724,
     of3_ptm: 0.5602,
+    pb_ipsae: 0.06, pb_iptm: 0.4,
     sequence: "SEEIKKKLLEAFEIEYKVLRARLERTMDELGVSEETRRRALEELEKKKEELIKKFLETFEKGTIDEAVKLFQELLEEFKAFVEALIARLREEAAAR",
     pdb_file: null
   },
@@ -340094,6 +340175,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6327,
     of3_ptm: 0.5967,
+    pb_ipsae: 0.07, pb_iptm: 0.45,
     sequence: "SAKAKEEAEKRRKEKSKKKFKKEKKEEEKKKKKEEEEKKKKEEEEKKKK",
     pdb_file: null
   },
@@ -351974,6 +352056,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5629,
     of3_ptm: 0.5797,
+    pb_ipsae: 0.04, pb_iptm: 0.44,
     sequence: "DEREKELRKKLKEEAEREKKRREEEEKRREEEKRRRREEEEEEKRRRREEEEEKK",
     pdb_file: null
   },
@@ -352436,6 +352519,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6787,
     of3_ptm: 0.5892,
+    pb_ipsae: 0.24, pb_iptm: 0.64,
     sequence: "SEEEKLRKEVEEELKKKGIKDKEEKEKLAKEKFEKIKKERKEKKEKIKEEKEKEALKE",
     pdb_file: null
   },
@@ -384424,6 +384508,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5691,
     of3_ptm: 0.5762,
+    pb_ipsae: 0.33, pb_iptm: 0.72,
     sequence: "KEKEEEEKKKKKEEEERKKKEELEKLIEKAQKEATEKLKAEREKE",
     pdb_file: null
   },
@@ -405500,6 +405585,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.6622,
     of3_ptm: 0.5861,
+    pb_ipsae: 0.01, pb_iptm: 0.29,
     sequence: "EEEKKKEEEEKKKKEEKEKKAREEALKKRKEEEEEKKKEEEEKAKKEEEEKKEEEKKKLEEL",
     pdb_file: null
   },
@@ -409768,6 +409854,7 @@ const designs = [
     af3_flag: null,
     of3_iptm: 0.5533,
     of3_ptm: 0.5586,
+    pb_ipsae: 0.53, pb_iptm: 0.75,
     sequence: "AAAELAAALEALRKALEKALEELLKKLEEELEKRKKELEEKCKK",
     pdb_file: null
   },
@@ -457845,6 +457932,8 @@ function renderCard(d, showRank) {
         fmtMetric(d.af3_flag, 'AF3 Flag') +
         fmtMetric(d.of3_iptm, 'OF3 ipTM') +
         fmtMetric(d.of3_ptm, 'OF3 pTM') +
+        fmtMetric(d.pb_ipsae, 'Pb ipSAE') +
+        fmtMetric(d.pb_iptm, 'Pb ipTM') +
       '</div>' +
       '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;font-weight:400;">' +
         'Size class: ' + d.size_class + ' &middot; Target: ' + d.target_length + ' res' +
@@ -457916,7 +458005,7 @@ let cardSort = 'rank';
 let cardSortAsc = false;
 
 // Default directions: higher-is-better metrics sort descending first
-var defaultDesc = {ipTM: true, ipSAE: true, design_ptm: true, pLDDT: true, pTM: true, af3_iptm: true, af3_ptm: true, of3_iptm: true, of3_ptm: true};
+var defaultDesc = {ipTM: true, ipSAE: true, design_ptm: true, pLDDT: true, pTM: true, af3_iptm: true, af3_ptm: true, of3_iptm: true, of3_ptm: true, pb_ipsae: true, pb_iptm: true};
 
 function toggleSortDir() {
   sortAsc = !sortAsc;
@@ -457988,6 +458077,8 @@ function renderTable(data) {
       '<td>' + fmtVal(d.af3_ptm) + '</td>' +
       '<td>' + fmtVal(d.of3_iptm) + '</td>' +
       '<td>' + fmtVal(d.of3_ptm) + '</td>' +
+      '<td>' + fmtVal(d.pb_ipsae) + '</td>' +
+      '<td>' + fmtVal(d.pb_iptm) + '</td>' +
       '<td>' + d.pipeline + '</td>' +
       '<td>' + downloadCell + '</td>' +
     '</tr>';
@@ -458028,7 +458119,9 @@ var sortKeyMap = {
   af3_iptm: function(d) { return d.af3_iptm != null ? d.af3_iptm : -Infinity; },
   af3_ptm: function(d) { return d.af3_ptm != null ? d.af3_ptm : -Infinity; },
   of3_iptm: function(d) { return d.of3_iptm != null ? d.of3_iptm : -Infinity; },
-  of3_ptm: function(d) { return d.of3_ptm != null ? d.of3_ptm : -Infinity; }
+  of3_ptm: function(d) { return d.of3_ptm != null ? d.of3_ptm : -Infinity; },
+  pb_ipsae: function(d) { return d.pb_ipsae != null ? d.pb_ipsae : -Infinity; },
+  pb_iptm: function(d) { return d.pb_iptm != null ? d.pb_iptm : -Infinity; }
 };
 
 function sortData(data, sortBy, ascending) {
