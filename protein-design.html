@@ -1664,217 +1664,164 @@ Campaigns:
     <!-- ============================================ -->
     <div class="tab-content" id="tab-postsub">
 
-      <div class="section-heading" style="font-size:20px;font-weight:400;">Post-Submission: Competition Re-Scoring Analysis</div>
+      <div class="section-heading" style="font-size:20px;font-weight:400;">Post-Submission: Deep Analysis with Feature Engineering and Regression</div>
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;font-weight:400;">
         After submission, the ADAPTYV competition independently re-ran Boltz-2 on all 83 submitted designs and scored them
-        with 12 structural metrics. This analysis compares their independent scores to our internal Boltz-2 predictions
-        to understand the discrepancy and identify which of our metrics best approximate the competition's evaluation.
+        with 12 structural metrics. We performed comprehensive feature engineering (64 features from sequence composition,
+        structural propensities, Boltz-2 confidence maps, and our scoring metrics) and regression analysis to understand
+        what predicts competition performance.
       </p>
 
       <!-- Summary Stats -->
       <div class="stats-row">
-        <div class="stat-card"><div class="stat-value">81</div><div class="stat-label">Designs Matched</div></div>
-        <div class="stat-card"><div class="stat-value">41</div><div class="stat-label">Their ipSAE &gt; 0.5</div></div>
-        <div class="stat-card"><div class="stat-value">12</div><div class="stat-label">Their ipSAE &gt; 0.7</div></div>
-        <div class="stat-card"><div class="stat-value">0.312</div><div class="stat-label">ipSAE Correlation (r)</div></div>
+        <div class="stat-card"><div class="stat-value">83</div><div class="stat-label">Designs Submitted</div></div>
+        <div class="stat-card"><div class="stat-value">33</div><div class="stat-label">Survived (ipSAE &ge; 0.6)</div></div>
+        <div class="stat-card"><div class="stat-value">31</div><div class="stat-label">Failed (ipSAE &lt; 0.3)</div></div>
+        <div class="stat-card"><div class="stat-value">30</div><div class="stat-label">Our ipSAE &lt; 0.5 Submitted</div></div>
       </div>
 
-      <!-- Section 1: The Discrepancy -->
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">1. The Discrepancy</div>
+      <!-- Section 1: Overview -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">1. Submission Overview</div>
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
-        The competition re-ran Boltz-2 independently on our submitted designs. Despite using the same model, their scores
-        differ substantially from ours. Our ipSAE scores average 0.104 higher than theirs (mean 0.527 vs 0.423), and the
-        correlation between our scores and theirs is only r = 0.312 for ipSAE and r = 0.334 for ipTM. This weak correlation
-        means our internal scoring was a poor predictor of competition performance. The likely cause is differences in
-        Boltz-2 version, sampling parameters (number of recycling steps, seed), or post-processing.
+        Of 83 submitted designs, 33 survived with their ipSAE &ge; 0.6 and 31 failed below 0.3. The submission
+        included 30 designs with our ipSAE &lt; 0.5 -- some performed surprisingly well in competition scoring.
+        The correlation between our ipSAE and theirs is only r = 0.312, showing that internal scoring was a poor
+        predictor of competition performance. Seven designs we scored below 0.5 actually survived (&ge; 0.6) in
+        the competition, while 9 designs we scored above 0.7 failed (&lt; 0.3).
       </p>
       <div class="plot-img-container" style="margin-bottom:24px;">
-        <img src="data/rbx1_plots/post_our_vs_their_ipsae.png" alt="Our vs Competition ipSAE" style="max-width:100%;">
-        <div class="plot-caption">Our Boltz-2 ipSAE vs the competition's independent re-scoring. The dotted diagonal is
-        perfect agreement. Points fall systematically above the diagonal, meaning our scores were inflated relative to
-        theirs. The weak Pearson r = 0.312 shows our ranking only loosely predicts theirs. Colors indicate pipeline
-        (blue = E2 Face RFdiffusion, red = Cullin Face, green = BoltzGen).</div>
-      </div>
-      <div class="plot-img-container" style="margin-bottom:24px;">
-        <img src="data/rbx1_plots/post_our_vs_their_iptm.png" alt="Our vs Competition ipTM" style="max-width:100%;">
-        <div class="plot-caption">Same comparison for ipTM. Our ipTM scores average 0.117 higher than theirs. The
-        correlation is slightly better (r = 0.334) but still weak. Many designs we scored above 0.9 ipTM drop to
-        0.6-0.8 in their evaluation.</div>
+        <img src="data/rbx1_plots/post_submission_overview.png" alt="Submission overview scatter" style="max-width:100%;">
+        <div class="plot-caption" style="font-weight:400;">Figure 1. Our ipSAE vs competition ipSAE. Point size = binder length,
+        color = target face. Annotated designs are surprising reversals: low ours but high theirs (upper left) and high ours
+        but low theirs (lower right). The green/red horizontal lines mark survival (0.6) and failure (0.3) thresholds.</div>
       </div>
 
-      <!-- Section 2: Their Scoring Protocol -->
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">2. Their Scoring Protocol</div>
+      <!-- Section 2: Feature Engineering -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">2. Feature Engineering (64 Features)</div>
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
-        The competition evaluated each design with 12 Boltz-2-derived metrics. Beyond the standard ipSAE and ipTM we
-        used internally, they computed additional binding quality indicators:
+        We extracted 64 features per design spanning four categories: (a) amino acid composition (20 individual AA fractions
+        plus grouped fractions for charged, hydrophobic, polar, aromatic residues), (b) sequence properties (Shannon entropy,
+        linguistic complexity, net charge, charge density, hydrophobicity, isoelectric point, molecular weight, max homopolymer
+        repeat), (c) structural propensities (helix, sheet, disorder) and Boltz-2 PAE/pLDDT features from our prediction NPZ files
+        (mean interface PAE, confident contacts, PAE asymmetry, binder pLDDT), and (d) design metadata (wave, face, binder length)
+        plus our scoring metrics (ipSAE, ipTM, pTM, pLDDT, AF3 ipTM, OF3 ipTM). Structural features were extracted for 80 of 81
+        matched designs.
+      </p>
+      <div class="plot-img-container" style="margin-bottom:24px;">
+        <img src="data/rbx1_plots/post_full_correlation.png" alt="Full correlation heatmap" style="max-width:100%;">
+        <div class="plot-caption" style="font-weight:400;">Figure 2. Full correlation matrix of our features (top-left block)
+        vs their 12 competition metrics (bottom-right block). Black lines separate the two groups. Their metrics cluster
+        tightly (ipSAE, ipTM, LIS all r &gt; 0.9). Our scoring metrics show only weak correlation with theirs (r ~ 0.3).
+        Sequence charge features and structural PAE metrics show moderate associations with competition outcomes.</div>
+      </div>
+
+      <!-- Section 3: Regression Results -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">3. Regression Analysis</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
+        We trained three models to predict competition ipSAE from our 64 features. All models show negative cross-validated
+        R2, indicating that with only 81 samples and 64 features, none generalizes reliably. Ridge regression (CV R2 = -2.22)
+        heavily overfits. ElasticNet CV selects 22 non-zero features (CV R2 = -0.69, l1_ratio = 0.10). Random Forest is
+        least negative (CV R2 = -0.33) and achieves train R2 = 0.78, suggesting nonlinear patterns exist but cannot be captured
+        with this sample size. The negative CV R2 values confirm that no model beats predicting the mean -- individual
+        competition scores are inherently unpredictable from our available features.
+      </p>
+
+      <div class="dist-grid">
+        <div class="plot-img-container">
+          <img src="data/rbx1_plots/post_regression_coefs.png" alt="Regression coefficients" style="max-width:100%;">
+          <div class="plot-caption" style="font-weight:400;">Figure 3. Top 15 features by absolute coefficient magnitude in
+          Ridge (left) and ElasticNet (right) regression. Green = positive coefficient (higher value predicts higher competition
+          ipSAE), red = negative. Contacts_pae_lt5 (number of confident interface contacts) is a strong positive predictor.
+          Molecular weight is negative, suggesting shorter binders perform better.</div>
+        </div>
+        <div class="plot-img-container">
+          <img src="data/rbx1_plots/post_feature_importance_rf.png" alt="RF feature importance" style="max-width:100%;">
+          <div class="plot-caption" style="font-weight:400;">Figure 4. Random Forest feature importance (MDI) for predicting
+          competition ipSAE. Net charge is the top predictor, followed by serine content (aa_S), isoelectric point, and charge
+          density. Our ipSAE ranks 7th. Structural features (mean_binder_pae, struct_binder_plddt) also contribute.</div>
+        </div>
+      </div>
+
+      <!-- Section 4: Survivors vs Failures -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">4. Survivors vs Failures</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
+        We compared 33 survivors (their ipSAE &ge; 0.6) against 31 failures (&lt; 0.3) using Welch's t-test on all
+        64 features to find the most discriminating ones. The top 6 features are: net charge (p = 3.5e-5),
+        isoelectric point (p = 3.4e-4), our ipTM (p = 0.003), our pTM (p = 0.003), charge density (p = 0.003),
+        and our ipSAE (p = 0.004). All are statistically significant, but effect sizes are modest.
+      </p>
+      <div class="plot-img-container" style="margin-bottom:24px;">
+        <img src="data/rbx1_plots/post_survivors_vs_failures.png" alt="Survivors vs Failures" style="max-width:100%;">
+        <div class="plot-caption" style="font-weight:400;">Figure 5. Box + swarm plots of the 6 most discriminating features
+        between survivors (green, their ipSAE &ge; 0.6, n=33) and failures (red, &lt; 0.3, n=31). Net charge is the
+        strongest discriminator: survivors tend to have more negative net charge (mean -8.4 vs -4.0). Our ipTM and
+        ipSAE are significantly higher in survivors but overlap substantially.</div>
+      </div>
+
+      <!-- Section 5: OF3 Validation -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">5. Cross-Validator Analysis: OpenFold3</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
+        We tested whether our OpenFold3 ipTM scores predict competition ipSAE across the 81 designs with OF3 data.
+        OF3 serves as an orthogonal validation method independent of Boltz-2.
+      </p>
+      <div class="plot-img-container" style="margin-bottom:24px;">
+        <img src="data/rbx1_plots/post_our_of3_vs_their_ipsae.png" alt="OF3 vs competition ipSAE" style="max-width:100%;">
+        <div class="plot-caption" style="font-weight:400;">Figure 6. Our OpenFold3 ipTM vs competition ipSAE. Color = target
+        face. The dashed line shows the linear trend. OF3 provides some signal for competition performance but the
+        relationship is noisy and face-dependent.</div>
+      </div>
+
+      <!-- Section 6: Surprising Reversals -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">6. Surprising Reversals</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
+        The most surprising finding is the extent of score reversals between our predictions and the competition's.
       </p>
       <div style="overflow-x:auto;margin-bottom:16px;">
         <table style="width:100%;font-size:13px;border-collapse:collapse;">
           <thead>
             <tr style="background:var(--bg-alt);border-bottom:2px solid var(--border);">
-              <th style="padding:8px 12px;text-align:left;font-weight:400;">Metric</th>
-              <th style="padding:8px 12px;text-align:left;font-weight:400;">Description</th>
+              <th style="padding:8px 12px;text-align:left;font-weight:400;">Design</th>
+              <th style="padding:8px 12px;text-align:right;font-weight:400;">Our ipSAE</th>
+              <th style="padding:8px 12px;text-align:right;font-weight:400;">Their ipSAE</th>
+              <th style="padding:8px 12px;text-align:left;font-weight:400;">Surprise</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">ipSAE</td><td style="padding:6px 12px;">Interface predicted Structural Alignment Error. Primary ranking metric.</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">Min ipSAE</td><td style="padding:6px 12px;">Minimum ipSAE across sampled conformations.</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">ipTM</td><td style="padding:6px 12px;">Interface predicted TM-score.</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">PTM</td><td style="padding:6px 12px;">Predicted TM-score (full complex).</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">pLDDT</td><td style="padding:6px 12px;">Predicted local distance difference test (per-residue confidence).</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">Complex ipLDDT</td><td style="padding:6px 12px;">Interface pLDDT computed over the complex.</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">Complex PDE</td><td style="padding:6px 12px;">Predicted distance error for the complex. Lower is better.</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">Complex pLDDT</td><td style="padding:6px 12px;">pLDDT computed over the full complex.</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">LIS</td><td style="padding:6px 12px;">Ligand Interface Score. Measures predicted interface quality for the binder.</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">pDockQ</td><td style="padding:6px 12px;">Predicted DockQ score. Estimates docking quality from predicted contacts.</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">pDockQ2</td><td style="padding:6px 12px;">Updated pDockQ with improved calibration for predicted structures.</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 12px;">Shape Complementarity</td><td style="padding:6px 12px;">Geometric shape complementarity at the binder-target interface (Boltz-2 binder secondary structure).</td></tr>
+            <tr style="border-bottom:1px solid var(--border);background:#e8f8e8;"><td style="padding:6px 12px;">wcm_design_0709</td><td style="padding:6px 12px;text-align:right;">0.42</td><td style="padding:6px 12px;text-align:right;">0.79</td><td style="padding:6px 12px;">We undervalued (+0.37)</td></tr>
+            <tr style="border-bottom:1px solid var(--border);background:#e8f8e8;"><td style="padding:6px 12px;">wbg_design_1458</td><td style="padding:6px 12px;text-align:right;">0.41</td><td style="padding:6px 12px;text-align:right;">0.74</td><td style="padding:6px 12px;">We undervalued (+0.33)</td></tr>
+            <tr style="border-bottom:1px solid var(--border);background:#e8f8e8;"><td style="padding:6px 12px;">w2_design_3061</td><td style="padding:6px 12px;text-align:right;">0.19</td><td style="padding:6px 12px;text-align:right;">0.73</td><td style="padding:6px 12px;">We undervalued (+0.54)</td></tr>
+            <tr style="border-bottom:1px solid var(--border);background:#f8e8e8;"><td style="padding:6px 12px;">w2_design_7713</td><td style="padding:6px 12px;text-align:right;">0.79</td><td style="padding:6px 12px;text-align:right;">0.02</td><td style="padding:6px 12px;">We overvalued (-0.77)</td></tr>
+            <tr style="border-bottom:1px solid var(--border);background:#f8e8e8;"><td style="padding:6px 12px;">w2_design_7921</td><td style="padding:6px 12px;text-align:right;">0.79</td><td style="padding:6px 12px;text-align:right;">0.09</td><td style="padding:6px 12px;">We overvalued (-0.70)</td></tr>
+            <tr style="border-bottom:1px solid var(--border);background:#f8e8e8;"><td style="padding:6px 12px;">wbg_design_1817</td><td style="padding:6px 12px;text-align:right;">0.77</td><td style="padding:6px 12px;text-align:right;">0.13</td><td style="padding:6px 12px;">We overvalued (-0.64)</td></tr>
+            <tr style="border-bottom:1px solid var(--border);background:#f8e8e8;"><td style="padding:6px 12px;">w3_design_2356</td><td style="padding:6px 12px;text-align:right;">0.75</td><td style="padding:6px 12px;text-align:right;">0.05</td><td style="padding:6px 12px;">We overvalued (-0.70)</td></tr>
           </tbody>
         </table>
       </div>
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
-        The heatmap below shows how these 12 metrics correlate with each other. ipSAE, ipTM, LIS, and pLDDT form a
-        tight cluster (r > 0.9), meaning they largely measure the same thing. PDE is anti-correlated with all quality
-        metrics (lower PDE = better). pDockQ and pDockQ2 show almost no variation across our designs, suggesting our
-        binders do not produce strong predicted contacts. Shape complementarity is largely independent of the
-        confidence-based metrics.
-      </p>
-      <div class="plot-img-container" style="margin-bottom:24px;">
-        <img src="data/rbx1_plots/post_their_metrics_heatmap.png" alt="Competition metrics correlation heatmap" style="max-width:100%;">
-        <div class="plot-caption">Pearson correlation matrix of the competition's 12 Boltz-2 metrics. The core
-        confidence metrics (ipSAE, ipTM, LIS, pLDDT) are highly correlated. Complex PDE is anti-correlated with
-        quality. pDockQ/pDockQ2 and Shape Complementarity are nearly orthogonal to the confidence cluster.</div>
-      </div>
 
-      <!-- Section 3: How Our Designs Performed -->
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">3. How Our Designs Performed</div>
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
-        Of the 81 matched designs, 41 (51%) scored above 0.5 ipSAE in the competition's evaluation and 12 (15%) scored
-        above 0.7. The distribution is bimodal: designs either score well (ipSAE > 0.5) or poorly (ipSAE < 0.2), with
-        relatively few in between. This suggests the re-scoring is fairly decisive about which designs have real binding
-        signal.
-      </p>
-      <div class="plot-img-container" style="margin-bottom:24px;">
-        <img src="data/rbx1_plots/post_their_ipsae_distribution.png" alt="Competition ipSAE distribution" style="max-width:100%;">
-        <div class="plot-caption">Distribution of the competition's ipSAE scores for our 81 designs. The orange dashed
-        line marks the 0.5 threshold (41 designs above), the red dashed line marks 0.7 (12 designs above). The distribution
-        shows a bimodal pattern with clusters of high-confidence and low-confidence predictions.</div>
-      </div>
-
-      <!-- Section 4: Can We Predict Their Scores? -->
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">4. Can We Predict Their Scores?</div>
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
-        We tested which of our internal metrics best correlates with the competition's ipSAE. Our own ipSAE is the
-        best single predictor (r = 0.312), followed by our ipTM (r = 0.303). AF3 ipTM shows a moderate correlation
-        (r = 0.297) but was only available for 19 designs. Our pLDDT and pTM are weak predictors. OpenFold3 ipTM
-        shows a correlation of r = 0.209 but is not statistically significant at the 0.05 level (p = 0.061).
-        Overall, none of our metrics are strong predictors of competition performance.
-      </p>
-      <div class="plot-img-container" style="margin-bottom:24px;">
-        <img src="data/rbx1_plots/post_which_predict_their_ipsae.png" alt="Metric prediction comparison" style="max-width:100%;">
-        <div class="plot-caption">Pearson r of each of our internal metrics with the competition's ipSAE. Our ipSAE
-        is the best predictor but still weak (r = 0.312). All correlations are modest, indicating that reproducing
-        Boltz-2 scores across different runs is inherently noisy.</div>
-      </div>
-
-      <!-- Section 5: Lessons Learned -->
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">5. Lessons Learned</div>
+      <!-- Section 7: Key Findings -->
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">7. Key Findings</div>
       <div style="font-size:14px;color:var(--text);line-height:1.8;padding:16px;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;margin-bottom:24px;font-weight:400;">
-        <p style="margin-bottom:10px;">1. Boltz-2 scores are not reproducible across runs. Our internal ipSAE scores
-        correlated only r = 0.312 with the competition's re-scoring of the same designs. This means ranking by
-        Boltz-2 confidence is inherently unstable and should not be the sole selection criterion.</p>
-        <p style="margin-bottom:10px;">2. Our scores were systematically inflated. On average, our ipSAE was 0.10
-        higher and our ipTM was 0.12 higher than the competition's. This could be due to differences in sampling
-        depth, recycling iterations, Boltz-2 version, or random seed effects.</p>
-        <p style="margin-bottom:10px;">3. Despite the poor score correlation, 51% of our designs still scored above
-        0.5 ipSAE in their evaluation and 15% above 0.7. The selection strategy worked in aggregate even if
-        individual rankings shifted.</p>
-        <p style="margin-bottom:10px;">4. No single metric from our pipeline strongly predicts competition performance.
-        The best approach for future competitions would be to ensemble multiple orthogonal validators (Boltz-2, AF3,
-        OpenFold3) and select designs that score consistently across all methods.</p>
-        <p style="margin-bottom:0;">5. The competition's pDockQ and pDockQ2 scores are essentially zero for all our
-        designs, suggesting that while Boltz-2 predicts confident structures, the predicted contacts do not form
-        strong docking interfaces. This is a fundamental limitation of the RFdiffusion+MPNN approach that BoltzGen
-        partially addresses.</p>
+        <p style="margin-bottom:10px;">1. Competition ipSAE is not predictable from our features. All regression models
+        yield negative cross-validated R2 (Ridge: -2.22, ElasticNet: -0.69, RF: -0.33), meaning they do worse than
+        predicting the mean. With 81 samples and 64 features, overfitting is severe.</p>
+        <p style="margin-bottom:10px;">2. Net charge is the strongest single discriminator (p = 3.5e-5). Survivors have
+        significantly more negative net charge than failures. This suggests the competition scoring penalizes
+        positively charged / electrostatically sticky surfaces.</p>
+        <p style="margin-bottom:10px;">3. Our ipSAE and ipTM are statistically significant discriminators (p &lt; 0.005)
+        but with weak effect sizes (r ~ 0.3). High internal scores are weakly associated with competition survival
+        but provide no guarantee.</p>
+        <p style="margin-bottom:10px;">4. Structural features from our Boltz-2 predictions (interface PAE, confident contacts)
+        appear in the top Ridge coefficients, suggesting that PAE-derived interface quality has some predictive power
+        even when overall scores do not correlate.</p>
+        <p style="margin-bottom:10px;">5. Score reversals are dramatic: w2_design_3061 scored 0.19 in our scoring but 0.73
+        in theirs (+0.54 reversal), while w2_design_7713 scored 0.79 in ours but only 0.02 in theirs (-0.77 reversal).
+        This confirms Boltz-2 scores are not reproducible across runs.</p>
+        <p style="margin-bottom:0;">6. The submission included 30 designs with our ipSAE &lt; 0.5, yet 7 of them survived
+        in competition scoring. This validates the diversity-over-optimization strategy: submitting a broad range of
+        designs captures winners that would be missed by strict internal score cutoffs.</p>
       </div>
 
-    
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:32px;">Deep Analysis: Feature Engineering</div>
-      <p style="font-size:14px;color:var(--text-secondary);font-weight:400;margin-bottom:16px;">
-        35 features engineered from sequence composition, structural propensities, hydrophobicity, and our scoring metrics.
-        Ridge regression R²=0.488, Random Forest R²=0.838 for predicting their ipSAE.
-      </p>
-
-      <div class="plot-img-container" style="margin-bottom:28px;">
-        <img src="data/rbx1_plots/post_full_correlation.png" style="max-width:100%;">
-        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
-          Full correlation matrix between our 15 features (left/top) and their 5 metrics (right/bottom).
-          Black lines separate our features from theirs. Notable: our ipSAE weakly correlates with their ipSAE (r~0.3),
-          but their metrics cluster tightly together (ipSAE, ipTM, LIS all r > 0.8).
-        </div>
-      </div>
-
-      <div class="dist-grid">
-        <div class="plot-img-container">
-          <img src="data/rbx1_plots/post_regression_coefs.png" style="max-width:100%;">
-          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
-            Ridge regression coefficients (R²=0.488). Disorder propensity and serine content are the strongest
-            positive predictors. Entropy and unique AA count also help. Our pTM has a positive effect.
-          </div>
-        </div>
-        <div class="plot-img-container">
-          <img src="data/rbx1_plots/post_feature_importance_rf.png" style="max-width:100%;">
-          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
-            Random Forest feature importance (R²=0.838). Serine content (aa_S) is the top predictor,
-            followed by our ipSAE and structural propensities (sheet, helix). Our ipTM also contributes.
-          </div>
-        </div>
-      </div>
-
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">Survivors vs Failures</div>
-
-      <div class="plot-img-container" style="margin-bottom:28px;">
-        <img src="data/rbx1_plots/post_survivors_vs_failures.png" style="max-width:100%;">
-        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
-          Six most discriminating features comparing designs that survived (their ipSAE >= 0.6, n=33) vs
-          failed (their ipSAE < 0.3, n=31) in competition scoring. Our ipTM and ipSAE are significantly
-          different (p < 0.01). Positive charge fraction is lower in survivors (p=0.024).
-        </div>
-      </div>
-
-      <div class="dist-grid">
-        <div class="plot-img-container">
-          <img src="data/rbx1_plots/post_our_of3_vs_their_ipsae.png" style="max-width:100%;">
-          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
-            Our OF3 ipTM vs their ipSAE. OF3 shows weak positive correlation with competition scoring.
-            Cullin designs (red) cluster at lower OF3 but variable competition scores.
-          </div>
-        </div>
-        <div class="plot-img-container">
-          <img src="data/rbx1_plots/post_submission_overview.png" style="max-width:100%;">
-          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
-            Submission overview: our ipSAE vs their ipSAE. Point size = binder length. Orange labels = surprise
-            winners (low our ipSAE but high theirs). Red labels = designs we overvalued. 30 of 83 submitted
-            designs had our ipSAE < 0.5, yet some scored > 0.6 in competition.
-          </div>
-        </div>
-      </div>
-
-      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">Key Findings</div>
-      <div style="font-size:14px;color:var(--text);line-height:1.8;padding:16px;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;margin-bottom:24px;font-weight:400;">
-        <p style="margin-bottom:10px;">1. Their scoring can be partially predicted (RF R²=0.84) but requires non-linear feature combinations.
-        Serine content is the single strongest predictor — designs with more serine validate better in their scoring.</p>
-        <p style="margin-bottom:10px;">2. Our ipSAE and ipTM are the only significant discriminators between survivors and failures (p < 0.01),
-        but the correlation is weak (r~0.3). High our-ipSAE is necessary but not sufficient.</p>
-        <p style="margin-bottom:10px;">3. Positive charge hurts: survivors have significantly less positive charge (R,K) than failures (p=0.024).
-        This aligns with the hypothesis that their fine-tuned model penalizes non-specific electrostatic interactions.</p>
-        <p style="margin-bottom:10px;">4. 30 designs with our ipSAE < 0.5 were submitted. Some performed surprisingly well — suggesting diversity
-        in submission matters more than optimizing a single metric.</p>
-        <p style="margin-bottom:0;">5. The competition likely uses a fine-tuned Boltz-2 trained on experimental de novo binder data,
-        which our standard Boltz-2 + MSA protocol cannot fully approximate. Future work should focus on
-        features that transfer across scoring protocols: sequence diversity, low positive charge, and serine content.</p>
-      </div>
-</div>
+    </div>
 
     <!-- Footer -->
     <div class="footer">

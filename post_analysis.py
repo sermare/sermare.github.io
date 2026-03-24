@@ -5,6 +5,7 @@ Predicting competition ipSAE from design features.
 """
 
 import json
+import os
 import re
 import glob
 import warnings
@@ -270,19 +271,75 @@ print(f"  Features extracted for {len(feat_df)} designs, {len(feat_df.columns)-1
 print("Extracting structural features from Boltz-2 NPZ files...")
 
 SCORING_BASE = '/clusterfs/nilah/sergio/RBX1/03_scoring'
+
+def find_npz_path(did, metric='pae'):
+    """Construct direct path to NPZ file, avoiding slow recursive glob."""
+    m = re.search(r'design_(\d+)', did)
+    if m is None:
+        return None
+    dnum_str = m.group(0)  # e.g. design_0283
+    dnum = int(m.group(1))
+    wave = did.split('_design_')[0] if '_design_' in did else ''
+
+    # Map wave prefix to directory and batch size
+    candidates = []
+    if wave == 'w1':
+        # w1 designs are in all_binders with 50 per batch (2-digit batch names)
+        batch_num = dnum // 50
+        batch_dir = f'pred_batch_{batch_num:02d}'
+        boltz_dir = f'boltz_results_batch_{batch_num:02d}'
+        candidates.append(os.path.join(SCORING_BASE, 'all_binders', batch_dir, boltz_dir, 'predictions',
+                                        dnum_str, f'{metric}_{dnum_str}_model_0.npz'))
+    elif wave == 'w2':
+        batch_num = dnum // 100
+        batch_dir = f'pred_batch_{batch_num:03d}'
+        boltz_dir = f'boltz_results_batch_{batch_num:03d}'
+        candidates.append(os.path.join(SCORING_BASE, 'wave2', batch_dir, boltz_dir, 'predictions',
+                                        dnum_str, f'{metric}_{dnum_str}_model_0.npz'))
+    elif wave == 'w3':
+        batch_num = dnum // 100
+        batch_dir = f'pred_batch_{batch_num:03d}'
+        boltz_dir = f'boltz_results_batch_{batch_num:03d}'
+        candidates.append(os.path.join(SCORING_BASE, 'wave3', batch_dir, boltz_dir, 'predictions',
+                                        dnum_str, f'{metric}_{dnum_str}_model_0.npz'))
+    elif wave == 'wbg':
+        batch_num = dnum // 100
+        batch_dir = f'pred_batch_{batch_num:03d}'
+        boltz_dir = f'boltz_results_batch_{batch_num:03d}'
+        candidates.append(os.path.join(SCORING_BASE, 'wave_boltzgen', batch_dir, boltz_dir, 'predictions',
+                                        dnum_str, f'{metric}_{dnum_str}_model_0.npz'))
+    elif wave == 'wcm':
+        # wcm designs share design numbers with wave2/wave3
+        for wd in ['wave2', 'wave3']:
+            batch_num = dnum // 100
+            batch_dir = f'pred_batch_{batch_num:03d}'
+            boltz_dir = f'boltz_results_batch_{batch_num:03d}'
+            candidates.append(os.path.join(SCORING_BASE, wd, batch_dir, boltz_dir, 'predictions',
+                                            dnum_str, f'{metric}_{dnum_str}_model_0.npz'))
+    elif wave == 'bg':
+        # BoltzGen with bg_ prefix
+        batch_num = dnum // 100
+        batch_dir = f'pred_batch_{batch_num:03d}'
+        boltz_dir = f'boltz_results_batch_{batch_num:03d}'
+        candidates.append(os.path.join(SCORING_BASE, 'wave_boltzgen', batch_dir, boltz_dir, 'predictions',
+                                        dnum_str, f'{metric}_{dnum_str}_model_0.npz'))
+
+    for c in candidates:
+        if os.path.exists(c):
+            return c
+    return None
+
 structural_feats = {}
 
 for did in feat_df['id'].values:
-    # Extract design number
     m = re.search(r'design_(\d+)', did)
     if m is None:
-        # Handle bg_ prefix designs
         continue
-    dnum = m.group(0)  # e.g. design_0283
 
-    # Search for PAE file
-    pae_files = glob.glob(f'{SCORING_BASE}/**/pae_{dnum}_model_0.npz', recursive=True)
-    plddt_files = glob.glob(f'{SCORING_BASE}/**/plddt_{dnum}_model_0.npz', recursive=True)
+    pae_path = find_npz_path(did, 'pae')
+    plddt_path = find_npz_path(did, 'plddt')
+    pae_files = [pae_path] if pae_path else []
+    plddt_files = [plddt_path] if plddt_path else []
 
     sf = {}
     if pae_files:
