@@ -1798,7 +1798,83 @@ Campaigns:
         partially addresses.</p>
       </div>
 
-    </div>
+    
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:32px;">Deep Analysis: Feature Engineering</div>
+      <p style="font-size:14px;color:var(--text-secondary);font-weight:400;margin-bottom:16px;">
+        35 features engineered from sequence composition, structural propensities, hydrophobicity, and our scoring metrics.
+        Ridge regression R²=0.488, Random Forest R²=0.838 for predicting their ipSAE.
+      </p>
+
+      <div class="plot-img-container" style="margin-bottom:28px;">
+        <img src="data/rbx1_plots/post_full_correlation.png" style="max-width:100%;">
+        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+          Full correlation matrix between our 15 features (left/top) and their 5 metrics (right/bottom).
+          Black lines separate our features from theirs. Notable: our ipSAE weakly correlates with their ipSAE (r~0.3),
+          but their metrics cluster tightly together (ipSAE, ipTM, LIS all r > 0.8).
+        </div>
+      </div>
+
+      <div class="dist-grid">
+        <div class="plot-img-container">
+          <img src="data/rbx1_plots/post_regression_coefs.png" style="max-width:100%;">
+          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+            Ridge regression coefficients (R²=0.488). Disorder propensity and serine content are the strongest
+            positive predictors. Entropy and unique AA count also help. Our pTM has a positive effect.
+          </div>
+        </div>
+        <div class="plot-img-container">
+          <img src="data/rbx1_plots/post_feature_importance_rf.png" style="max-width:100%;">
+          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+            Random Forest feature importance (R²=0.838). Serine content (aa_S) is the top predictor,
+            followed by our ipSAE and structural propensities (sheet, helix). Our ipTM also contributes.
+          </div>
+        </div>
+      </div>
+
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">Survivors vs Failures</div>
+
+      <div class="plot-img-container" style="margin-bottom:28px;">
+        <img src="data/rbx1_plots/post_survivors_vs_failures.png" style="max-width:100%;">
+        <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+          Six most discriminating features comparing designs that survived (their ipSAE >= 0.6, n=33) vs
+          failed (their ipSAE < 0.3, n=31) in competition scoring. Our ipTM and ipSAE are significantly
+          different (p < 0.01). Positive charge fraction is lower in survivors (p=0.024).
+        </div>
+      </div>
+
+      <div class="dist-grid">
+        <div class="plot-img-container">
+          <img src="data/rbx1_plots/post_our_of3_vs_their_ipsae.png" style="max-width:100%;">
+          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+            Our OF3 ipTM vs their ipSAE. OF3 shows weak positive correlation with competition scoring.
+            Cullin designs (red) cluster at lower OF3 but variable competition scores.
+          </div>
+        </div>
+        <div class="plot-img-container">
+          <img src="data/rbx1_plots/post_submission_overview.png" style="max-width:100%;">
+          <div class="plot-caption" style="font-size:13px;line-height:1.6;">
+            Submission overview: our ipSAE vs their ipSAE. Point size = binder length. Orange labels = surprise
+            winners (low our ipSAE but high theirs). Red labels = designs we overvalued. 30 of 83 submitted
+            designs had our ipSAE < 0.5, yet some scored > 0.6 in competition.
+          </div>
+        </div>
+      </div>
+
+      <div class="section-heading" style="font-size:20px;font-weight:400;margin-top:28px;">Key Findings</div>
+      <div style="font-size:14px;color:var(--text);line-height:1.8;padding:16px;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;margin-bottom:24px;font-weight:400;">
+        <p style="margin-bottom:10px;">1. Their scoring can be partially predicted (RF R²=0.84) but requires non-linear feature combinations.
+        Serine content is the single strongest predictor — designs with more serine validate better in their scoring.</p>
+        <p style="margin-bottom:10px;">2. Our ipSAE and ipTM are the only significant discriminators between survivors and failures (p < 0.01),
+        but the correlation is weak (r~0.3). High our-ipSAE is necessary but not sufficient.</p>
+        <p style="margin-bottom:10px;">3. Positive charge hurts: survivors have significantly less positive charge (R,K) than failures (p=0.024).
+        This aligns with the hypothesis that their fine-tuned model penalizes non-specific electrostatic interactions.</p>
+        <p style="margin-bottom:10px;">4. 30 designs with our ipSAE < 0.5 were submitted. Some performed surprisingly well — suggesting diversity
+        in submission matters more than optimizing a single metric.</p>
+        <p style="margin-bottom:0;">5. The competition likely uses a fine-tuned Boltz-2 trained on experimental de novo binder data,
+        which our standard Boltz-2 + MSA protocol cannot fully approximate. Future work should focus on
+        features that transfer across scoring protocols: sequence diversity, low positive charge, and serine content.</p>
+      </div>
+</div>
 
     <!-- Footer -->
     <div class="footer">
