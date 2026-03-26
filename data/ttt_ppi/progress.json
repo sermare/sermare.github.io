@@ -1,12 +1,22 @@
 {
-  "last_updated": "2026-03-26T10:25:35.343363",
+  "last_updated": "2026-03-26T10:40:43.217124",
   "status": "running",
-  "total_experiments": 5,
+  "total_experiments": 7,
   "completed_experiments": 1,
   "best_dockq": 0.12626035164147628,
   "success_rate": null,
   "gpu_hours": 0,
   "timeline": [
+    {
+      "timestamp": "2026-03-26T10:40:43.217124",
+      "message": "Auto-update: Phase1: uniform=74(+1), crosschain=32, interface=32. Phase2: evo_baseline=DONE(5), evo_ttt=3 \u2014 NEW BUG: CUDA OOM (1.41GiB alloc failed on 24GB GPU during attention softmax). Template assertion also persists. New jobs 32993494(R,n0160) + 32993493(PD). 4 running, 10 pending.",
+      "type": "warning"
+    },
+    {
+      "timestamp": "2026-03-26T10:40:26.737551",
+      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
+      "type": "metric"
+    },
     {
       "timestamp": "2026-03-26T10:25:35.343363",
       "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
@@ -282,8 +292,8 @@
       "masking": "uniform",
       "dataset": "DB5.5",
       "status": "in_progress",
-      "n_completed": 66,
-      "n_total": 73
+      "n_completed": 67,
+      "n_total": 74
     },
     {
       "name": "TTT Cross-Chain Masking",
@@ -311,6 +321,27 @@
       "status": "not_started",
       "n_completed": 0,
       "n_total": 0
+    },
+    {
+      "name": "AF2-Multimer Baseline (Evoformer)",
+      "id": "evoformer_baseline",
+      "masking": "none",
+      "dataset": "DB5.5",
+      "status": "completed",
+      "n_completed": 5,
+      "n_total": 5,
+      "mean_dockq": 0.065,
+      "success_rate": 0.0
+    },
+    {
+      "name": "Evoformer TTT (Phase 2)",
+      "id": "evoformer_ttt",
+      "masking": "masked_msa",
+      "dataset": "DB5.5",
+      "status": "in_progress",
+      "n_completed": 3,
+      "n_total": 20,
+      "note": "TWO bugs: template assertion (training mode) + CUDA OOM during attention softmax on 24GB GPU"
     }
   ],
   "plots": [
