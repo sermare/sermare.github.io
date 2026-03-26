@@ -667,7 +667,7 @@
       when the folding head is incompetent. Phase 2 tests whether TTT works when the structure module
       IS trained on complexes.
     </div>
-    <div class="last-updated" id="lastUpdated">Last updated: Mar 26, 2026 4:07 PM PDT</div>
+    <div class="last-updated" id="lastUpdated">Last updated: Mar 26, 2026 4:22 PM PDT</div>
 
     <!-- Overview Stats -->
     <div class="stats-row">
@@ -688,7 +688,7 @@
         <div class="stat-label">HP Configs Swept</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statStatus" style="color:#1565c0;">6 RUNNING</div>
+        <div class="stat-value" id="statStatus" style="color:#1565c0;">2 RUNNING</div>
         <div class="stat-label">Running Now</div>
       </div>
     </div>
@@ -708,13 +708,13 @@
       <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Progress Timeline</h2>
       <div class="timeline" id="timeline">
         <div class="timeline-entry type-success">
-          <div class="timeline-time">2026-03-26 16:07 &mdash; LIVE</div>
-          <div class="timeline-msg"><strong>13/15 non-OOM pairs improved with lr=0.05! 1CGI DockQ 0.375 (ipTM=0.983).</strong> New completions: 1CGI(0.375), 1B6C(0.244), 1EZU(0.195), 1D6R(0.125), 1EAW(0.126), 1BUH(0.050). 1B6C hit ipTM=0.890 at step 30 then crashed &mdash; early stopping needed. 1K4C running: DockQ spiked to 0.348 at step 20. 2 more OOMs (2YVJ, 2GAF). 6 pairs still running.</div>
+          <div class="timeline-time">2026-03-26 16:22 &mdash; LIVE</div>
+          <div class="timeline-msg"><strong>All 22 lr=0.05 pairs complete! 16/18 non-OOM improved. Best DockQ: 1CGI 0.375.</strong> New: 2Z0E DockQ 0.356 (ipTM peaked 0.454 at step 40 then crashed to 0.123). 2GTP DockQ 0.310. 1K4C DockQ 0.354 (ipTM=0.973). Interesting: 1E6J ipTM hit 0.975 but DockQ only 0.015 &mdash; ipTM doesn't always couple to DockQ. 1EWY ipTM 0.697 but DockQ 0.034. Key pattern: DockQ improvement correlates with step 40-50 ipTM spike, but crashes follow &mdash; early stopping is critical.</div>
           <div class="timeline-metrics">
-            <span class="timeline-metric">t5_ done: 13/20</span>
-            <span class="timeline-metric">improved: 11/13</span>
+            <span class="timeline-metric">t5_ complete: 22/22</span>
+            <span class="timeline-metric">improved: 16/18</span>
             <span class="timeline-metric">OOM: 4</span>
-            <span class="timeline-metric">best: 1CGI 0.375</span>
+            <span class="timeline-metric">DockQ&gt;0.1: 12 pairs</span>
           </div>
         </div>
         <div class="timeline-entry type-success">
@@ -893,10 +893,10 @@
               <td style="font-weight:500; color:#e65100;">Multi-pair TTT (lr=0.05 DIVERGE)</td>
               <td>AF2-Multimer</td>
               <td>LoRA+Adam lr=0.05, r8, last4, 50 steps</td>
-              <td style="font-family:monospace;">13 done / 22 total</td>
+              <td style="font-family:monospace;">22 done / 22 total</td>
               <td style="font-family:monospace; color:#e65100; font-weight:500;">0.375 (1CGI)</td>
               <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Running</span></td>
+              <td><span class="exp-status exp-status-completed">Completed</span></td>
             </tr>
           </tbody>
         </table>
@@ -1536,76 +1536,76 @@
               <td><span class="exp-status exp-status-failed">OOM</span></td>
             </tr>
             <tr style="border-top:2px solid var(--border);">
+              <td style="font-weight:500;">1K4C</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.016</td>
+              <td style="font-family:monospace; font-weight:500; color:#e65100;">0.354</td>
+              <td style="font-family:monospace; color:#e65100;">+2113%</td>
+              <td style="font-family:monospace;">0.105</td>
+              <td style="font-family:monospace; font-weight:500;">0.973</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+827%</td>
+              <td style="font-family:monospace;">25.6</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
+            </tr>
+            <tr>
               <td style="font-weight:500;">1EWY</td>
               <td style="font-family:monospace;">401</td>
               <td style="font-family:monospace;">0.017</td>
               <td style="font-family:monospace;">0.034</td>
-              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">+100%</td>
               <td style="font-family:monospace;">0.145</td>
-              <td style="font-family:monospace;">0.274</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Step 40</span></td>
-            </tr>
-            <tr>
-              <td style="font-weight:500;">1K4C</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">0.016</td>
-              <td style="font-family:monospace; font-weight:500; color:#e65100;">0.348</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">0.105</td>
-              <td style="font-family:monospace;">0.184</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Step 40</span></td>
+              <td style="font-family:monospace;">0.697</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+380%</td>
+              <td style="font-family:monospace;">17.8</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">1E6J</td>
               <td style="font-family:monospace;">429</td>
               <td style="font-family:monospace;">0.006</td>
-              <td style="font-family:monospace;">0.008</td>
-              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.015</td>
+              <td style="font-family:monospace;">+139%</td>
               <td style="font-family:monospace;">0.101</td>
-              <td style="font-family:monospace;">0.126</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Step 30</span></td>
+              <td style="font-family:monospace; font-weight:500;">0.975</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+865%</td>
+              <td style="font-family:monospace;">5.1</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">1F34</td>
               <td style="font-family:monospace;">463</td>
               <td style="font-family:monospace;">0.015</td>
-              <td style="font-family:monospace;">0.027</td>
-              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.028</td>
+              <td style="font-family:monospace;">+82%</td>
               <td style="font-family:monospace;">0.100</td>
-              <td style="font-family:monospace;">0.109</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Step 10</span></td>
+              <td style="font-family:monospace;">0.147</td>
+              <td style="font-family:monospace;">+47%</td>
+              <td style="font-family:monospace;">8.0</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">2GTP</td>
               <td style="font-family:monospace;">442</td>
               <td style="font-family:monospace;">0.015</td>
-              <td style="font-family:monospace;">0.013</td>
-              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace; font-weight:500; color:#e65100;">0.310</td>
+              <td style="font-family:monospace; color:#e65100;">+1967%</td>
               <td style="font-family:monospace;">0.101</td>
-              <td style="font-family:monospace;">0.112</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Step 10</span></td>
+              <td style="font-family:monospace; font-weight:500;">0.530</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+425%</td>
+              <td style="font-family:monospace;">26.0</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">2Z0E</td>
               <td style="font-family:monospace;">433</td>
               <td style="font-family:monospace;">0.010</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace; font-weight:500; color:#e65100;">0.356</td>
+              <td style="font-family:monospace; color:#e65100;">+3460%</td>
               <td style="font-family:monospace;">0.096</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Step 0</span></td>
+              <td style="font-family:monospace; font-weight:500;">0.454</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+373%</td>
+              <td style="font-family:monospace;">54.4</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
           </tbody>
         </table>
@@ -1782,7 +1782,7 @@ Input: Protein A (seq) + Protein B (seq) + Paired MSAs
           <span class="finding-label">Phase 1 (Negative):</span> ESMFold TTT doesn't improve DockQ despite reducing perplexity. Folding head not trained on complexes.
         </div>
         <div class="finding-item finding-progress">
-          <span class="finding-label">Phase 2 (BREAKTHROUGH):</span> lr=0.05 produces dramatic DockQ gains &mdash; 11/13 non-OOM pairs improved. Best: 1CGI 0.018&rarr;0.375 (ipTM=0.983). Consistent pattern: loss diverges past ~5, ipTM spikes to 0.2-0.98, DockQ follows 1-2 steps later. 1B6C peaked at step 30 (DockQ=0.244) then crashed &mdash; early stopping at peak ipTM may be key. 4 pairs OOM (&gt;500 residues).
+          <span class="finding-label">Phase 2 (COMPLETE for lr=0.05):</span> 16/18 non-OOM pairs improved. 12 pairs reached DockQ&gt;0.1 (from near-zero baselines). Best: 1CGI 0.375. ipTM spikes to 0.45-0.98 but doesn't always couple to DockQ (1E6J: ipTM=0.975, DockQ=0.015). Loss diverges &gt;5 at steps 30-40 triggering the improvement. Early stopping at peak ipTM is critical &mdash; 2Z0E and 1B6C crashed after peaking. 4 pairs OOM (&gt;500 residues).
         </div>
         <div class="finding-item finding-hypothesis">
           <span class="finding-label">Hypothesis:</span> TTT only helps when the downstream task head is competent.
@@ -1802,14 +1802,14 @@ Input: Protein A (seq) + Protein B (seq) + Paired MSAs
           </div>
           <div class="log-title">ttt-ppi-phase2.log</div>
         </div>
-<span class="log-time">[2026-03-26 16:07]</span> <span class="log-warn">BREAK</span>  13/15 non-OOM t5_ pairs done
-<span class="log-time">                     </span> <span class="log-metric">  >> 1CGI: DockQ 0.018->0.375, ipTM->0.983 (NEW BEST)</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> 1B6C: DockQ 0.010->0.244, ipTM peaked 0.890 at step 30</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> 1EZU: DockQ 0.017->0.195, ipTM->0.888</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> 1D6R: DockQ->0.125, 1EAW: DockQ->0.126, 1BUH: DockQ->0.050</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> 1BJ1: flat (DockQ 0.002), 1BVN/2YVJ/2GAF: OOM</span>
-<span class="log-time">                     </span> <span class="log-info">  >> RUNNING: 1EWY(s40), 1K4C(s40 DockQ peaked 0.348!), 1E6J(s30)</span>
-<span class="log-time">                     </span> <span class="log-info">  >> RUNNING: 1F34(s10), 2GTP(s10), 2Z0E(s0)</span>
+<span class="log-time">[2026-03-26 16:22]</span> <span class="log-warn">BREAK</span>  ALL 22 t5_ (lr=0.05) pairs complete!
+<span class="log-time">                     </span> <span class="log-metric">  >> NEW: 2Z0E DockQ 0.010->0.356 (+3460%), peaked step 40</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> NEW: 2GTP DockQ 0.015->0.310, ipTM->0.530</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> NEW: 1K4C DockQ 0.016->0.354, ipTM->0.973</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> NEW: 1E6J ipTM->0.975 but DockQ only 0.015 (decoupled!)</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> NEW: 1EWY ipTM->0.697, DockQ only 0.034</span>
+<span class="log-time">                     </span> <span class="log-info">  >> Summary: 16/18 improved, 12 DockQ>0.1, 4 OOM</span>
+<span class="log-time">                     </span> <span class="log-info">  >> Still running: ttt_2GTP, ttt_2Z0E (r8_b4 config)</span>
 <span class="log-time">[2026-03-26 15:17:00]</span> <span class="log-info">OK   </span>  14 pairs done (r8_b4), 1CLV OOM, 3 running + 24 queued
 <span class="log-time">                     </span> <span class="log-metric">  >> NEW: 1AVX done: DockQ +20%, ipTM +2%</span>
 <span class="log-time">                     </span> <span class="log-metric">  >> NEW: 1AHW done: DockQ +20%, ipTM +20% (0.100->0.121)</span>
@@ -1831,14 +1831,10 @@ Input: Protein A (seq) + Protein B (seq) + Paired MSAs
 <span class="log-time">                     </span> <span class="log-metric">  >> best = 1ACB (0.370, acceptable)</span>
 <span class="log-time">[2026-03-25 23:59:00]</span> <span class="log-warn">WARN </span>  Phase 1: ESMFold TTT negative result (head incompetence)
 
-<span class="log-time">--- Active SLURM Jobs (Mar 26 16:07) ---</span>
-<span class="log-info">[RUNNING  ]</span> t5_1EWY      A40  step 40/50 (lr=0.05)
-<span class="log-info">[RUNNING  ]</span> t5_1K4C      A40  step 40/50 (lr=0.05) <span class="log-metric">DockQ=0.348 at s20!</span>
-<span class="log-info">[RUNNING  ]</span> t5_1E6J      A40  step 30/50 (lr=0.05)
-<span class="log-info">[RUNNING  ]</span> t5_1F34      A40  step 10/50 (lr=0.05)
-<span class="log-info">[RUNNING  ]</span> t5_2GTP      A40  step 10/50 (lr=0.05)
-<span class="log-info">[RUNNING  ]</span> t5_2Z0E      A40  step 0/50 (lr=0.05)
-<span class="log-warn">[PENDING  ]</span> test_l40, tt_1K4C, ttt_1AHW(x3), ttt_1DFJ, ttt_1AY7
+<span class="log-time">--- Active SLURM Jobs (Mar 26 16:22) ---</span>
+<span class="log-info">[RUNNING  ]</span> ttt_2GTP     A40  r8_b4 config
+<span class="log-info">[RUNNING  ]</span> ttt_2Z0E     A40  r8_b4 config
+<span class="log-warn">[PENDING  ]</span> test_l40, tt_1K4C, ttt_1AHW(x3), ttt_1DFJ, ttt_1K4C, ttt_1AY7
       </div>
     </div>
 
