@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-03-26T07:54:53.637229",
+  "last_updated": "2026-03-26T08:22:33.667863",
   "status": "running",
   "total_experiments": 5,
   "completed_experiments": 1,
@@ -7,6 +7,16 @@
   "success_rate": null,
   "gpu_hours": 0,
   "timeline": [
+    {
+      "timestamp": "2026-03-26T08:22:33.667863",
+      "message": "PIVOTED TO EVOFORMER TTT: ESMFold TTT showed negligible improvement (folding head bottleneck). Now applying ProteinTTT to AlphaFold-Multimer's Evoformer backbone \u2014 the head IS competent for complexes. OpenFold v2.2.0 installed with multimer support. 288 LoRA targets (MSA row+column attention Q/K/V). 1.18M trainable params. Pilot running on TITAN RTX. Generating ColabFold MSAs for DB5.5 pairs (single-sequence AF2-Multimer gives degenerate predictions).",
+      "type": "info"
+    },
+    {
+      "timestamp": "2026-03-26T08:22:33.667863",
+      "message": "KEY INSIGHT: ESMFold negative + Evoformer positive = strong mechanistic argument. TTT works when the downstream head is competent for the task, fails when it isn't. This is the core story for the paper.",
+      "type": "warning"
+    },
     {
       "timestamp": "2026-03-26T07:54:53.637229",
       "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
@@ -236,6 +246,24 @@
       "status": "not_started",
       "n_completed": 0,
       "n_total": 0
+    },
+    {
+      "name": "Evoformer Baseline (AF2-Multimer)",
+      "id": "evoformer_baseline",
+      "masking": "none",
+      "dataset": "DB5.5",
+      "status": "in_progress",
+      "n_completed": 0,
+      "n_total": 20
+    },
+    {
+      "name": "Evoformer TTT (masked MSA)",
+      "id": "evoformer_ttt",
+      "masking": "msa_bert",
+      "dataset": "DB5.5",
+      "status": "pending",
+      "n_completed": 0,
+      "n_total": 20
     }
   ],
   "plots": [
