@@ -1846,7 +1846,7 @@ Campaigns:
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;font-weight:400;">
         Trimming, alanine scanning, and mutational optimization of UBC12 (PDB 4P5O chain I)
         &mdash; the natural E2 binding partner of RBX1. All scoring via OpenFold3.
-        Auto-updated: 2026-03-26 07:32
+        Auto-updated: 2026-03-26 07:41
       </p>
 
       <div class="stats-row">
@@ -1858,38 +1858,11 @@ Campaigns:
         <div class="stat-card"><div class="stat-value">48</div><div class="stat-label">Beneficial (&gt;WT)</div></div>
       </div>
 
-      <!-- AF3 Validation -->
-      <div class="section-heading" style="font-size:18px;font-weight:400;margin-top:24px;">AF3 Validation of Trimming Variants</div>
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
-        Key finding: OF3 and AF3 disagree on aggressive trimming. AF3 prefers <strong>gentle N-terminal trims</strong>
-        that keep the C-terminus intact. Best AF3 backbone: <strong>ntrim_20 (164 AA, AF3 ipTM = 0.78)</strong>.
-      </p>
-      <div class="table-wrapper-scroll" style="margin-bottom:20px;">
-        <table class="score-table">
-          <thead><tr><th>Variant</th><th>Range</th><th>Length</th><th>AF3 ipTM</th><th>AF3 pTM</th><th>OF3 ipTM</th><th>Notes</th></tr></thead>
-          <tbody>
-            <tr><td>ntrim_20</td><td>20&ndash;183</td><td>164</td><td style="color:#4CAF50;font-weight:bold;">0.78</td><td>0.79</td><td>0.795</td><td>Best AF3 trim</td></tr>
-            <tr><td>ntrim_15</td><td>15&ndash;183</td><td>169</td><td style="color:#4CAF50;font-weight:bold;">0.76</td><td>0.77</td><td>0.785</td><td>Gentle trim</td></tr>
-            <tr><td>WT full-length</td><td>2&ndash;183</td><td>182</td><td style="color:#2196F3;">0.71</td><td>0.74</td><td>0.745</td><td>Baseline</td></tr>
-            <tr><td>dbl_K120R_W119Y (trimmed)</td><td>25&ndash;135</td><td>111</td><td>0.58</td><td>0.57</td><td style="color:#4CAF50;">0.870</td><td>Best OF3 mutant</td></tr>
-            <tr><td>both_29_135</td><td>29&ndash;135</td><td>107</td><td>0.55</td><td>0.58</td><td style="color:#4CAF50;">0.819</td><td>Over-trimmed for AF3</td></tr>
-            <tr><td>both_25_135 (WT trimmed)</td><td>25&ndash;135</td><td>111</td><td>0.50</td><td>0.55</td><td style="color:#4CAF50;">0.860</td><td>Best OF3 trim</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:20px;">
-        <div style="font-size:14px;color:var(--text-secondary);">
-          <strong>Conclusion:</strong> OF3 over-rewards aggressive trimming. AF3 needs the C-terminal context (res 135&ndash;183)
-          for accurate binding prediction. The optimal strategy is: <strong>ntrim_20 backbone (164 AA) + top mutations</strong>.
-          Mutations recovered +0.08 on the trimmed fragment (0.50 &rarr; 0.58), so ntrim_20 + mutations could reach ~0.85 AF3 ipTM.
-        </div>
-      </div>
-
       <!-- Phase 1 -->
-      <div class="section-heading" style="font-size:18px;font-weight:400;margin-top:24px;">Phase 1: Progressive Trimming (OF3 Results)</div>
+      <div class="section-heading" style="font-size:18px;font-weight:400;margin-top:24px;">Phase 1: Progressive Trimming (Complete)</div>
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
-        OF3 best fragment: <strong>res 25-135 (111 AA)</strong> with OF3 ipTM = 0.860 (vs full-length 0.745).
-        However, AF3 validation shows <strong>ntrim_20 (164 AA)</strong> is the better backbone.
+        Best fragment: <strong>res 25-135 (111 AA)</strong> with OF3 ipTM = 0.860 (vs full-length 0.745).
+        Trimming the disordered N-terminus <em>improves</em> binding by +0.115.
       </p>
       <div class="plot-img-container" style="margin-bottom:20px;">
         <img src="data/ubc12_plots/trimming_iptm_vs_length.png" style="max-width:100%;">
@@ -2210,7 +2183,7 @@ Campaigns:
           <div style="margin-top:6px;"><button onclick="toggle3DViewer(this, 'mut_dbl_E117K_D89K', 'data/ubc12_structures/mut_dbl_E117K_D89K.cif', 'UBC12')" style="font-size:12px;padding:4px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--link);cursor:pointer;font-family:inherit;font-weight:400;">Show 3D</button><a href="data/ubc12_structures/mut_dbl_E117K_D89K.cif" download="mut_dbl_E117K_D89K.cif" style="font-size:12px;padding:4px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--link);cursor:pointer;font-family:inherit;font-weight:400;text-decoration:none;display:inline-block;margin-left:4px;">Download CIF</a><div id="viewer3d_mut_dbl_E117K_D89K" class="viewer3d-container" style="display:none;margin-top:8px;border-radius:6px;overflow:hidden;border:1px solid var(--border);width:100%;height:220px;"></div></div>
         </div></div>
       <div style="text-align:center;padding:20px 0;color:var(--text-secondary);font-size:13px;font-style:italic;">
-        Auto-updated: 2026-03-26 07:32
+        Auto-updated: 2026-03-26 07:41
       </div>
     </div>
 
