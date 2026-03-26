@@ -1136,6 +1136,13 @@
     <div id="subtab-results" class="sub-tab-content">
       <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Results</h2>
 
+      <div class="result-card" style="margin-bottom:18px;">
+        <h3>HP Sweep: ipTM Trajectory on 1ACB (50 steps) &mdash; lr=0.05 reaches ipTM=0.982!</h3>
+        <div class="chart-area" style="height:320px;">
+          <canvas id="chartSweepIpTM"></canvas>
+        </div>
+      </div>
+
       <div class="results-grid">
         <div class="result-card">
           <h3>HP Sweep: DockQ Trajectory on 1ACB (50 steps)</h3>
@@ -1425,6 +1432,47 @@ function renderCharts() {
   });
 
   var steps6 = [0,10,20,30,40,50];
+
+  // 0. HP Sweep ipTM (the striking result!)
+  var ctxIpTM = document.getElementById('chartSweepIpTM');
+  if (ctxIpTM) {
+    chartInstances.sweepIpTM = new Chart(ctxIpTM.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: steps6,
+        datasets: [
+          { label: 'lr=0.01 r8 b4 (BEST)', data: [0.127, 0.135, 0.131, 0.131, 0.130, 0.132], borderColor: colors.green, backgroundColor: 'rgba(67,160,71,0.08)', fill: true, tension: 0.2, pointRadius: 4, borderWidth: 3 },
+          { label: 'lr=0.01 r16 b4', data: [0.122, 0.131, 0.134, 0.125, 0.129, 0.129], borderColor: colors.blue, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: 'lr=0.01 r8 b8 (OVERFIT)', data: [0.116, 0.124, 0.133, 0.149, 0.143, 0.149], borderColor: colors.red, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [5,5] },
+          { label: 'lr=0.05 r8 b4 (DIVERGE)', data: [0.127, 0.137, 0.136, 0.969, 0.982, 0.957], borderColor: colors.orange, backgroundColor: 'rgba(255,152,0,0.1)', fill: true, tension: 0.2, pointRadius: 5, borderWidth: 3, pointBackgroundColor: ['#ff9800','#ff9800','#ff9800','#ff3d00','#ff3d00','#ff3d00'] }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: colors.text, font: { size: 12 } } },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) { return ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(4); }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true, max: 1.05,
+            title: { display: true, text: 'ipTM', color: colors.text, font: { size: 14 } },
+            ticks: { color: colors.text },
+            grid: { color: colors.grid }
+          },
+          x: {
+            title: { display: true, text: 'TTT Step', color: colors.text },
+            ticks: { color: colors.text },
+            grid: { color: colors.grid }
+          }
+        }
+      }
+    });
+  }
 
   // 1. HP Sweep DockQ trajectories
   var ctx1 = document.getElementById('chartSweepDockQ');
