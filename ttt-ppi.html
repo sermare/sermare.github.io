@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="300">
+  <title>TTT-PPI Dashboard — Sergio E. Mares</title>
+  <meta name="author" content="Sergio E. Mares">
+  <meta name="description" content="ProteinTTT-PPI: Test-Time Training for Protein-Protein Interaction Prediction">
+  <link rel="stylesheet" href="stylesheet.css">
+  <link rel="icon" type="image/png" href="data/avatar.png">
+  <style>
+    /* ========== TTT-PPI Page Overrides ========== */
+    .container { max-width: 1100px; }
+
+    .back-link {
+      font-size: 15px;
+      margin-bottom: 18px;
+      display: inline-block;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--name-color);
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      font-weight: 400;
+    }
+
+    .page-desc {
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 8px;
+      line-height: 1.6;
+      max-width: 750px;
+    }
+
+    .last-updated {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-bottom: 24px;
+      font-weight: 400;
+    }
+
+    .status-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 2px 10px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .status-initializing { background: #fff3e0; color: #e65100; }
+    .status-running { background: #e3f2fd; color: #1565c0; }
+    .status-completed { background: #e8f4e8; color: #2d6a2d; }
+    .status-failed { background: #fce4ec; color: #c62828; }
+    [data-theme="dark"] .status-initializing { background: #3d2200; color: #ffb74d; }
+    [data-theme="dark"] .status-running { background: #0d2744; color: #64b5f6; }
+    [data-theme="dark"] .status-completed { background: #1a3a1a; color: #7ee87e; }
+    [data-theme="dark"] .status-failed { background: #3d1218; color: #ef9a9a; }
+
+    /* Overview stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      text-align: center;
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+
+    .stat-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    [data-theme="dark"] .stat-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--heading-color);
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    /* Sub-tabs */
+    .sub-tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 24px;
+      margin-top: 4px;
+      padding-bottom: 0;
+      flex-wrap: wrap;
+    }
+
+    .sub-tab-btn {
+      background: none;
+      border: none;
+      padding: 8px 16px;
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+      color: var(--tab-inactive-text);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+      font-weight: 500;
+    }
+
+    .sub-tab-btn:hover { color: var(--text); }
+
+    .sub-tab-btn.active {
+      color: var(--heading-color);
+      border-bottom-color: var(--heading-color);
+    }
+
+    .sub-tab-content {
+      display: none;
+    }
+
+    .sub-tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+      margin-bottom: 28px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-entry {
+      position: relative;
+      margin-bottom: 18px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .timeline-entry:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .timeline-entry::before {
+      content: '';
+      position: absolute;
+      left: -24px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg);
+    }
+
+    .timeline-entry.type-info::before { border-color: #1565c0; background: #e3f2fd; }
+    .timeline-entry.type-success::before { border-color: #2d6a2d; background: #e8f4e8; }
+    .timeline-entry.type-warning::before { border-color: #e65100; background: #fff3e0; }
+    .timeline-entry.type-error::before { border-color: #c62828; background: #fce4ec; }
+    .timeline-entry.type-metric::before { border-color: #6a1b9a; background: #f3e5f5; }
+
+    [data-theme="dark"] .timeline-entry.type-info::before { border-color: #64b5f6; background: #0d2744; }
+    [data-theme="dark"] .timeline-entry.type-success::before { border-color: #7ee87e; background: #1a3a1a; }
+    [data-theme="dark"] .timeline-entry.type-warning::before { border-color: #ffb74d; background: #3d2200; }
+    [data-theme="dark"] .timeline-entry.type-error::before { border-color: #ef9a9a; background: #3d1218; }
+    [data-theme="dark"] .timeline-entry.type-metric::before { border-color: #ce93d8; background: #2a1035; }
+
+    .timeline-time {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+      margin-bottom: 4px;
+    }
+
+    .timeline-msg {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .timeline-metrics {
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .timeline-metric {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+    }
+
+    /* Experiments table */
+    .exp-table-wrapper {
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 600px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 28px;
+    }
+
+    .exp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .exp-table thead {
+      background: var(--bg-alt);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .exp-table th {
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 500;
+      color: var(--heading-color);
+      border-bottom: 2px solid var(--border);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .exp-table th:hover { color: var(--link); }
+
+    .exp-table th .sort-arrow {
+      margin-left: 4px;
+      font-size: 10px;
+    }
+
+    .exp-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+      font-weight: 400;
+    }
+
+    .exp-table tbody tr:hover { background: var(--bg-alt); }
+
+    .exp-status {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .exp-status-pending { background: #f5f5f5; color: #757575; }
+    .exp-status-running { background: #e3f2fd; color: #1565c0; }
+    .exp-status-completed { background: #e8f4e8; color: #2d6a2d; }
+    .exp-status-failed { background: #fce4ec; color: #c62828; }
+    [data-theme="dark"] .exp-status-pending { background: #21262d; color: #8b949e; }
+    [data-theme="dark"] .exp-status-running { background: #0d2744; color: #64b5f6; }
+    [data-theme="dark"] .exp-status-completed { background: #1a3a1a; color: #7ee87e; }
+    [data-theme="dark"] .exp-status-failed { background: #3d1218; color: #ef9a9a; }
+
+    /* Results section */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .result-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .result-card h3 {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--heading-color);
+      margin: 0 0 12px 0;
+    }
+
+    .chart-area {
+      width: 100%;
+      height: 260px;
+      position: relative;
+    }
+
+    .chart-area canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .no-data-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 220px;
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-style: italic;
+    }
+
+    /* Method overview */
+    .method-section {
+      margin-bottom: 28px;
+    }
+
+    .method-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .method-card h3 {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--heading-color);
+      margin: 0 0 12px 0;
+    }
+
+    .pipeline-diagram {
+      font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .masking-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .masking-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .masking-card-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--heading-color);
+      margin-bottom: 8px;
+    }
+
+    .masking-viz {
+      font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .masking-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .token-masked { color: #c62828; font-weight: 600; }
+    .token-visible { color: var(--tag-text); }
+    .token-linker { color: #6a1b9a; }
+    [data-theme="dark"] .token-masked { color: #ef9a9a; }
+    [data-theme="dark"] .token-linker { color: #ce93d8; }
+
+    .hp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .hp-table th {
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 500;
+      color: var(--heading-color);
+      border-bottom: 2px solid var(--border);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      background: var(--bg-alt);
+    }
+
+    .hp-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .hp-table td:first-child {
+      font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+      font-size: 13px;
+    }
+
+    /* Log terminal */
+    .log-terminal {
+      background: #1a1a2e;
+      color: #a8d8a8;
+      font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 18px;
+      border-radius: 10px;
+      max-height: 500px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      border: 1px solid #30363d;
+    }
+
+    .log-terminal .log-info { color: #64b5f6; }
+    .log-terminal .log-warn { color: #ffb74d; }
+    .log-terminal .log-err { color: #ef9a9a; }
+    .log-terminal .log-time { color: #8b949e; }
+    .log-terminal .log-metric { color: #ce93d8; }
+
+    .log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .log-header-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .log-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .log-dot-red { background: #ff5f57; }
+    .log-dot-yellow { background: #ffbd2e; }
+    .log-dot-green { background: #28c840; }
+
+    .log-title {
+      font-size: 13px;
+      color: #8b949e;
+    }
+
+    /* Bar chart (CSS-only fallback) */
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 200px;
+      padding: 0 8px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    .bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 60px;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.5s ease;
+      position: relative;
+      min-height: 2px;
+    }
+
+    .bar-baseline { background: linear-gradient(180deg, #90caf9, #42a5f5); }
+    .bar-ttt { background: linear-gradient(180deg, #a5d6a7, #43a047); }
+
+    .bar-value {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 4px;
+      font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+    }
+
+    .bar-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    .swatch-baseline { background: #42a5f5; }
+    .swatch-ttt { background: #43a047; }
+
+    /* Info banner */
+    .info-banner {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--link);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .info-banner strong {
+      color: var(--heading-color);
+      font-weight: 500;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .results-grid { grid-template-columns: 1fr; }
+      .masking-grid { grid-template-columns: 1fr; }
+      .sub-tab-btn { padding: 6px 10px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn"></button>
+
+  <div class="container">
+
+    <a href="index.html" class="back-link">&larr; Back to main page</a>
+
+    <div class="page-title">
+      Two Proteins Is All You Need
+      <span class="status-badge" id="globalStatus">INITIALIZING</span>
+    </div>
+    <div class="page-subtitle">Test-Time Training for Protein-Protein Interaction Prediction</div>
+    <div class="page-desc">
+      Extending ProteinTTT to protein pairs for complex structure prediction. We adapt masked-language-model
+      test-time training to jointly refine ESM2 representations of two interacting proteins, improving
+      DockQ scores for predicted protein-protein complex structures.
+    </div>
+    <div class="last-updated" id="lastUpdated">Last updated: loading...</div>
+
+    <!-- Overview Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value" id="statExperiments">--</div>
+        <div class="stat-label">Experiments Run</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statDockQ">--</div>
+        <div class="stat-label">Best DockQ</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statSuccess">--</div>
+        <div class="stat-label">Success Rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statGPU">--</div>
+        <div class="stat-label">GPU Hours</div>
+      </div>
+    </div>
+
+    <!-- Sub-tabs -->
+    <div class="sub-tabs">
+      <button class="sub-tab-btn active" onclick="switchSubTab('progress')">Progress</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('experiments')">Experiments</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('results')">Results</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('method')">Method</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('logs')">Logs</button>
+    </div>
+
+    <!-- ===== Progress Tab ===== -->
+    <div id="subtab-progress" class="sub-tab-content active">
+      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Progress Timeline</h2>
+      <div class="timeline" id="timeline">
+        <div class="timeline-entry type-info">
+          <div class="timeline-time">Loading...</div>
+          <div class="timeline-msg">Fetching progress data...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Experiments Tab ===== -->
+    <div id="subtab-experiments" class="sub-tab-content">
+      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">All Experiments</h2>
+      <div id="expTableContainer">
+        <div class="no-data-placeholder">No experiments recorded yet. Data will appear once experiments begin.</div>
+      </div>
+    </div>
+
+    <!-- ===== Results Tab ===== -->
+    <div id="subtab-results" class="sub-tab-content">
+      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Results</h2>
+
+      <div class="results-grid" id="resultsGrid">
+        <div class="result-card">
+          <h3>Baselines vs TTT Strategies (Mean DockQ)</h3>
+          <div id="comparisonChart" class="chart-area">
+            <div class="no-data-placeholder">Awaiting experiment results...</div>
+          </div>
+        </div>
+        <div class="result-card">
+          <h3>Per-Dataset Breakdown</h3>
+          <div id="datasetChart" class="chart-area">
+            <div class="no-data-placeholder">Awaiting experiment results...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-card" style="margin-bottom:24px;">
+        <h3>DockQ Score Distributions</h3>
+        <div id="distributionChart" class="chart-area" style="height:300px;">
+          <div class="no-data-placeholder">Awaiting experiment results...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Method Tab ===== -->
+    <div id="subtab-method" class="sub-tab-content">
+      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Method Overview</h2>
+
+      <div class="method-card">
+        <h3>ProteinTTT-PPI Pipeline</h3>
+        <div class="pipeline-diagram">
+  Input: Protein A (sequence) + Protein B (sequence)
+         |
+         v
+  +------------------+     +-------------------+
+  | Concatenation     |     | Linker Strategy   |
+  | A + [linker] + B  | <-- | poly-G / flexible |
+  +------------------+     +-------------------+
+         |
+         v
+  +----------------------------+
+  | ESM-2 (650M) Embedding     |
+  | Token representations      |
+  +----------------------------+
+         |
+         v
+  +----------------------------+
+  | Test-Time Training (TTT)   |
+  | Masked LM self-supervision |
+  | on the input pair          |
+  +----------------------------+
+         |
+         v
+  +----------------------------+
+  | ESMFold Structure Module   |
+  | Predict paired structure   |
+  +----------------------------+
+         |
+         v
+  +----------------------------+
+  | DockQ Evaluation           |
+  | Compare to native complex  |
+  +----------------------------+</div>
+      </div>
+
+      <div class="method-card">
+        <h3>Masking Strategies</h3>
+        <div class="masking-grid">
+          <div class="masking-card">
+            <div class="masking-card-title">Random Uniform</div>
+            <div class="masking-viz">
+              <span class="token-visible">M</span><span class="token-masked">_</span><span class="token-visible">K</span><span class="token-visible">L</span><span class="token-masked">_</span><span class="token-visible">A</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-visible">R</span><span class="token-masked">_</span><span class="token-visible">D</span><span class="token-visible">E</span><span class="token-masked">_</span><span class="token-visible">K</span>
+            </div>
+            <div class="masking-desc">15% random masking across both chains uniformly</div>
+          </div>
+          <div class="masking-card">
+            <div class="masking-card-title">Interface-Biased</div>
+            <div class="masking-viz">
+              <span class="token-visible">M</span><span class="token-visible">K</span><span class="token-visible">L</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-visible">E</span><span class="token-visible">K</span><span class="token-visible">R</span>
+            </div>
+            <div class="masking-desc">Higher masking rate at predicted interface residues</div>
+          </div>
+          <div class="masking-card">
+            <div class="masking-card-title">Chain-Alternating</div>
+            <div class="masking-viz">
+              <span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-visible">R</span><span class="token-visible">D</span><span class="token-visible">E</span><span class="token-visible">K</span><span class="token-visible">A</span><span class="token-visible">L</span>
+            </div>
+            <div class="masking-desc">Mask one full chain, predict from the other</div>
+          </div>
+          <div class="masking-card">
+            <div class="masking-card-title">Span Masking</div>
+            <div class="masking-viz">
+              <span class="token-visible">M</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-visible">A</span><span class="token-visible">L</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-visible">R</span><span class="token-visible">D</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-visible">K</span>
+            </div>
+            <div class="masking-desc">Contiguous spans of 3-7 residues masked</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="method-card">
+        <h3>Key Hyperparameters</h3>
+        <div style="overflow-x:auto;">
+          <table class="hp-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>model</td><td>ESM-2 (650M)</td><td>Base protein language model</td></tr>
+              <tr><td>ttt_steps</td><td>100</td><td>TTT gradient steps per sample</td></tr>
+              <tr><td>ttt_lr</td><td>1e-5</td><td>Learning rate for TTT updates</td></tr>
+              <tr><td>mask_ratio</td><td>0.15</td><td>Fraction of tokens masked</td></tr>
+              <tr><td>linker</td><td>poly-G (25)</td><td>Linker sequence between chains</td></tr>
+              <tr><td>max_length</td><td>800</td><td>Max total sequence length (A+linker+B)</td></tr>
+              <tr><td>num_recycles</td><td>4</td><td>ESMFold recycling iterations</td></tr>
+              <tr><td>batch_size</td><td>1</td><td>Per-sample TTT (no batching)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Logs Tab ===== -->
+    <div id="subtab-logs" class="sub-tab-content">
+      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Experiment Logs</h2>
+      <div class="log-terminal" id="logTerminal">
+        <div class="log-header">
+          <div class="log-header-dots">
+            <div class="log-dot log-dot-red"></div>
+            <div class="log-dot log-dot-yellow"></div>
+            <div class="log-dot log-dot-green"></div>
+          </div>
+          <div class="log-title">ttt-ppi-latest.log</div>
+        </div>
+<span class="log-time">[2026-03-25 12:00:00]</span> <span class="log-info">INFO</span>  ProteinTTT-PPI initialized
+<span class="log-time">[2026-03-25 12:00:00]</span> <span class="log-info">INFO</span>  Awaiting experiment logs...
+<span class="log-time">[2026-03-25 12:00:00]</span> <span class="log-info">INFO</span>  Logs will auto-refresh every 5 minutes
+      </div>
+    </div>
+
+  </div><!-- /container -->
+
+<script>
+// ========== Theme Toggle ==========
+(function() {
+  var saved = localStorage.getItem('theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+  updateThemeBtn(document.documentElement.getAttribute('data-theme') || 'light');
+})();
+
+function toggleTheme() {
+  var html = document.documentElement;
+  var current = html.getAttribute('data-theme');
+  var next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeBtn(next);
+}
+
+function updateThemeBtn(theme) {
+  var btn = document.getElementById('themeBtn');
+  if (btn) btn.textContent = theme === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+}
+
+// ========== Sub-Tab Switching ==========
+function switchSubTab(name) {
+  var btns = document.querySelectorAll('.sub-tab-btn');
+  var tabs = document.querySelectorAll('.sub-tab-content');
+  btns.forEach(function(b) { b.classList.remove('active'); });
+  tabs.forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('subtab-' + name).classList.add('active');
+  // Activate the button
+  btns.forEach(function(b) {
+    if (b.textContent.toLowerCase().replace(/\s/g, '') === name.replace(/\s/g, '')) {
+      b.classList.add('active');
+    }
+  });
+  // Match button by onclick attribute
+  btns.forEach(function(b) {
+    var onclick = b.getAttribute('onclick');
+    if (onclick && onclick.indexOf("'" + name + "'") !== -1) {
+      b.classList.add('active');
+    }
+  });
+}
+
+// ========== Data Loading ==========
+var progressData = null;
+var resultsData = null;
+
+function formatTimestamp(ts) {
+  if (!ts) return '--';
+  var d = new Date(ts);
+  return d.toLocaleString('en-US', {
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  });
+}
+
+function loadProgress() {
+  fetch('data/ttt_ppi/progress.json?t=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      progressData = data;
+      renderProgress(data);
+    })
+    .catch(function(err) {
+      console.error('Failed to load progress:', err);
+    });
+}
+
+function loadResults() {
+  fetch('data/ttt_ppi/results.json?t=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      resultsData = data;
+      renderResults(data);
+    })
+    .catch(function(err) {
+      console.error('Failed to load results:', err);
+    });
+}
+
+// ========== Render Progress ==========
+function renderProgress(data) {
+  // Global status
+  var statusEl = document.getElementById('globalStatus');
+  statusEl.textContent = (data.status || 'unknown').toUpperCase();
+  statusEl.className = 'status-badge status-' + (data.status || 'initializing');
+
+  // Last updated
+  document.getElementById('lastUpdated').textContent = 'Last updated: ' + formatTimestamp(data.last_updated);
+
+  // Stats
+  document.getElementById('statExperiments').textContent =
+    data.completed_experiments + ' / ' + data.total_experiments;
+  document.getElementById('statDockQ').textContent =
+    data.best_dockq !== null ? data.best_dockq.toFixed(3) : '--';
+  document.getElementById('statSuccess').textContent =
+    data.success_rate !== null ? (data.success_rate * 100).toFixed(1) + '%' : '--';
+  document.getElementById('statGPU').textContent =
+    data.gpu_hours !== null ? data.gpu_hours.toFixed(1) + 'h' : '--';
+
+  // Timeline
+  renderTimeline(data.timeline || []);
+
+  // Experiments table
+  renderExperimentsTable(data.experiments || []);
+
+  // Logs
+  renderLogs(data.timeline || [], data.experiments || []);
+}
+
+function renderTimeline(entries) {
+  var container = document.getElementById('timeline');
+  if (!entries || entries.length === 0) {
+    container.innerHTML = '<div class="timeline-entry type-info">' +
+      '<div class="timeline-time">--</div>' +
+      '<div class="timeline-msg">No timeline entries yet.</div></div>';
+    return;
+  }
+  // Show newest first
+  var sorted = entries.slice().reverse();
+  container.innerHTML = sorted.map(function(e) {
+    var metricsHtml = '';
+    if (e.metrics) {
+      metricsHtml = '<div class="timeline-metrics">';
+      for (var k in e.metrics) {
+        metricsHtml += '<span class="timeline-metric">' + k + ': ' + e.metrics[k] + '</span>';
+      }
+      metricsHtml += '</div>';
+    }
+    return '<div class="timeline-entry type-' + (e.type || 'info') + '">' +
+      '<div class="timeline-time">' + formatTimestamp(e.timestamp) + '</div>' +
+      '<div class="timeline-msg">' + escapeHtml(e.message) + '</div>' +
+      metricsHtml +
+    '</div>';
+  }).join('');
+}
+
+function renderExperimentsTable(experiments) {
+  var container = document.getElementById('expTableContainer');
+  if (!experiments || experiments.length === 0) {
+    container.innerHTML = '<div class="no-data-placeholder">No experiments recorded yet. Data will appear once experiments begin.</div>';
+    return;
+  }
+
+  var html = '<div class="exp-table-wrapper"><table class="exp-table">' +
+    '<thead><tr>' +
+    '<th>Name</th><th>Masking</th><th>Dataset</th><th>Status</th>' +
+    '<th>DockQ (mean)</th><th>iLDDT</th><th>Success Rate</th><th>GPU Time</th>' +
+    '</tr></thead><tbody>';
+
+  experiments.forEach(function(exp) {
+    var statusClass = 'exp-status-' + (exp.status || 'pending');
+    html += '<tr>' +
+      '<td style="font-weight:500;">' + escapeHtml(exp.name || '--') + '</td>' +
+      '<td>' + escapeHtml(exp.masking || '--') + '</td>' +
+      '<td>' + escapeHtml(exp.dataset || '--') + '</td>' +
+      '<td><span class="exp-status ' + statusClass + '">' + (exp.status || 'pending') + '</span></td>' +
+      '<td style="font-family:monospace;">' + (exp.dockq_mean !== null && exp.dockq_mean !== undefined ? exp.dockq_mean.toFixed(3) : '--') + '</td>' +
+      '<td style="font-family:monospace;">' + (exp.ilddt !== null && exp.ilddt !== undefined ? exp.ilddt.toFixed(3) : '--') + '</td>' +
+      '<td style="font-family:monospace;">' + (exp.success_rate !== null && exp.success_rate !== undefined ? (exp.success_rate * 100).toFixed(1) + '%' : '--') + '</td>' +
+      '<td>' + (exp.gpu_time || '--') + '</td>' +
+    '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+}
+
+// ========== Render Results ==========
+function renderResults(data) {
+  if (!data) return;
+
+  // Comparison chart: baselines vs TTT strategies
+  if (data.baselines && data.baselines.length > 0 && data.ttt_strategies && data.ttt_strategies.length > 0) {
+    renderComparisonChart(data.baselines, data.ttt_strategies);
+  }
+
+  // Per-dataset breakdown
+  if (data.per_dataset && Object.keys(data.per_dataset).length > 0) {
+    renderDatasetChart(data.per_dataset);
+  }
+
+  // DockQ distributions
+  if (data.dockq_distributions && Object.keys(data.dockq_distributions).length > 0) {
+    renderDistributionChart(data.dockq_distributions);
+  }
+}
+
+function renderComparisonChart(baselines, tttStrategies) {
+  var container = document.getElementById('comparisonChart');
+  var allItems = [];
+  baselines.forEach(function(b) { allItems.push({ name: b.name, value: b.dockq_mean, type: 'baseline' }); });
+  tttStrategies.forEach(function(s) { allItems.push({ name: s.name, value: s.dockq_mean, type: 'ttt' }); });
+
+  var maxVal = Math.max.apply(null, allItems.map(function(i) { return i.value || 0; }));
+  if (maxVal === 0) maxVal = 1;
+
+  var html = '<div class="bar-chart">';
+  allItems.forEach(function(item) {
+    var pct = ((item.value || 0) / maxVal) * 100;
+    var barClass = item.type === 'baseline' ? 'bar-baseline' : 'bar-ttt';
+    html += '<div class="bar-group">' +
+      '<div class="bar-value">' + (item.value ? item.value.toFixed(3) : '--') + '</div>' +
+      '<div class="bar ' + barClass + '" style="height:' + pct + '%;"></div>' +
+      '<div class="bar-label">' + escapeHtml(item.name) + '</div>' +
+    '</div>';
+  });
+  html += '</div>';
+  html += '<div class="chart-legend">' +
+    '<div class="legend-item"><div class="legend-swatch swatch-baseline"></div>Baseline</div>' +
+    '<div class="legend-item"><div class="legend-swatch swatch-ttt"></div>TTT Strategy</div>' +
+  '</div>';
+  container.innerHTML = html;
+}
+
+function renderDatasetChart(perDataset) {
+  var container = document.getElementById('datasetChart');
+  var datasets = Object.keys(perDataset);
+
+  var html = '<div style="overflow-x:auto;"><table class="exp-table"><thead><tr>' +
+    '<th>Dataset</th><th>Baseline DockQ</th><th>TTT DockQ</th><th>Improvement</th>' +
+    '</tr></thead><tbody>';
+
+  datasets.forEach(function(ds) {
+    var d = perDataset[ds];
+    var improvement = (d.ttt_dockq && d.baseline_dockq) ?
+      ((d.ttt_dockq - d.baseline_dockq) / d.baseline_dockq * 100).toFixed(1) + '%' : '--';
+    var impColor = (d.ttt_dockq > d.baseline_dockq) ? 'color:var(--tag-text);' : 'color:var(--tag-text-reading);';
+    html += '<tr>' +
+      '<td style="font-weight:500;">' + escapeHtml(ds) + '</td>' +
+      '<td style="font-family:monospace;">' + (d.baseline_dockq ? d.baseline_dockq.toFixed(3) : '--') + '</td>' +
+      '<td style="font-family:monospace;">' + (d.ttt_dockq ? d.ttt_dockq.toFixed(3) : '--') + '</td>' +
+      '<td style="font-family:monospace;' + impColor + '">' + improvement + '</td>' +
+    '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+}
+
+function renderDistributionChart(distributions) {
+  var container = document.getElementById('distributionChart');
+  var methods = Object.keys(distributions);
+
+  // Render a simple histogram-style ASCII/CSS chart
+  var bins = [0, 0.05, 0.1, 0.15, 0.2, 0.23, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0];
+  var binLabels = bins.slice(0, -1).map(function(b, i) {
+    return b.toFixed(2) + '-' + bins[i+1].toFixed(2);
+  });
+
+  var html = '<div style="overflow-x:auto;"><table class="exp-table"><thead><tr><th>DockQ Range</th>';
+  methods.forEach(function(m) { html += '<th>' + escapeHtml(m) + '</th>'; });
+  html += '</tr></thead><tbody>';
+
+  binLabels.forEach(function(label, i) {
+    html += '<tr><td style="font-family:monospace;">' + label + '</td>';
+    methods.forEach(function(m) {
+      var scores = distributions[m] || [];
+      var count = scores.filter(function(s) { return s >= bins[i] && s < bins[i+1]; }).length;
+      html += '<td style="font-family:monospace;">' + count + '</td>';
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+}
+
+// ========== Render Logs ==========
+function renderLogs(timeline, experiments) {
+  var terminal = document.getElementById('logTerminal');
+  var header = '<div class="log-header">' +
+    '<div class="log-header-dots">' +
+    '<div class="log-dot log-dot-red"></div>' +
+    '<div class="log-dot log-dot-yellow"></div>' +
+    '<div class="log-dot log-dot-green"></div>' +
+    '</div>' +
+    '<div class="log-title">ttt-ppi-latest.log</div>' +
+    '</div>\n';
+
+  var lines = '';
+
+  // Convert timeline to log lines
+  timeline.forEach(function(entry) {
+    var ts = entry.timestamp ? new Date(entry.timestamp).toISOString().replace('T', ' ').slice(0, 19) : '--';
+    var typeClass = 'log-info';
+    var typeLabel = 'INFO ';
+    if (entry.type === 'warning') { typeClass = 'log-warn'; typeLabel = 'WARN '; }
+    else if (entry.type === 'error') { typeClass = 'log-err'; typeLabel = 'ERROR'; }
+    else if (entry.type === 'success') { typeClass = 'log-info'; typeLabel = 'OK   '; }
+    else if (entry.type === 'metric') { typeClass = 'log-metric'; typeLabel = 'METR '; }
+
+    lines += '<span class="log-time">[' + ts + ']</span> <span class="' + typeClass + '">' + typeLabel + '</span>  ' + escapeHtml(entry.message) + '\n';
+
+    if (entry.metrics) {
+      for (var k in entry.metrics) {
+        lines += '<span class="log-time">                     </span> <span class="log-metric">  >> ' + k + ' = ' + entry.metrics[k] + '</span>\n';
+      }
+    }
+  });
+
+  // Add experiment status lines
+  if (experiments && experiments.length > 0) {
+    lines += '\n<span class="log-time">--- Experiment Status ---</span>\n';
+    experiments.forEach(function(exp) {
+      var statusClass = 'log-info';
+      if (exp.status === 'failed') statusClass = 'log-err';
+      else if (exp.status === 'running') statusClass = 'log-warn';
+      else if (exp.status === 'completed') statusClass = 'log-info';
+      lines += '<span class="' + statusClass + '">[' + (exp.status || 'pending').toUpperCase().padEnd(9) + ']</span> ' +
+        escapeHtml(exp.name || 'unnamed') + '  |  DockQ=' + (exp.dockq_mean !== null && exp.dockq_mean !== undefined ? exp.dockq_mean.toFixed(3) : '-.---') + '\n';
+    });
+  }
+
+  if (!lines.trim()) {
+    lines = '<span class="log-time">[' + new Date().toISOString().replace('T', ' ').slice(0, 19) + ']</span> <span class="log-info">INFO </span>  ProteinTTT-PPI initialized\n' +
+            '<span class="log-time">[' + new Date().toISOString().replace('T', ' ').slice(0, 19) + ']</span> <span class="log-info">INFO </span>  Awaiting experiment logs...\n';
+  }
+
+  terminal.innerHTML = header + lines;
+  terminal.scrollTop = terminal.scrollHeight;
+}
+
+// ========== Utilities ==========
+function escapeHtml(text) {
+  if (!text) return '';
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(text));
+  return div.innerHTML;
+}
+
+// ========== Init ==========
+loadProgress();
+loadResults();
+
+// Auto-refresh every 5 minutes
+setInterval(function() {
+  loadProgress();
+  loadResults();
+}, 5 * 60 * 1000);
+</script>
+
+</body>
+</html>
