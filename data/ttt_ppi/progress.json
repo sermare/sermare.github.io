@@ -1,12 +1,37 @@
 {
-  "last_updated": "2026-03-25T23:52:54.043049",
-  "status": "setting_up",
+  "last_updated": "2026-03-25T23:55:05.226947",
+  "status": "running",
   "total_experiments": 5,
   "completed_experiments": 0,
   "best_dockq": null,
   "success_rate": null,
   "gpu_hours": 0,
   "timeline": [
+    {
+      "timestamp": "2026-03-25T23:55:05.226947",
+      "message": "Pilot jobs submitted on savio3_gpu (V100 lowprio). Waiting for GPU allocation. 3 pairs x baseline + TTT-uniform with 10 steps.",
+      "type": "info"
+    },
+    {
+      "timestamp": "2026-03-25T23:20:00",
+      "message": "Critical bugs fixed in model.py: ESM2 logits extraction, pLDDT atom37->CA extraction, tokenization. ESMFold+LoRA integration verified (4.4M trainable params, 0.16% of total).",
+      "type": "warning"
+    },
+    {
+      "timestamp": "2026-03-25T23:18:00",
+      "message": "All weights downloaded: ESMFold v1 (2.6GB), ESM2-3B (5.3GB), contact regression (6.7KB). Symlinked for torch.hub discovery.",
+      "type": "success"
+    },
+    {
+      "timestamp": "2026-03-25T23:15:00",
+      "message": "DB5.5 benchmark validated: 186 pairs loaded (115 rigid, 55 medium, 16 difficult). All have native coordinates. 183 fit within 1024 token limit.",
+      "type": "success"
+    },
+    {
+      "timestamp": "2026-03-25T23:10:00",
+      "message": "Conda environment \"tttppi\" created (clone of SE3nv + peft 0.13.2 + tmtools). Smoke tests passed: masking strategies, DockQ metrics, dataset loading.",
+      "type": "success"
+    },
     {
       "timestamp": "2026-03-25T23:52:54.043049",
       "message": "Auto-update: 0/5 experiments done. No results yet.",
@@ -35,49 +60,58 @@
   ],
   "experiments": [
     {
-      "name": "Vanilla ESMFold + Linker",
+      "name": "Pilot Baseline",
+      "id": "pilot_baseline",
+      "masking": "none",
+      "dataset": "DB5.5",
+      "status": "pending",
+      "n_completed": 0,
+      "n_total": 3
+    },
+    {
+      "name": "Pilot TTT Uniform",
+      "id": "pilot_ttt_uniform",
+      "masking": "uniform",
+      "dataset": "DB5.5",
+      "status": "pending",
+      "n_completed": 0,
+      "n_total": 3
+    },
+    {
+      "name": "Full Baseline",
       "id": "baseline",
       "masking": "none",
       "dataset": "DB5.5",
       "status": "not_started",
       "n_completed": 0,
-      "n_total": 0
+      "n_total": 183
     },
     {
-      "name": "TTT Uniform Masking",
+      "name": "TTT Uniform",
       "id": "ttt_uniform",
       "masking": "uniform",
       "dataset": "DB5.5",
       "status": "not_started",
       "n_completed": 0,
-      "n_total": 0
+      "n_total": 183
     },
     {
-      "name": "TTT Cross-Chain Masking",
+      "name": "TTT Cross-Chain",
       "id": "ttt_crosschain",
       "masking": "crosschain",
       "dataset": "DB5.5",
       "status": "not_started",
       "n_completed": 0,
-      "n_total": 0
+      "n_total": 183
     },
     {
-      "name": "TTT Interface-Biased Masking",
+      "name": "TTT Interface-Biased",
       "id": "ttt_interface",
       "masking": "interface",
       "dataset": "DB5.5",
       "status": "not_started",
       "n_completed": 0,
-      "n_total": 0
-    },
-    {
-      "name": "Ablation Studies",
-      "id": "ablations",
-      "masking": "ablations",
-      "dataset": "DB5.5",
-      "status": "not_started",
-      "n_completed": 0,
-      "n_total": 0
+      "n_total": 183
     }
   ],
   "plots": []
