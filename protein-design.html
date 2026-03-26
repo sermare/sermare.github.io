@@ -685,6 +685,7 @@
       <button class="tab-btn" onclick="switchTab('dms')">ESM-2 DMS</button>
       <button class="tab-btn" onclick="switchTab('af3insights')">AF3 Insights</button>
       <button class="tab-btn" onclick="switchTab('postsub')">Post-Submission</button>
+      <button class="tab-btn" onclick="switchTab('ubc12opt')">UBC12 Optimization</button>
     </div>
 
     <!-- ============================================ -->
@@ -1832,6 +1833,89 @@ Campaigns:
         <p style="margin-bottom:0;">6. The submission included 30 designs with our ipSAE &lt; 0.5, yet 7 of them survived
         in competition scoring. This validates the diversity-over-optimization strategy: submitting a broad range of
         designs captures winners that would be missed by strict internal score cutoffs.</p>
+      </div>
+
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 9: UBC12 OPTIMIZATION                    -->
+    <!-- ============================================ -->
+    <div class="tab-content" id="tab-ubc12opt">
+
+      <div class="section-heading" style="font-size:20px;font-weight:400;">UBC12 Natural Binder Optimization</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;font-weight:400;">
+        Trimming, alanine scanning, and mutational optimization of UBC12 (E2 ubiquitin-conjugating enzyme, PDB 4P5O chain I)
+        &mdash; the natural binding partner of RBX1 on the E2 recruitment face. All scoring via OpenFold3 (ipTM correlates
+        with AF3 at r=0.57, unlike Boltz-2 at r=0.08).
+      </p>
+
+      <!-- Phase 1: Trimming -->
+      <div class="section-heading" style="font-size:18px;font-weight:400;margin-top:24px;">Phase 1: Progressive Trimming</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
+        UBC12 (182 AA, res 2&ndash;183) binds RBX1 through three contact patches: Patch 1 (res 29&ndash;40), Patch 2 (res 84&ndash;89),
+        and Patch 3 (res 117&ndash;127). We progressively trim from N- and C-termini to find the minimal binding fragment,
+        monitoring ipTM dropoff at each step. 25 trimming variants tested.
+      </p>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-value" id="trim-total">25</div><div class="stat-label">Trimming Variants</div></div>
+        <div class="stat-card"><div class="stat-value" id="trim-scored">0</div><div class="stat-label">Scored (OF3)</div></div>
+        <div class="stat-card"><div class="stat-value" id="trim-best-iptm">&mdash;</div><div class="stat-label">Best ipTM</div></div>
+        <div class="stat-card"><div class="stat-value" id="trim-min-len">&mdash;</div><div class="stat-label">Min Length (ipTM&ge;0.5)</div></div>
+      </div>
+
+      <div id="trimming-results-placeholder" style="text-align:center;padding:40px 0;color:var(--text-secondary);font-style:italic;">
+        SLURM job 32989940 submitted &mdash; awaiting results...
+      </div>
+
+      <div class="table-wrapper-scroll" id="trimming-table-wrapper" style="display:none;margin-bottom:24px;">
+        <table class="score-table" id="trimming-table">
+          <thead>
+            <tr>
+              <th>Rank</th><th>Variant</th><th>PDB Range</th><th>Length</th>
+              <th>Interface %</th><th>OF3 ipTM</th><th>OF3 pTM</th><th>pLDDT</th>
+              <th>Ranking Score</th>
+            </tr>
+          </thead>
+          <tbody id="trimming-tbody"></tbody>
+        </table>
+      </div>
+
+      <div id="trimming-plot-container" style="display:none;margin-bottom:24px;">
+        <div class="plot-img-container">
+          <img id="trimming-plot-img" src="" alt="Trimming ipTM dropoff" style="max-width:100%;">
+          <div class="plot-caption" style="font-weight:400;">ipTM vs. binder length for UBC12 trimming variants. Dashed line = full-length baseline.</div>
+        </div>
+      </div>
+
+      <!-- Phase 2: Alanine Scanning -->
+      <div class="section-heading" style="font-size:18px;font-weight:400;margin-top:28px;">Phase 2: Alanine Scanning</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
+        Systematic alanine substitution of each interface residue in the trimmed UBC12 fragment to identify
+        binding-critical positions (large ipTM drop) and tolerant positions (candidates for optimization).
+      </p>
+      <div id="alascan-results-placeholder" style="text-align:center;padding:40px 0;color:var(--text-secondary);font-style:italic;">
+        Pending &mdash; waiting for Phase 1 completion to select optimal fragment.
+      </div>
+      <div class="table-wrapper-scroll" id="alascan-table-wrapper" style="display:none;margin-bottom:24px;">
+        <table class="score-table" id="alascan-table">
+          <thead>
+            <tr>
+              <th>Position</th><th>WT Residue</th><th>&Delta;ipTM</th><th>Mutant ipTM</th>
+              <th>WT ipTM</th><th>Classification</th>
+            </tr>
+          </thead>
+          <tbody id="alascan-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Phase 3: Double Mutants -->
+      <div class="section-heading" style="font-size:18px;font-weight:400;margin-top:28px;">Phase 3: Double Mutant Optimization</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;font-weight:400;">
+        Combinatorial exploration of beneficial single mutations to create optimized double mutants with improved ipTM.
+      </p>
+      <div id="doublemut-results-placeholder" style="text-align:center;padding:40px 0;color:var(--text-secondary);font-style:italic;">
+        Pending &mdash; waiting for Phase 2 completion.
       </div>
 
     </div>
