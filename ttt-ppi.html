@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="stylesheet.css">
   <link rel="icon" type="image/png" href="data/avatar.png">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
   <style>
     /* ========== TTT-PPI Page Overrides ========== */
     .container { max-width: 1100px; }
@@ -697,6 +698,7 @@
       <button class="sub-tab-btn active" onclick="switchSubTab('progress')">Progress</button>
       <button class="sub-tab-btn" onclick="switchSubTab('experiments')">Experiments</button>
       <button class="sub-tab-btn" onclick="switchSubTab('results')">Results</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('structures')">Structures</button>
       <button class="sub-tab-btn" onclick="switchSubTab('method')">Method</button>
       <button class="sub-tab-btn" onclick="switchSubTab('logs')">Logs</button>
     </div>
@@ -1172,6 +1174,46 @@
       </div>
     </div>
 
+    <!-- ===== Structures Tab ===== -->
+    <div id="subtab-structures" class="sub-tab-content">
+      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:8px;">Structure Predictions: 1ACB (Trypsin-Chymotrypsin Inhibitor)</h2>
+      <p style="font-size:14px; color:var(--text-secondary); margin-bottom:6px;">Colored by pLDDT confidence: <span style="color:#0053D6; font-weight:500;">blue (>90)</span> <span style="color:#65CBF3; font-weight:500;">cyan (70-90)</span> <span style="color:#FFDB13; font-weight:500;">yellow (50-70)</span> <span style="color:#FF7D45; font-weight:500;">orange (&lt;50)</span></p>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px;">Click and drag to rotate. Scroll to zoom. Right-click to translate.</p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px;">
+        <div class="result-card">
+          <h3 style="text-align:center;">Native Crystal Structure</h3>
+          <p style="font-size:12px; color:var(--text-secondary); text-align:center; margin-bottom:8px;">PDB: 1ACB | Ground truth</p>
+          <div id="viewer_native" style="width:100%; height:400px; position:relative; border:1px solid var(--border); border-radius:8px; overflow:hidden;"></div>
+        </div>
+        <div class="result-card">
+          <h3 style="text-align:center;">Evoformer Baseline</h3>
+          <p style="font-size:12px; color:var(--text-secondary); text-align:center; margin-bottom:8px;">DockQ: 0.370 (acceptable) | ipTM: 0.367</p>
+          <div id="viewer_baseline" style="width:100%; height:400px; position:relative; border:1px solid var(--border); border-radius:8px; overflow:hidden;"></div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px;">
+        <div class="result-card">
+          <h3 style="text-align:center;">TTT Step 0 (Before Training)</h3>
+          <p style="font-size:12px; color:var(--text-secondary); text-align:center; margin-bottom:8px;">DockQ: 0.041 (incorrect) | ipTM: 0.142</p>
+          <div id="viewer_step0" style="width:100%; height:400px; position:relative; border:1px solid var(--border); border-radius:8px; overflow:hidden;"></div>
+        </div>
+        <div class="result-card">
+          <h3 style="text-align:center;">TTT Best (Step 19)</h3>
+          <p style="font-size:12px; color:var(--text-secondary); text-align:center; margin-bottom:8px;">DockQ: 0.041 (SGD run) | ipTM: 0.142</p>
+          <div id="viewer_best" style="width:100%; height:400px; position:relative; border:1px solid var(--border); border-radius:8px; overflow:hidden;"></div>
+        </div>
+      </div>
+
+      <div class="info-banner">
+        <strong>Note:</strong> The baseline prediction (DockQ=0.370) used full recycling + proper MSA processing with max_seq_len=800.
+        The TTT structures shown are from the SGD lr=1e-4 run (max_seq_len=400, 1 recycle) which starts much lower.
+        The best HP sweep config (lr=0.01, r8, b4) achieved DockQ=0.121 from a 0.031 start (+290%), but PDB outputs were not saved.
+        Future runs will save structures at every eval step.
+      </div>
+    </div>
+
     <!-- ===== Method Tab ===== -->
     <div id="subtab-method" class="sub-tab-content">
       <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Method Overview</h2>
@@ -1350,6 +1392,10 @@ function switchSubTab(name) {
   // Render charts when switching to results tab
   if (name === 'results') {
     setTimeout(renderCharts, 50);
+  }
+  // Init 3D viewers when switching to structures tab
+  if (name === 'structures') {
+    setTimeout(initStructureViewers, 100);
   }
 }
 
@@ -1570,6 +1616,68 @@ function fetchAndUpdate() {
     .catch(function(err) {
       console.log('No progress.json available, using hardcoded data:', err.message);
     });
+}
+
+// ========== 3D Structure Viewers ==========
+var structureViewers = {};
+
+function initStructureViewers() {
+  var viewerConfigs = [
+    { id: 'viewer_native', pdb: 'data/ttt_ppi/structures/1ACB_native.pdb', colorByPlddt: false },
+    { id: 'viewer_baseline', pdb: 'data/ttt_ppi/structures/1ACB_baseline.pdb', colorByPlddt: true },
+    { id: 'viewer_step0', pdb: 'data/ttt_ppi/structures/1ACB_ttt_step0.pdb', colorByPlddt: true },
+    { id: 'viewer_best', pdb: 'data/ttt_ppi/structures/1ACB_ttt_best.pdb', colorByPlddt: true }
+  ];
+
+  viewerConfigs.forEach(function(cfg) {
+    var el = document.getElementById(cfg.id);
+    if (!el || el.offsetParent === null) return; // skip if not visible
+    if (structureViewers[cfg.id]) return; // already initialized
+
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var bgColor = isDark ? '#0d1117' : '#ffffff';
+
+    var viewer = $3Dmol.createViewer(el, {
+      backgroundColor: bgColor,
+      antialias: true
+    });
+
+    fetch(cfg.pdb + '?t=' + Date.now())
+      .then(function(r) { return r.text(); })
+      .then(function(pdbData) {
+        viewer.addModel(pdbData, 'pdb');
+
+        if (cfg.colorByPlddt) {
+          // Color by pLDDT (stored in B-factor column) using AlphaFold color scheme
+          viewer.setStyle({}, {
+            cartoon: {
+              colorfunc: function(atom) {
+                var b = atom.b;
+                if (b > 90) return '#0053D6';      // Very high confidence (blue)
+                else if (b > 70) return '#65CBF3';  // High confidence (cyan)
+                else if (b > 50) return '#FFDB13';  // Medium confidence (yellow)
+                else return '#FF7D45';               // Low confidence (orange)
+              }
+            }
+          });
+        } else {
+          // Native structure: color by chain
+          viewer.setStyle({chain: 'A'}, {cartoon: {color: '#4285f4'}});
+          viewer.setStyle({chain: 'B'}, {cartoon: {color: '#ea4335'}});
+          viewer.setStyle({chain: 'C'}, {cartoon: {color: '#ea4335'}});
+          viewer.setStyle({chain: 'E'}, {cartoon: {color: '#ea4335'}});
+          viewer.setStyle({chain: 'I'}, {cartoon: {color: '#ea4335'}});
+        }
+
+        viewer.zoomTo();
+        viewer.render();
+        structureViewers[cfg.id] = viewer;
+      })
+      .catch(function(err) {
+        console.error('Failed to load ' + cfg.pdb + ':', err);
+        el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-secondary);font-style:italic;">Failed to load structure</div>';
+      });
+  });
 }
 
 // ========== Init ==========
