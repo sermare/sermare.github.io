@@ -667,7 +667,7 @@
       when the folding head is incompetent. Phase 2 tests whether TTT works when the structure module
       IS trained on complexes.
     </div>
-    <div class="last-updated" id="lastUpdated">Last updated: Mar 26, 2026 2:05 PM PDT</div>
+    <div class="last-updated" id="lastUpdated">Last updated: Mar 26, 2026 2:47 PM PDT</div>
 
     <!-- Overview Stats -->
     <div class="stats-row">
@@ -676,7 +676,7 @@
         <div class="stat-label">Phase</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statPairs">7</div>
+        <div class="stat-value" id="statPairs">13</div>
         <div class="stat-label">Pairs Tested</div>
       </div>
       <div class="stat-card">
@@ -684,11 +684,11 @@
         <div class="stat-label">Best DockQ (TTT)</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statConfigs">4</div>
+        <div class="stat-value" id="statConfigs">6</div>
         <div class="stat-label">HP Configs Swept</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statStatus" style="color:#1565c0;">6 JOBS</div>
+        <div class="stat-value" id="statStatus" style="color:#1565c0;">13 JOBS</div>
         <div class="stat-label">Running Now</div>
       </div>
     </div>
@@ -707,6 +707,15 @@
     <div id="subtab-progress" class="sub-tab-content active">
       <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Progress Timeline</h2>
       <div class="timeline" id="timeline">
+        <div class="timeline-entry type-success">
+          <div class="timeline-time">2026-03-26 14:47 &mdash; LIVE</div>
+          <div class="timeline-msg"><strong>Scale-up: 13 pairs complete with best config (lr=0.01, r8, b4).</strong> 1ACB DockQ +395% (0.024&rarr;0.117), 1EAW +135% (0.055&rarr;0.130), 1CGI +100% (0.047&rarr;0.094). ipTM consistently improves. Now running wave 3: 1AKJ, 1AVX, 1BUH, 1EWY on A40s + 9 more queued (1AHW, 1B6C, 1BJ1, 1BVN, 1CLV, 1DFJ, 1E6E, 1E6J, 1F34).</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">completed: 7/13 (r8_b4)</span>
+            <span class="timeline-metric">best: 1EAW DockQ +135%</span>
+            <span class="timeline-metric">config: lr=0.01, r8, b4</span>
+          </div>
+        </div>
         <div class="timeline-entry type-success">
           <div class="timeline-time">2026-03-26 14:03 &mdash; LIVE</div>
           <div class="timeline-msg"><strong>Multi-pair TTT running on A40s.</strong> 7 pairs queued (lr=0.01, rank=16, last 4 blocks, 50 steps). 1ACB at step 50: DockQ 0.018&rarr;0.065 (+258%). 1AK4 complete: ipTM +0.011 but DockQ flat. 1AY7 complete: DockQ +31%. 1CGI in progress (baseline DockQ=0.148 &mdash; promising!). 1D6R in progress. 1EAW, 1EZU pending.</div>
@@ -856,8 +865,17 @@
               <td style="font-weight:500;">Multi-pair TTT (r16, b4)</td>
               <td>AF2-Multimer</td>
               <td>LoRA+Adam lr=0.01, r16, last4, 50 steps</td>
-              <td style="font-family:monospace;">3 done / 7 total</td>
+              <td style="font-family:monospace;">7 done</td>
               <td style="font-family:monospace;">0.065 (1ACB)</td>
+              <td style="font-family:monospace;">0%</td>
+              <td><span class="exp-status exp-status-completed">Completed</span></td>
+            </tr>
+            <tr style="background:var(--bg-alt);">
+              <td style="font-weight:500; color:#2d6a2d;">Multi-pair TTT (r8, b4) BEST</td>
+              <td>AF2-Multimer</td>
+              <td>LoRA+Adam lr=0.01, r8, last4, 50 steps</td>
+              <td style="font-family:monospace;">7 done / 13+ total</td>
+              <td style="font-family:monospace; color:#2d6a2d; font-weight:500;">0.117 (1ACB)</td>
               <td style="font-family:monospace;">0%</td>
               <td><span class="exp-status exp-status-running">Running</span></td>
             </tr>
@@ -1024,7 +1042,7 @@
         </table>
       </div>
 
-      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin:24px 0 16px;">Multi-Pair TTT Results (lr=0.01, r16, last 4 blocks, 50 steps)</h2>
+      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin:24px 0 16px;">Multi-Pair TTT Results &mdash; Best Config (lr=0.01, r8, last 4 blocks, 50 steps)</h2>
 
       <div class="exp-table-wrapper">
         <table class="exp-table">
@@ -1046,85 +1064,138 @@
             <tr>
               <td style="font-weight:500;">1ACB</td>
               <td style="font-family:monospace;">304</td>
-              <td style="font-family:monospace;">0.018</td>
-              <td style="font-family:monospace;">0.065</td>
-              <td style="font-family:monospace; color:#2d6a2d;">+258%</td>
-              <td style="font-family:monospace;">0.110</td>
-              <td style="font-family:monospace;">0.130</td>
-              <td style="font-family:monospace;">+18%</td>
-              <td style="font-family:monospace;">750s</td>
-              <td><span class="exp-status exp-status-completed">Done (50)</span></td>
+              <td style="font-family:monospace;">0.024</td>
+              <td style="font-family:monospace; font-weight:500; color:#2d6a2d;">0.117</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+395%</td>
+              <td style="font-family:monospace;">0.116</td>
+              <td style="font-family:monospace;">0.123</td>
+              <td style="font-family:monospace;">+6%</td>
+              <td style="font-family:monospace;">377s</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">1AK4</td>
               <td style="font-family:monospace;">310</td>
-              <td style="font-family:monospace;">0.026</td>
-              <td style="font-family:monospace;">0.026</td>
-              <td style="font-family:monospace;">+0%</td>
-              <td style="font-family:monospace;">0.097</td>
-              <td style="font-family:monospace;">0.107</td>
-              <td style="font-family:monospace;">+11%</td>
-              <td style="font-family:monospace;">380s</td>
-              <td><span class="exp-status exp-status-completed">Done (50)</span></td>
+              <td style="font-family:monospace;">0.015</td>
+              <td style="font-family:monospace;">0.022</td>
+              <td style="font-family:monospace; color:#1565c0;">+42%</td>
+              <td style="font-family:monospace;">0.106</td>
+              <td style="font-family:monospace;">0.113</td>
+              <td style="font-family:monospace;">+6%</td>
+              <td style="font-family:monospace;">768s</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">1AY7</td>
               <td style="font-family:monospace;">185</td>
-              <td style="font-family:monospace;">0.015</td>
-              <td style="font-family:monospace;">0.019</td>
-              <td style="font-family:monospace; color:#1565c0;">+31%</td>
-              <td style="font-family:monospace;">0.110</td>
-              <td style="font-family:monospace;">0.129</td>
-              <td style="font-family:monospace;">+17%</td>
-              <td style="font-family:monospace;">123s</td>
-              <td><span class="exp-status exp-status-completed">Done (50)</span></td>
+              <td style="font-family:monospace;">0.028</td>
+              <td style="font-family:monospace;">0.034</td>
+              <td style="font-family:monospace; color:#1565c0;">+21%</td>
+              <td style="font-family:monospace;">0.084</td>
+              <td style="font-family:monospace;">0.087</td>
+              <td style="font-family:monospace;">+3%</td>
+              <td style="font-family:monospace;">124s</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">1CGI</td>
               <td style="font-family:monospace;">301</td>
-              <td style="font-family:monospace;">0.148</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">0.110</td>
-              <td style="font-family:monospace;">0.118</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Step 20/50</span></td>
+              <td style="font-family:monospace;">0.047</td>
+              <td style="font-family:monospace; font-weight:500; color:#2d6a2d;">0.094</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+100%</td>
+              <td style="font-family:monospace;">0.105</td>
+              <td style="font-family:monospace;">0.113</td>
+              <td style="font-family:monospace;">+8%</td>
+              <td style="font-family:monospace;">366s</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">1D6R</td>
               <td style="font-family:monospace;">281</td>
-              <td style="font-family:monospace;">0.022</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">0.107</td>
-              <td style="font-family:monospace;">0.118</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Step 20/50</span></td>
+              <td style="font-family:monospace;">0.034</td>
+              <td style="font-family:monospace;">0.038</td>
+              <td style="font-family:monospace;">+11%</td>
+              <td style="font-family:monospace;">0.104</td>
+              <td style="font-family:monospace;">0.110</td>
+              <td style="font-family:monospace;">+5%</td>
+              <td style="font-family:monospace;">307s</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">1EAW</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-pending">Pending</span></td>
+              <td style="font-family:monospace;">297</td>
+              <td style="font-family:monospace;">0.055</td>
+              <td style="font-family:monospace; font-weight:500; color:#2d6a2d;">0.130</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+135%</td>
+              <td style="font-family:monospace;">0.101</td>
+              <td style="font-family:monospace;">0.108</td>
+              <td style="font-family:monospace;">+6%</td>
+              <td style="font-family:monospace;">350s</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">1EZU</td>
+              <td style="font-family:monospace;">280</td>
+              <td style="font-family:monospace;">0.019</td>
+              <td style="font-family:monospace;">0.019</td>
+              <td style="font-family:monospace;">0%</td>
+              <td style="font-family:monospace;">0.095</td>
+              <td style="font-family:monospace;">0.118</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+24%</td>
+              <td style="font-family:monospace;">301s</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
+            </tr>
+            <tr style="border-top:2px solid var(--border);">
+              <td style="font-weight:500;">1AKJ</td>
+              <td style="font-family:monospace;">390</td>
+              <td style="font-family:monospace;">0.019</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.138</td>
               <td style="font-family:monospace;">--</td>
               <td style="font-family:monospace;">--</td>
               <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 10</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1AVX</td>
+              <td style="font-family:monospace;">395</td>
+              <td style="font-family:monospace;">0.019</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.089</td>
               <td style="font-family:monospace;">--</td>
               <td style="font-family:monospace;">--</td>
               <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 0</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1BUH</td>
+              <td style="font-family:monospace;">357</td>
+              <td style="font-family:monospace;">0.028</td>
               <td style="font-family:monospace;">--</td>
               <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.117</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 30</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1EWY</td>
+              <td style="font-family:monospace;">401</td>
+              <td style="font-family:monospace;">0.022</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.190</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 0</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500; color:var(--text-secondary);">1AHW, 1B6C, 1BJ1, 1BVN, 1CLV, 1DFJ, 1E6E, 1E6J, 1F34</td>
+              <td colspan="8" style="font-family:monospace; color:var(--text-secondary);">--</td>
               <td><span class="exp-status exp-status-pending">Pending</span></td>
             </tr>
           </tbody>
@@ -1160,7 +1231,7 @@
 
       <div class="results-grid">
         <div class="result-card">
-          <h3>Multi-Pair TTT: DockQ at Each Step (lr=0.01, r16, b4)</h3>
+          <h3>Multi-Pair TTT: DockQ at Each Step (lr=0.01, r8, b4)</h3>
           <div class="chart-area">
             <canvas id="chartMultiPairDockQ"></canvas>
           </div>
@@ -1322,13 +1393,14 @@ Input: Protein A (seq) + Protein B (seq) + Paired MSAs
           </div>
           <div class="log-title">ttt-ppi-phase2.log</div>
         </div>
-<span class="log-time">[2026-03-26 14:03:00]</span> <span class="log-info">OK   </span>  Multi-pair TTT running on A40s (6 jobs active)
-<span class="log-time">                     </span> <span class="log-metric">  >> 1ACB step 50: DockQ 0.018 -> 0.065 (+258%)</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> 1AK4 step 50: DockQ 0.026 -> 0.026 (ipTM +11%)</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> 1AY7 step 50: DockQ 0.015 -> 0.019 (+31%)</span>
-<span class="log-time">                     </span> <span class="log-warn">  >> 1CGI step 20: baseline DockQ=0.148 (promising!)</span>
-<span class="log-time">                     </span> <span class="log-warn">  >> 1D6R step 20: in progress</span>
-<span class="log-time">                     </span> <span class="log-info">  >> 1EAW, 1EZU: pending</span>
+<span class="log-time">[2026-03-26 14:47]</span> <span class="log-info">OK   </span>  Scale-up: 7 pairs done with r8_b4 best config
+<span class="log-time">                     </span> <span class="log-metric">  >> 1ACB: DockQ 0.024->0.117 (+395%)</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1EAW: DockQ 0.055->0.130 (+135%)</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1CGI: DockQ 0.047->0.094 (+100%)</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1AK4: DockQ 0.015->0.022 (+42%)</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1AY7: DockQ 0.028->0.034 (+21%)</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1D6R: DockQ 0.034->0.038 (+11%)</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1EZU: DockQ flat, but ipTM +24%</span>
 <span class="log-time">[2026-03-26 13:56:00]</span> <span class="log-metric">METR </span>  Step 6B HP sweep complete (4 configs on 1ACB)
 <span class="log-time">                     </span> <span class="log-metric">  >> lr1e-2_r8_b4:  DockQ 0.031->0.121 (+290%) BEST</span>
 <span class="log-time">                     </span> <span class="log-metric">  >> lr1e-2_r16_b4: DockQ 0.018->0.026 (+46%)</span>
@@ -1343,13 +1415,12 @@ Input: Protein A (seq) + Protein B (seq) + Paired MSAs
 <span class="log-time">                     </span> <span class="log-metric">  >> best = 1ACB (0.370, acceptable)</span>
 <span class="log-time">[2026-03-25 23:59:00]</span> <span class="log-warn">WARN </span>  Phase 1: ESMFold TTT negative result (head incompetence)
 
-<span class="log-time">--- Active SLURM Jobs (Mar 26 14:03) ---</span>
-<span class="log-info">[RUNNING  ]</span> 32994650  evottt_test  A40  1ACB step50, 1AK4 step10+
-<span class="log-info">[RUNNING  ]</span> 32994710  ttt_1AK4     A40  step 40/50
-<span class="log-info">[RUNNING  ]</span> 32994712  ttt_1CGI     A40  step 20/50
-<span class="log-info">[RUNNING  ]</span> 32994713  ttt_1D6R     A40  step 20/50
-<span class="log-warn">[PENDING  ]</span> 32994714  ttt_1EAW     --   queued
-<span class="log-warn">[PENDING  ]</span> 32994715  ttt_1EZU     --   queued
+<span class="log-time">--- Active SLURM Jobs (Mar 26 14:47) ---</span>
+<span class="log-info">[RUNNING  ]</span> 32994959  ttt_1BUH     A40  step 30/50
+<span class="log-info">[RUNNING  ]</span> 32994960  ttt_1AKJ     A40  step 10/50
+<span class="log-info">[RUNNING  ]</span> 32994961  ttt_1AVX     A40  step 0/50
+<span class="log-info">[RUNNING  ]</span> 32994962  ttt_1EWY     A40  step 0/50
+<span class="log-warn">[PENDING  ]</span> 32994963-32994971 (9 more: 1AHW, 1B6C, 1BJ1, 1BVN, 1CLV, 1DFJ, 1E6E, 1E6J, 1F34)
       </div>
     </div>
 
@@ -1532,11 +1603,11 @@ function renderCharts() {
       data: {
         labels: steps6,
         datasets: [
-          { label: '1ACB', data: [0.018, 0.022, 0.020, 0.021, 0.064, 0.065], borderColor: colors.green, backgroundColor: 'transparent', tension: 0.2, pointRadius: 4, borderWidth: 2.5 },
-          { label: '1AK4', data: [0.026, 0.020, 0.021, 0.022, 0.020, 0.020], borderColor: colors.blue, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
-          { label: '1AY7', data: [0.015, 0.015, 0.015, 0.018, 0.019, 0.017], borderColor: colors.purple, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
-          { label: '1CGI (running)', data: [0.148, 0.030, 0.068, null, null, null], borderColor: colors.orange, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [5,5] },
-          { label: '1D6R (running)', data: [0.022, 0.027, 0.024, null, null, null], borderColor: colors.cyan, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [5,5] }
+          { label: '1ACB', data: [0.024, 0.117, 0.028, 0.029, 0.022, 0.069], borderColor: colors.green, backgroundColor: 'transparent', tension: 0.2, pointRadius: 4, borderWidth: 2.5 },
+          { label: '1AK4', data: [0.015, 0.022, 0.015, 0.017, 0.017, 0.017], borderColor: colors.blue, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: '1CGI', data: [0.047, 0.094, 0.037, 0.027, 0.030, 0.027], borderColor: colors.orange, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: '1EAW', data: [0.055, 0.032, 0.130, 0.041, 0.028, 0.033], borderColor: colors.purple, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: '1D6R', data: [0.034, 0.025, 0.035, 0.025, 0.038, 0.034], borderColor: colors.cyan, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 }
         ]
       },
       options: {
@@ -1558,11 +1629,11 @@ function renderCharts() {
       data: {
         labels: steps6,
         datasets: [
-          { label: '1ACB', data: [0.110, 0.109, 0.130, 0.130, 0.111, 0.115], borderColor: colors.green, backgroundColor: 'transparent', tension: 0.2, pointRadius: 4, borderWidth: 2.5 },
-          { label: '1AK4', data: [0.100, 0.102, null, null, null, 0.100], borderColor: colors.blue, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
-          { label: '1AY7', data: [0.110, 0.118, 0.129, 0.116, 0.122, 0.114], borderColor: colors.purple, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
-          { label: '1CGI (running)', data: [0.110, 0.118, 0.106, null, null, null], borderColor: colors.orange, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [5,5] },
-          { label: '1D6R (running)', data: [0.107, 0.118, 0.118, null, null, null], borderColor: colors.cyan, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [5,5] }
+          { label: '1ACB', data: [0.116, 0.115, 0.116, 0.123, 0.117, 0.120], borderColor: colors.green, backgroundColor: 'transparent', tension: 0.2, pointRadius: 4, borderWidth: 2.5 },
+          { label: '1AK4', data: [0.106, 0.113, 0.098, 0.111, 0.108, 0.107], borderColor: colors.blue, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: '1CGI', data: [0.105, 0.107, 0.113, 0.107, 0.104, 0.107], borderColor: colors.orange, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: '1EAW', data: [0.101, 0.101, 0.100, 0.103, 0.108, 0.100], borderColor: colors.purple, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: '1D6R', data: [0.104, 0.091, 0.099, 0.103, 0.110, 0.108], borderColor: colors.cyan, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 }
         ]
       },
       options: {
