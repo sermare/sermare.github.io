@@ -666,7 +666,7 @@
       when the folding head is incompetent. Phase 2 tests whether TTT works when the structure module
       IS trained on complexes.
     </div>
-    <div class="last-updated" id="lastUpdated">Last updated: Mar 26, 2026 1:00 PM</div>
+    <div class="last-updated" id="lastUpdated">Last updated: Mar 26, 2026 2:05 PM PDT</div>
 
     <!-- Overview Stats -->
     <div class="stats-row">
@@ -675,20 +675,20 @@
         <div class="stat-label">Phase</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statPairs">5</div>
+        <div class="stat-value" id="statPairs">7</div>
         <div class="stat-label">Pairs Tested</div>
       </div>
       <div class="stat-card">
         <div class="stat-value" id="statDockQ">0.370</div>
-        <div class="stat-label">Best DockQ</div>
+        <div class="stat-label">Best DockQ (TTT)</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statSuccess">20%</div>
-        <div class="stat-label">Success Rate</div>
+        <div class="stat-value" id="statConfigs">4</div>
+        <div class="stat-label">HP Configs Swept</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statStatus">IN PROGRESS</div>
-        <div class="stat-label">Status</div>
+        <div class="stat-value" id="statStatus" style="color:#1565c0;">6 JOBS</div>
+        <div class="stat-label">Running Now</div>
       </div>
     </div>
 
@@ -705,27 +705,44 @@
     <div id="subtab-progress" class="sub-tab-content active">
       <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Progress Timeline</h2>
       <div class="timeline" id="timeline">
-        <div class="timeline-entry type-metric">
-          <div class="timeline-time">2026-03-26 13:00</div>
-          <div class="timeline-msg">Step 6 pilot: Adam lr=1e-3 shows monotonic loss decrease (0.703 &rarr; 0.546) on 1ACB. DockQ not improving yet but loss signal is strong. merge_and_unload bug blocks multi-lr testing.</div>
+        <div class="timeline-entry type-success">
+          <div class="timeline-time">2026-03-26 14:03 &mdash; LIVE</div>
+          <div class="timeline-msg"><strong>Multi-pair TTT running on A40s.</strong> 7 pairs queued (lr=0.01, rank=16, last 4 blocks, 50 steps). 1ACB at step 50: DockQ 0.018&rarr;0.065 (+258%). 1AK4 complete: ipTM +0.011 but DockQ flat. 1AY7 complete: DockQ +31%. 1CGI in progress (baseline DockQ=0.148 &mdash; promising!). 1D6R in progress. 1EAW, 1EZU pending.</div>
           <div class="timeline-metrics">
-            <span class="timeline-metric">loss: 0.703 &rarr; 0.546</span>
-            <span class="timeline-metric">optimizer: Adam</span>
-            <span class="timeline-metric">lr: 1e-3</span>
+            <span class="timeline-metric">GPU: NVIDIA A40 (44GB)</span>
+            <span class="timeline-metric">jobs: 6 running, 2 pending</span>
+            <span class="timeline-metric">config: lr=0.01, r16, b4, 50 steps</span>
+          </div>
+        </div>
+        <div class="timeline-entry type-metric">
+          <div class="timeline-time">2026-03-26 13:56</div>
+          <div class="timeline-msg"><strong>Step 6B: Hyperparameter sweep on 1ACB (4 configs).</strong> Best config: lr=1e-2, rank=8, last 4 blocks &rarr; DockQ 0.031&rarr;0.121 (+290% at step 40). Last 8 blocks overfits (DockQ drops 0.115&rarr;0.022). lr=5e-2 diverges (loss&rarr;7.4, ipTM spikes to 0.98 then crashes). Rank 16 slower but more stable.</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">lr1e-2_r8_b4: DockQ +290%</span>
+            <span class="timeline-metric">lr1e-2_r16_b4: DockQ +46%</span>
+            <span class="timeline-metric">lr1e-2_r8_b8: DockQ -81%</span>
+            <span class="timeline-metric">lr5e-2_r8_b4: DIVERGED</span>
           </div>
         </div>
         <div class="timeline-entry type-success">
-          <div class="timeline-time">2026-03-26 12:40</div>
-          <div class="timeline-msg">BREAKTHROUGH: Evoformer TTT running on 1080Ti. 1ACB completed 30 TTT steps (SGD lr=1e-4): loss noisy, ipTM unchanged. Need stronger optimizer.</div>
+          <div class="timeline-time">2026-03-26 13:00</div>
+          <div class="timeline-msg"><strong>Multi-pair results (lr=0.01, r16, b4).</strong> 1AK4: 50 steps complete, ipTM 0.097&rarr;0.107 (+11%), DockQ stable at 0.026. 1AY7: 50 steps complete in 123s, ipTM 0.110&rarr;0.129 (+17%), DockQ 0.015&rarr;0.019 (+31%). Loss converges near zero for both.</div>
           <div class="timeline-metrics">
-            <span class="timeline-metric">pair: 1ACB</span>
-            <span class="timeline-metric">steps: 30</span>
-            <span class="timeline-metric">optimizer: SGD</span>
+            <span class="timeline-metric">1AK4: ipTM +11%, DockQ +0%</span>
+            <span class="timeline-metric">1AY7: ipTM +17%, DockQ +31%</span>
+          </div>
+        </div>
+        <div class="timeline-entry type-metric">
+          <div class="timeline-time">2026-03-26 12:40</div>
+          <div class="timeline-msg">Step 6 pilot: Adam lr=1e-3 shows monotonic loss decrease (0.703 &rarr; 0.546) on 1ACB over 30 steps. SGD lr=1e-4 too weak (loss noisy, ipTM flat).</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">Adam loss: 0.703 &rarr; 0.546</span>
+            <span class="timeline-metric">SGD: no improvement</span>
           </div>
         </div>
         <div class="timeline-entry type-info">
           <div class="timeline-time">2026-03-26 12:00</div>
-          <div class="timeline-msg">Evoformer baseline complete: 5 pairs, mean DockQ=0.096. 1ACB hits 0.370 (acceptable). Others incorrect -- low ipTM.</div>
+          <div class="timeline-msg">Evoformer baseline complete: 5 pairs, mean DockQ=0.096. 1ACB hits 0.370 (acceptable). Others incorrect &mdash; low ipTM.</div>
           <div class="timeline-metrics">
             <span class="timeline-metric">pairs: 5</span>
             <span class="timeline-metric">mean DockQ: 0.096</span>
@@ -797,23 +814,50 @@
               <td style="font-family:monospace;">20.0%</td>
               <td><span class="exp-status exp-status-completed">Completed</span></td>
             </tr>
-            <tr>
-              <td style="font-weight:500;">Evoformer TTT (SGD)</td>
+            <tr style="background:var(--bg-alt);">
+              <td style="font-weight:500;">HP Sweep: lr1e-2_r8_b4</td>
               <td>AF2-Multimer</td>
-              <td>LoRA+SGD lr=1e-4</td>
-              <td style="font-family:monospace;">1</td>
-              <td style="font-family:monospace;">0.041</td>
+              <td>LoRA+Adam lr=0.01, r8, last4</td>
+              <td style="font-family:monospace;">1 (1ACB)</td>
+              <td style="font-family:monospace; color:#2d6a2d; font-weight:500;">0.121</td>
               <td style="font-family:monospace;">0%</td>
-              <td><span class="exp-status exp-status-partial">Partial</span></td>
+              <td><span class="exp-status exp-status-completed">Completed</span></td>
+            </tr>
+            <tr style="background:var(--bg-alt);">
+              <td style="font-weight:500;">HP Sweep: lr1e-2_r16_b4</td>
+              <td>AF2-Multimer</td>
+              <td>LoRA+Adam lr=0.01, r16, last4</td>
+              <td style="font-family:monospace;">1 (1ACB)</td>
+              <td style="font-family:monospace;">0.026</td>
+              <td style="font-family:monospace;">0%</td>
+              <td><span class="exp-status exp-status-completed">Completed</span></td>
+            </tr>
+            <tr style="background:var(--bg-alt);">
+              <td style="font-weight:500;">HP Sweep: lr1e-2_r8_b8</td>
+              <td>AF2-Multimer</td>
+              <td>LoRA+Adam lr=0.01, r8, last8</td>
+              <td style="font-family:monospace;">1 (1ACB)</td>
+              <td style="font-family:monospace; color:#c62828;">0.022</td>
+              <td style="font-family:monospace;">0%</td>
+              <td><span class="exp-status exp-status-failed">Overfit</span></td>
+            </tr>
+            <tr style="background:var(--bg-alt);">
+              <td style="font-weight:500;">HP Sweep: lr5e-2_r8_b4</td>
+              <td>AF2-Multimer</td>
+              <td>LoRA+Adam lr=0.05, r8, last4</td>
+              <td style="font-family:monospace;">1 (1ACB)</td>
+              <td style="font-family:monospace; color:#e65100;">0.370*</td>
+              <td style="font-family:monospace;">0%</td>
+              <td><span class="exp-status exp-status-failed">Diverged</span></td>
             </tr>
             <tr>
-              <td style="font-weight:500;">Evoformer TTT (Adam)</td>
+              <td style="font-weight:500;">Multi-pair TTT (r16, b4)</td>
               <td>AF2-Multimer</td>
-              <td>LoRA+Adam lr=1e-3</td>
-              <td style="font-family:monospace;">1</td>
-              <td style="font-family:monospace;">0.029</td>
+              <td>LoRA+Adam lr=0.01, r16, last4, 50 steps</td>
+              <td style="font-family:monospace;">3 done / 7 total</td>
+              <td style="font-family:monospace;">0.065 (1ACB)</td>
               <td style="font-family:monospace;">0%</td>
-              <td><span class="exp-status exp-status-partial">Partial</span></td>
+              <td><span class="exp-status exp-status-running">Running</span></td>
             </tr>
           </tbody>
         </table>
@@ -901,6 +945,189 @@
           </tbody>
         </table>
       </div>
+
+      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin:24px 0 16px;">Step 6B: Hyperparameter Sweep on 1ACB (50 steps each)</h2>
+
+      <div class="exp-table-wrapper">
+        <table class="exp-table">
+          <thead>
+            <tr>
+              <th>Config</th>
+              <th>LR</th>
+              <th>Rank</th>
+              <th>Blocks</th>
+              <th>Params</th>
+              <th>DockQ (start)</th>
+              <th>DockQ (best)</th>
+              <th>&Delta; DockQ</th>
+              <th>ipTM &Delta;</th>
+              <th>Loss (end)</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:500; color:#2d6a2d;">lr1e-2_r8_b4</td>
+              <td style="font-family:monospace;">0.01</td>
+              <td style="font-family:monospace;">8</td>
+              <td style="font-family:monospace;">last 4</td>
+              <td style="font-family:monospace;">98K</td>
+              <td style="font-family:monospace;">0.031</td>
+              <td style="font-family:monospace; font-weight:500; color:#2d6a2d;">0.121</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+290%</td>
+              <td style="font-family:monospace;">+0.008</td>
+              <td style="font-family:monospace;">0.004</td>
+              <td>Best config, peak at step 40</td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">lr1e-2_r16_b4</td>
+              <td style="font-family:monospace;">0.01</td>
+              <td style="font-family:monospace;">16</td>
+              <td style="font-family:monospace;">last 4</td>
+              <td style="font-family:monospace;">197K</td>
+              <td style="font-family:monospace;">0.018</td>
+              <td style="font-family:monospace;">0.026</td>
+              <td style="font-family:monospace; color:#1565c0;">+46%</td>
+              <td style="font-family:monospace;">+0.012</td>
+              <td style="font-family:monospace;">0.004</td>
+              <td>Stable but slow</td>
+            </tr>
+            <tr>
+              <td style="font-weight:500; color:#c62828;">lr1e-2_r8_b8</td>
+              <td style="font-family:monospace;">0.01</td>
+              <td style="font-family:monospace;">8</td>
+              <td style="font-family:monospace;">last 8</td>
+              <td style="font-family:monospace;">197K</td>
+              <td style="font-family:monospace;">0.115</td>
+              <td style="font-family:monospace;">0.115</td>
+              <td style="font-family:monospace; color:#c62828;">-81%</td>
+              <td style="font-family:monospace;">+0.033</td>
+              <td style="font-family:monospace;">0.0001</td>
+              <td>OVERFIT: ipTM up, DockQ collapses</td>
+            </tr>
+            <tr>
+              <td style="font-weight:500; color:#e65100;">lr5e-2_r8_b4</td>
+              <td style="font-family:monospace;">0.05</td>
+              <td style="font-family:monospace;">8</td>
+              <td style="font-family:monospace;">last 4</td>
+              <td style="font-family:monospace;">98K</td>
+              <td style="font-family:monospace;">0.017</td>
+              <td style="font-family:monospace;">0.370</td>
+              <td style="font-family:monospace; color:#e65100;">+2100%*</td>
+              <td style="font-family:monospace;">+0.855</td>
+              <td style="font-family:monospace;">7.408</td>
+              <td>DIVERGED: loss explodes, ipTM&rarr;0.98</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin:24px 0 16px;">Multi-Pair TTT Results (lr=0.01, r16, last 4 blocks, 50 steps)</h2>
+
+      <div class="exp-table-wrapper">
+        <table class="exp-table">
+          <thead>
+            <tr>
+              <th>Pair</th>
+              <th>Len</th>
+              <th>DockQ (step 0)</th>
+              <th>DockQ (best)</th>
+              <th>&Delta; DockQ</th>
+              <th>ipTM (start)</th>
+              <th>ipTM (best)</th>
+              <th>&Delta; ipTM</th>
+              <th>Time</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:500;">1ACB</td>
+              <td style="font-family:monospace;">304</td>
+              <td style="font-family:monospace;">0.018</td>
+              <td style="font-family:monospace;">0.065</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+258%</td>
+              <td style="font-family:monospace;">0.110</td>
+              <td style="font-family:monospace;">0.130</td>
+              <td style="font-family:monospace;">+18%</td>
+              <td style="font-family:monospace;">750s</td>
+              <td><span class="exp-status exp-status-completed">Done (50)</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1AK4</td>
+              <td style="font-family:monospace;">310</td>
+              <td style="font-family:monospace;">0.026</td>
+              <td style="font-family:monospace;">0.026</td>
+              <td style="font-family:monospace;">+0%</td>
+              <td style="font-family:monospace;">0.097</td>
+              <td style="font-family:monospace;">0.107</td>
+              <td style="font-family:monospace;">+11%</td>
+              <td style="font-family:monospace;">380s</td>
+              <td><span class="exp-status exp-status-completed">Done (50)</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1AY7</td>
+              <td style="font-family:monospace;">185</td>
+              <td style="font-family:monospace;">0.015</td>
+              <td style="font-family:monospace;">0.019</td>
+              <td style="font-family:monospace; color:#1565c0;">+31%</td>
+              <td style="font-family:monospace;">0.110</td>
+              <td style="font-family:monospace;">0.129</td>
+              <td style="font-family:monospace;">+17%</td>
+              <td style="font-family:monospace;">123s</td>
+              <td><span class="exp-status exp-status-completed">Done (50)</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1CGI</td>
+              <td style="font-family:monospace;">301</td>
+              <td style="font-family:monospace;">0.148</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.110</td>
+              <td style="font-family:monospace;">0.118</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 20/50</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1D6R</td>
+              <td style="font-family:monospace;">281</td>
+              <td style="font-family:monospace;">0.022</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.107</td>
+              <td style="font-family:monospace;">0.118</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 20/50</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1EAW</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-pending">Pending</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1EZU</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-pending">Pending</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- ===== Results Tab ===== -->
@@ -909,15 +1136,30 @@
 
       <div class="results-grid">
         <div class="result-card">
-          <h3>DockQ Comparison (Mean)</h3>
+          <h3>HP Sweep: DockQ Trajectory on 1ACB (50 steps)</h3>
           <div class="chart-area">
-            <canvas id="chartComparison"></canvas>
+            <canvas id="chartSweepDockQ"></canvas>
           </div>
         </div>
         <div class="result-card">
-          <h3>Step 6: TTT Loss Curve (Adam lr=1e-3, 1ACB)</h3>
+          <h3>HP Sweep: Loss Curves on 1ACB</h3>
           <div class="chart-area">
-            <canvas id="chartLossCurve"></canvas>
+            <canvas id="chartSweepLoss"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-card">
+          <h3>Multi-Pair TTT: DockQ at Each Step (lr=0.01, r16, b4)</h3>
+          <div class="chart-area">
+            <canvas id="chartMultiPairDockQ"></canvas>
+          </div>
+        </div>
+        <div class="result-card">
+          <h3>Multi-Pair TTT: ipTM Trajectory</h3>
+          <div class="chart-area">
+            <canvas id="chartMultiPairIpTM"></canvas>
           </div>
         </div>
       </div>
@@ -1011,7 +1253,7 @@ Input: Protein A (seq) + Protein B (seq) + Paired MSAs
           <span class="finding-label">Phase 1 (Negative):</span> ESMFold TTT doesn't improve DockQ despite reducing perplexity. Folding head not trained on complexes.
         </div>
         <div class="finding-item finding-progress">
-          <span class="finding-label">Phase 2 (In Progress):</span> Evoformer TTT shows loss decreasing. ipTM barely moves with SGD -- Adam needed. Evoformer baseline only gets 1/5 pairs right (1ACB).
+          <span class="finding-label">Phase 2 (In Progress):</span> Evoformer TTT with Adam lr=0.01 on last 4 blocks is best config. 1ACB DockQ improves +290% (0.031&rarr;0.121). Last 8 blocks overfits. lr=0.05 diverges. Multi-pair run shows consistent ipTM improvement (+11-18%) but DockQ improvement varies by pair. 1CGI (baseline 0.148) looks promising.
         </div>
         <div class="finding-item finding-hypothesis">
           <span class="finding-label">Hypothesis:</span> TTT only helps when the downstream task head is competent.
@@ -1031,31 +1273,34 @@ Input: Protein A (seq) + Protein B (seq) + Paired MSAs
           </div>
           <div class="log-title">ttt-ppi-phase2.log</div>
         </div>
-<span class="log-time">[2026-03-26 13:00:00]</span> <span class="log-metric">METR </span>  Step 6 pilot: Adam lr=1e-3 on 1ACB
-<span class="log-time">                     </span> <span class="log-metric">  >> loss_start = 0.703</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> loss_end = 0.546</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> steps = 30</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> optimizer = Adam</span>
-<span class="log-time">                     </span> <span class="log-warn">WARN </span>  merge_and_unload bug blocks multi-lr testing
-<span class="log-time">[2026-03-26 12:40:00]</span> <span class="log-info">OK   </span>  BREAKTHROUGH: Evoformer TTT running on 1080Ti
-<span class="log-time">                     </span> <span class="log-metric">  >> pair = 1ACB</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> steps = 30</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> optimizer = SGD lr=1e-4</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> result = loss noisy, ipTM unchanged</span>
-<span class="log-time">[2026-03-26 12:00:00]</span> <span class="log-info">INFO </span>  Evoformer baseline complete: 5 pairs
-<span class="log-time">                     </span> <span class="log-metric">  >> mean_dockq = 0.096</span>
+<span class="log-time">[2026-03-26 14:03:00]</span> <span class="log-info">OK   </span>  Multi-pair TTT running on A40s (6 jobs active)
+<span class="log-time">                     </span> <span class="log-metric">  >> 1ACB step 50: DockQ 0.018 -> 0.065 (+258%)</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1AK4 step 50: DockQ 0.026 -> 0.026 (ipTM +11%)</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1AY7 step 50: DockQ 0.015 -> 0.019 (+31%)</span>
+<span class="log-time">                     </span> <span class="log-warn">  >> 1CGI step 20: baseline DockQ=0.148 (promising!)</span>
+<span class="log-time">                     </span> <span class="log-warn">  >> 1D6R step 20: in progress</span>
+<span class="log-time">                     </span> <span class="log-info">  >> 1EAW, 1EZU: pending</span>
+<span class="log-time">[2026-03-26 13:56:00]</span> <span class="log-metric">METR </span>  Step 6B HP sweep complete (4 configs on 1ACB)
+<span class="log-time">                     </span> <span class="log-metric">  >> lr1e-2_r8_b4:  DockQ 0.031->0.121 (+290%) BEST</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> lr1e-2_r16_b4: DockQ 0.018->0.026 (+46%)</span>
+<span class="log-time">                     </span> <span class="log-err">  >> lr1e-2_r8_b8:  DockQ 0.115->0.022 (-81%) OVERFIT</span>
+<span class="log-time">                     </span> <span class="log-err">  >> lr5e-2_r8_b4:  loss diverges, ipTM->0.98 UNSTABLE</span>
+<span class="log-time">[2026-03-26 13:00:00]</span> <span class="log-info">OK   </span>  Multi-pair results coming in
+<span class="log-time">                     </span> <span class="log-metric">  >> 1AK4: 50 steps, ipTM 0.097->0.107 (+11%), DockQ flat</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1AY7: 50 steps in 123s, ipTM +17%, DockQ +31%</span>
+<span class="log-time">[2026-03-26 12:40:00]</span> <span class="log-info">INFO </span>  Step 6 pilot: Adam lr=1e-3 on 1ACB
+<span class="log-time">                     </span> <span class="log-metric">  >> loss 0.703 -> 0.546 (30 steps, monotonic)</span>
+<span class="log-time">[2026-03-26 12:00:00]</span> <span class="log-info">INFO </span>  Evoformer baseline: 5 pairs, mean DockQ=0.096
 <span class="log-time">                     </span> <span class="log-metric">  >> best = 1ACB (0.370, acceptable)</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> success_rate = 20.0%</span>
-<span class="log-time">[2026-03-25 23:59:00]</span> <span class="log-warn">WARN </span>  Phase 1 complete: ESMFold TTT -- negative result
-<span class="log-time">                     </span> <span class="log-metric">  >> conclusion = head incompetence confirmed</span>
-<span class="log-time">[2026-03-24 18:00:00]</span> <span class="log-info">INFO </span>  ESMFold baseline: 183 pairs, mean DockQ=0.126, success=16.4%
+<span class="log-time">[2026-03-25 23:59:00]</span> <span class="log-warn">WARN </span>  Phase 1: ESMFold TTT negative result (head incompetence)
 
-<span class="log-time">--- Experiment Status ---</span>
-<span class="log-info">[COMPLETED]</span> ESMFold Baseline         |  DockQ=0.126
-<span class="log-info">[COMPLETED]</span> ESMFold TTT Uniform      |  DockQ=0.167
-<span class="log-info">[COMPLETED]</span> Evoformer Baseline       |  DockQ=0.096
-<span class="log-warn">[PARTIAL  ]</span> Evoformer TTT (SGD)      |  DockQ=0.041
-<span class="log-warn">[PARTIAL  ]</span> Evoformer TTT (Adam)     |  DockQ=0.029
+<span class="log-time">--- Active SLURM Jobs (Mar 26 14:03) ---</span>
+<span class="log-info">[RUNNING  ]</span> 32994650  evottt_test  A40  1ACB step50, 1AK4 step10+
+<span class="log-info">[RUNNING  ]</span> 32994710  ttt_1AK4     A40  step 40/50
+<span class="log-info">[RUNNING  ]</span> 32994712  ttt_1CGI     A40  step 20/50
+<span class="log-info">[RUNNING  ]</span> 32994713  ttt_1D6R     A40  step 20/50
+<span class="log-warn">[PENDING  ]</span> 32994714  ttt_1EAW     --   queued
+<span class="log-warn">[PENDING  ]</span> 32994715  ttt_1EZU     --   queued
       </div>
     </div>
 
@@ -1120,165 +1365,143 @@ function getChartColors() {
     green: '#43a047',
     orange: '#ff9800',
     red: '#ef5350',
-    purple: '#ab47bc'
+    purple: '#ab47bc',
+    cyan: '#26c6da',
+    pink: '#ec407a'
   };
 }
 
 function renderCharts() {
   var colors = getChartColors();
 
-  // Destroy existing charts
   Object.keys(chartInstances).forEach(function(key) {
-    if (chartInstances[key]) {
-      chartInstances[key].destroy();
-      chartInstances[key] = null;
-    }
+    if (chartInstances[key]) { chartInstances[key].destroy(); chartInstances[key] = null; }
   });
 
-  // 1. DockQ Comparison Bar Chart
-  var ctx1 = document.getElementById('chartComparison');
+  var steps6 = [0,10,20,30,40,50];
+
+  // 1. HP Sweep DockQ trajectories
+  var ctx1 = document.getElementById('chartSweepDockQ');
   if (ctx1) {
-    chartInstances.comparison = new Chart(ctx1.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: ['ESMFold\nBaseline', 'ESMFold\nTTT', 'Evoformer\nBaseline'],
-        datasets: [{
-          label: 'Mean DockQ',
-          data: [0.126, 0.167, 0.096],
-          backgroundColor: [colors.blue, colors.green, colors.orange],
-          borderRadius: 4,
-          barThickness: 50
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function(ctx) { return 'DockQ: ' + ctx.parsed.y.toFixed(3); }
-            }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 0.25,
-            title: { display: true, text: 'Mean DockQ', color: colors.text },
-            ticks: { color: colors.text },
-            grid: { color: colors.grid }
-          },
-          x: {
-            ticks: { color: colors.text, maxRotation: 0 },
-            grid: { display: false }
-          }
-        }
-      }
-    });
-  }
-
-  // 2. TTT Loss Curve
-  var ctx2 = document.getElementById('chartLossCurve');
-  if (ctx2) {
-    var lossValues = [0.703, 0.699, 0.694, 0.688, 0.683, 0.678, 0.672, 0.666, 0.661, 0.656, 0.650, 0.643, 0.637, 0.632, 0.627, 0.622, 0.618, 0.611, 0.605, 0.599, 0.592, 0.589, 0.583, 0.577, 0.572, 0.567, 0.562, 0.556, 0.551, 0.546];
-    var stepLabels = lossValues.map(function(_, i) { return i + 1; });
-
-    chartInstances.lossCurve = new Chart(ctx2.getContext('2d'), {
+    chartInstances.sweepDockQ = new Chart(ctx1.getContext('2d'), {
       type: 'line',
       data: {
-        labels: stepLabels,
-        datasets: [{
-          label: 'Masked MSA Loss',
-          data: lossValues,
-          borderColor: colors.green,
-          backgroundColor: 'rgba(67, 160, 71, 0.1)',
-          fill: true,
-          tension: 0.3,
-          pointRadius: 2,
-          pointHoverRadius: 5,
-          borderWidth: 2
-        }]
+        labels: steps6,
+        datasets: [
+          { label: 'lr=0.01 r8 b4 (BEST)', data: [0.031, 0.109, 0.093, 0.053, 0.122, 0.065], borderColor: colors.green, backgroundColor: 'transparent', tension: 0.2, pointRadius: 4, borderWidth: 3 },
+          { label: 'lr=0.01 r16 b4', data: [0.018, 0.017, 0.026, 0.023, 0.022, 0.024], borderColor: colors.blue, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: 'lr=0.01 r8 b8 (OVERFIT)', data: [0.115, 0.066, 0.049, 0.019, 0.019, 0.022], borderColor: colors.red, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [5,5] },
+          { label: 'lr=0.05 r8 b4 (DIVERGE)', data: [0.017, 0.027, 0.024, 0.036, 0.370, 0.082], borderColor: colors.orange, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [2,3] }
+        ]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              title: function(items) { return 'Step ' + items[0].label; },
-              label: function(ctx) { return 'Loss: ' + ctx.parsed.y.toFixed(3); }
-            }
-          }
-        },
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: colors.text, font: { size: 11 } } } },
         scales: {
-          y: {
-            title: { display: true, text: 'Loss', color: colors.text },
-            ticks: { color: colors.text },
-            grid: { color: colors.grid }
-          },
-          x: {
-            title: { display: true, text: 'TTT Step', color: colors.text },
-            ticks: { color: colors.text, maxTicksLimit: 10 },
-            grid: { color: colors.grid }
-          }
+          y: { beginAtZero: true, title: { display: true, text: 'DockQ', color: colors.text }, ticks: { color: colors.text }, grid: { color: colors.grid } },
+          x: { title: { display: true, text: 'TTT Step', color: colors.text }, ticks: { color: colors.text }, grid: { color: colors.grid } }
         }
       }
     });
   }
 
-  // 3. Per-Pair DockQ Bar Chart
-  var ctx3 = document.getElementById('chartPerPair');
+  // 2. HP Sweep Loss curves
+  var ctx2 = document.getElementById('chartSweepLoss');
+  if (ctx2) {
+    chartInstances.sweepLoss = new Chart(ctx2.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: steps6,
+        datasets: [
+          { label: 'lr=0.01 r8 b4', data: [null, 0.355, 0.080, 0.016, 0.017, 0.004], borderColor: colors.green, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: 'lr=0.01 r16 b4', data: [null, 0.286, 0.029, 0.005, 0.015, 0.004], borderColor: colors.blue, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: 'lr=0.01 r8 b8', data: [null, 0.154, 0.006, 0.001, 0.0004, 0.0001], borderColor: colors.red, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [5,5] },
+          { label: 'lr=0.05 r8 b4', data: [null, 0.248, 0.302, 3.181, 5.895, 7.408], borderColor: colors.orange, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [2,3] }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: colors.text, font: { size: 11 } } } },
+        scales: {
+          y: { type: 'logarithmic', title: { display: true, text: 'Loss (log)', color: colors.text }, ticks: { color: colors.text }, grid: { color: colors.grid } },
+          x: { title: { display: true, text: 'TTT Step', color: colors.text }, ticks: { color: colors.text }, grid: { color: colors.grid } }
+        }
+      }
+    });
+  }
+
+  // 3. Multi-pair DockQ
+  var ctx3 = document.getElementById('chartMultiPairDockQ');
   if (ctx3) {
+    chartInstances.multiDockQ = new Chart(ctx3.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: steps6,
+        datasets: [
+          { label: '1ACB', data: [0.018, 0.022, 0.020, 0.021, 0.064, 0.065], borderColor: colors.green, backgroundColor: 'transparent', tension: 0.2, pointRadius: 4, borderWidth: 2.5 },
+          { label: '1AK4', data: [0.026, 0.020, 0.021, 0.022, 0.020, 0.020], borderColor: colors.blue, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: '1AY7', data: [0.015, 0.015, 0.015, 0.018, 0.019, 0.017], borderColor: colors.purple, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: '1CGI (running)', data: [0.148, 0.030, 0.068, null, null, null], borderColor: colors.orange, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [5,5] },
+          { label: '1D6R (running)', data: [0.022, 0.027, 0.024, null, null, null], borderColor: colors.cyan, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [5,5] }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: colors.text, font: { size: 11 } } } },
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: 'DockQ', color: colors.text }, ticks: { color: colors.text }, grid: { color: colors.grid } },
+          x: { title: { display: true, text: 'TTT Step', color: colors.text }, ticks: { color: colors.text }, grid: { color: colors.grid } }
+        }
+      }
+    });
+  }
+
+  // 4. Multi-pair ipTM
+  var ctx4 = document.getElementById('chartMultiPairIpTM');
+  if (ctx4) {
+    chartInstances.multiIpTM = new Chart(ctx4.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: steps6,
+        datasets: [
+          { label: '1ACB', data: [0.110, 0.109, 0.130, 0.130, 0.111, 0.115], borderColor: colors.green, backgroundColor: 'transparent', tension: 0.2, pointRadius: 4, borderWidth: 2.5 },
+          { label: '1AK4', data: [0.100, 0.102, null, null, null, 0.100], borderColor: colors.blue, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: '1AY7', data: [0.110, 0.118, 0.129, 0.116, 0.122, 0.114], borderColor: colors.purple, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2 },
+          { label: '1CGI (running)', data: [0.110, 0.118, 0.106, null, null, null], borderColor: colors.orange, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [5,5] },
+          { label: '1D6R (running)', data: [0.107, 0.118, 0.118, null, null, null], borderColor: colors.cyan, backgroundColor: 'transparent', tension: 0.2, pointRadius: 3, borderWidth: 2, borderDash: [5,5] }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: colors.text, font: { size: 11 } } } },
+        scales: {
+          y: { title: { display: true, text: 'ipTM', color: colors.text }, ticks: { color: colors.text }, grid: { color: colors.grid } },
+          x: { title: { display: true, text: 'TTT Step', color: colors.text }, ticks: { color: colors.text }, grid: { color: colors.grid } }
+        }
+      }
+    });
+  }
+
+  // 5. Per-Pair baseline DockQ
+  var ctx5 = document.getElementById('chartPerPair');
+  if (ctx5) {
     var pairDockQ = [0.370, 0.012, 0.038, 0.017, 0.042];
     var pairLabels = ['1ACB', '1AHW', '1AK4', '1AKJ', '1AVX'];
     var barColors = pairDockQ.map(function(v) {
       return v >= 0.23 ? colors.green : (v >= 0.1 ? colors.orange : colors.red);
     });
-
-    chartInstances.perPair = new Chart(ctx3.getContext('2d'), {
+    chartInstances.perPair = new Chart(ctx5.getContext('2d'), {
       type: 'bar',
-      data: {
-        labels: pairLabels,
-        datasets: [{
-          label: 'DockQ',
-          data: pairDockQ,
-          backgroundColor: barColors,
-          borderRadius: 4,
-          barThickness: 40
-        }]
-      },
+      data: { labels: pairLabels, datasets: [{ label: 'DockQ', data: pairDockQ, backgroundColor: barColors, borderRadius: 4, barThickness: 40 }] },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function(ctx) { return 'DockQ: ' + ctx.parsed.y.toFixed(3); }
-            }
-          },
-          annotation: undefined
-        },
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
         scales: {
-          y: {
-            beginAtZero: true,
-            max: 0.5,
-            title: { display: true, text: 'DockQ', color: colors.text },
-            ticks: { color: colors.text },
-            grid: { color: colors.grid }
-          },
-          x: {
-            ticks: { color: colors.text },
-            grid: { display: false }
-          }
+          y: { beginAtZero: true, max: 0.5, title: { display: true, text: 'DockQ', color: colors.text }, ticks: { color: colors.text }, grid: { color: colors.grid } },
+          x: { ticks: { color: colors.text }, grid: { display: false } }
         }
       }
     });
-
-    // Draw threshold line manually via plugin
-    // The DockQ=0.23 "acceptable" threshold
   }
 }
 
