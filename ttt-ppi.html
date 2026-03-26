@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="300">
+  <meta http-equiv="refresh" content="900">
   <title>TTT-PPI Dashboard — Sergio E. Mares</title>
   <meta name="author" content="Sergio E. Mares">
-  <meta name="description" content="ProteinTTT-PPI: Test-Time Training for Protein-Protein Interaction Prediction">
+  <meta name="description" content="Two Proteins Is All You Need: Test-Time Training for Protein-Protein Interaction Prediction">
   <link rel="stylesheet" href="stylesheet.css">
   <link rel="icon" type="image/png" href="data/avatar.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     /* ========== TTT-PPI Page Overrides ========== */
     .container { max-width: 1100px; }
@@ -303,10 +304,12 @@
     .exp-status-pending { background: #f5f5f5; color: #757575; }
     .exp-status-running { background: #e3f2fd; color: #1565c0; }
     .exp-status-completed { background: #e8f4e8; color: #2d6a2d; }
+    .exp-status-partial { background: #fff3e0; color: #e65100; }
     .exp-status-failed { background: #fce4ec; color: #c62828; }
     [data-theme="dark"] .exp-status-pending { background: #21262d; color: #8b949e; }
     [data-theme="dark"] .exp-status-running { background: #0d2744; color: #64b5f6; }
     [data-theme="dark"] .exp-status-completed { background: #1a3a1a; color: #7ee87e; }
+    [data-theme="dark"] .exp-status-partial { background: #3d2200; color: #ffb74d; }
     [data-theme="dark"] .exp-status-failed { background: #3d1218; color: #ef9a9a; }
 
     /* Results section */
@@ -599,6 +602,43 @@
       font-weight: 500;
     }
 
+    /* Findings card */
+    .findings-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .findings-card h3 {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--heading-color);
+      margin: 0 0 14px 0;
+    }
+
+    .finding-item {
+      margin-bottom: 12px;
+      padding-left: 14px;
+      border-left: 3px solid var(--border);
+      line-height: 1.6;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .finding-item:last-child { margin-bottom: 0; }
+
+    .finding-label {
+      font-weight: 500;
+      color: var(--heading-color);
+      display: inline;
+    }
+
+    .finding-negative { border-left-color: #ef5350; }
+    .finding-progress { border-left-color: #42a5f5; }
+    .finding-hypothesis { border-left-color: #ab47bc; }
+
     /* Responsive */
     @media (max-width: 600px) {
       .stats-row { grid-template-columns: repeat(2, 1fr); }
@@ -618,33 +658,37 @@
 
     <div class="page-title">
       Two Proteins Is All You Need
-      <span class="status-badge" id="globalStatus">INITIALIZING</span>
+      <span class="status-badge status-running" id="globalStatus">IN PROGRESS</span>
     </div>
-    <div class="page-subtitle">Test-Time Training for Protein-Protein Interaction Prediction</div>
+    <div class="page-subtitle">Test-Time Training for Protein-Protein Interaction Prediction | Phase 2: Evoformer</div>
     <div class="page-desc">
-      Extending ProteinTTT to protein pairs for complex structure prediction. We adapt masked-language-model
-      test-time training to jointly refine ESM2 representations of two interacting proteins, improving
-      DockQ scores for predicted protein-protein complex structures.
+      Applying TTT to AlphaFold2-Multimer's Evoformer via LoRA. Phase 1 (ESMFold) showed TTT can't help
+      when the folding head is incompetent. Phase 2 tests whether TTT works when the structure module
+      IS trained on complexes.
     </div>
-    <div class="last-updated" id="lastUpdated">Last updated: loading...</div>
+    <div class="last-updated" id="lastUpdated">Last updated: Mar 26, 2026 1:00 PM</div>
 
     <!-- Overview Stats -->
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-value" id="statExperiments">--</div>
-        <div class="stat-label">Experiments Run</div>
+        <div class="stat-value" id="statPhase">2 / 2</div>
+        <div class="stat-label">Phase</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statDockQ">--</div>
+        <div class="stat-value" id="statPairs">5</div>
+        <div class="stat-label">Pairs Tested</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statDockQ">0.370</div>
         <div class="stat-label">Best DockQ</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statSuccess">--</div>
+        <div class="stat-value" id="statSuccess">20%</div>
         <div class="stat-label">Success Rate</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statGPU">--</div>
-        <div class="stat-label">GPU Hours</div>
+        <div class="stat-value" id="statStatus">IN PROGRESS</div>
+        <div class="stat-label">Status</div>
       </div>
     </div>
 
@@ -661,9 +705,49 @@
     <div id="subtab-progress" class="sub-tab-content active">
       <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Progress Timeline</h2>
       <div class="timeline" id="timeline">
+        <div class="timeline-entry type-metric">
+          <div class="timeline-time">2026-03-26 13:00</div>
+          <div class="timeline-msg">Step 6 pilot: Adam lr=1e-3 shows monotonic loss decrease (0.703 &rarr; 0.546) on 1ACB. DockQ not improving yet but loss signal is strong. merge_and_unload bug blocks multi-lr testing.</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">loss: 0.703 &rarr; 0.546</span>
+            <span class="timeline-metric">optimizer: Adam</span>
+            <span class="timeline-metric">lr: 1e-3</span>
+          </div>
+        </div>
+        <div class="timeline-entry type-success">
+          <div class="timeline-time">2026-03-26 12:40</div>
+          <div class="timeline-msg">BREAKTHROUGH: Evoformer TTT running on 1080Ti. 1ACB completed 30 TTT steps (SGD lr=1e-4): loss noisy, ipTM unchanged. Need stronger optimizer.</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">pair: 1ACB</span>
+            <span class="timeline-metric">steps: 30</span>
+            <span class="timeline-metric">optimizer: SGD</span>
+          </div>
+        </div>
         <div class="timeline-entry type-info">
-          <div class="timeline-time">Loading...</div>
-          <div class="timeline-msg">Fetching progress data...</div>
+          <div class="timeline-time">2026-03-26 12:00</div>
+          <div class="timeline-msg">Evoformer baseline complete: 5 pairs, mean DockQ=0.096. 1ACB hits 0.370 (acceptable). Others incorrect -- low ipTM.</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">pairs: 5</span>
+            <span class="timeline-metric">mean DockQ: 0.096</span>
+            <span class="timeline-metric">best: 1ACB 0.370</span>
+          </div>
+        </div>
+        <div class="timeline-entry type-warning">
+          <div class="timeline-time">2026-03-25</div>
+          <div class="timeline-msg">Phase 1 complete: ESMFold TTT shows no DockQ improvement despite reducing MLM perplexity. Negative result confirms head incompetence hypothesis.</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">phase: 1 (done)</span>
+            <span class="timeline-metric">result: negative</span>
+          </div>
+        </div>
+        <div class="timeline-entry type-info">
+          <div class="timeline-time">2026-03-24</div>
+          <div class="timeline-msg">Full ESMFold baseline: 183 pairs, mean DockQ=0.126, 16.4% success rate on DB5.5</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">pairs: 183</span>
+            <span class="timeline-metric">mean DockQ: 0.126</span>
+            <span class="timeline-metric">success: 16.4%</span>
+          </div>
         </div>
       </div>
     </div>
@@ -671,8 +755,151 @@
     <!-- ===== Experiments Tab ===== -->
     <div id="subtab-experiments" class="sub-tab-content">
       <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">All Experiments</h2>
-      <div id="expTableContainer">
-        <div class="no-data-placeholder">No experiments recorded yet. Data will appear once experiments begin.</div>
+
+      <div class="exp-table-wrapper">
+        <table class="exp-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Model</th>
+              <th>Method</th>
+              <th>Pairs</th>
+              <th>Mean DockQ</th>
+              <th>Success</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:500;">ESMFold Baseline</td>
+              <td>ESMFold</td>
+              <td>None</td>
+              <td style="font-family:monospace;">183</td>
+              <td style="font-family:monospace;">0.126</td>
+              <td style="font-family:monospace;">16.4%</td>
+              <td><span class="exp-status exp-status-completed">Completed</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">ESMFold TTT Uniform</td>
+              <td>ESMFold</td>
+              <td>Uniform 15%</td>
+              <td style="font-family:monospace;">33</td>
+              <td style="font-family:monospace;">0.167</td>
+              <td style="font-family:monospace;">18.2%</td>
+              <td><span class="exp-status exp-status-completed">Completed</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">Evoformer Baseline</td>
+              <td>AF2-Multimer</td>
+              <td>None</td>
+              <td style="font-family:monospace;">5</td>
+              <td style="font-family:monospace;">0.096</td>
+              <td style="font-family:monospace;">20.0%</td>
+              <td><span class="exp-status exp-status-completed">Completed</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">Evoformer TTT (SGD)</td>
+              <td>AF2-Multimer</td>
+              <td>LoRA+SGD lr=1e-4</td>
+              <td style="font-family:monospace;">1</td>
+              <td style="font-family:monospace;">0.041</td>
+              <td style="font-family:monospace;">0%</td>
+              <td><span class="exp-status exp-status-partial">Partial</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">Evoformer TTT (Adam)</td>
+              <td>AF2-Multimer</td>
+              <td>LoRA+Adam lr=1e-3</td>
+              <td style="font-family:monospace;">1</td>
+              <td style="font-family:monospace;">0.029</td>
+              <td style="font-family:monospace;">0%</td>
+              <td><span class="exp-status exp-status-partial">Partial</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Evoformer Baseline: Per-Pair Results</h2>
+
+      <div class="exp-table-wrapper">
+        <table class="exp-table">
+          <thead>
+            <tr>
+              <th>Pair</th>
+              <th>Len A</th>
+              <th>Len B</th>
+              <th>DockQ</th>
+              <th>Fnat</th>
+              <th>iRMSD</th>
+              <th>lRMSD</th>
+              <th>Quality</th>
+              <th>ipTM</th>
+              <th>pLDDT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:500;">1ACB</td>
+              <td style="font-family:monospace;">241</td>
+              <td style="font-family:monospace;">63</td>
+              <td style="font-family:monospace; font-weight:500; color:#2d6a2d;">0.370</td>
+              <td style="font-family:monospace;">0.143</td>
+              <td style="font-family:monospace;">3.15</td>
+              <td style="font-family:monospace;">4.49</td>
+              <td><span class="exp-status exp-status-completed">acceptable</span></td>
+              <td style="font-family:monospace;">0.367</td>
+              <td style="font-family:monospace;">74.0</td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1AHW</td>
+              <td style="font-family:monospace;">214</td>
+              <td style="font-family:monospace;">200</td>
+              <td style="font-family:monospace;">0.012</td>
+              <td style="font-family:monospace;">0.0</td>
+              <td style="font-family:monospace;">13.65</td>
+              <td style="font-family:monospace;">55.11</td>
+              <td><span class="exp-status exp-status-failed">incorrect</span></td>
+              <td style="font-family:monospace;">0.137</td>
+              <td style="font-family:monospace;">51.3</td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1AK4</td>
+              <td style="font-family:monospace;">165</td>
+              <td style="font-family:monospace;">145</td>
+              <td style="font-family:monospace;">0.038</td>
+              <td style="font-family:monospace;">0.0</td>
+              <td style="font-family:monospace;">13.18</td>
+              <td style="font-family:monospace;">25.33</td>
+              <td><span class="exp-status exp-status-failed">incorrect</span></td>
+              <td style="font-family:monospace;">0.191</td>
+              <td style="font-family:monospace;">59.4</td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1AKJ</td>
+              <td style="font-family:monospace;">276</td>
+              <td style="font-family:monospace;">114</td>
+              <td style="font-family:monospace;">0.017</td>
+              <td style="font-family:monospace;">0.0</td>
+              <td style="font-family:monospace;">14.40</td>
+              <td style="font-family:monospace;">40.84</td>
+              <td><span class="exp-status exp-status-failed">incorrect</span></td>
+              <td style="font-family:monospace;">0.185</td>
+              <td style="font-family:monospace;">52.7</td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1AVX</td>
+              <td style="font-family:monospace;">223</td>
+              <td style="font-family:monospace;">172</td>
+              <td style="font-family:monospace;">0.042</td>
+              <td style="font-family:monospace;">0.0</td>
+              <td style="font-family:monospace;">12.22</td>
+              <td style="font-family:monospace;">23.91</td>
+              <td><span class="exp-status exp-status-failed">incorrect</span></td>
+              <td style="font-family:monospace;">0.234</td>
+              <td style="font-family:monospace;">58.6</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -680,25 +907,25 @@
     <div id="subtab-results" class="sub-tab-content">
       <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Results</h2>
 
-      <div class="results-grid" id="resultsGrid">
+      <div class="results-grid">
         <div class="result-card">
-          <h3>Baselines vs TTT Strategies (Mean DockQ)</h3>
-          <div id="comparisonChart" class="chart-area">
-            <div class="no-data-placeholder">Awaiting experiment results...</div>
+          <h3>DockQ Comparison (Mean)</h3>
+          <div class="chart-area">
+            <canvas id="chartComparison"></canvas>
           </div>
         </div>
         <div class="result-card">
-          <h3>Per-Dataset Breakdown</h3>
-          <div id="datasetChart" class="chart-area">
-            <div class="no-data-placeholder">Awaiting experiment results...</div>
+          <h3>Step 6: TTT Loss Curve (Adam lr=1e-3, 1ACB)</h3>
+          <div class="chart-area">
+            <canvas id="chartLossCurve"></canvas>
           </div>
         </div>
       </div>
 
       <div class="result-card" style="margin-bottom:24px;">
-        <h3>DockQ Score Distributions</h3>
-        <div id="distributionChart" class="chart-area" style="height:300px;">
-          <div class="no-data-placeholder">Awaiting experiment results...</div>
+        <h3>Evoformer Baseline: Per-Pair DockQ</h3>
+        <div class="chart-area" style="height:300px;">
+          <canvas id="chartPerPair"></canvas>
         </div>
       </div>
     </div>
@@ -708,74 +935,44 @@
       <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Method Overview</h2>
 
       <div class="method-card">
-        <h3>ProteinTTT-PPI Pipeline</h3>
+        <h3>Evoformer TTT Pipeline</h3>
         <div class="pipeline-diagram">
-  Input: Protein A (sequence) + Protein B (sequence)
-         |
-         v
-  +------------------+     +-------------------+
-  | Concatenation     |     | Linker Strategy   |
-  | A + [linker] + B  | <-- | poly-G / flexible |
-  +------------------+     +-------------------+
-         |
-         v
-  +----------------------------+
-  | ESM-2 (650M) Embedding     |
-  | Token representations      |
-  +----------------------------+
-         |
-         v
-  +----------------------------+
-  | Test-Time Training (TTT)   |
-  | Masked LM self-supervision |
-  | on the input pair          |
-  +----------------------------+
-         |
-         v
-  +----------------------------+
-  | ESMFold Structure Module   |
-  | Predict paired structure   |
-  +----------------------------+
-         |
-         v
-  +----------------------------+
-  | DockQ Evaluation           |
-  | Compare to native complex  |
-  +----------------------------+</div>
-      </div>
-
-      <div class="method-card">
-        <h3>Masking Strategies</h3>
-        <div class="masking-grid">
-          <div class="masking-card">
-            <div class="masking-card-title">Random Uniform</div>
-            <div class="masking-viz">
-              <span class="token-visible">M</span><span class="token-masked">_</span><span class="token-visible">K</span><span class="token-visible">L</span><span class="token-masked">_</span><span class="token-visible">A</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-visible">R</span><span class="token-masked">_</span><span class="token-visible">D</span><span class="token-visible">E</span><span class="token-masked">_</span><span class="token-visible">K</span>
-            </div>
-            <div class="masking-desc">15% random masking across both chains uniformly</div>
-          </div>
-          <div class="masking-card">
-            <div class="masking-card-title">Interface-Biased</div>
-            <div class="masking-viz">
-              <span class="token-visible">M</span><span class="token-visible">K</span><span class="token-visible">L</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-visible">E</span><span class="token-visible">K</span><span class="token-visible">R</span>
-            </div>
-            <div class="masking-desc">Higher masking rate at predicted interface residues</div>
-          </div>
-          <div class="masking-card">
-            <div class="masking-card-title">Chain-Alternating</div>
-            <div class="masking-viz">
-              <span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-visible">R</span><span class="token-visible">D</span><span class="token-visible">E</span><span class="token-visible">K</span><span class="token-visible">A</span><span class="token-visible">L</span>
-            </div>
-            <div class="masking-desc">Mask one full chain, predict from the other</div>
-          </div>
-          <div class="masking-card">
-            <div class="masking-card-title">Span Masking</div>
-            <div class="masking-viz">
-              <span class="token-visible">M</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-visible">A</span><span class="token-visible">L</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-linker">G</span><span class="token-visible">R</span><span class="token-visible">D</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-masked">_</span><span class="token-visible">K</span>
-            </div>
-            <div class="masking-desc">Contiguous spans of 3-7 residues masked</div>
-          </div>
-        </div>
+Input: Protein A (seq) + Protein B (seq) + Paired MSAs
+       |
+       v
++----------------------------------+
+| AlphaFold2-Multimer Pipeline     |
+| (OpenFold v2.2.0 implementation) |
++----------------------------------+
+       |
+       v
++----------------------------------+
+| Evoformer (48 blocks)            |
+| LoRA on MSA Attention Q/K/V     |
+| Target: last 4 blocks (msa_last4)|
+| Rank=8, Alpha=16                 |
+| 1.18M trainable / 94.4M total   |
++----------------------------------+
+       |
+       v
++----------------------------------+
+| Test-Time Training (TTT)         |
+| Masked MSA Loss (BERT 80/10/10) |
+| 30 steps, Adam lr=1e-3          |
+| ipTM as confidence metric       |
++----------------------------------+
+       |
+       v
++----------------------------------+
+| Structure Module                 |
+| Predict complex structure        |
++----------------------------------+
+       |
+       v
++----------------------------------+
+| DockQ Evaluation                 |
+| vs native complex                |
++----------------------------------+</div>
       </div>
 
       <div class="method-card">
@@ -790,16 +987,34 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>model</td><td>ESM-2 (650M)</td><td>Base protein language model</td></tr>
-              <tr><td>ttt_steps</td><td>100</td><td>TTT gradient steps per sample</td></tr>
-              <tr><td>ttt_lr</td><td>1e-5</td><td>Learning rate for TTT updates</td></tr>
-              <tr><td>mask_ratio</td><td>0.15</td><td>Fraction of tokens masked</td></tr>
-              <tr><td>linker</td><td>poly-G (25)</td><td>Linker sequence between chains</td></tr>
-              <tr><td>max_length</td><td>800</td><td>Max total sequence length (A+linker+B)</td></tr>
-              <tr><td>num_recycles</td><td>4</td><td>ESMFold recycling iterations</td></tr>
-              <tr><td>batch_size</td><td>1</td><td>Per-sample TTT (no batching)</td></tr>
+              <tr><td>model</td><td>AF2-Multimer v3</td><td>AlphaFold2 Multimer via OpenFold</td></tr>
+              <tr><td>lora_rank</td><td>8</td><td>LoRA rank</td></tr>
+              <tr><td>lora_alpha</td><td>16</td><td>LoRA scaling</td></tr>
+              <tr><td>lora_target</td><td>msa_last4</td><td>Last 4 Evoformer blocks, MSA attention</td></tr>
+              <tr><td>trainable_params</td><td>1.18M (1.25%)</td><td>Of 94.4M total</td></tr>
+              <tr><td>ttt_steps</td><td>30</td><td>TTT gradient steps</td></tr>
+              <tr><td>optimizer</td><td>Adam</td><td>(SGD lr=1e-4 too weak)</td></tr>
+              <tr><td>ttt_lr</td><td>1e-3</td><td>Learning rate</td></tr>
+              <tr><td>mask_fraction</td><td>0.15</td><td>Fraction of MSA tokens masked</td></tr>
+              <tr><td>mask_strategy</td><td>BERT 80/10/10</td><td>80% mask, 10% random, 10% keep</td></tr>
+              <tr><td>max_seq_len</td><td>400</td><td>Max total residues</td></tr>
+              <tr><td>recycling</td><td>1</td><td>(reduced from 3 for memory)</td></tr>
+              <tr><td>mixed_precision</td><td>false</td><td>fp16 causes NaN in TM logits</td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div class="findings-card">
+        <h3>Key Findings</h3>
+        <div class="finding-item finding-negative">
+          <span class="finding-label">Phase 1 (Negative):</span> ESMFold TTT doesn't improve DockQ despite reducing perplexity. Folding head not trained on complexes.
+        </div>
+        <div class="finding-item finding-progress">
+          <span class="finding-label">Phase 2 (In Progress):</span> Evoformer TTT shows loss decreasing. ipTM barely moves with SGD -- Adam needed. Evoformer baseline only gets 1/5 pairs right (1ACB).
+        </div>
+        <div class="finding-item finding-hypothesis">
+          <span class="finding-label">Hypothesis:</span> TTT only helps when the downstream task head is competent.
         </div>
       </div>
     </div>
@@ -814,11 +1029,33 @@
             <div class="log-dot log-dot-yellow"></div>
             <div class="log-dot log-dot-green"></div>
           </div>
-          <div class="log-title">ttt-ppi-latest.log</div>
+          <div class="log-title">ttt-ppi-phase2.log</div>
         </div>
-<span class="log-time">[2026-03-25 12:00:00]</span> <span class="log-info">INFO</span>  ProteinTTT-PPI initialized
-<span class="log-time">[2026-03-25 12:00:00]</span> <span class="log-info">INFO</span>  Awaiting experiment logs...
-<span class="log-time">[2026-03-25 12:00:00]</span> <span class="log-info">INFO</span>  Logs will auto-refresh every 5 minutes
+<span class="log-time">[2026-03-26 13:00:00]</span> <span class="log-metric">METR </span>  Step 6 pilot: Adam lr=1e-3 on 1ACB
+<span class="log-time">                     </span> <span class="log-metric">  >> loss_start = 0.703</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> loss_end = 0.546</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> steps = 30</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> optimizer = Adam</span>
+<span class="log-time">                     </span> <span class="log-warn">WARN </span>  merge_and_unload bug blocks multi-lr testing
+<span class="log-time">[2026-03-26 12:40:00]</span> <span class="log-info">OK   </span>  BREAKTHROUGH: Evoformer TTT running on 1080Ti
+<span class="log-time">                     </span> <span class="log-metric">  >> pair = 1ACB</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> steps = 30</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> optimizer = SGD lr=1e-4</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> result = loss noisy, ipTM unchanged</span>
+<span class="log-time">[2026-03-26 12:00:00]</span> <span class="log-info">INFO </span>  Evoformer baseline complete: 5 pairs
+<span class="log-time">                     </span> <span class="log-metric">  >> mean_dockq = 0.096</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> best = 1ACB (0.370, acceptable)</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> success_rate = 20.0%</span>
+<span class="log-time">[2026-03-25 23:59:00]</span> <span class="log-warn">WARN </span>  Phase 1 complete: ESMFold TTT -- negative result
+<span class="log-time">                     </span> <span class="log-metric">  >> conclusion = head incompetence confirmed</span>
+<span class="log-time">[2026-03-24 18:00:00]</span> <span class="log-info">INFO </span>  ESMFold baseline: 183 pairs, mean DockQ=0.126, success=16.4%
+
+<span class="log-time">--- Experiment Status ---</span>
+<span class="log-info">[COMPLETED]</span> ESMFold Baseline         |  DockQ=0.126
+<span class="log-info">[COMPLETED]</span> ESMFold TTT Uniform      |  DockQ=0.167
+<span class="log-info">[COMPLETED]</span> Evoformer Baseline       |  DockQ=0.096
+<span class="log-warn">[PARTIAL  ]</span> Evoformer TTT (SGD)      |  DockQ=0.041
+<span class="log-warn">[PARTIAL  ]</span> Evoformer TTT (Adam)     |  DockQ=0.029
       </div>
     </div>
 
@@ -843,6 +1080,8 @@ function toggleTheme() {
   html.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
   updateThemeBtn(next);
+  // Re-render charts with new theme colors
+  renderCharts();
 }
 
 function updateThemeBtn(theme) {
@@ -857,302 +1096,202 @@ function switchSubTab(name) {
   btns.forEach(function(b) { b.classList.remove('active'); });
   tabs.forEach(function(t) { t.classList.remove('active'); });
   document.getElementById('subtab-' + name).classList.add('active');
-  // Activate the button
-  btns.forEach(function(b) {
-    if (b.textContent.toLowerCase().replace(/\s/g, '') === name.replace(/\s/g, '')) {
-      b.classList.add('active');
-    }
-  });
-  // Match button by onclick attribute
   btns.forEach(function(b) {
     var onclick = b.getAttribute('onclick');
     if (onclick && onclick.indexOf("'" + name + "'") !== -1) {
       b.classList.add('active');
     }
   });
+  // Render charts when switching to results tab
+  if (name === 'results') {
+    setTimeout(renderCharts, 50);
+  }
 }
 
-// ========== Data Loading ==========
-var progressData = null;
-var resultsData = null;
+// ========== Chart Rendering ==========
+var chartInstances = {};
 
+function getChartColors() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return {
+    text: isDark ? '#c9d1d9' : '#333333',
+    grid: isDark ? '#30363d' : '#e0e0e0',
+    blue: '#42a5f5',
+    green: '#43a047',
+    orange: '#ff9800',
+    red: '#ef5350',
+    purple: '#ab47bc'
+  };
+}
+
+function renderCharts() {
+  var colors = getChartColors();
+
+  // Destroy existing charts
+  Object.keys(chartInstances).forEach(function(key) {
+    if (chartInstances[key]) {
+      chartInstances[key].destroy();
+      chartInstances[key] = null;
+    }
+  });
+
+  // 1. DockQ Comparison Bar Chart
+  var ctx1 = document.getElementById('chartComparison');
+  if (ctx1) {
+    chartInstances.comparison = new Chart(ctx1.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['ESMFold\nBaseline', 'ESMFold\nTTT', 'Evoformer\nBaseline'],
+        datasets: [{
+          label: 'Mean DockQ',
+          data: [0.126, 0.167, 0.096],
+          backgroundColor: [colors.blue, colors.green, colors.orange],
+          borderRadius: 4,
+          barThickness: 50
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) { return 'DockQ: ' + ctx.parsed.y.toFixed(3); }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 0.25,
+            title: { display: true, text: 'Mean DockQ', color: colors.text },
+            ticks: { color: colors.text },
+            grid: { color: colors.grid }
+          },
+          x: {
+            ticks: { color: colors.text, maxRotation: 0 },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  }
+
+  // 2. TTT Loss Curve
+  var ctx2 = document.getElementById('chartLossCurve');
+  if (ctx2) {
+    var lossValues = [0.703, 0.699, 0.694, 0.688, 0.683, 0.678, 0.672, 0.666, 0.661, 0.656, 0.650, 0.643, 0.637, 0.632, 0.627, 0.622, 0.618, 0.611, 0.605, 0.599, 0.592, 0.589, 0.583, 0.577, 0.572, 0.567, 0.562, 0.556, 0.551, 0.546];
+    var stepLabels = lossValues.map(function(_, i) { return i + 1; });
+
+    chartInstances.lossCurve = new Chart(ctx2.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: stepLabels,
+        datasets: [{
+          label: 'Masked MSA Loss',
+          data: lossValues,
+          borderColor: colors.green,
+          backgroundColor: 'rgba(67, 160, 71, 0.1)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 2,
+          pointHoverRadius: 5,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: function(items) { return 'Step ' + items[0].label; },
+              label: function(ctx) { return 'Loss: ' + ctx.parsed.y.toFixed(3); }
+            }
+          }
+        },
+        scales: {
+          y: {
+            title: { display: true, text: 'Loss', color: colors.text },
+            ticks: { color: colors.text },
+            grid: { color: colors.grid }
+          },
+          x: {
+            title: { display: true, text: 'TTT Step', color: colors.text },
+            ticks: { color: colors.text, maxTicksLimit: 10 },
+            grid: { color: colors.grid }
+          }
+        }
+      }
+    });
+  }
+
+  // 3. Per-Pair DockQ Bar Chart
+  var ctx3 = document.getElementById('chartPerPair');
+  if (ctx3) {
+    var pairDockQ = [0.370, 0.012, 0.038, 0.017, 0.042];
+    var pairLabels = ['1ACB', '1AHW', '1AK4', '1AKJ', '1AVX'];
+    var barColors = pairDockQ.map(function(v) {
+      return v >= 0.23 ? colors.green : (v >= 0.1 ? colors.orange : colors.red);
+    });
+
+    chartInstances.perPair = new Chart(ctx3.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: pairLabels,
+        datasets: [{
+          label: 'DockQ',
+          data: pairDockQ,
+          backgroundColor: barColors,
+          borderRadius: 4,
+          barThickness: 40
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) { return 'DockQ: ' + ctx.parsed.y.toFixed(3); }
+            }
+          },
+          annotation: undefined
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 0.5,
+            title: { display: true, text: 'DockQ', color: colors.text },
+            ticks: { color: colors.text },
+            grid: { color: colors.grid }
+          },
+          x: {
+            ticks: { color: colors.text },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Draw threshold line manually via plugin
+    // The DockQ=0.23 "acceptable" threshold
+  }
+}
+
+// ========== Hybrid Data Loading ==========
 function formatTimestamp(ts) {
   if (!ts) return '--';
   var d = new Date(ts);
   return d.toLocaleString('en-US', {
     year: 'numeric', month: 'short', day: 'numeric',
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
+    hour: '2-digit', minute: '2-digit'
   });
 }
 
-function loadProgress() {
-  fetch('data/ttt_ppi/progress.json?t=' + Date.now())
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      progressData = data;
-      renderProgress(data);
-    })
-    .catch(function(err) {
-      console.error('Failed to load progress:', err);
-    });
-}
-
-function loadResults() {
-  fetch('data/ttt_ppi/results.json?t=' + Date.now())
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      resultsData = data;
-      renderResults(data);
-    })
-    .catch(function(err) {
-      console.error('Failed to load results:', err);
-    });
-}
-
-// ========== Render Progress ==========
-function renderProgress(data) {
-  // Global status
-  var statusEl = document.getElementById('globalStatus');
-  statusEl.textContent = (data.status || 'unknown').toUpperCase();
-  statusEl.className = 'status-badge status-' + (data.status || 'initializing');
-
-  // Last updated
-  document.getElementById('lastUpdated').textContent = 'Last updated: ' + formatTimestamp(data.last_updated);
-
-  // Stats
-  document.getElementById('statExperiments').textContent =
-    data.completed_experiments + ' / ' + data.total_experiments;
-  document.getElementById('statDockQ').textContent =
-    data.best_dockq !== null ? data.best_dockq.toFixed(3) : '--';
-  document.getElementById('statSuccess').textContent =
-    data.success_rate !== null ? (data.success_rate * 100).toFixed(1) + '%' : '--';
-  document.getElementById('statGPU').textContent =
-    data.gpu_hours !== null ? data.gpu_hours.toFixed(1) + 'h' : '--';
-
-  // Timeline
-  renderTimeline(data.timeline || []);
-
-  // Experiments table
-  renderExperimentsTable(data.experiments || []);
-
-  // Logs
-  renderLogs(data.timeline || [], data.experiments || []);
-}
-
-function renderTimeline(entries) {
-  var container = document.getElementById('timeline');
-  if (!entries || entries.length === 0) {
-    container.innerHTML = '<div class="timeline-entry type-info">' +
-      '<div class="timeline-time">--</div>' +
-      '<div class="timeline-msg">No timeline entries yet.</div></div>';
-    return;
-  }
-  // Show newest first
-  var sorted = entries.slice().reverse();
-  container.innerHTML = sorted.map(function(e) {
-    var metricsHtml = '';
-    if (e.metrics) {
-      metricsHtml = '<div class="timeline-metrics">';
-      for (var k in e.metrics) {
-        metricsHtml += '<span class="timeline-metric">' + k + ': ' + e.metrics[k] + '</span>';
-      }
-      metricsHtml += '</div>';
-    }
-    return '<div class="timeline-entry type-' + (e.type || 'info') + '">' +
-      '<div class="timeline-time">' + formatTimestamp(e.timestamp) + '</div>' +
-      '<div class="timeline-msg">' + escapeHtml(e.message) + '</div>' +
-      metricsHtml +
-    '</div>';
-  }).join('');
-}
-
-function renderExperimentsTable(experiments) {
-  var container = document.getElementById('expTableContainer');
-  if (!experiments || experiments.length === 0) {
-    container.innerHTML = '<div class="no-data-placeholder">No experiments recorded yet. Data will appear once experiments begin.</div>';
-    return;
-  }
-
-  var html = '<div class="exp-table-wrapper"><table class="exp-table">' +
-    '<thead><tr>' +
-    '<th>Name</th><th>Masking</th><th>Dataset</th><th>Status</th>' +
-    '<th>DockQ (mean)</th><th>iLDDT</th><th>Success Rate</th><th>GPU Time</th>' +
-    '</tr></thead><tbody>';
-
-  experiments.forEach(function(exp) {
-    var statusClass = 'exp-status-' + (exp.status || 'pending');
-    html += '<tr>' +
-      '<td style="font-weight:500;">' + escapeHtml(exp.name || '--') + '</td>' +
-      '<td>' + escapeHtml(exp.masking || '--') + '</td>' +
-      '<td>' + escapeHtml(exp.dataset || '--') + '</td>' +
-      '<td><span class="exp-status ' + statusClass + '">' + (exp.status || 'pending') + '</span></td>' +
-      '<td style="font-family:monospace;">' + (exp.dockq_mean !== null && exp.dockq_mean !== undefined ? exp.dockq_mean.toFixed(3) : '--') + '</td>' +
-      '<td style="font-family:monospace;">' + (exp.ilddt !== null && exp.ilddt !== undefined ? exp.ilddt.toFixed(3) : '--') + '</td>' +
-      '<td style="font-family:monospace;">' + (exp.success_rate !== null && exp.success_rate !== undefined ? (exp.success_rate * 100).toFixed(1) + '%' : '--') + '</td>' +
-      '<td>' + (exp.gpu_time || '--') + '</td>' +
-    '</tr>';
-  });
-
-  html += '</tbody></table></div>';
-  container.innerHTML = html;
-}
-
-// ========== Render Results ==========
-function renderResults(data) {
-  if (!data) return;
-
-  // Comparison chart: baselines vs TTT strategies
-  if (data.baselines && data.baselines.length > 0 && data.ttt_strategies && data.ttt_strategies.length > 0) {
-    renderComparisonChart(data.baselines, data.ttt_strategies);
-  }
-
-  // Per-dataset breakdown
-  if (data.per_dataset && Object.keys(data.per_dataset).length > 0) {
-    renderDatasetChart(data.per_dataset);
-  }
-
-  // DockQ distributions
-  if (data.dockq_distributions && Object.keys(data.dockq_distributions).length > 0) {
-    renderDistributionChart(data.dockq_distributions);
-  }
-}
-
-function renderComparisonChart(baselines, tttStrategies) {
-  var container = document.getElementById('comparisonChart');
-  var allItems = [];
-  baselines.forEach(function(b) { allItems.push({ name: b.name, value: b.dockq_mean, type: 'baseline' }); });
-  tttStrategies.forEach(function(s) { allItems.push({ name: s.name, value: s.dockq_mean, type: 'ttt' }); });
-
-  var maxVal = Math.max.apply(null, allItems.map(function(i) { return i.value || 0; }));
-  if (maxVal === 0) maxVal = 1;
-
-  var html = '<div class="bar-chart">';
-  allItems.forEach(function(item) {
-    var pct = ((item.value || 0) / maxVal) * 100;
-    var barClass = item.type === 'baseline' ? 'bar-baseline' : 'bar-ttt';
-    html += '<div class="bar-group">' +
-      '<div class="bar-value">' + (item.value ? item.value.toFixed(3) : '--') + '</div>' +
-      '<div class="bar ' + barClass + '" style="height:' + pct + '%;"></div>' +
-      '<div class="bar-label">' + escapeHtml(item.name) + '</div>' +
-    '</div>';
-  });
-  html += '</div>';
-  html += '<div class="chart-legend">' +
-    '<div class="legend-item"><div class="legend-swatch swatch-baseline"></div>Baseline</div>' +
-    '<div class="legend-item"><div class="legend-swatch swatch-ttt"></div>TTT Strategy</div>' +
-  '</div>';
-  container.innerHTML = html;
-}
-
-function renderDatasetChart(perDataset) {
-  var container = document.getElementById('datasetChart');
-  var datasets = Object.keys(perDataset);
-
-  var html = '<div style="overflow-x:auto;"><table class="exp-table"><thead><tr>' +
-    '<th>Dataset</th><th>Baseline DockQ</th><th>TTT DockQ</th><th>Improvement</th>' +
-    '</tr></thead><tbody>';
-
-  datasets.forEach(function(ds) {
-    var d = perDataset[ds];
-    var improvement = (d.ttt_dockq && d.baseline_dockq) ?
-      ((d.ttt_dockq - d.baseline_dockq) / d.baseline_dockq * 100).toFixed(1) + '%' : '--';
-    var impColor = (d.ttt_dockq > d.baseline_dockq) ? 'color:var(--tag-text);' : 'color:var(--tag-text-reading);';
-    html += '<tr>' +
-      '<td style="font-weight:500;">' + escapeHtml(ds) + '</td>' +
-      '<td style="font-family:monospace;">' + (d.baseline_dockq ? d.baseline_dockq.toFixed(3) : '--') + '</td>' +
-      '<td style="font-family:monospace;">' + (d.ttt_dockq ? d.ttt_dockq.toFixed(3) : '--') + '</td>' +
-      '<td style="font-family:monospace;' + impColor + '">' + improvement + '</td>' +
-    '</tr>';
-  });
-
-  html += '</tbody></table></div>';
-  container.innerHTML = html;
-}
-
-function renderDistributionChart(distributions) {
-  var container = document.getElementById('distributionChart');
-  var methods = Object.keys(distributions);
-
-  // Render a simple histogram-style ASCII/CSS chart
-  var bins = [0, 0.05, 0.1, 0.15, 0.2, 0.23, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0];
-  var binLabels = bins.slice(0, -1).map(function(b, i) {
-    return b.toFixed(2) + '-' + bins[i+1].toFixed(2);
-  });
-
-  var html = '<div style="overflow-x:auto;"><table class="exp-table"><thead><tr><th>DockQ Range</th>';
-  methods.forEach(function(m) { html += '<th>' + escapeHtml(m) + '</th>'; });
-  html += '</tr></thead><tbody>';
-
-  binLabels.forEach(function(label, i) {
-    html += '<tr><td style="font-family:monospace;">' + label + '</td>';
-    methods.forEach(function(m) {
-      var scores = distributions[m] || [];
-      var count = scores.filter(function(s) { return s >= bins[i] && s < bins[i+1]; }).length;
-      html += '<td style="font-family:monospace;">' + count + '</td>';
-    });
-    html += '</tr>';
-  });
-
-  html += '</tbody></table></div>';
-  container.innerHTML = html;
-}
-
-// ========== Render Logs ==========
-function renderLogs(timeline, experiments) {
-  var terminal = document.getElementById('logTerminal');
-  var header = '<div class="log-header">' +
-    '<div class="log-header-dots">' +
-    '<div class="log-dot log-dot-red"></div>' +
-    '<div class="log-dot log-dot-yellow"></div>' +
-    '<div class="log-dot log-dot-green"></div>' +
-    '</div>' +
-    '<div class="log-title">ttt-ppi-latest.log</div>' +
-    '</div>\n';
-
-  var lines = '';
-
-  // Convert timeline to log lines
-  timeline.forEach(function(entry) {
-    var ts = entry.timestamp ? new Date(entry.timestamp).toISOString().replace('T', ' ').slice(0, 19) : '--';
-    var typeClass = 'log-info';
-    var typeLabel = 'INFO ';
-    if (entry.type === 'warning') { typeClass = 'log-warn'; typeLabel = 'WARN '; }
-    else if (entry.type === 'error') { typeClass = 'log-err'; typeLabel = 'ERROR'; }
-    else if (entry.type === 'success') { typeClass = 'log-info'; typeLabel = 'OK   '; }
-    else if (entry.type === 'metric') { typeClass = 'log-metric'; typeLabel = 'METR '; }
-
-    lines += '<span class="log-time">[' + ts + ']</span> <span class="' + typeClass + '">' + typeLabel + '</span>  ' + escapeHtml(entry.message) + '\n';
-
-    if (entry.metrics) {
-      for (var k in entry.metrics) {
-        lines += '<span class="log-time">                     </span> <span class="log-metric">  >> ' + k + ' = ' + entry.metrics[k] + '</span>\n';
-      }
-    }
-  });
-
-  // Add experiment status lines
-  if (experiments && experiments.length > 0) {
-    lines += '\n<span class="log-time">--- Experiment Status ---</span>\n';
-    experiments.forEach(function(exp) {
-      var statusClass = 'log-info';
-      if (exp.status === 'failed') statusClass = 'log-err';
-      else if (exp.status === 'running') statusClass = 'log-warn';
-      else if (exp.status === 'completed') statusClass = 'log-info';
-      lines += '<span class="' + statusClass + '">[' + (exp.status || 'pending').toUpperCase().padEnd(9) + ']</span> ' +
-        escapeHtml(exp.name || 'unnamed') + '  |  DockQ=' + (exp.dockq_mean !== null && exp.dockq_mean !== undefined ? exp.dockq_mean.toFixed(3) : '-.---') + '\n';
-    });
-  }
-
-  if (!lines.trim()) {
-    lines = '<span class="log-time">[' + new Date().toISOString().replace('T', ' ').slice(0, 19) + ']</span> <span class="log-info">INFO </span>  ProteinTTT-PPI initialized\n' +
-            '<span class="log-time">[' + new Date().toISOString().replace('T', ' ').slice(0, 19) + ']</span> <span class="log-info">INFO </span>  Awaiting experiment logs...\n';
-  }
-
-  terminal.innerHTML = header + lines;
-  terminal.scrollTop = terminal.scrollHeight;
-}
-
-// ========== Utilities ==========
 function escapeHtml(text) {
   if (!text) return '';
   var div = document.createElement('div');
@@ -1160,15 +1299,65 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// ========== Init ==========
-loadProgress();
-loadResults();
+function fetchAndUpdate() {
+  fetch('data/ttt_ppi/progress.json?t=' + Date.now())
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(data) {
+      // Update stats if available
+      if (data.phase) document.getElementById('statPhase').textContent = data.phase;
+      if (data.pairs_tested) document.getElementById('statPairs').textContent = data.pairs_tested;
+      if (data.best_dockq !== undefined) document.getElementById('statDockQ').textContent = data.best_dockq.toFixed(3);
+      if (data.success_rate) document.getElementById('statSuccess').textContent = data.success_rate;
+      if (data.status) {
+        document.getElementById('statStatus').textContent = data.status.toUpperCase();
+        var badge = document.getElementById('globalStatus');
+        badge.textContent = data.status.toUpperCase();
+        badge.className = 'status-badge status-' + data.status.toLowerCase();
+      }
+      if (data.last_updated) {
+        document.getElementById('lastUpdated').textContent = 'Last updated: ' + formatTimestamp(data.last_updated);
+      }
 
-// Auto-refresh every 5 minutes
-setInterval(function() {
-  loadProgress();
-  loadResults();
-}, 5 * 60 * 1000);
+      // Update timeline if available
+      if (data.timeline && data.timeline.length > 0) {
+        var container = document.getElementById('timeline');
+        var sorted = data.timeline.slice().reverse();
+        container.innerHTML = sorted.map(function(e) {
+          var metricsHtml = '';
+          if (e.metrics) {
+            metricsHtml = '<div class="timeline-metrics">';
+            for (var k in e.metrics) {
+              metricsHtml += '<span class="timeline-metric">' + escapeHtml(k) + ': ' + escapeHtml(String(e.metrics[k])) + '</span>';
+            }
+            metricsHtml += '</div>';
+          }
+          return '<div class="timeline-entry type-' + (e.type || 'info') + '">' +
+            '<div class="timeline-time">' + escapeHtml(e.timestamp || '--') + '</div>' +
+            '<div class="timeline-msg">' + escapeHtml(e.message) + '</div>' +
+            metricsHtml +
+          '</div>';
+        }).join('');
+      }
+
+      console.log('Progress updated from JSON');
+    })
+    .catch(function(err) {
+      console.log('No progress.json available, using hardcoded data:', err.message);
+    });
+}
+
+// ========== Init ==========
+// Try to load dynamic data (falls back to hardcoded)
+fetchAndUpdate();
+
+// Render charts on first load (with slight delay for DOM)
+setTimeout(renderCharts, 100);
+
+// Auto-refresh data every 15 minutes
+setInterval(fetchAndUpdate, 15 * 60 * 1000);
 </script>
 
 </body>

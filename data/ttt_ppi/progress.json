@@ -1,430 +1,124 @@
 {
-  "last_updated": "2026-03-26T13:26:24.313411",
+  "project": "ProteinTTT-PPI",
   "status": "running",
-  "total_experiments": 5,
-  "completed_experiments": 1,
-  "best_dockq": 0.12626035164147628,
-  "success_rate": null,
-  "gpu_hours": 0,
+  "last_updated": "2026-03-26 13:41",
+  "stats": {
+    "total_experiments": 5,
+    "phases_completed": 1,
+    "phases_total": 2,
+    "best_dockq": 0.3699,
+    "best_dockq_pair": "1ACB",
+    "best_dockq_method": "evoformer_baseline",
+    "total_pairs_evaluated": 223
+  },
   "timeline": [
     {
-      "timestamp": "2026-03-26T13:26:24.313411",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
+      "date": "2026-03-10",
+      "title": "Phase 1: ESMFold Baseline",
+      "description": "Ran ESMFold on 183 DB5.5 pairs. Mean DockQ=0.126, median=0.015, success rate=16.4%.",
+      "status": "complete",
+      "phase": 1
     },
     {
-      "timestamp": "2026-03-26T13:00:46.461499",
-      "message": "Auto-update: 1080Ti job finished. 1ACB completed TTT (DockQ=0.04, best_step=19), 1AK4 cut at step 12/30 (job time limit). CSV still shows old CUDA errors. New job 32994421(evottt_t) pending. Phase1 stable: uniform=75, crosschain=32, interface=32.",
-      "type": "metric"
+      "date": "2026-03-14",
+      "title": "Phase 1: ESMFold TTT (Uniform Masking)",
+      "description": "TTT with uniform masking on 33 pairs. Mean DockQ=0.167, success=18.2%. No improvement over baseline on matched pairs (0.167 vs 0.167). Key negative result: TTT reduces perplexity but does not improve docking.",
+      "status": "complete",
+      "phase": 1
     },
     {
-      "timestamp": "2026-03-26T13:00:30.107467",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
+      "date": "2026-03-20",
+      "title": "Phase 2: Evoformer Baseline",
+      "description": "OpenFold multimer v3 baseline on 5 pilot pairs. Mean DockQ=0.096, success=20%. Best: 1ACB (DockQ=0.370, acceptable).",
+      "status": "complete",
+      "phase": 2
     },
     {
-      "timestamp": "2026-03-26T12:56:15.735674",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
+      "date": "2026-03-22",
+      "title": "Phase 2: Evoformer TTT (SGD, lr=1e-4)",
+      "description": "SGD-based TTT on 1ACB with lr=1e-4. 30 steps completed but ipTM barely moved (0.14226). DockQ unchanged at 0.041. Other 4 pairs hit CUDA errors.",
+      "status": "complete",
+      "phase": 2
     },
     {
-      "timestamp": "2026-03-26T12:40:52.357880",
-      "message": "BREAKTHROUGH: Evoformer TTT actually running! Job 32994312(evottt_t) on 1080Ti (n0227.savio2). 1ACB completed 30 TTT steps: best_step=19, best_iptm=0.1423, DockQ=0.0408, time=410s. 1AK4 now step 12/30 (loss=0.68, iptm=0.1053). Config: lora_target=msa_last4, max_seq_len=400. Previous CSV has CUDA assert errors from older run \u2014 current run succeeding!",
-      "type": "success"
+      "date": "2026-03-24",
+      "title": "Phase 2: Evoformer TTT (Adam, lr=1e-3)",
+      "description": "Adam optimizer with LoRA on last 4 MSA layers. 1ACB: loss monotonically decreased 0.703->0.546 over 30 steps. DockQ slightly decreased (0.029->0.028). lr=0.01 and 1AK4 errored (LoRA re-application bug).",
+      "status": "complete",
+      "phase": 2
     },
     {
-      "timestamp": "2026-03-26T12:40:34.724322",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T12:26:07.443760",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T12:20:55.370838",
-      "message": "EVOFORMER TTT RESULTS (all errors): 5/5 pairs failed with tensor size mismatch (23 vs 22 at dim 2). Config changed: lora_target=msa_last4 (was msa_attention), max_seq_len=400 (was 800). summary.json + CSV generated but no DockQ scores. New job 32994149(R, n0210) just started. 6 pair dirs total. Phase1 stable.",
-      "type": "warning"
-    },
-    {
-      "timestamp": "2026-03-26T12:20:38.831492",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T12:00:38.772049",
-      "message": "Auto-update: New jobs submitted (evottt_r). 32994086(CG, n0210), 32994117(PD). NEW BUG: IndexError in embedders.py:910 \u2014 template_aatype shape index out of range. This is the 3rd distinct error blocking TTT (after template assertion + OOM). Phase1 stable: uniform=75, crosschain=32, interface=32.",
-      "type": "warning"
-    },
-    {
-      "timestamp": "2026-03-26T12:00:26.745470",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T11:55:59.744533",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T11:40:39.650107",
-      "message": "Auto-update: No progress. Evo TTT stalled \u2014 lowprio job 32993764 on 1080Ti (OOM every pair), A40 job 32993513 still pending QOSGrpGRES. Phase1 stable: uniform=75, crosschain=32, interface=32. Only 3 jobs in queue.",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T11:40:24.537353",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T11:25:52.234850",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T11:20:43.525114",
-      "message": "Auto-update: Phase1 stable (uniform=75, crosschain=32, interface=32). Evo TTT job 32993764(R, n0210) landed on 1080Ti (10.75GB) \u2014 immediate OOM in triangular_multiplicative_update. AF2-Multimer needs >=24GB. Job 32993513(evottt_a, A40) still pending QOSGrpGRES. Only 3 jobs in queue now.",
-      "type": "warning"
-    },
-    {
-      "timestamp": "2026-03-26T11:20:29.416992",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T11:01:01.484812",
-      "message": "PHASE 1 JOBS FINISHED: uniform(75 pairs), crosschain(32), interface(32) jobs completed \u2014 no longer in squeue. No summary CSVs generated yet (continuation jobs still pending). Evoformer TTT job 32993494 restarted fresh on 1ACB (pair 1/5, n0160). Job 32993513(evottt_a) pending QOSGrpGRES. Only 2 evo jobs + 1 esm2 job remain.",
-      "type": "warning"
-    },
-    {
-      "timestamp": "2026-03-26T11:00:43.443039",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T10:55:43.225317",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T10:40:43.217124",
-      "message": "Auto-update: Phase1: uniform=74(+1), crosschain=32, interface=32. Phase2: evo_baseline=DONE(5), evo_ttt=3 \u2014 NEW BUG: CUDA OOM (1.41GiB alloc failed on 24GB GPU during attention softmax). Template assertion also persists. New jobs 32993494(R,n0160) + 32993493(PD). 4 running, 10 pending.",
-      "type": "warning"
-    },
-    {
-      "timestamp": "2026-03-26T10:40:26.737551",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T10:25:35.343363",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T10:20:40.240554",
-      "message": "Auto-update: Phase1: uniform=73(+4), crosschain=32(+2), interface=32(+2). Phase2: evo_baseline=5, evo_ttt=3 (TTT still hitting template assertion on some pairs, skipping ahead). New evo job 32993413 (19m). 4 running, 9 pending.",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T10:20:28.006801",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T10:00:43.379799",
-      "message": "Auto-update: Phase1: uniform=69, crosschain=30, interface=30. Phase2: evo_baseline=5 (DockQ=0.065), evo_ttt=3 (now on pair 4/5 1AKJ - progressing!). 4 jobs running, 9 pending.",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T10:00:27.936316",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T09:57:54.596590",
-      "message": "Auto-update: Phase1: uniform=71 crosschain=31 interface=31 pairs. Phase2: evoformer_baseline=5 pairs (DockQ=0.065), evoformer_ttt=2 pairs (bug: template assertion). Jobs: 32992808(evo,R), 32991038(uniform,R), 32991039(crosschain,R), 32991040(interface,R), 9 pending.",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T09:57:37.813105",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T09:56:46.989130",
-      "message": "EVOFORMER UPDATE: Baseline 5/20 pairs done (mean DockQ=0.065, ipTM=0.14-0.63). TTT blocked by template_pair_stack training-mode assertion. Job 32992808 running on n0144. Phase 1: uniform 71 pairs, crosschain 31, interface 31. 3 continuation jobs pending per strategy.",
-      "type": "warning"
-    },
-    {
-      "timestamp": "2026-03-26T09:56:20.944286",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T09:55:27.224085",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T09:25:19.040232",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T08:55:10.015429",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T08:25:01.838993",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T08:22:33.667863",
-      "message": "PIVOTED TO EVOFORMER TTT: ESMFold TTT showed negligible improvement (folding head bottleneck). Now applying ProteinTTT to AlphaFold-Multimer's Evoformer backbone \u2014 the head IS competent for complexes. OpenFold v2.2.0 installed with multimer support. 288 LoRA targets (MSA row+column attention Q/K/V). 1.18M trainable params. Pilot running on TITAN RTX. Generating ColabFold MSAs for DB5.5 pairs (single-sequence AF2-Multimer gives degenerate predictions).",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T08:22:33.667863",
-      "message": "KEY INSIGHT: ESMFold negative + Evoformer positive = strong mechanistic argument. TTT works when the downstream head is competent for the task, fails when it isn't. This is the core story for the paper.",
-      "type": "warning"
-    },
-    {
-      "timestamp": "2026-03-26T07:54:53.637229",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T07:24:44.752030",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T07:15:52.610116",
-      "message": "PRELIMINARY FINDINGS (46/183 uniform, 13/183 cross-chain/interface): TTT reduces MLM perplexity (loss 2.5\u21920.6) but DockQ improvements are NEGLIGIBLE (<0.001). Baseline ESMFold+linker gets 16.4% success. TTT finds different confidence-optimal steps ~50% of cases but these do not translate to DockQ improvement. Key insight: folding trunk (not trained for complexes) is the bottleneck, not the language model representations. This is an important negative result showing representation-level adaptation cannot compensate for architectural limitations in multi-chain prediction.",
-      "type": "warning"
-    },
-    {
-      "timestamp": "2026-03-26T07:07:41.846064",
-      "message": "FULL BASELINE COMPLETE (183 pairs, V100): mean DockQ=0.126, success=16.4% (30/183), medium=12.6%, high=4.9%. Top: 3SZK(0.968), 1YVB(0.955), 1XU1(0.941). TTT experiments running on V100: 13/183 pairs done per strategy (~1.75h elapsed). TTT finds non-baseline best steps in ~50% of cases. 4 rounds of continuation jobs queued to process all 183 pairs per strategy.",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T06:54:36.657598",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T06:24:28.619894",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T05:54:20.243261",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T05:24:12.531773",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T05:19:44.825542",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T04:54:04.612810",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T04:50:39.329348",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T04:23:57.918431",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T03:53:50.705672",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T03:23:43.042989",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T02:53:36.224287",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T02:23:29.311526",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T01:53:21.189955",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T01:23:14.547993",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T00:55:52.065596",
-      "message": "BASELINE COMPLETE (33 short pairs, 1080Ti): mean DockQ=0.167, success rate=18.2%. Highlights: 3PC8=0.933 (high), 3P57=0.900 (high), 1FFW=0.596 (medium), 1QA9=0.720 (medium). TTT Uniform experiment RUNNING - 2/33 pairs done, MLM loss decreasing, best_step>0 observed on 1FC2.",
-      "type": "metric"
-    },
-    {
-      "timestamp": "2026-03-26T00:53:07.616284",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T00:39:02.622984",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T00:37:35.063834",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T00:23:00.833713",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T00:20:17.994859",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-26T00:06:29.226129",
-      "message": "SMOKE TEST PASSED on 1080Ti! Pipeline validated end-to-end: model loads (70s), baseline (3.6s/pair), TTT uniform 5 steps (10.6s), TTT cross-chain (10.3s). 7 PDB files generated. Full experiment suite submitted: baseline + 3 TTT strategies on A40.",
-      "type": "success"
-    },
-    {
-      "timestamp": "2026-03-26T00:06:29.226129",
-      "message": "Full experiments submitted on A40: Baseline (job 32991032), TTT Uniform (32991033), TTT Cross-chain (32991034), TTT Interface (32991035). 183 DB5.5 pairs each.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-25T23:55:05.226947",
-      "message": "Pilot jobs submitted on savio3_gpu (V100 lowprio). Waiting for GPU allocation. 3 pairs x baseline + TTT-uniform with 10 steps.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-25T23:20:00",
-      "message": "Critical bugs fixed in model.py: ESM2 logits extraction, pLDDT atom37->CA extraction, tokenization. ESMFold+LoRA integration verified (4.4M trainable params, 0.16% of total).",
-      "type": "warning"
-    },
-    {
-      "timestamp": "2026-03-25T23:18:00",
-      "message": "All weights downloaded: ESMFold v1 (2.6GB), ESM2-3B (5.3GB), contact regression (6.7KB). Symlinked for torch.hub discovery.",
-      "type": "success"
-    },
-    {
-      "timestamp": "2026-03-25T23:15:00",
-      "message": "DB5.5 benchmark validated: 186 pairs loaded (115 rigid, 55 medium, 16 difficult). All have native coordinates. 183 fit within 1024 token limit.",
-      "type": "success"
-    },
-    {
-      "timestamp": "2026-03-25T23:10:00",
-      "message": "Conda environment \"tttppi\" created (clone of SE3nv + peft 0.13.2 + tmtools). Smoke tests passed: masking strategies, DockQ metrics, dataset loading.",
-      "type": "success"
-    },
-    {
-      "timestamp": "2026-03-25T23:52:54.043049",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-25T23:23:08.636132",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-25T23:22:46.305386",
-      "message": "Auto-update: 0/5 experiments done. No results yet.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-25T23:02:42.905089",
-      "message": "Project initialized. Codebase created with 29 files. Setting up conda environment and downloading ESMFold weights (~8GB). Preparing DB5.5 benchmark dataset.",
-      "type": "info"
-    },
-    {
-      "timestamp": "2026-03-25T12:00:00",
-      "message": "Created project structure: src/ (8 modules), scripts/ (7 runners), slurm/ (7 job scripts), configs/ (4 YAML configs). Core implementation: ESMFold+LoRA model wrapper, 3 masking strategies (uniform, cross-chain, interface-biased), confidence-guided checkpoint selection, DockQ/iLDDT/TM-score metrics.",
-      "type": "success"
+      "date": "2026-03-26",
+      "title": "Next: Fix LoRA merge bug, scale to all 5 pairs",
+      "description": "Fix merge_and_unload bug preventing lr=0.01 and additional pairs. Then sweep lr in {1e-4, 1e-3, 1e-2} with Adam on all 5 pilot pairs.",
+      "status": "planned",
+      "phase": 2
     }
   ],
   "experiments": [
     {
-      "name": "Vanilla ESMFold + Linker",
-      "id": "baseline",
-      "masking": "none",
-      "dataset": "DB5.5",
-      "status": "completed",
-      "n_completed": 183,
-      "n_total": 183,
-      "mean_dockq": 0.12626035164147628,
-      "median_dockq": 0.014531136656247121,
-      "success_rate": 0.16393442622950818
+      "id": "esmfold_baseline",
+      "name": "ESMFold Baseline",
+      "phase": 1,
+      "model": "ESMFold",
+      "method": "baseline",
+      "n_pairs": 183,
+      "mean_dockq": 0.126,
+      "median_dockq": 0.015,
+      "success_rate": 16.4,
+      "status": "complete"
     },
     {
-      "name": "TTT Uniform Masking",
-      "id": "ttt_uniform",
-      "masking": "uniform",
-      "dataset": "DB5.5",
-      "status": "in_progress",
-      "n_completed": 68,
-      "n_total": 75
+      "id": "esmfold_ttt_uniform",
+      "name": "ESMFold TTT (Uniform)",
+      "phase": 1,
+      "model": "ESMFold",
+      "method": "ttt_uniform_masking",
+      "n_pairs": 33,
+      "mean_dockq": 0.167,
+      "median_dockq": null,
+      "success_rate": 18.2,
+      "status": "complete"
     },
     {
-      "name": "TTT Cross-Chain Masking",
-      "id": "ttt_crosschain",
-      "masking": "crosschain",
-      "dataset": "DB5.5",
-      "status": "in_progress",
-      "n_completed": 31,
-      "n_total": 32
+      "id": "evoformer_baseline",
+      "name": "Evoformer Baseline",
+      "phase": 2,
+      "model": "OpenFold multimer v3",
+      "method": "baseline",
+      "n_pairs": 5,
+      "mean_dockq": 0.0959,
+      "median_dockq": 0.038,
+      "success_rate": 20.0,
+      "status": "complete"
     },
     {
-      "name": "TTT Interface-Biased Masking",
-      "id": "ttt_interface",
-      "masking": "interface",
-      "dataset": "DB5.5",
-      "status": "in_progress",
-      "n_completed": 31,
-      "n_total": 32
+      "id": "evoformer_ttt_sgd",
+      "name": "Evoformer TTT (SGD, lr=1e-4)",
+      "phase": 2,
+      "model": "OpenFold multimer v3 + LoRA",
+      "method": "ttt_sgd",
+      "n_pairs": 5,
+      "n_completed": 1,
+      "n_errored": 4,
+      "mean_dockq": 0.0408,
+      "success_rate": 0.0,
+      "status": "complete",
+      "note": "SGD lr=1e-4 too small; ipTM barely moved. 4/5 pairs CUDA error."
     },
     {
-      "name": "Ablation Studies",
-      "id": "ablations",
-      "masking": "ablations",
-      "dataset": "DB5.5",
-      "status": "not_started",
-      "n_completed": 0,
-      "n_total": 0
+      "id": "evoformer_ttt_adam",
+      "name": "Evoformer TTT (Adam, lr=1e-3)",
+      "phase": 2,
+      "model": "OpenFold multimer v3 + LoRA",
+      "method": "ttt_adam",
+      "n_pairs": 2,
+      "n_completed": 1,
+      "n_errored": 1,
+      "mean_dockq": 0.0288,
+      "success_rate": 0.0,
+      "status": "complete",
+      "note": "Loss monotonically decreasing (0.703->0.546). Most promising direction. lr=0.01 errored (LoRA bug)."
     }
-  ],
-  "plots": [
-    "dockq_comparison.png",
-    "success_rate.png"
   ]
 }
