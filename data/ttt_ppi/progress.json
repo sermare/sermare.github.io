@@ -1,12 +1,17 @@
 {
-  "last_updated": "2026-03-26T07:15:52.610116",
+  "last_updated": "2026-03-26T07:24:44.752030",
   "status": "running",
-  "total_experiments": 7,
-  "completed_experiments": 2,
-  "best_dockq": 0.968,
+  "total_experiments": 5,
+  "completed_experiments": 1,
+  "best_dockq": 0.12626035164147628,
   "success_rate": null,
   "gpu_hours": 0,
   "timeline": [
+    {
+      "timestamp": "2026-03-26T07:24:44.752030",
+      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
+      "type": "metric"
+    },
     {
       "timestamp": "2026-03-26T07:15:52.610116",
       "message": "PRELIMINARY FINDINGS (46/183 uniform, 13/183 cross-chain/interface): TTT reduces MLM perplexity (loss 2.5\u21920.6) but DockQ improvements are NEGLIGIBLE (<0.001). Baseline ESMFold+linker gets 16.4% success. TTT finds different confidence-optimal steps ~50% of cases but these do not translate to DockQ improvement. Key insight: folding trunk (not trained for complexes) is the bottleneck, not the language model representations. This is an important negative result showing representation-level adaptation cannot compensate for architectural limitations in multi-chain prediction.",
@@ -180,63 +185,52 @@
   ],
   "experiments": [
     {
-      "name": "Baseline (1080Ti short)",
-      "id": "pilot_baseline",
-      "masking": "none",
-      "dataset": "DB5.5 (33 short)",
-      "status": "completed",
-      "n_completed": 33,
-      "n_total": 33,
-      "mean_dockq": 0.167,
-      "success_rate": 0.182
-    },
-    {
-      "name": "Baseline (V100 full)",
+      "name": "Vanilla ESMFold + Linker",
       "id": "baseline",
       "masking": "none",
-      "dataset": "DB5.5 (183)",
+      "dataset": "DB5.5",
       "status": "completed",
       "n_completed": 183,
       "n_total": 183,
-      "mean_dockq": 0.126,
-      "success_rate": 0.164
+      "mean_dockq": 0.12626035164147628,
+      "median_dockq": 0.014531136656247121,
+      "success_rate": 0.16393442622950818
     },
     {
-      "name": "TTT Uniform (1080Ti short)",
-      "id": "ttt_uniform_1080ti",
-      "masking": "uniform",
-      "dataset": "DB5.5 (33 short)",
-      "status": "completed",
-      "n_completed": 33,
-      "n_total": 33,
-      "mean_dockq": 0.1667
-    },
-    {
-      "name": "TTT Uniform (V100 full)",
+      "name": "TTT Uniform Masking",
       "id": "ttt_uniform",
       "masking": "uniform",
-      "dataset": "DB5.5 (183)",
+      "dataset": "DB5.5",
       "status": "in_progress",
-      "n_completed": 13,
-      "n_total": 183
+      "n_completed": 46,
+      "n_total": 48
     },
     {
-      "name": "TTT Cross-chain (V100)",
+      "name": "TTT Cross-Chain Masking",
       "id": "ttt_crosschain",
       "masking": "crosschain",
-      "dataset": "DB5.5 (183)",
+      "dataset": "DB5.5",
       "status": "in_progress",
-      "n_completed": 13,
-      "n_total": 183
+      "n_completed": 14,
+      "n_total": 15
     },
     {
-      "name": "TTT Interface (V100)",
+      "name": "TTT Interface-Biased Masking",
       "id": "ttt_interface",
       "masking": "interface",
-      "dataset": "DB5.5 (183)",
+      "dataset": "DB5.5",
       "status": "in_progress",
-      "n_completed": 13,
-      "n_total": 183
+      "n_completed": 14,
+      "n_total": 15
+    },
+    {
+      "name": "Ablation Studies",
+      "id": "ablations",
+      "masking": "ablations",
+      "dataset": "DB5.5",
+      "status": "not_started",
+      "n_completed": 0,
+      "n_total": 0
     }
   ],
   "plots": [
