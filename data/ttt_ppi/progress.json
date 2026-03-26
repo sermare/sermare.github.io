@@ -1,17 +1,17 @@
 {
-  "last_updated": "2026-03-26T16:27:17.718765",
+  "project": "ProteinTTT-PPI",
   "status": "running",
-  "total_experiments": 5,
-  "completed_experiments": 1,
-  "best_dockq": 0.12626035164147628,
-  "success_rate": null,
-  "gpu_hours": 0,
+  "last_updated": "2026-03-26 16:27",
+  "stats": {
+    "total_experiments": 5,
+    "phases_completed": 1,
+    "phases_total": 2,
+    "best_dockq": 0.3699,
+    "best_dockq_pair": "1ACB",
+    "best_dockq_method": "evoformer_baseline",
+    "total_pairs_evaluated": 223
+  },
   "timeline": [
-    {
-      "timestamp": "2026-03-26T16:27:17.718765",
-      "message": "Auto-update: 1/5 experiments done. Best DockQ=0.1263",
-      "type": "metric"
-    },
     {
       "date": "2026-03-10",
       "title": "Phase 1: ESMFold Baseline",
@@ -57,56 +57,68 @@
   ],
   "experiments": [
     {
-      "name": "Vanilla ESMFold + Linker",
-      "id": "baseline",
-      "masking": "none",
-      "dataset": "DB5.5",
-      "status": "completed",
-      "n_completed": 183,
-      "n_total": 183,
-      "mean_dockq": 0.12626035164147628,
-      "median_dockq": 0.014531136656247121,
-      "success_rate": 0.16393442622950818
+      "id": "esmfold_baseline",
+      "name": "ESMFold Baseline",
+      "phase": 1,
+      "model": "ESMFold",
+      "method": "baseline",
+      "n_pairs": 183,
+      "mean_dockq": 0.126,
+      "median_dockq": 0.015,
+      "success_rate": 16.4,
+      "status": "complete"
     },
     {
-      "name": "TTT Uniform Masking",
-      "id": "ttt_uniform",
-      "masking": "uniform",
-      "dataset": "DB5.5",
-      "status": "in_progress",
-      "n_completed": 68,
-      "n_total": 75
+      "id": "esmfold_ttt_uniform",
+      "name": "ESMFold TTT (Uniform)",
+      "phase": 1,
+      "model": "ESMFold",
+      "method": "ttt_uniform_masking",
+      "n_pairs": 33,
+      "mean_dockq": 0.167,
+      "median_dockq": null,
+      "success_rate": 18.2,
+      "status": "complete"
     },
     {
-      "name": "TTT Cross-Chain Masking",
-      "id": "ttt_crosschain",
-      "masking": "crosschain",
-      "dataset": "DB5.5",
-      "status": "in_progress",
-      "n_completed": 31,
-      "n_total": 32
+      "id": "evoformer_baseline",
+      "name": "Evoformer Baseline",
+      "phase": 2,
+      "model": "OpenFold multimer v3",
+      "method": "baseline",
+      "n_pairs": 5,
+      "mean_dockq": 0.0959,
+      "median_dockq": 0.038,
+      "success_rate": 20.0,
+      "status": "complete"
     },
     {
-      "name": "TTT Interface-Biased Masking",
-      "id": "ttt_interface",
-      "masking": "interface",
-      "dataset": "DB5.5",
-      "status": "in_progress",
-      "n_completed": 31,
-      "n_total": 32
+      "id": "evoformer_ttt_sgd",
+      "name": "Evoformer TTT (SGD, lr=1e-4)",
+      "phase": 2,
+      "model": "OpenFold multimer v3 + LoRA",
+      "method": "ttt_sgd",
+      "n_pairs": 5,
+      "n_completed": 1,
+      "n_errored": 4,
+      "mean_dockq": 0.0408,
+      "success_rate": 0.0,
+      "status": "complete",
+      "note": "SGD lr=1e-4 too small; ipTM barely moved. 4/5 pairs CUDA error."
     },
     {
-      "name": "Ablation Studies",
-      "id": "ablations",
-      "masking": "ablations",
-      "dataset": "DB5.5",
-      "status": "not_started",
-      "n_completed": 0,
-      "n_total": 0
+      "id": "evoformer_ttt_adam",
+      "name": "Evoformer TTT (Adam, lr=1e-3)",
+      "phase": 2,
+      "model": "OpenFold multimer v3 + LoRA",
+      "method": "ttt_adam",
+      "n_pairs": 2,
+      "n_completed": 1,
+      "n_errored": 1,
+      "mean_dockq": 0.0288,
+      "success_rate": 0.0,
+      "status": "complete",
+      "note": "Loss monotonically decreasing (0.703->0.546). Most promising direction. lr=0.01 errored (LoRA bug)."
     }
-  ],
-  "plots": [
-    "dockq_comparison.png",
-    "success_rate.png"
   ]
 }
