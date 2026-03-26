@@ -667,7 +667,7 @@
       when the folding head is incompetent. Phase 2 tests whether TTT works when the structure module
       IS trained on complexes.
     </div>
-    <div class="last-updated" id="lastUpdated">Last updated: Mar 26, 2026 3:52 PM PDT</div>
+    <div class="last-updated" id="lastUpdated">Last updated: Mar 26, 2026 4:07 PM PDT</div>
 
     <!-- Overview Stats -->
     <div class="stats-row">
@@ -676,11 +676,11 @@
         <div class="stat-label">Phase</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statPairs">20+</div>
+        <div class="stat-value" id="statPairs">22</div>
         <div class="stat-label">Pairs Tested</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statDockQ">0.373</div>
+        <div class="stat-value" id="statDockQ">0.375</div>
         <div class="stat-label">Best DockQ (TTT)</div>
       </div>
       <div class="stat-card">
@@ -688,7 +688,7 @@
         <div class="stat-label">HP Configs Swept</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" id="statStatus" style="color:#1565c0;">3 RUNNING</div>
+        <div class="stat-value" id="statStatus" style="color:#1565c0;">6 RUNNING</div>
         <div class="stat-label">Running Now</div>
       </div>
     </div>
@@ -708,12 +708,13 @@
       <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:16px;">Progress Timeline</h2>
       <div class="timeline" id="timeline">
         <div class="timeline-entry type-success">
-          <div class="timeline-time">2026-03-26 15:52 &mdash; BREAKTHROUGH</div>
-          <div class="timeline-msg"><strong>lr=0.05 confirmed across 7 pairs! 1AHW: DockQ 0.012&rarr;0.373.</strong> All lr=0.05 pairs show the divergence&rarr;spike pattern. 1AHW: ipTM&rarr;0.753, DockQ&rarr;0.373. 1AKJ: ipTM&rarr;0.514, DockQ&rarr;0.194. 1AVX: ipTM&rarr;0.980(!), DockQ&rarr;0.144. 1AY7 smaller effect. 1BVN OOM. r8_b4: 1F34 done (+53% DockQ). 3 more t5_ running.</div>
+          <div class="timeline-time">2026-03-26 16:07 &mdash; LIVE</div>
+          <div class="timeline-msg"><strong>13/15 non-OOM pairs improved with lr=0.05! 1CGI DockQ 0.375 (ipTM=0.983).</strong> New completions: 1CGI(0.375), 1B6C(0.244), 1EZU(0.195), 1D6R(0.125), 1EAW(0.126), 1BUH(0.050). 1B6C hit ipTM=0.890 at step 30 then crashed &mdash; early stopping needed. 1K4C running: DockQ spiked to 0.348 at step 20. 2 more OOMs (2YVJ, 2GAF). 6 pairs still running.</div>
           <div class="timeline-metrics">
-            <span class="timeline-metric">t5_ done: 7/20</span>
-            <span class="timeline-metric">best: 1AHW DockQ 0.373</span>
-            <span class="timeline-metric">1AVX ipTM=0.980</span>
+            <span class="timeline-metric">t5_ done: 13/20</span>
+            <span class="timeline-metric">improved: 11/13</span>
+            <span class="timeline-metric">OOM: 4</span>
+            <span class="timeline-metric">best: 1CGI 0.375</span>
           </div>
         </div>
         <div class="timeline-entry type-success">
@@ -892,8 +893,8 @@
               <td style="font-weight:500; color:#e65100;">Multi-pair TTT (lr=0.05 DIVERGE)</td>
               <td>AF2-Multimer</td>
               <td>LoRA+Adam lr=0.05, r8, last4, 50 steps</td>
-              <td style="font-family:monospace;">7 done / 20 total</td>
-              <td style="font-family:monospace; color:#e65100; font-weight:500;">0.373 (1AHW)</td>
+              <td style="font-family:monospace;">13 done / 22 total</td>
+              <td style="font-family:monospace; color:#e65100; font-weight:500;">0.375 (1CGI)</td>
               <td style="font-family:monospace;">--</td>
               <td><span class="exp-status exp-status-running">Running</span></td>
             </tr>
@@ -1415,57 +1416,196 @@
               <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
-              <td style="font-weight:500;">1BVN</td>
-              <td style="font-family:monospace;">567</td>
-              <td style="font-family:monospace;">0.015</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace; color:#c62828;">OOM</td>
-              <td style="font-family:monospace;">0.137</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-failed">OOM</span></td>
+              <td style="font-weight:500; color:#e65100;">1CGI</td>
+              <td style="font-family:monospace;">301</td>
+              <td style="font-family:monospace;">0.018</td>
+              <td style="font-family:monospace; font-weight:500; color:#e65100;">0.375</td>
+              <td style="font-family:monospace; color:#e65100;">+1986%</td>
+              <td style="font-family:monospace;">0.120</td>
+              <td style="font-family:monospace; font-weight:500;">0.983</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+719%</td>
+              <td style="font-family:monospace;">9.2</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500; color:#e65100;">1EZU</td>
+              <td style="font-family:monospace;">280</td>
+              <td style="font-family:monospace;">0.017</td>
+              <td style="font-family:monospace; font-weight:500; color:#e65100;">0.195</td>
+              <td style="font-family:monospace; color:#e65100;">+1047%</td>
+              <td style="font-family:monospace;">0.107</td>
+              <td style="font-family:monospace; font-weight:500;">0.888</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+730%</td>
+              <td style="font-family:monospace;">32.4</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500; color:#e65100;">1B6C</td>
+              <td style="font-family:monospace;">433</td>
+              <td style="font-family:monospace;">0.010</td>
+              <td style="font-family:monospace; font-weight:500; color:#e65100;">0.244</td>
+              <td style="font-family:monospace; color:#e65100;">+2340%</td>
+              <td style="font-family:monospace;">0.098</td>
+              <td style="font-family:monospace; font-weight:500;">0.890</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+808%</td>
+              <td style="font-family:monospace;">10.4</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500; color:#e65100;">1D6R</td>
+              <td style="font-family:monospace;">281</td>
+              <td style="font-family:monospace;">0.019</td>
+              <td style="font-family:monospace; font-weight:500; color:#e65100;">0.125</td>
+              <td style="font-family:monospace; color:#e65100;">+558%</td>
+              <td style="font-family:monospace;">0.116</td>
+              <td style="font-family:monospace; font-weight:500;">0.452</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+290%</td>
+              <td style="font-family:monospace;">6.2</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1EAW</td>
+              <td style="font-family:monospace;">297</td>
+              <td style="font-family:monospace;">0.049</td>
+              <td style="font-family:monospace;">0.126</td>
+              <td style="font-family:monospace;">+157%</td>
+              <td style="font-family:monospace;">0.103</td>
+              <td style="font-family:monospace;">0.162</td>
+              <td style="font-family:monospace;">+57%</td>
+              <td style="font-family:monospace;">3.9</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">1BUH</td>
               <td style="font-family:monospace;">357</td>
               <td style="font-family:monospace;">0.031</td>
               <td style="font-family:monospace;">0.050</td>
-              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">+63%</td>
               <td style="font-family:monospace;">0.133</td>
-              <td style="font-family:monospace;">0.146</td>
-              <td style="font-family:monospace; color:#2d6a2d;">+10%</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Step 10</span></td>
+              <td style="font-family:monospace;">0.604</td>
+              <td style="font-family:monospace; color:#2d6a2d;">+354%</td>
+              <td style="font-family:monospace;">10.9</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
               <td style="font-weight:500;">1BJ1</td>
               <td style="font-family:monospace;">431</td>
-              <td style="font-family:monospace;">0.001</td>
-              <td style="font-family:monospace;">0.001</td>
-              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.002</td>
+              <td style="font-family:monospace;">0.002</td>
+              <td style="font-family:monospace;">0%</td>
               <td style="font-family:monospace;">0.120</td>
               <td style="font-family:monospace;">0.145</td>
               <td style="font-family:monospace; color:#2d6a2d;">+21%</td>
-              <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Step 20</span></td>
+              <td style="font-family:monospace;">8.4</td>
+              <td><span class="exp-status exp-status-completed">Done</span></td>
             </tr>
             <tr>
-              <td style="font-weight:500;">1B6C</td>
+              <td style="font-weight:500;">1BVN</td>
+              <td style="font-family:monospace;">567</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace; color:#c62828;">OOM</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-failed">OOM</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">2YVJ</td>
+              <td style="font-family:monospace;">508</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace; color:#c62828;">OOM</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-failed">OOM</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">2GAF</td>
+              <td style="font-family:monospace;">723</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace; color:#c62828;">OOM</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-failed">OOM</span></td>
+            </tr>
+            <tr style="border-top:2px solid var(--border);">
+              <td style="font-weight:500;">1EWY</td>
+              <td style="font-family:monospace;">401</td>
+              <td style="font-family:monospace;">0.017</td>
+              <td style="font-family:monospace;">0.034</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.145</td>
+              <td style="font-family:monospace;">0.274</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 40</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1K4C</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.016</td>
+              <td style="font-family:monospace; font-weight:500; color:#e65100;">0.348</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.105</td>
+              <td style="font-family:monospace;">0.184</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 40</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1E6J</td>
+              <td style="font-family:monospace;">429</td>
+              <td style="font-family:monospace;">0.006</td>
+              <td style="font-family:monospace;">0.008</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.101</td>
+              <td style="font-family:monospace;">0.126</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 30</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">1F34</td>
+              <td style="font-family:monospace;">463</td>
+              <td style="font-family:monospace;">0.015</td>
+              <td style="font-family:monospace;">0.027</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.100</td>
+              <td style="font-family:monospace;">0.109</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 10</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">2GTP</td>
+              <td style="font-family:monospace;">442</td>
+              <td style="font-family:monospace;">0.015</td>
+              <td style="font-family:monospace;">0.013</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">0.101</td>
+              <td style="font-family:monospace;">0.112</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 10</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500;">2Z0E</td>
               <td style="font-family:monospace;">433</td>
               <td style="font-family:monospace;">0.010</td>
-              <td style="font-family:monospace;">0.011</td>
-              <td style="font-family:monospace;">--</td>
-              <td style="font-family:monospace;">0.098</td>
-              <td style="font-family:monospace;">0.097</td>
               <td style="font-family:monospace;">--</td>
               <td style="font-family:monospace;">--</td>
-              <td><span class="exp-status exp-status-running">Step 20</span></td>
-            </tr>
-            <tr>
-              <td style="font-weight:500; color:var(--text-secondary);">Remaining ~10</td>
-              <td colspan="8" style="font-family:monospace; color:var(--text-secondary);">--</td>
-              <td><span class="exp-status exp-status-pending">Pending</span></td>
+              <td style="font-family:monospace;">0.096</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td style="font-family:monospace;">--</td>
+              <td><span class="exp-status exp-status-running">Step 0</span></td>
             </tr>
           </tbody>
         </table>
@@ -1642,7 +1782,7 @@ Input: Protein A (seq) + Protein B (seq) + Paired MSAs
           <span class="finding-label">Phase 1 (Negative):</span> ESMFold TTT doesn't improve DockQ despite reducing perplexity. Folding head not trained on complexes.
         </div>
         <div class="finding-item finding-progress">
-          <span class="finding-label">Phase 2 (BREAKTHROUGH):</span> lr=0.05 produces massive DockQ gains across all pairs tested. Best: 1AHW 0.012&rarr;0.373. Pattern confirmed: loss diverges past 10, ipTM spikes to 0.5-0.98, DockQ follows. 7/7 non-OOM pairs improved. 1AVX reached ipTM=0.980. The divergent regime is where the model learns complex structure.
+          <span class="finding-label">Phase 2 (BREAKTHROUGH):</span> lr=0.05 produces dramatic DockQ gains &mdash; 11/13 non-OOM pairs improved. Best: 1CGI 0.018&rarr;0.375 (ipTM=0.983). Consistent pattern: loss diverges past ~5, ipTM spikes to 0.2-0.98, DockQ follows 1-2 steps later. 1B6C peaked at step 30 (DockQ=0.244) then crashed &mdash; early stopping at peak ipTM may be key. 4 pairs OOM (&gt;500 residues).
         </div>
         <div class="finding-item finding-hypothesis">
           <span class="finding-label">Hypothesis:</span> TTT only helps when the downstream task head is competent.
@@ -1662,14 +1802,14 @@ Input: Protein A (seq) + Protein B (seq) + Paired MSAs
           </div>
           <div class="log-title">ttt-ppi-phase2.log</div>
         </div>
-<span class="log-time">[2026-03-26 15:52]</span> <span class="log-warn">BREAK</span>  BREAKTHROUGH: lr=0.05 confirmed across 7 pairs
-<span class="log-time">                     </span> <span class="log-metric">  >> t5_1AHW DONE: DockQ 0.012->0.373 (+3092%), ipTM->0.753</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> t5_1AKJ DONE: DockQ 0.017->0.194 (+1071%), ipTM->0.514</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> t5_1AVX DONE: DockQ 0.027->0.144, ipTM->0.980 (!!)</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> t5_1AY7 DONE: DockQ +133%, ipTM->0.228</span>
-<span class="log-time">                     </span> <span class="log-err">  >> t5_1BVN: OOM (567 res)</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> r8b4 1F34 DONE: DockQ +53%</span>
-<span class="log-time">                     </span> <span class="log-metric">  >> Running: t5_1BUH(step10), t5_1BJ1(step20), t5_1B6C(step20)</span>
+<span class="log-time">[2026-03-26 16:07]</span> <span class="log-warn">BREAK</span>  13/15 non-OOM t5_ pairs done
+<span class="log-time">                     </span> <span class="log-metric">  >> 1CGI: DockQ 0.018->0.375, ipTM->0.983 (NEW BEST)</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1B6C: DockQ 0.010->0.244, ipTM peaked 0.890 at step 30</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1EZU: DockQ 0.017->0.195, ipTM->0.888</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1D6R: DockQ->0.125, 1EAW: DockQ->0.126, 1BUH: DockQ->0.050</span>
+<span class="log-time">                     </span> <span class="log-metric">  >> 1BJ1: flat (DockQ 0.002), 1BVN/2YVJ/2GAF: OOM</span>
+<span class="log-time">                     </span> <span class="log-info">  >> RUNNING: 1EWY(s40), 1K4C(s40 DockQ peaked 0.348!), 1E6J(s30)</span>
+<span class="log-time">                     </span> <span class="log-info">  >> RUNNING: 1F34(s10), 2GTP(s10), 2Z0E(s0)</span>
 <span class="log-time">[2026-03-26 15:17:00]</span> <span class="log-info">OK   </span>  14 pairs done (r8_b4), 1CLV OOM, 3 running + 24 queued
 <span class="log-time">                     </span> <span class="log-metric">  >> NEW: 1AVX done: DockQ +20%, ipTM +2%</span>
 <span class="log-time">                     </span> <span class="log-metric">  >> NEW: 1AHW done: DockQ +20%, ipTM +20% (0.100->0.121)</span>
@@ -1691,11 +1831,14 @@ Input: Protein A (seq) + Protein B (seq) + Paired MSAs
 <span class="log-time">                     </span> <span class="log-metric">  >> best = 1ACB (0.370, acceptable)</span>
 <span class="log-time">[2026-03-25 23:59:00]</span> <span class="log-warn">WARN </span>  Phase 1: ESMFold TTT negative result (head incompetence)
 
-<span class="log-time">--- Active SLURM Jobs (Mar 26 15:52) ---</span>
-<span class="log-info">[RUNNING  ]</span> t5_1BUH      A40  step 10/50 (lr=0.05)
-<span class="log-info">[RUNNING  ]</span> t5_1BJ1      A40  step 20/50 (lr=0.05)
-<span class="log-info">[RUNNING  ]</span> t5_1B6C      A40  step 20/50 (lr=0.05)
-<span class="log-warn">[PENDING  ]</span> ~13 t5_ pairs + test_l40, tt_1K4C
+<span class="log-time">--- Active SLURM Jobs (Mar 26 16:07) ---</span>
+<span class="log-info">[RUNNING  ]</span> t5_1EWY      A40  step 40/50 (lr=0.05)
+<span class="log-info">[RUNNING  ]</span> t5_1K4C      A40  step 40/50 (lr=0.05) <span class="log-metric">DockQ=0.348 at s20!</span>
+<span class="log-info">[RUNNING  ]</span> t5_1E6J      A40  step 30/50 (lr=0.05)
+<span class="log-info">[RUNNING  ]</span> t5_1F34      A40  step 10/50 (lr=0.05)
+<span class="log-info">[RUNNING  ]</span> t5_2GTP      A40  step 10/50 (lr=0.05)
+<span class="log-info">[RUNNING  ]</span> t5_2Z0E      A40  step 0/50 (lr=0.05)
+<span class="log-warn">[PENDING  ]</span> test_l40, tt_1K4C, ttt_1AHW(x3), ttt_1DFJ, ttt_1AY7
       </div>
     </div>
 
