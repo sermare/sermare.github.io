@@ -779,6 +779,18 @@
         </div>
       </div>
 
+      <!-- ipTM vs DockQ Scatter -->
+      <div class="result-card" style="margin-bottom:24px;">
+        <h3>ipTM vs DockQ Correlation (Best Step)</h3>
+        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+          Each point is one protein pair. Blue = baseline, green = TTT best step.
+          ipTM is computable at test time without ground truth.
+        </p>
+        <div class="chart-area" style="height:380px;">
+          <canvas id="chartScatter"></canvas>
+        </div>
+      </div>
+
       <!-- Consolidated Table -->
       <h3 style="font-size:16px;font-weight:500;color:var(--heading-color);margin:24px 0 12px 0;">Per-Pair Results (Sorted by Best DockQ)</h3>
       <div class="exp-table-wrapper">
@@ -1050,9 +1062,10 @@ var bestTTT = [0.9514,0.6354,0.6111,0.4366,0.3804,0.3801,0.3795,0.3778,0.3734,0.
 var iptmBase = [0.8216,0.7348,0.8495,0.3202,0.2176,0.1394,0.7493,0.1565,0.2515,0.3497,0.1919,0.1025,0.1581,0.1241,0.1737,0.1987,0.2768,0.5526,0.1556,0.4653,0.5119,0.1689,0.1253,0.1506,0.5312,0.234,0.3719,0.2542,0.3638,0.7149,0.386,0.6498,0.6958,0.6944,0.1895,0.5449,0.1721,0.1731,0.8042,0.2182,0.1691,0.143,0.2116,0.1914,0.4247,0.1406,0.4049,0.3073,0.1852,0.1751,0.3558,0.1231,0.1596,0.1659,0.1397,0.1392,0.2444,0.1915,0.139,0.1813,0.1595,0.0715,0.1479,0.095,0.1455,0.1483,0.2161,0.6458];
 var iptmBest = [0.8216,0.7348,0.8495,0.3202,0.867,0.9175,0.8349,0.6129,0.1162,0.9982,0.8638,0.5072,0.9843,0.9988,0.2305,0.9111,0.9035,0.5526,0.9075,0.4653,0.7388,0.8832,0.4734,0.9089,0.5312,0.234,0.3719,0.9921,0.3638,0.7149,0.386,0.9981,0.4808,0.8276,0.8978,0.5449,0.1721,0.9776,0.7387,0.9313,0.8627,0.1064,0.8466,0.1914,0.1567,0.1406,0.4049,0.3073,0.1852,0.3266,0.2936,0.1184,0.9573,0.1659,0.1098,0.1392,0.1303,0.107,0.139,0.2398,0.5573,0.0715,0.1218,0.095,0.1246,0.1483,0.1302,0.1001];
 var delta = [0.0,0.0,0.0,0.0,0.3497,0.3395,0.3638,0.333,0.358,0.351,0.3506,0.3502,0.3286,0.3281,0.3384,0.2788,0.2576,0.0,0.2753,0.0,0.2196,0.1977,0.1816,0.1895,0.0,0.0,0.0,0.0734,0.0,0.0,0.0,0.0524,0.0438,0.0487,0.0069,0.0,0.0,0.0317,0.0277,0.0236,0.0187,0.0269,0.0256,0.0,0.0266,0.0,0.0,0.0,0.0,0.0018,0.0083,0.0145,0.0041,0.0,0.006,0.0,0.0091,0.0039,0.0,0.0028,0.0019,0.0,0.0029,0.0,0.0046,0.0,0.0011,0.0007];
+var tttOnly = bestTTT.map((v, i) => delta[i] > 0 ? v : 0);
 
 // ============ CHART RENDERING ============
-let chartDockQ = null, chartIPTM = null, chartDelta = null;
+let chartDockQ = null, chartIPTM = null, chartDelta = null, chartScatter = null;
 
 function getChartColors() {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -1067,6 +1080,7 @@ function renderAllCharts() {
   renderDockQChart();
   renderIPTMChart();
   renderDeltaChart();
+  renderScatterChart();
 }
 
 function renderDockQChart() {
@@ -1080,7 +1094,7 @@ function renderDockQChart() {
       labels: pairs,
       datasets: [
         { label: 'Baseline (paired MSA)', data: baseline, backgroundColor: '#42a5f5', barPercentage: 0.9, categoryPercentage: 0.85 },
-        { label: 'Best (baseline or TTT)', data: bestTTT, backgroundColor: '#43a047', barPercentage: 0.9, categoryPercentage: 0.85 }
+        { label: 'TTT DockQ', data: tttOnly, backgroundColor: '#43a047', barPercentage: 0.9, categoryPercentage: 0.85 }
       ]
     },
     options: {
@@ -1175,6 +1189,42 @@ function renderDeltaChart() {
       scales: {
         x: { title: { display: true, text: 'DockQ Improvement', color: c.text }, grid: { color: c.grid }, ticks: { color: c.text }, min: 0 },
         y: { grid: { display: false }, ticks: { color: c.text, font: { family: "'SF Mono','Consolas','Monaco',monospace", size: 10 } } }
+      }
+    }
+  });
+}
+
+function renderScatterChart() {
+  const ctx = document.getElementById('chartScatter');
+  if (!ctx) return;
+  if (chartScatter) chartScatter.destroy();
+  const c = getChartColors();
+
+  var blPoints = pairs.map((p, i) => ({x: iptmBase[i], y: baseline[i]}));
+  var tttPoints = pairs.map((p, i) => delta[i] > 0 ? {x: iptmBest[i], y: bestTTT[i]} : null).filter(p => p !== null);
+
+  chartScatter = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        { label: 'Baseline', data: blPoints, backgroundColor: '#42a5f588', borderColor: '#42a5f5', pointRadius: 5, pointHoverRadius: 7 },
+        { label: 'TTT', data: tttPoints, backgroundColor: '#43a04788', borderColor: '#43a047', pointRadius: 5, pointHoverRadius: 7 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: c.text } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ctx.dataset.label + ': ipTM=' + ctx.parsed.x.toFixed(3) + ' DockQ=' + ctx.parsed.y.toFixed(3); }
+          }
+        }
+      },
+      scales: {
+        x: { title: { display: true, text: 'ipTM', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0, max: 1.05 },
+        y: { title: { display: true, text: 'DockQ', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0, max: 1.0 }
       }
     }
   });
