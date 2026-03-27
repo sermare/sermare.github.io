@@ -742,6 +742,7 @@
       <button class="sub-tab-btn" onclick="switchSubTab('structures')">Structures</button>
       <button class="sub-tab-btn" onclick="switchSubTab('method')">Method</button>
       <button class="sub-tab-btn" onclick="switchSubTab('log')">Log</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('diagnostics')">Diagnostics</button>
     </div>
 
     <!-- ======================= TAB 1: RESULTS ======================= -->
@@ -1112,6 +1113,63 @@ Best DockQ / ipTM across 50 steps</div>
 
     </div>
 
+    <!-- ======================= TAB 5: DIAGNOSTICS ======================= -->
+    <div id="tab-diagnostics" class="sub-tab-content">
+      <h2 style="font-size:18px; font-weight:400; color:var(--heading-color); margin-bottom:8px;">When Does TTT Help vs Hurt?</h2>
+      <p style="font-size:14px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">
+        TTT improved 75/145 pairs but hurt 70. Improved pairs have mean baseline DockQ = 0.021 vs hurt pairs = 0.167.
+        The dividing line is roughly baseline DockQ ~ 0.05: below that TTT tends to help, above it tends to hurt.
+      </p>
+
+      <!-- Plot 1: Baseline DockQ vs Delta (the key plot) -->
+      <div class="result-card" style="margin-bottom:18px;">
+        <h3>Baseline DockQ vs TTT Effect (delta DockQ)</h3>
+        <div class="chart-area" style="height:380px;">
+          <canvas id="chartBlVsDelta"></canvas>
+        </div>
+      </div>
+
+      <!-- Plot 2+3 side by side -->
+      <div class="results-grid">
+        <div class="result-card">
+          <h3>Baseline ipTM vs TTT Effect</h3>
+          <div class="chart-area" style="height:300px;">
+            <canvas id="chartIptmVsDelta"></canvas>
+          </div>
+        </div>
+        <div class="result-card">
+          <h3>Pair Size (residues) vs TTT Effect</h3>
+          <div class="chart-area" style="height:300px;">
+            <canvas id="chartSizeVsDelta"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plot 4: Average loss curves -->
+      <div class="result-card" style="margin-bottom:18px;">
+        <h3>Average Loss Curves: Improved vs Hurt Pairs (50 steps)</h3>
+        <div class="chart-area" style="height:300px;">
+          <canvas id="chartLossCurves"></canvas>
+        </div>
+      </div>
+
+      <!-- Plot 5+6 side by side -->
+      <div class="results-grid">
+        <div class="result-card">
+          <h3>Average DockQ Trajectory: Improved vs Hurt</h3>
+          <div class="chart-area" style="height:300px;">
+            <canvas id="chartDockQCurves"></canvas>
+          </div>
+        </div>
+        <div class="result-card">
+          <h3>Average ipTM Trajectory: Improved vs Hurt</h3>
+          <div class="chart-area" style="height:300px;">
+            <canvas id="chartIpTMCurves"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- /container -->
 
 <script>
@@ -1146,6 +1204,7 @@ function switchSubTab(tabId) {
   if (tabId === 'structures') {
     setTimeout(initStructureViewers, 100);
   }
+  if (tabId === 'diagnostics') setTimeout(renderDiagnostics, 50);
 }
 
 // ============ CHART DATA (44 PAIRS — PROPER BASELINES) ============
@@ -1156,6 +1215,17 @@ var iptmBase = [0.9217,0.8216,0.8662,0.8344,0.7348,0.8495,0.6922,0.6193,0.529,0.
 var iptmBest = [0.1634,0.9984,0.995,0.8278,0.7327,0.8422,0.1512,0.0996,0.3512,0.8054,0.5855,0.3907,0.4273,0.867,0.9175,0.8349,0.6129,0.1162,0.9969,0.9982,0.8638,0.5072,0.5002,0.9843,0.6795,0.9841,0.9988,0.2305,0.9111,0.1446,0.9035,0.1106,0.9075,0.511,0.7231,0.7388,0.8832,0.4734,0.11,0.9089,0.778,0.1757,0.781,0.378,0.1396,0.7336,0.9921,0.1198,0.2522,0.153,0.1995,0.5721,0.6802,0.9981,0.1228,0.4808,0.8664,0.7741,0.129,0.1082,0.1599,0.8276,0.8978,0.4774,0.9831,0.1292,0.2123,0.3456,0.1037,0.0926,0.1143,0.9776,0.0947,0.7387,0.9718,0.9313,0.1443,0.8627,0.1704,0.1064,0.194,0.8466,0.3854,0.1567,0.2387,0.1406,0.1322,0.0944,0.9541,0.105,0.0942,0.2434,0.1026,0.9365,0.8296,0.1034,0.1646,0.1003,0.3266,0.1496,0.2936,0.1184,0.114,0.9573,0.1264,0.1169,0.6073,0.1167,0.9985,0.5261,0.9479,0.0904,0.1123,0.1098,0.1814,0.1006,0.2491,0.1132,0.1392,0.1425,0.5925,0.1049,0.117,0.1049,0.1303,0.0839,0.107,0.357,0.1041,0.1249,0.1732,0.9308,0.0988,0.2398,0.5573,0.1303,0.1218,0.1158,0.0941,0.0847,0.1069,0.0706,0.1126,0.12,0.1117,0.0863,0.1246,0.1417,0.1175,0.1067,0.1302,0.1281,0.1478,0.1001];
 var delta = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.3497,0.3395,0.3638,0.333,0.358,0.3178,0.351,0.3506,0.3502,0.3237,0.3286,0.3413,0.3226,0.3281,0.3384,0.2788,0.0,0.2576,0.0,0.2753,0.2443,0.0,0.2196,0.1977,0.1816,0.0,0.1895,0.0,0.0,0.0,0.0,0.0,0.0885,0.0734,0.0,0.0,0.0,0.0,0.0,0.0,0.0524,0.0,0.0438,0.0,0.0,0.0452,0.0,0.0,0.0487,0.0069,0.0327,0.0348,0.0,0.0,0.0313,0.0,0.0,0.0152,0.0317,0.0338,0.0277,0.0185,0.0236,0.0,0.0187,0.0,0.0269,0.0,0.0256,0.0,0.0266,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0126,0.0,0.0,0.0083,0.0,0.0092,0.0,0.0018,0.0082,0.0083,0.0145,0.0114,0.0041,0.0,0.0,0.0061,0.0,0.0105,0.0022,0.0037,0.0,0.0,0.006,0.0,0.0033,0.0082,0.0,0.0,0.0,0.0028,0.0,0.0,0.0,0.0091,0.0,0.0039,0.0075,0.0,0.0,0.0,0.0,0.0021,0.0028,0.0019,0.0,0.0029,0.0043,0.0,0.0,0.0,0.0,0.0,0.0,0.0019,0.0,0.0046,0.0,0.0032,0.0014,0.0011,0.0,0.0,0.0007];
 var tttOnly = bestTTT.map((v, i) => delta[i] > 0 ? v : 0);
+
+// Diagnostics data
+var blVsDelta = [{"x":0.9624,"y":0.0},{"x":0.9514,"y":0.0},{"x":0.8476,"y":0.0},{"x":0.6931,"y":0.0},{"x":0.6354,"y":0.0},{"x":0.6111,"y":0.0},{"x":0.5573,"y":0.0},{"x":0.5211,"y":0.0},{"x":0.4696,"y":0.0},{"x":0.4569,"y":0.0},{"x":0.4366,"y":0.0},{"x":0.4353,"y":0.0},{"x":0.3933,"y":0.0},{"x":0.0306,"y":0.3498},{"x":0.0406,"y":0.3395},{"x":0.0157,"y":0.3638},{"x":0.0448,"y":0.333},{"x":0.0154,"y":0.358},{"x":0.0551,"y":0.3178},{"x":0.0195,"y":0.351},{"x":0.0197,"y":0.3506},{"x":0.0176,"y":0.3502},{"x":0.0379,"y":0.3237},{"x":0.0321,"y":0.3286},{"x":0.0177,"y":0.3413},{"x":0.0359,"y":0.3226},{"x":0.0294,"y":0.3281},{"x":0.0124,"y":0.3385},{"x":0.0636,"y":0.2788},{"x":0.3362,"y":0.0},{"x":0.0685,"y":0.2575},{"x":0.3218,"y":0.0},{"x":0.0361,"y":0.2752},{"x":0.0311,"y":0.2442},{"x":0.2683,"y":0.0},{"x":0.0201,"y":0.2195},{"x":0.026,"y":0.1978},{"x":0.0391,"y":0.1815},{"x":0.211,"y":0.0},{"x":0.0162,"y":0.1895},{"x":0.1633,"y":0.0},{"x":0.158,"y":0.0},{"x":0.1452,"y":0.0},{"x":0.1388,"y":0.0},{"x":0.1209,"y":0.0},{"x":0.0272,"y":0.0885},{"x":0.0331,"y":0.0734},{"x":0.1007,"y":0.0},{"x":0.0995,"y":0.0},{"x":0.0967,"y":0.0},{"x":0.0959,"y":0.0},{"x":0.0957,"y":0.0},{"x":0.0913,"y":0.0},{"x":0.0349,"y":0.0524},{"x":0.0834,"y":0.0},{"x":0.0337,"y":0.0438},{"x":0.0772,"y":0.0},{"x":0.0728,"y":0.0},{"x":0.0253,"y":0.0452},{"x":0.0692,"y":0.0},{"x":0.0606,"y":0.0},{"x":0.0118,"y":0.0487},{"x":0.0528,"y":0.0069},{"x":0.0249,"y":0.0328},{"x":0.0208,"y":0.0347},{"x":0.0542,"y":0.0},{"x":0.0514,"y":0.0},{"x":0.0182,"y":0.0313},{"x":0.0489,"y":0.0},{"x":0.0483,"y":0.0},{"x":0.0326,"y":0.0152},{"x":0.0152,"y":0.0317},{"x":0.0112,"y":0.0338},{"x":0.0171,"y":0.0277},{"x":0.0261,"y":0.0185},{"x":0.0209,"y":0.0236},{"x":0.044,"y":0.0},{"x":0.0241,"y":0.0188},{"x":0.0423,"y":0.0},{"x":0.0145,"y":0.0269},{"x":0.0376,"y":0.0},{"x":0.0115,"y":0.0256},{"x":0.0369,"y":0.0},{"x":0.0095,"y":0.0266},{"x":0.036,"y":0.0},{"x":0.0342,"y":0.0},{"x":0.033,"y":0.0},{"x":0.0329,"y":0.0},{"x":0.0323,"y":0.0},{"x":0.031,"y":0.0},{"x":0.0304,"y":0.0},{"x":0.0173,"y":0.0125},{"x":0.0295,"y":0.0},{"x":0.0285,"y":0.0},{"x":0.0196,"y":0.0084},{"x":0.0271,"y":0.0},{"x":0.0176,"y":0.0093},{"x":0.0263,"y":0.0},{"x":0.0243,"y":0.0018},{"x":0.0176,"y":0.0082},{"x":0.0154,"y":0.0083},{"x":0.0091,"y":0.0145},{"x":0.0117,"y":0.0114},{"x":0.0184,"y":0.0041},{"x":0.0218,"y":0.0},{"x":0.0216,"y":0.0},{"x":0.0154,"y":0.0061},{"x":0.021,"y":0.0},{"x":0.0102,"y":0.0105},{"x":0.0175,"y":0.0022},{"x":0.0158,"y":0.0037},{"x":0.0193,"y":0.0},{"x":0.0187,"y":0.0},{"x":0.0126,"y":0.006},{"x":0.0183,"y":0.0},{"x":0.015,"y":0.0033},{"x":0.0099,"y":0.0081},{"x":0.018,"y":0.0},{"x":0.0172,"y":0.0},{"x":0.0171,"y":0.0},{"x":0.0142,"y":0.0029},{"x":0.017,"y":0.0},{"x":0.0168,"y":0.0},{"x":0.0166,"y":0.0},{"x":0.007,"y":0.0091},{"x":0.0161,"y":0.0},{"x":0.0121,"y":0.0039},{"x":0.0084,"y":0.0074},{"x":0.0148,"y":0.0},{"x":0.0144,"y":0.0},{"x":0.013,"y":0.0},{"x":0.013,"y":0.0},{"x":0.0105,"y":0.002},{"x":0.0094,"y":0.0028},{"x":0.0096,"y":0.0019},{"x":0.011,"y":0.0},{"x":0.008,"y":0.0029},{"x":0.0065,"y":0.0043},{"x":0.0108,"y":0.0},{"x":0.0106,"y":0.0},{"x":0.0098,"y":0.0},{"x":0.0095,"y":0.0},{"x":0.0095,"y":0.0},{"x":0.0087,"y":0.0},{"x":0.0067,"y":0.0019},{"x":0.0083,"y":0.0},{"x":0.0036,"y":0.0046},{"x":0.008,"y":0.0},{"x":0.0043,"y":0.0032},{"x":0.0039,"y":0.0013},{"x":0.0033,"y":0.001},{"x":0.0034,"y":0.0},{"x":0.0025,"y":0.0},{"x":0.0013,"y":0.0008}];
+var blIptmVsDelta = [{"x":0.9217,"y":0.0},{"x":0.8216,"y":0.0},{"x":0.8662,"y":0.0},{"x":0.8344,"y":0.0},{"x":0.7348,"y":0.0},{"x":0.8495,"y":0.0},{"x":0.6922,"y":0.0},{"x":0.6193,"y":0.0},{"x":0.529,"y":0.0},{"x":0.5413,"y":0.0},{"x":0.3202,"y":0.0},{"x":0.8004,"y":0.0},{"x":0.7881,"y":0.0},{"x":0.2176,"y":0.3498},{"x":0.1394,"y":0.3395},{"x":0.7493,"y":0.3638},{"x":0.1565,"y":0.333},{"x":0.2515,"y":0.358},{"x":0.1819,"y":0.3178},{"x":0.3497,"y":0.351},{"x":0.1919,"y":0.3506},{"x":0.1025,"y":0.3502},{"x":0.173,"y":0.3237},{"x":0.1581,"y":0.3286},{"x":0.1273,"y":0.3413},{"x":0.1838,"y":0.3226},{"x":0.1241,"y":0.3281},{"x":0.1737,"y":0.3385},{"x":0.1987,"y":0.2788},{"x":0.6985,"y":0.0},{"x":0.2768,"y":0.2575},{"x":0.5526,"y":0.0},{"x":0.1556,"y":0.2752},{"x":0.1152,"y":0.2442},{"x":0.4653,"y":0.0},{"x":0.5119,"y":0.2195},{"x":0.1689,"y":0.1978},{"x":0.1253,"y":0.1815},{"x":0.4442,"y":0.0},{"x":0.1506,"y":0.1895},{"x":0.7062,"y":0.0},{"x":0.5312,"y":0.0},{"x":0.234,"y":0.0},{"x":0.23,"y":0.0},{"x":0.3719,"y":0.0},{"x":0.1267,"y":0.0885},{"x":0.2542,"y":0.0734},{"x":0.3638,"y":0.0},{"x":0.2522,"y":0.0},{"x":0.2033,"y":0.0},{"x":0.7149,"y":0.0},{"x":0.386,"y":0.0},{"x":0.2966,"y":0.0},{"x":0.6498,"y":0.0524},{"x":0.2631,"y":0.0},{"x":0.6958,"y":0.0438},{"x":0.2482,"y":0.0},{"x":0.2515,"y":0.0},{"x":0.1998,"y":0.0452},{"x":0.275,"y":0.0},{"x":0.5325,"y":0.0},{"x":0.6944,"y":0.0487},{"x":0.1895,"y":0.0069},{"x":0.1443,"y":0.0328},{"x":0.3379,"y":0.0347},{"x":0.371,"y":0.0},{"x":0.5449,"y":0.0},{"x":0.1211,"y":0.0313},{"x":0.1721,"y":0.0},{"x":0.1909,"y":0.0},{"x":0.198,"y":0.0152},{"x":0.1731,"y":0.0317},{"x":0.1207,"y":0.0338},{"x":0.8042,"y":0.0277},{"x":0.7829,"y":0.0185},{"x":0.2182,"y":0.0236},{"x":0.1443,"y":0.0},{"x":0.1691,"y":0.0188},{"x":0.1704,"y":0.0},{"x":0.143,"y":0.0269},{"x":0.2981,"y":0.0},{"x":0.2116,"y":0.0256},{"x":0.1914,"y":0.0},{"x":0.4247,"y":0.0266},{"x":0.1248,"y":0.0},{"x":0.1406,"y":0.0},{"x":0.59,"y":0.0},{"x":0.5457,"y":0.0},{"x":0.4049,"y":0.0},{"x":0.4198,"y":0.0},{"x":0.0942,"y":0.0},{"x":0.2015,"y":0.0125},{"x":0.1026,"y":0.0},{"x":0.1852,"y":0.0},{"x":0.1957,"y":0.0084},{"x":0.1034,"y":0.0},{"x":0.5913,"y":0.0093},{"x":0.138,"y":0.0},{"x":0.1751,"y":0.0018},{"x":0.3137,"y":0.0082},{"x":0.3558,"y":0.0083},{"x":0.1231,"y":0.0145},{"x":0.1574,"y":0.0114},{"x":0.1596,"y":0.0041},{"x":0.182,"y":0.0},{"x":0.1724,"y":0.0},{"x":0.1696,"y":0.0061},{"x":0.1659,"y":0.0},{"x":0.1464,"y":0.0105},{"x":0.1517,"y":0.0022},{"x":0.114,"y":0.0037},{"x":0.0904,"y":0.0},{"x":0.186,"y":0.0},{"x":0.1397,"y":0.006},{"x":0.1814,"y":0.0},{"x":0.179,"y":0.0033},{"x":0.1803,"y":0.0081},{"x":0.1132,"y":0.0},{"x":0.1392,"y":0.0},{"x":0.1425,"y":0.0},{"x":0.1173,"y":0.0029},{"x":0.1972,"y":0.0},{"x":0.1406,"y":0.0},{"x":0.1319,"y":0.0},{"x":0.2444,"y":0.0091},{"x":0.1381,"y":0.0},{"x":0.1915,"y":0.0039},{"x":0.1405,"y":0.0074},{"x":0.1581,"y":0.0},{"x":0.252,"y":0.0},{"x":0.1732,"y":0.0},{"x":0.139,"y":0.0},{"x":0.127,"y":0.002},{"x":0.1813,"y":0.0028},{"x":0.1595,"y":0.0019},{"x":0.202,"y":0.0},{"x":0.1479,"y":0.0029},{"x":0.1216,"y":0.0043},{"x":0.0941,"y":0.0},{"x":0.0847,"y":0.0},{"x":0.173,"y":0.0},{"x":0.0706,"y":0.0},{"x":0.1431,"y":0.0},{"x":0.2173,"y":0.0},{"x":0.1475,"y":0.0019},{"x":0.1758,"y":0.0},{"x":0.1455,"y":0.0046},{"x":0.1483,"y":0.0},{"x":0.1865,"y":0.0032},{"x":0.696,"y":0.0013},{"x":0.2161,"y":0.001},{"x":0.1468,"y":0.0},{"x":0.1478,"y":0.0},{"x":0.6458,"y":0.0008}];
+var sizeVsDelta = [{"x":629,"y":0.0},{"x":280,"y":0.0},{"x":382,"y":0.0},{"x":339,"y":0.0},{"x":254,"y":0.0},{"x":196,"y":0.0},{"x":429,"y":0.0},{"x":434,"y":0.0},{"x":392,"y":0.0},{"x":376,"y":0.0},{"x":304,"y":0.0},{"x":225,"y":0.0},{"x":310,"y":0.0},{"x":311,"y":0.3498},{"x":128,"y":0.3395},{"x":185,"y":0.3638},{"x":230,"y":0.333},{"x":322,"y":0.358},{"x":217,"y":0.3178},{"x":250,"y":0.351},{"x":281,"y":0.3506},{"x":188,"y":0.3502},{"x":298,"y":0.3237},{"x":310,"y":0.3286},{"x":307,"y":0.3413},{"x":337,"y":0.3226},{"x":409,"y":0.3281},{"x":364,"y":0.3385},{"x":252,"y":0.2788},{"x":508,"y":0.0},{"x":297,"y":0.2575},{"x":463,"y":0.0},{"x":395,"y":0.2752},{"x":250,"y":0.2442},{"x":373,"y":0.0},{"x":242,"y":0.2195},{"x":108,"y":0.1978},{"x":126,"y":0.1815},{"x":440,"y":0.0},{"x":208,"y":0.1895},{"x":174,"y":0.0},{"x":347,"y":0.0},{"x":206,"y":0.0},{"x":282,"y":0.0},{"x":502,"y":0.0},{"x":430,"y":0.0885},{"x":378,"y":0.0734},{"x":301,"y":0.0},{"x":274,"y":0.0},{"x":567,"y":0.0},{"x":325,"y":0.0},{"x":287,"y":0.0},{"x":343,"y":0.0},{"x":242,"y":0.0524},{"x":275,"y":0.0},{"x":401,"y":0.0438},{"x":370,"y":0.0},{"x":304,"y":0.0},{"x":410,"y":0.0452},{"x":321,"y":0.0},{"x":742,"y":0.0},{"x":450,"y":0.0487},{"x":197,"y":0.0069},{"x":486,"y":0.0328},{"x":116,"y":0.0347},{"x":570,"y":0.0},{"x":627,"y":0.0},{"x":362,"y":0.0313},{"x":433,"y":0.0},{"x":442,"y":0.0},{"x":690,"y":0.0152},{"x":251,"y":0.0317},{"x":500,"y":0.0338},{"x":253,"y":0.0277},{"x":151,"y":0.0185},{"x":388,"y":0.0236},{"x":285,"y":0.0},{"x":390,"y":0.0188},{"x":243,"y":0.0},{"x":357,"y":0.0269},{"x":553,"y":0.0},{"x":197,"y":0.0256},{"x":236,"y":0.0},{"x":427,"y":0.0266},{"x":320,"y":0.0},{"x":300,"y":0.0},{"x":402,"y":0.0},{"x":417,"y":0.0},{"x":186,"y":0.0},{"x":394,"y":0.0},{"x":180,"y":0.0},{"x":343,"y":0.0125},{"x":312,"y":0.0},{"x":306,"y":0.0},{"x":303,"y":0.0084},{"x":478,"y":0.0},{"x":414,"y":0.0093},{"x":598,"y":0.0},{"x":337,"y":0.0018},{"x":293,"y":0.0082},{"x":580,"y":0.0083},{"x":435,"y":0.0145},{"x":512,"y":0.0114},{"x":348,"y":0.0041},{"x":370,"y":0.0},{"x":377,"y":0.0},{"x":310,"y":0.0061},{"x":594,"y":0.0},{"x":327,"y":0.0105},{"x":247,"y":0.0022},{"x":451,"y":0.0037},{"x":454,"y":0.0},{"x":401,"y":0.0},{"x":414,"y":0.006},{"x":248,"y":0.0},{"x":548,"y":0.0033},{"x":314,"y":0.0081},{"x":477,"y":0.0},{"x":297,"y":0.0},{"x":456,"y":0.0},{"x":477,"y":0.0029},{"x":456,"y":0.0},{"x":512,"y":0.0},{"x":433,"y":0.0},{"x":401,"y":0.0091},{"x":433,"y":0.0},{"x":536,"y":0.0039},{"x":268,"y":0.0074},{"x":348,"y":0.0},{"x":600,"y":0.0},{"x":387,"y":0.0},{"x":413,"y":0.0},{"x":471,"y":0.002},{"x":284,"y":0.0028},{"x":429,"y":0.0019},{"x":436,"y":0.0},{"x":787,"y":0.0029},{"x":610,"y":0.0043},{"x":373,"y":0.0},{"x":352,"y":0.0},{"x":367,"y":0.0},{"x":309,"y":0.0},{"x":329,"y":0.0},{"x":684,"y":0.0},{"x":433,"y":0.0019},{"x":327,"y":0.0},{"x":816,"y":0.0046},{"x":846,"y":0.0},{"x":360,"y":0.0032},{"x":300,"y":0.0013},{"x":482,"y":0.001},{"x":614,"y":0.0},{"x":334,"y":0.0},{"x":431,"y":0.0008}];
+var avgLossImproved = [0.9049,0.8077,0.9125,0.695,0.6922,0.6615,0.6104,0.5764,0.5981,0.5635,0.643,0.5474,0.5245,0.5195,0.509,0.5056,0.51,0.5104,0.5181,0.5265,0.5546,0.5759,0.6381,0.7445,0.8761,1.1079,1.4953,1.3814,1.5328,1.8921,2.321,2.8274,3.3529,4.0162,4.9409,5.7571,6.5341,7.7042,9.7488,11.0943,12.2531,14.4151,16.8606,19.4696,22.1197,23.5054,25.877,28.6506,32.3014,35.6085];
+var avgLossHurt = [1.1458,0.9946,1.0517,0.8405,0.8328,0.7952,0.7313,0.6971,0.7182,0.6957,0.6642,0.6489,0.6192,0.6068,0.6103,0.6084,0.6109,0.6091,0.6098,0.6142,0.619,0.6281,0.6439,0.6802,0.7115,0.7606,0.8501,1.0976,1.5281,2.1423,3.6653,5.8128,4.659,5.2652,4.3746,4.888,5.8018,6.9869,8.2476,9.6577,11.2505,13.5027,15.8064,19.1174,21.1647,24.6688,25.0952,27.6213,29.4713,32.7029];
+var avgDockQImproved = [0.0272,0.0255,0.0244,0.0265,0.089,0.1523];
+var avgDockQHurt = [0.0418,0.0658,0.0698,0.0572,0.0694,0.0931];
+var avgIpTMImproved = [0.1228,0.124,0.1229,0.1602,0.4303,0.6399];
+var avgIpTMHurt = [0.144,0.1624,0.159,0.2026,0.4358,0.5913];
 
 // ============ CHART RENDERING ============
 let chartDockQ = null, chartIPTM = null, chartDelta = null, chartScatter = null;
@@ -1321,6 +1391,159 @@ function renderScatterChart() {
       }
     }
   });
+}
+
+// ============ DIAGNOSTICS CHARTS ============
+function renderDiagnostics() {
+  const c = getChartColors();
+
+  // 1. Baseline DockQ vs Delta
+  var ctx1 = document.getElementById('chartBlVsDelta');
+  if (ctx1) {
+    if (window._diagChart1) window._diagChart1.destroy();
+    var imp = blVsDelta.filter(p => p.y > 0);
+    var hurt = blVsDelta.filter(p => p.y <= 0);
+    window._diagChart1 = new Chart(ctx1, {
+      type: 'scatter',
+      data: {
+        datasets: [
+          { label: 'TTT improved', data: imp, backgroundColor: '#43a04788', borderColor: '#43a047', pointRadius: 4 },
+          { label: 'TTT hurt', data: hurt.map(p => ({x:p.x, y:p.y})), backgroundColor: '#ef535088', borderColor: '#ef5350', pointRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: c.text } } },
+        scales: {
+          x: { title: { display: true, text: 'Baseline DockQ', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0, max: 1.0 },
+          y: { title: { display: true, text: 'Delta DockQ (TTT - Baseline)', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid } }
+        }
+      }
+    });
+  }
+
+  // 2. Baseline ipTM vs Delta
+  var ctx2 = document.getElementById('chartIptmVsDelta');
+  if (ctx2) {
+    if (window._diagChart2) window._diagChart2.destroy();
+    var imp2 = blIptmVsDelta.filter(p => p.y > 0);
+    var hurt2 = blIptmVsDelta.filter(p => p.y <= 0);
+    window._diagChart2 = new Chart(ctx2, {
+      type: 'scatter',
+      data: {
+        datasets: [
+          { label: 'Improved', data: imp2, backgroundColor: '#43a04788', borderColor: '#43a047', pointRadius: 4 },
+          { label: 'Hurt', data: hurt2, backgroundColor: '#ef535088', borderColor: '#ef5350', pointRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: c.text } } },
+        scales: {
+          x: { title: { display: true, text: 'Baseline ipTM', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0, max: 1.0 },
+          y: { title: { display: true, text: 'Delta DockQ', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid } }
+        }
+      }
+    });
+  }
+
+  // 3. Size vs Delta
+  var ctx3 = document.getElementById('chartSizeVsDelta');
+  if (ctx3) {
+    if (window._diagChart3) window._diagChart3.destroy();
+    var imp3 = sizeVsDelta.filter(p => p.y > 0);
+    var hurt3 = sizeVsDelta.filter(p => p.y <= 0);
+    window._diagChart3 = new Chart(ctx3, {
+      type: 'scatter',
+      data: {
+        datasets: [
+          { label: 'Improved', data: imp3, backgroundColor: '#43a04788', borderColor: '#43a047', pointRadius: 4 },
+          { label: 'Hurt', data: hurt3, backgroundColor: '#ef535088', borderColor: '#ef5350', pointRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: c.text } } },
+        scales: {
+          x: { title: { display: true, text: 'Total Residues', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid } },
+          y: { title: { display: true, text: 'Delta DockQ', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid } }
+        }
+      }
+    });
+  }
+
+  // 4. Loss curves
+  var ctx4 = document.getElementById('chartLossCurves');
+  if (ctx4) {
+    if (window._diagChart4) window._diagChart4.destroy();
+    var stepLabels = avgLossImproved.map((_, i) => i+1);
+    window._diagChart4 = new Chart(ctx4, {
+      type: 'line',
+      data: {
+        labels: stepLabels,
+        datasets: [
+          { label: 'Improved pairs (avg)', data: avgLossImproved, borderColor: '#43a047', backgroundColor: 'transparent', tension: 0.2, pointRadius: 0, borderWidth: 2 },
+          { label: 'Hurt pairs (avg)', data: avgLossHurt, borderColor: '#ef5350', backgroundColor: 'transparent', tension: 0.2, pointRadius: 0, borderWidth: 2 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: c.text } } },
+        scales: {
+          x: { title: { display: true, text: 'TTT Step', color: c.text }, ticks: { color: c.text, maxTicksLimit: 10 }, grid: { color: c.grid } },
+          y: { title: { display: true, text: 'Masked MSA Loss', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid } }
+        }
+      }
+    });
+  }
+
+  // 5. DockQ curves
+  var ctx5 = document.getElementById('chartDockQCurves');
+  if (ctx5) {
+    if (window._diagChart5) window._diagChart5.destroy();
+    window._diagChart5 = new Chart(ctx5, {
+      type: 'line',
+      data: {
+        labels: [0, 10, 20, 30, 40, 50],
+        datasets: [
+          { label: 'Improved', data: avgDockQImproved, borderColor: '#43a047', backgroundColor: 'rgba(67,160,71,0.1)', fill: true, tension: 0.2, pointRadius: 4, borderWidth: 2 },
+          { label: 'Hurt', data: avgDockQHurt, borderColor: '#ef5350', backgroundColor: 'rgba(239,83,80,0.1)', fill: true, tension: 0.2, pointRadius: 4, borderWidth: 2 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: c.text } } },
+        scales: {
+          x: { title: { display: true, text: 'TTT Step', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid } },
+          y: { title: { display: true, text: 'Mean DockQ', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0 }
+        }
+      }
+    });
+  }
+
+  // 6. ipTM curves
+  var ctx6 = document.getElementById('chartIpTMCurves');
+  if (ctx6) {
+    if (window._diagChart6) window._diagChart6.destroy();
+    window._diagChart6 = new Chart(ctx6, {
+      type: 'line',
+      data: {
+        labels: [0, 10, 20, 30, 40, 50],
+        datasets: [
+          { label: 'Improved', data: avgIpTMImproved, borderColor: '#43a047', backgroundColor: 'rgba(67,160,71,0.1)', fill: true, tension: 0.2, pointRadius: 4, borderWidth: 2 },
+          { label: 'Hurt', data: avgIpTMHurt, borderColor: '#ef5350', backgroundColor: 'rgba(239,83,80,0.1)', fill: true, tension: 0.2, pointRadius: 4, borderWidth: 2 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: c.text } } },
+        scales: {
+          x: { title: { display: true, text: 'TTT Step', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid } },
+          y: { title: { display: true, text: 'Mean ipTM', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0, max: 0.7 }
+        }
+      }
+    });
+  }
 }
 
 // Initial render
