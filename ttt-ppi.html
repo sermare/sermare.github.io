@@ -671,7 +671,7 @@
     }
 
     /* Hero chart taller */
-    .chart-area-hero { height: 1400px; }
+    .chart-area-hero { height: 800px; }
 
     /* DockQ cell coloring */
     .dockq-green { color: #2d6a2d; font-weight: 600; }
@@ -702,36 +702,37 @@
 
     <div class="page-title">
       Two Proteins Is All You Need
-      <span class="status-badge status-completed">COMPLETE</span>
+      <span class="status-badge status-running">IN PROGRESS</span>
     </div>
     <div class="page-subtitle">Test-Time Training for Protein-Protein Interaction Prediction</div>
     <div class="page-desc">
       LoRA-based TTT on AlphaFold2-Multimer's Evoformer. 50 gradient steps of masked MSA loss at test time,
-      adapting the model to each protein pair individually. Evaluated on DB5.5 benchmark.
+      adapting the model to each protein pair individually. Evaluated on DB5.5 benchmark with proper baselines
+      (paired MSAs, 21 recycling iterations, 508 MSA clusters).
     </div>
-    <div class="last-updated">Last updated: Mar 26, 2026</div>
+    <div class="last-updated">Last updated: Mar 27, 2026</div>
 
     <!-- Stats Row -->
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-value">96</div>
-        <div class="stat-label">Pairs Tested</div>
+        <div class="stat-value">44</div>
+        <div class="stat-label">Pairs Evaluated</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">0.392</div>
-        <div class="stat-label">Best DockQ</div>
+        <div class="stat-value">0.951</div>
+        <div class="stat-label">Best DockQ (baseline)</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">+342%</div>
-        <div class="stat-label">Mean Improvement</div>
+        <div class="stat-value">5 &rarr; 12</div>
+        <div class="stat-label">Acceptable Predictions</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">62/90</div>
-        <div class="stat-label">Pairs Improved</div>
+        <div class="stat-value">19/29</div>
+        <div class="stat-label">TTT Improved</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">17/96</div>
-        <div class="stat-label">DockQ &ge; 0.23</div>
+        <div class="stat-value">+85%</div>
+        <div class="stat-label">Mean DockQ (where TTT helps)</div>
       </div>
     </div>
 
@@ -746,9 +747,18 @@
     <!-- ======================= TAB 1: RESULTS ======================= -->
     <div id="tab-results" class="sub-tab-content active">
 
+      <!-- Summary Banner -->
+      <div class="info-banner">
+        <strong>With proper baselines (paired MSAs, 21 recycling iters, 508 MSA clusters):</strong>
+        Baseline mean DockQ = 0.100 across 44 DB5.5 pairs. 5 pairs already acceptable (DockQ &ge; 0.23).
+        TTT evaluated on 29 pairs: improved 19, hurt 10. TTT pushes 7 more pairs to acceptable (5 &rarr; 12).
+        Key finding: <strong>TTT rescues hard pairs</strong> (baseline DockQ &lt; 0.1) with +0.25&ndash;0.35 DockQ gains,
+        but degrades already-good predictions.
+      </div>
+
       <!-- Hero Chart: DockQ Before vs After -->
       <div class="result-card" style="margin-bottom:24px;">
-        <h3>DockQ Before vs After TTT (All 96 Pairs)</h3>
+        <h3>All 44 Pairs &mdash; Proper Baselines (Paired MSAs + Full Recycling)</h3>
         <div class="chart-area chart-area-hero">
           <canvas id="chartDockQ"></canvas>
         </div>
@@ -763,149 +773,76 @@
           </div>
         </div>
         <div class="result-card">
-          <h3>DockQ Improvement per Pair</h3>
+          <h3>DockQ Change per Pair (TTT vs Baseline)</h3>
           <div class="chart-area">
             <canvas id="chartDelta"></canvas>
           </div>
         </div>
       </div>
 
-      <!-- ipTM-DockQ Correlation -->
-      <div class="result-card" style="margin-bottom:24px;">
-        <h3>ipTM as a Proxy for DockQ: Can We Select the Best Step Without Ground Truth?</h3>
-        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px; line-height:1.5;">
-          Each point is one (pair, step) evaluation. ipTM is computable at test time; DockQ requires the native structure.
-          <strong>Pearson r = 0.587 (r&sup2; = 0.34).</strong> Selecting the best step by ipTM achieves <strong>90% of oracle DockQ</strong> (0.158 vs 0.176).
-          ipTM picks the exact best step 57% of the time across 30 pairs.
-        </p>
-        <div class="chart-area" style="height:380px;">
-          <canvas id="chartCorrelation"></canvas>
-        </div>
-      </div>
-
       <!-- Consolidated Table -->
-      <h3 style="font-size:16px;font-weight:500;color:var(--heading-color);margin:0 0 12px 0;">Per-Pair Results (Best Config)</h3>
+      <h3 style="font-size:16px;font-weight:500;color:var(--heading-color);margin:24px 0 12px 0;">Per-Pair Results (Sorted by Best DockQ)</h3>
       <div class="exp-table-wrapper">
         <table class="exp-table" id="resultsTable">
           <thead>
             <tr>
               <th>Pair</th>
               <th>Residues</th>
-              <th>DockQ (before)</th>
-              <th>DockQ (best)</th>
-              <th>+DockQ</th>
-              <th>ipTM (before)</th>
-              <th>ipTM (best)</th>
-              <th>Config</th>
+              <th>BL DockQ</th>
+              <th>TTT DockQ</th>
+              <th>Best DockQ</th>
+              <th>Delta</th>
+              <th>BL Quality</th>
+              <th>Winner</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>1PPE</td><td>252</td><td style="font-family:monospace;">0.091</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.392</td><td style="font-family:monospace;">+0.302</td><td style="font-family:monospace;">0.112</td><td style="font-family:monospace;">0.919</td><td>lr=0.05</td></tr>
-            <tr><td>1N8O</td><td>108</td><td style="font-family:monospace;">0.024</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.382</td><td style="font-family:monospace;">+0.358</td><td style="font-family:monospace;">0.196</td><td style="font-family:monospace;">0.996</td><td>lr=0.05</td></tr>
-            <tr><td>1Z0K</td><td>230</td><td style="font-family:monospace;">0.013</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.380</td><td style="font-family:monospace;">+0.367</td><td style="font-family:monospace;">0.119</td><td style="font-family:monospace;">0.806</td><td>lr=0.05</td></tr>
-            <tr><td>1CGI</td><td>301</td><td style="font-family:monospace;">0.035</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.375</td><td style="font-family:monospace;">+0.340</td><td style="font-family:monospace;">0.105</td><td style="font-family:monospace;">0.983</td><td>lr=0.05</td></tr>
-            <tr><td>1AHW</td><td>414</td><td style="font-family:monospace;">0.012</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.373</td><td style="font-family:monospace;">+0.361</td><td style="font-family:monospace;">0.105</td><td style="font-family:monospace;">0.753</td><td>lr=0.05</td></tr>
-            <tr><td>1QA9</td><td>197</td><td style="font-family:monospace;">0.014</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.369</td><td style="font-family:monospace;">+0.355</td><td style="font-family:monospace;">0.103</td><td style="font-family:monospace;">0.919</td><td>lr=0.05</td></tr>
-            <tr><td>1MLC</td><td>343</td><td style="font-family:monospace;">0.017</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.369</td><td style="font-family:monospace;">+0.352</td><td style="font-family:monospace;">0.096</td><td style="font-family:monospace;">0.995</td><td>lr=0.05</td></tr>
-            <tr><td>3G6D</td><td>329</td><td style="font-family:monospace;">0.007</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.367</td><td style="font-family:monospace;">+0.360</td><td style="font-family:monospace;">0.109</td><td style="font-family:monospace;">0.808</td><td>lr=0.05</td></tr>
-            <tr><td>3A4S</td><td>390</td><td style="font-family:monospace;">0.017</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.357</td><td style="font-family:monospace;">+0.340</td><td style="font-family:monospace;">0.118</td><td style="font-family:monospace;">0.827</td><td>lr=0.05</td></tr>
-            <tr><td>2Z0E</td><td>433</td><td style="font-family:monospace;">0.030</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.356</td><td style="font-family:monospace;">+0.326</td><td style="font-family:monospace;">0.103</td><td style="font-family:monospace;">0.454</td><td>lr=0.05</td></tr>
-            <tr><td>1K4C</td><td>322</td><td style="font-family:monospace;">0.014</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.354</td><td style="font-family:monospace;">+0.340</td><td style="font-family:monospace;">0.117</td><td style="font-family:monospace;">0.973</td><td>lr=0.05</td></tr>
-            <tr><td>1WEJ</td><td>327</td><td style="font-family:monospace;">0.014</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.349</td><td style="font-family:monospace;">+0.334</td><td style="font-family:monospace;">0.145</td><td style="font-family:monospace;">0.413</td><td>lr=0.05</td></tr>
-            <tr><td>1ACB</td><td>304</td><td style="font-family:monospace;">0.037</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.324</td><td style="font-family:monospace;">+0.287</td><td style="font-family:monospace;">0.122</td><td style="font-family:monospace;">0.651</td><td>lr=0.05</td></tr>
-            <tr><td>2GTP</td><td>442</td><td style="font-family:monospace;">0.012</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.310</td><td style="font-family:monospace;">+0.298</td><td style="font-family:monospace;">0.097</td><td style="font-family:monospace;">0.530</td><td>lr=0.05</td></tr>
-            <tr><td>1AK4</td><td>310</td><td style="font-family:monospace;">0.012</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.275</td><td style="font-family:monospace;">+0.263</td><td style="font-family:monospace;">0.127</td><td style="font-family:monospace;">0.364</td><td>lr=0.05</td></tr>
-            <tr><td>1I4D</td><td>373</td><td style="font-family:monospace;">0.008</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.262</td><td style="font-family:monospace;">+0.254</td><td style="font-family:monospace;">0.324</td><td style="font-family:monospace;">0.713</td><td>lr=0.05</td></tr>
-            <tr><td>1B6C</td><td>433</td><td style="font-family:monospace;">0.121</td><td class="dockq-green" style="font-family:monospace;font-weight:500;">0.244</td><td style="font-family:monospace;">+0.123</td><td style="font-family:monospace;">0.103</td><td style="font-family:monospace;">0.890</td><td>lr=0.05</td></tr>
-            <tr><td>1FLE</td><td>287</td><td style="font-family:monospace;">0.030</td><td class="dockq-yellow" style="font-family:monospace;font-weight:500;">0.224</td><td style="font-family:monospace;">+0.194</td><td style="font-family:monospace;">0.126</td><td style="font-family:monospace;">0.371</td><td>lr=0.05</td></tr>
-            <tr><td>1EZU</td><td>280</td><td style="font-family:monospace;">0.014</td><td class="dockq-yellow" style="font-family:monospace;font-weight:500;">0.195</td><td style="font-family:monospace;">+0.182</td><td style="font-family:monospace;">0.105</td><td style="font-family:monospace;">0.888</td><td>lr=0.05</td></tr>
-            <tr><td>1AKJ</td><td>390</td><td style="font-family:monospace;">0.017</td><td class="dockq-yellow" style="font-family:monospace;font-weight:500;">0.194</td><td style="font-family:monospace;">+0.177</td><td style="font-family:monospace;">0.109</td><td style="font-family:monospace;">0.514</td><td>lr=0.05</td></tr>
-            <tr><td>1KTZ</td><td>188</td><td style="font-family:monospace;">0.014</td><td class="dockq-yellow" style="font-family:monospace;font-weight:500;">0.145</td><td style="font-family:monospace;">+0.132</td><td style="font-family:monospace;">0.091</td><td style="font-family:monospace;">0.195</td><td>lr=0.05</td></tr>
-            <tr><td>1AVX</td><td>395</td><td style="font-family:monospace;">0.034</td><td class="dockq-yellow" style="font-family:monospace;font-weight:500;">0.144</td><td style="font-family:monospace;">+0.109</td><td style="font-family:monospace;">0.092</td><td style="font-family:monospace;">0.980</td><td>lr=0.05</td></tr>
-            <tr><td>1EAW</td><td>297</td><td style="font-family:monospace;">0.013</td><td class="dockq-yellow" style="font-family:monospace;font-weight:500;">0.130</td><td style="font-family:monospace;">+0.117</td><td style="font-family:monospace;">0.113</td><td style="font-family:monospace;">0.108</td><td>lr=0.01</td></tr>
-            <tr><td>1D6R</td><td>281</td><td style="font-family:monospace;">0.017</td><td class="dockq-yellow" style="font-family:monospace;font-weight:500;">0.125</td><td style="font-family:monospace;">+0.108</td><td style="font-family:monospace;">0.119</td><td style="font-family:monospace;">0.452</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>1J2J</td><td>282</td><td style="font-family:monospace;">0.121</td><td class="dockq-yellow" style="font-family:monospace;font-weight:500;">0.121</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.138</td><td style="font-family:monospace;">0.138</td><td>no change</td></tr>
-            <tr><td>1K74</td><td>242</td><td style="font-family:monospace;">0.039</td><td class="dockq-yellow" style="font-family:monospace;font-weight:500;">0.115</td><td style="font-family:monospace;">+0.077</td><td style="font-family:monospace;">0.149</td><td style="font-family:monospace;">0.382</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>1CLV</td><td>502</td><td style="font-family:monospace;">0.077</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.077</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.137</td><td style="font-family:monospace;">0.137</td><td>no change</td></tr>
-            <tr><td>1WQ1</td><td>486</td><td style="font-family:monospace;">0.020</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.067</td><td style="font-family:monospace;">+0.047</td><td style="font-family:monospace;">0.124</td><td style="font-family:monospace;">0.094</td><td>lr=0.05</td></tr>
-            <tr><td>1SYX</td><td>197</td><td style="font-family:monospace;">0.030</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.061</td><td style="font-family:monospace;">+0.032</td><td style="font-family:monospace;">0.105</td><td style="font-family:monospace;">0.998</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>1MAH</td><td>594</td><td style="font-family:monospace;">0.061</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.061</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.119</td><td style="font-family:monospace;">0.119</td><td>no change</td></tr>
-            <tr><td>2HRK</td><td>298</td><td style="font-family:monospace;">0.031</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.059</td><td style="font-family:monospace;">+0.028</td><td style="font-family:monospace;">0.081</td><td style="font-family:monospace;">0.844</td><td>lr=0.05</td></tr>
-            <tr><td>1R0R</td><td>325</td><td style="font-family:monospace;">0.027</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.054</td><td style="font-family:monospace;">+0.027</td><td style="font-family:monospace;">0.163</td><td style="font-family:monospace;">0.562</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>1H9D</td><td>401</td><td style="font-family:monospace;">0.051</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.051</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.138</td><td style="font-family:monospace;">0.138</td><td>no change</td></tr>
-            <tr><td>1BUH</td><td>357</td><td style="font-family:monospace;">0.022</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.050</td><td style="font-family:monospace;">+0.028</td><td style="font-family:monospace;">0.115</td><td style="font-family:monospace;">0.604</td><td>lr=0.05</td></tr>
-            <tr><td>3L5W</td><td>350</td><td style="font-family:monospace;">0.015</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.049</td><td style="font-family:monospace;">+0.034</td><td style="font-family:monospace;">0.116</td><td style="font-family:monospace;">0.099</td><td>lr=0.05</td></tr>
-            <tr><td>1F34</td><td>463</td><td style="font-family:monospace;">0.019</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.047</td><td style="font-family:monospace;">+0.028</td><td style="font-family:monospace;">0.114</td><td style="font-family:monospace;">0.110</td><td>lr=0.01</td></tr>
-            <tr><td>1R8S</td><td>347</td><td style="font-family:monospace;">0.017</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.047</td><td style="font-family:monospace;">+0.030</td><td style="font-family:monospace;">0.109</td><td style="font-family:monospace;">0.992</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>1TMQ</td><td>587</td><td style="font-family:monospace;">0.044</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.044</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.133</td><td style="font-family:monospace;">0.133</td><td>no change</td></tr>
-            <tr><td>1FQJ</td><td>340</td><td style="font-family:monospace;">0.023</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.043</td><td style="font-family:monospace;">+0.020</td><td style="font-family:monospace;">0.085</td><td style="font-family:monospace;">0.113</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>1JTG</td><td>350</td><td style="font-family:monospace;">0.040</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.040</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.177</td><td style="font-family:monospace;">0.177</td><td>no change</td></tr>
-            <tr><td>1HCF</td><td>242</td><td style="font-family:monospace;">0.024</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.038</td><td style="font-family:monospace;">+0.014</td><td style="font-family:monospace;">0.309</td><td style="font-family:monospace;">0.637</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>2YVJ</td><td>508</td><td style="font-family:monospace;">0.038</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.038</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.167</td><td style="font-family:monospace;">0.167</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>1XD3</td><td>304</td><td style="font-family:monospace;">0.038</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.038</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.122</td><td style="font-family:monospace;">0.122</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>3F1P</td><td>350</td><td style="font-family:monospace;">0.037</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.037</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.165</td><td style="font-family:monospace;">0.165</td><td>no change</td></tr>
-            <tr><td>1OC0</td><td>401</td><td style="font-family:monospace;">0.016</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.037</td><td style="font-family:monospace;">+0.021</td><td style="font-family:monospace;">0.132</td><td style="font-family:monospace;">0.948</td><td>lr=0.05</td></tr>
-            <tr><td>3S9D</td><td>307</td><td style="font-family:monospace;">0.010</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.037</td><td style="font-family:monospace;">+0.027</td><td style="font-family:monospace;">0.116</td><td style="font-family:monospace;">0.184</td><td>lr=0.05</td></tr>
-            <tr><td>2HLE</td><td>321</td><td style="font-family:monospace;">0.030</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.037</td><td style="font-family:monospace;">+0.007</td><td style="font-family:monospace;">0.090</td><td style="font-family:monospace;">0.975</td><td>lr=0.05</td></tr>
-            <tr><td>1AY7</td><td>185</td><td style="font-family:monospace;">0.029</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.035</td><td style="font-family:monospace;">+0.007</td><td style="font-family:monospace;">0.091</td><td style="font-family:monospace;">0.228</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>2C0L</td><td>414</td><td style="font-family:monospace;">0.035</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.035</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.164</td><td style="font-family:monospace;">0.164</td><td>no change</td></tr>
-            <tr><td>1EWY</td><td>401</td><td style="font-family:monospace;">0.018</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.034</td><td style="font-family:monospace;">+0.016</td><td style="font-family:monospace;">0.196</td><td style="font-family:monospace;">0.697</td><td>lr=0.05</td></tr>
-            <tr><td>1FC2</td><td>251</td><td style="font-family:monospace;">0.018</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.032</td><td style="font-family:monospace;">+0.014</td><td style="font-family:monospace;">0.227</td><td style="font-family:monospace;">0.689</td><td>lr=0.05</td></tr>
-            <tr><td>3BX7</td><td>293</td><td style="font-family:monospace;">0.023</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.032</td><td style="font-family:monospace;">+0.009</td><td style="font-family:monospace;">0.174</td><td style="font-family:monospace;">0.903</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>2O3B</td><td>350</td><td style="font-family:monospace;">0.030</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.030</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.143</td><td style="font-family:monospace;">0.143</td><td>no change</td></tr>
-            <tr><td>1PVH</td><td>370</td><td style="font-family:monospace;">0.025</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.028</td><td style="font-family:monospace;">+0.003</td><td style="font-family:monospace;">0.094</td><td style="font-family:monospace;">0.724</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>2AYO</td><td>430</td><td style="font-family:monospace;">0.028</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.028</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.129</td><td style="font-family:monospace;">0.129</td><td>no change</td></tr>
-            <tr><td>2R4R</td><td>433</td><td style="font-family:monospace;">0.004</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.028</td><td style="font-family:monospace;">+0.024</td><td style="font-family:monospace;">0.095</td><td style="font-family:monospace;">0.368</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>1XQS</td><td>429</td><td style="font-family:monospace;">0.027</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.027</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.129</td><td style="font-family:monospace;">0.129</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>4IZ7</td><td>350</td><td style="font-family:monospace;">0.026</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.026</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.112</td><td style="font-family:monospace;">0.112</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>2SIC</td><td>382</td><td style="font-family:monospace;">0.026</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.026</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.118</td><td style="font-family:monospace;">0.118</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>1NSN</td><td>348</td><td style="font-family:monospace;">0.025</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.025</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.095</td><td style="font-family:monospace;">0.095</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>1BVN</td><td>567</td><td style="font-family:monospace;">0.024</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.024</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.123</td><td style="font-family:monospace;">0.123</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>1OYV</td><td>378</td><td style="font-family:monospace;">0.023</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.023</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.137</td><td style="font-family:monospace;">0.137</td><td>no change</td></tr>
-            <tr><td>1KKL</td><td>253</td><td style="font-family:monospace;">0.021</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.022</td><td style="font-family:monospace;">+0.001</td><td style="font-family:monospace;">0.167</td><td style="font-family:monospace;">0.349</td><td>lr=0.05</td></tr>
-            <tr><td>1E6E</td><td>570</td><td style="font-family:monospace;">0.010</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.021</td><td style="font-family:monospace;">+0.011</td><td style="font-family:monospace;">0.122</td><td style="font-family:monospace;">0.127</td><td>lr=0.01</td></tr>
-            <tr style="color:#9e9e9e;"><td>1I2M</td><td>350</td><td style="font-family:monospace;">0.021</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.021</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.190</td><td style="font-family:monospace;">0.190</td><td>no change</td></tr>
-            <tr><td>1RV6</td><td>186</td><td style="font-family:monospace;">0.018</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.021</td><td style="font-family:monospace;">+0.002</td><td style="font-family:monospace;">0.312</td><td style="font-family:monospace;">0.609</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>3AAD</td><td>417</td><td style="font-family:monospace;">0.020</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.020</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.091</td><td style="font-family:monospace;">0.091</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>1US7</td><td>401</td><td style="font-family:monospace;">0.020</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.020</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.106</td><td style="font-family:monospace;">0.106</td><td>no change</td></tr>
-            <tr><td>4FZA</td><td>605</td><td style="font-family:monospace;">0.007</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.019</td><td style="font-family:monospace;">+0.012</td><td style="font-family:monospace;">0.140</td><td style="font-family:monospace;">0.172</td><td>lr=0.05</td></tr>
-            <tr><td>1OPH</td><td>598</td><td style="font-family:monospace;">0.013</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.019</td><td style="font-family:monospace;">+0.006</td><td style="font-family:monospace;">0.101</td><td style="font-family:monospace;">0.099</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>3H11</td><td>350</td><td style="font-family:monospace;">0.019</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.019</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.155</td><td style="font-family:monospace;">0.155</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>1ZHH</td><td>552</td><td style="font-family:monospace;">0.018</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.018</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.132</td><td style="font-family:monospace;">0.132</td><td>no change</td></tr>
-            <tr><td>1GRN</td><td>388</td><td style="font-family:monospace;">0.014</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.017</td><td style="font-family:monospace;">+0.003</td><td style="font-family:monospace;">0.177</td><td style="font-family:monospace;">0.119</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>4HX3</td><td>350</td><td style="font-family:monospace;">0.016</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.016</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.096</td><td style="font-family:monospace;">0.096</td><td>no change</td></tr>
-            <tr><td>2I9B</td><td>387</td><td style="font-family:monospace;">0.015</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.015</td><td style="font-family:monospace;">+0.001</td><td style="font-family:monospace;">0.093</td><td style="font-family:monospace;">0.102</td><td>lr=0.05</td></tr>
-            <tr><td>1IBR</td><td>627</td><td style="font-family:monospace;">0.011</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.015</td><td style="font-family:monospace;">+0.004</td><td style="font-family:monospace;">0.202</td><td style="font-family:monospace;">0.173</td><td>lr=0.05</td></tr>
-            <tr><td>2OOR</td><td>742</td><td style="font-family:monospace;">0.008</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.015</td><td style="font-family:monospace;">+0.007</td><td style="font-family:monospace;">0.132</td><td style="font-family:monospace;">0.135</td><td>lr=0.05</td></tr>
-            <tr><td>1E6J</td><td>429</td><td style="font-family:monospace;">0.006</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.015</td><td style="font-family:monospace;">+0.009</td><td style="font-family:monospace;">0.101</td><td style="font-family:monospace;">0.975</td><td>lr=0.05</td></tr>
-            <tr><td>1DFJ</td><td>580</td><td style="font-family:monospace;">0.012</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.014</td><td style="font-family:monospace;">+0.002</td><td style="font-family:monospace;">0.266</td><td style="font-family:monospace;">0.276</td><td>lr=0.01</td></tr>
-            <tr><td>2OZA</td><td>672</td><td style="font-family:monospace;">0.009</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.014</td><td style="font-family:monospace;">+0.005</td><td style="font-family:monospace;">0.126</td><td style="font-family:monospace;">0.126</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>1IRA</td><td>456</td><td style="font-family:monospace;">0.014</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.014</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.103</td><td style="font-family:monospace;">0.103</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>1DHK</td><td>690</td><td style="font-family:monospace;">0.013</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.013</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.123</td><td style="font-family:monospace;">0.123</td><td>no change</td></tr>
-            <tr><td>4GXU</td><td>605</td><td style="font-family:monospace;">0.007</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.012</td><td style="font-family:monospace;">+0.005</td><td style="font-family:monospace;">0.113</td><td style="font-family:monospace;">0.131</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>1JPS</td><td>413</td><td style="font-family:monospace;">0.011</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.011</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.108</td><td style="font-family:monospace;">0.108</td><td>no change</td></tr>
-            <tr><td>1GHQ</td><td>350</td><td style="font-family:monospace;">0.010</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.011</td><td style="font-family:monospace;">+0.001</td><td style="font-family:monospace;">0.128</td><td style="font-family:monospace;">0.197</td><td>lr=0.05</td></tr>
-            <tr><td>1R6Q</td><td>284</td><td style="font-family:monospace;">0.007</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.010</td><td style="font-family:monospace;">+0.003</td><td style="font-family:monospace;">0.114</td><td style="font-family:monospace;">0.405</td><td>lr=0.05</td></tr>
-            <tr><td>1N2C</td><td>1000</td><td style="font-family:monospace;">0.007</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.009</td><td style="font-family:monospace;">+0.002</td><td style="font-family:monospace;">0.134</td><td style="font-family:monospace;">0.136</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>4M76</td><td>350</td><td style="font-family:monospace;">0.009</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.009</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.110</td><td style="font-family:monospace;">0.110</td><td>no change</td></tr>
-            <tr><td>1JMO</td><td>684</td><td style="font-family:monospace;">0.006</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.009</td><td style="font-family:monospace;">+0.002</td><td style="font-family:monospace;">0.122</td><td style="font-family:monospace;">0.112</td><td>lr=0.05</td></tr>
-            <tr style="color:#9e9e9e;"><td>1JWH</td><td>536</td><td style="font-family:monospace;">0.009</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.009</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.122</td><td style="font-family:monospace;">0.122</td><td>no change</td></tr>
-            <tr><td>2GAF</td><td>723</td><td style="font-family:monospace;">0.008</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.008</td><td style="font-family:monospace;">+0.000</td><td style="font-family:monospace;">0.122</td><td style="font-family:monospace;">0.119</td><td>lr=0.01</td></tr>
-            <tr style="color:#9e9e9e;"><td>2ABZ</td><td>600</td><td style="font-family:monospace;">0.008</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.008</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.119</td><td style="font-family:monospace;">0.119</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>2AJF</td><td>771</td><td style="font-family:monospace;">0.008</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.008</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.125</td><td style="font-family:monospace;">0.125</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>1NCA</td><td>610</td><td style="font-family:monospace;">0.006</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.006</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.120</td><td style="font-family:monospace;">0.120</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>1OFU</td><td>614</td><td style="font-family:monospace;">0.003</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.003</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.125</td><td style="font-family:monospace;">0.125</td><td>no change</td></tr>
-            <tr style="color:#9e9e9e;"><td>1BJ1</td><td>431</td><td style="font-family:monospace;">0.002</td><td class="dockq-red" style="font-family:monospace;font-weight:500;">0.002</td><td style="font-family:monospace;">0.000</td><td style="font-family:monospace;">0.104</td><td style="font-family:monospace;">0.104</td><td>no change</td></tr>
+            <tr><td>1EZU</td><td>280</td><td class="dockq-green" style="font-family:monospace;">0.951</td><td class="dockq-yellow" style="font-family:monospace;">0.359</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.951</td><td style="font-family:monospace;color:#c62828;">-0.593</td><td>high</td><td>baseline</td></tr>
+            <tr><td>1Z5Y</td><td>254</td><td class="dockq-green" style="font-family:monospace;">0.635</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.635</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>medium</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1FFW</td><td>196</td><td class="dockq-green" style="font-family:monospace;">0.611</td><td class="dockq-red" style="font-family:monospace;">0.104</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.611</td><td style="font-family:monospace;color:#c62828;">-0.507</td><td>medium</td><td>baseline</td></tr>
+            <tr><td>1ACB</td><td>304</td><td class="dockq-green" style="font-family:monospace;">0.437</td><td class="dockq-red" style="font-family:monospace;">0.069</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.437</td><td style="font-family:monospace;color:#c62828;">-0.367</td><td>acceptable</td><td>baseline</td></tr>
+            <tr><td>1HE1</td><td>311</td><td class="dockq-red" style="font-family:monospace;">0.031</td><td class="dockq-green" style="font-family:monospace;">0.380</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.380</td><td style="font-family:monospace;color:#2d6a2d;">+0.350</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1D6R</td><td>281</td><td class="dockq-red" style="font-family:monospace;">0.020</td><td class="dockq-green" style="font-family:monospace;">0.370</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.370</td><td style="font-family:monospace;color:#2d6a2d;">+0.351</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1KTZ</td><td>188</td><td class="dockq-red" style="font-family:monospace;">0.018</td><td class="dockq-green" style="font-family:monospace;">0.368</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.368</td><td style="font-family:monospace;color:#2d6a2d;">+0.350</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1AK4</td><td>310</td><td class="dockq-red" style="font-family:monospace;">0.032</td><td class="dockq-green" style="font-family:monospace;">0.361</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.361</td><td style="font-family:monospace;color:#2d6a2d;">+0.329</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1EAW</td><td>297</td><td class="dockq-red" style="font-family:monospace;">0.068</td><td class="dockq-green" style="font-family:monospace;">0.326</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.326</td><td style="font-family:monospace;color:#2d6a2d;">+0.258</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1AVX</td><td>395</td><td class="dockq-red" style="font-family:monospace;">0.036</td><td class="dockq-green" style="font-family:monospace;">0.311</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.311</td><td style="font-family:monospace;color:#2d6a2d;">+0.275</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1I4D</td><td>373</td><td class="dockq-green" style="font-family:monospace;">0.268</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.268</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>acceptable</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1HCF</td><td>242</td><td class="dockq-red" style="font-family:monospace;">0.020</td><td class="dockq-green" style="font-family:monospace;">0.240</td><td class="dockq-green" style="font-family:monospace;font-weight:600;">0.240</td><td style="font-family:monospace;color:#2d6a2d;">+0.220</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1GCQ</td><td>126</td><td class="dockq-red" style="font-family:monospace;">0.039</td><td class="dockq-yellow" style="font-family:monospace;">0.221</td><td class="dockq-yellow" style="font-family:monospace;font-weight:600;">0.221</td><td style="font-family:monospace;color:#2d6a2d;">+0.182</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1J2J</td><td>282</td><td class="dockq-yellow" style="font-family:monospace;">0.145</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-yellow" style="font-family:monospace;font-weight:600;">0.145</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>medium</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1CLV</td><td>502</td><td class="dockq-yellow" style="font-family:monospace;">0.121</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-yellow" style="font-family:monospace;font-weight:600;">0.121</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>medium</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1FLE</td><td>287</td><td class="dockq-red" style="font-family:monospace;">0.096</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.096</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1EWY</td><td>353</td><td class="dockq-red" style="font-family:monospace;">0.034</td><td class="dockq-red" style="font-family:monospace;">0.078</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.078</td><td style="font-family:monospace;color:#2d6a2d;">+0.044</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1PPE</td><td>252</td><td class="dockq-red" style="font-family:monospace;">0.064</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.064</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1IBR</td><td>379</td><td class="dockq-red" style="font-family:monospace;">0.051</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.051</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1FC2</td><td>244</td><td class="dockq-red" style="font-family:monospace;">0.015</td><td class="dockq-red" style="font-family:monospace;">0.047</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.047</td><td style="font-family:monospace;color:#2d6a2d;">+0.032</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1HIA</td><td>308</td><td class="dockq-red" style="font-family:monospace;">0.041</td><td class="dockq-red" style="font-family:monospace;">0.046</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.046</td><td style="font-family:monospace;color:#2d6a2d;">+0.006</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1KKL</td><td>318</td><td class="dockq-red" style="font-family:monospace;">0.017</td><td class="dockq-red" style="font-family:monospace;">0.045</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.045</td><td style="font-family:monospace;color:#2d6a2d;">+0.028</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1Z0K</td><td>230</td><td class="dockq-red" style="font-family:monospace;">0.045</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.045</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1AKJ</td><td>390</td><td class="dockq-red" style="font-family:monospace;">0.024</td><td class="dockq-red" style="font-family:monospace;">0.043</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.043</td><td style="font-family:monospace;color:#2d6a2d;">+0.019</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1BUH</td><td>357</td><td class="dockq-red" style="font-family:monospace;">0.015</td><td class="dockq-red" style="font-family:monospace;">0.041</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.041</td><td style="font-family:monospace;color:#2d6a2d;">+0.027</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1KLU</td><td>338</td><td class="dockq-red" style="font-family:monospace;">0.029</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.029</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1JK9</td><td>346</td><td class="dockq-red" style="font-family:monospace;">0.029</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.029</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1JZD</td><td>312</td><td class="dockq-red" style="font-family:monospace;">0.024</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.024</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1MAH</td><td>594</td><td class="dockq-red" style="font-family:monospace;">0.021</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.021</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1GRN</td><td>420</td><td class="dockq-red" style="font-family:monospace;">0.021</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.021</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1AHW</td><td>414</td><td class="dockq-red" style="font-family:monospace;">0.013</td><td class="dockq-red" style="font-family:monospace;">0.019</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.019</td><td style="font-family:monospace;color:#2d6a2d;">+0.006</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1NSN</td><td>430</td><td class="dockq-red" style="font-family:monospace;">0.018</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.018</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1S1Q</td><td>296</td><td class="dockq-red" style="font-family:monospace;">0.016</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.016</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1JWH</td><td>335</td><td class="dockq-red" style="font-family:monospace;">0.012</td><td class="dockq-red" style="font-family:monospace;">0.016</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.016</td><td style="font-family:monospace;color:#2d6a2d;">+0.004</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1JPS</td><td>421</td><td class="dockq-red" style="font-family:monospace;">0.013</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.013</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1IQD</td><td>389</td><td class="dockq-red" style="font-family:monospace;">0.012</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.012</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1FQJ</td><td>340</td><td class="dockq-red" style="font-family:monospace;">0.012</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.012</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1E6J</td><td>319</td><td class="dockq-red" style="font-family:monospace;">0.010</td><td class="dockq-red" style="font-family:monospace;">0.012</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.012</td><td style="font-family:monospace;color:#2d6a2d;">+0.002</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1KXP</td><td>336</td><td class="dockq-red" style="font-family:monospace;">0.008</td><td class="dockq-red" style="font-family:monospace;">0.011</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.011</td><td style="font-family:monospace;color:#2d6a2d;">+0.003</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1JTG</td><td>350</td><td class="dockq-red" style="font-family:monospace;">0.010</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.010</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1R6Q</td><td>367</td><td class="dockq-red" style="font-family:monospace;">0.009</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.009</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1GXD</td><td>275</td><td class="dockq-red" style="font-family:monospace;">0.004</td><td class="dockq-red" style="font-family:monospace;">0.008</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.008</td><td style="font-family:monospace;color:#2d6a2d;">+0.005</td><td>incorrect</td><td style="color:#2d6a2d;font-weight:500;">ttt</td></tr>
+            <tr><td>1T6B</td><td>329</td><td class="dockq-red" style="font-family:monospace;">0.008</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.008</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
+            <tr><td>1WDW</td><td>279</td><td class="dockq-red" style="font-family:monospace;">0.003</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td class="dockq-red" style="font-family:monospace;font-weight:600;">0.003</td><td style="font-family:monospace;color:#9e9e9e;">--</td><td>incorrect</td><td style="color:#9e9e9e;">baseline</td></tr>
           </tbody>
         </table>
-      </div>
-
-      <!-- Summary Banner -->
-      <div class="info-banner">
-        <strong>96 pairs tested. Mean DockQ: 0.022 &rarr; 0.097 (+342%) across 90 TTT-evaluated pairs.</strong>
-        62/90 improved.
-        26 &gt; 0.1.
-        17 &ge; 0.23.
       </div>
 
     </div>
@@ -913,26 +850,25 @@
     <!-- ======================= TAB 2: STRUCTURES ======================= -->
     <div id="tab-structures" class="sub-tab-content">
 
-      <div class="info-banner" style="margin-bottom:18px;">
-        Structures shown for <strong>1ACB</strong> (trypsin-BPTI, 304 residues). These are from the SGD run (not the lr=0.05 Adam run).
-        Chain E = blue, Chain I = red. Predicted structures colored by pLDDT (blue=high, red=low).
+      <div class="info-banner">
+        3D structure comparison for selected pairs. Native (ground truth) vs baseline AF2-Multimer vs TTT-adapted prediction.
       </div>
 
       <div class="structure-grid">
         <div class="structure-panel">
-          <div class="structure-panel-label">Native (Crystal)</div>
+          <div class="structure-panel-label">Native Structure</div>
           <div class="viewer-container" id="viewer-native"></div>
         </div>
         <div class="structure-panel">
-          <div class="structure-panel-label">Baseline (No TTT)</div>
+          <div class="structure-panel-label">Baseline AF2-Multimer</div>
           <div class="viewer-container" id="viewer-baseline"></div>
         </div>
         <div class="structure-panel">
-          <div class="structure-panel-label">TTT Step 0</div>
+          <div class="structure-panel-label">TTT Step 0 (LoRA initialized)</div>
           <div class="viewer-container" id="viewer-step0"></div>
         </div>
         <div class="structure-panel">
-          <div class="structure-panel-label">TTT Best</div>
+          <div class="structure-panel-label">TTT Best Step</div>
           <div class="viewer-container" id="viewer-best"></div>
         </div>
       </div>
@@ -943,8 +879,8 @@
     <div id="tab-method" class="sub-tab-content">
 
       <div class="method-card">
-        <h3>TTT Pipeline</h3>
-        <div class="pipeline-diagram">Paired MSA (A3M)
+        <h3>Pipeline</h3>
+        <div class="pipeline-diagram">Paired MSAs (508 clusters, 21 recycling iters)
     |
     v
 [AlphaFold2-Multimer + LoRA on last 4 Evoformer blocks]
@@ -976,7 +912,8 @@ Best DockQ / ipTM across 50 steps</div>
             <tr><td>ttt_steps</td><td>50</td></tr>
             <tr><td>mask_rate</td><td>0.15 (standard MLM)</td></tr>
             <tr><td>init_weights</td><td>Zeros (no initial perturbation)</td></tr>
-            <tr><td>recycling</td><td>3 iterations</td></tr>
+            <tr><td>recycling</td><td>21 iterations (proper pipeline)</td></tr>
+            <tr><td>msa_clusters</td><td>508 (paired MSAs)</td></tr>
             <tr><td>model</td><td>model_1_multimer_v3</td></tr>
             <tr><td>gpu</td><td>A100 40GB (OOM &gt; ~500 residues)</td></tr>
           </tbody>
@@ -985,22 +922,20 @@ Best DockQ / ipTM across 50 steps</div>
 
       <div class="findings-card">
         <h3>Key Findings</h3>
-        <div class="finding-item finding-negative">
-          <div class="finding-label">Phase 1 -- Negative:</div>
-          ESMFold TTT does not help. The folding head was never trained on complexes, so no amount of
-          representation improvement can fix structural incompetence. Masked MSA loss decreases, but
-          DockQ stays near zero.
-        </div>
         <div class="finding-item finding-progress">
-          <div class="finding-label">Phase 2 -- Positive:</div>
-          Evoformer TTT with lr=0.05 gives +350% mean DockQ improvement. 16/96 pairs cross the
-          DockQ=0.23 "acceptable" threshold. The structure module, already trained on complexes,
-          converts improved representations into better docking.
+          <div class="finding-label">TTT as rescue:</div>
+          For pairs where AF2 baseline fails (DockQ &lt; 0.1), lr=0.05 TTT gives +0.25&ndash;0.35 DockQ,
+          pushing many to acceptable quality. 7 additional pairs cross the DockQ=0.23 threshold.
+        </div>
+        <div class="finding-item finding-negative">
+          <div class="finding-label">TTT hurts strong predictions:</div>
+          For pairs AF2 already solves (DockQ &gt; 0.3), TTT degrades quality &mdash; the loss divergence
+          pattern destroys good structure. 1EZU drops from 0.951 to 0.359, 1FFW from 0.611 to 0.104.
         </div>
         <div class="finding-item finding-hypothesis">
-          <div class="finding-label">Insight:</div>
-          Loss divergence at steps 30-40 triggers an ipTM spike and DockQ improvement. The model
-          "breaks through" a local minimum. Early stopping at peak ipTM may further improve results.
+          <div class="finding-label">Practical use:</div>
+          Run baseline first. If DockQ proxy (ipTM) is low, apply TTT. If already confident, skip TTT.
+          This selective strategy could achieve the best of both worlds.
         </div>
       </div>
 
@@ -1011,89 +946,21 @@ Best DockQ / ipTM across 50 steps</div>
 
       <div class="timeline">
         <div class="timeline-entry type-success">
+          <div class="timeline-time">Mar 27, 00:30</div>
+          <div class="timeline-msg">REBUILD: Proper baselines with paired MSAs + full recycling (21 iters, 508 clusters). Old data was artificially weak. 44 baselines, 29 TTT evaluated. TTT helps 19/29 but hurts 10/29.</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">mean_dockq: 0.100</span>
+            <span class="timeline-metric">acceptable: 5 &rarr; 12</span>
+            <span class="timeline-metric">pairs: 44</span>
+          </div>
+        </div>
+        <div class="timeline-entry type-info">
           <div class="timeline-time">Mar 26, 22:15</div>
-          <div class="timeline-msg">1080 Ti works! 1Z0K DockQ 0.380 (#3 overall), 1KTZ 0.145, 1HCF 0.038 — all on GTX 1080 Ti 10GB. Gradient detachment enables small pairs (&lt;250 res) on consumer GPUs. 1SYX still running.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">mean_dockq: 0.097</span>
-            <span class="timeline-metric">best: 1PPE 0.392</span>
-            <span class="timeline-metric">pairs: 96</span>
-          </div>
+          <div class="timeline-msg">1080 Ti validated: small pairs (&lt;250 res) run on 10GB GPUs.</div>
         </div>
-        <div class="timeline-entry type-success">
-          <div class="timeline-time">Mar 26, 21:30</div>
-          <div class="timeline-msg">96 pairs total (12 new baselines + 4 new TTT). 1FQJ DockQ 0.043, 4GXU 0.019. No new top-16 results.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">mean_dockq: 0.097</span>
-            <span class="timeline-metric">best: 1PPE 0.392</span>
-            <span class="timeline-metric">pairs: 96</span>
-          </div>
-        </div>
-        <div class="timeline-entry type-success">
-          <div class="timeline-time">Mar 26, 20:30</div>
-          <div class="timeline-msg">8 new pairs from expanded runs. 3G6D DockQ 0.367, 3A4S 0.357 (both new top-10). Total: 79 pairs, 54 improved, 16 acceptable.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">mean_dockq: 0.105</span>
-            <span class="timeline-metric">best: 1PPE 0.392</span>
-            <span class="timeline-metric">pairs: 79</span>
-          </div>
-        </div>
-        <div class="timeline-entry type-success">
-          <div class="timeline-time">Mar 26, 20:00</div>
-          <div class="timeline-msg">Data refresh: clean baselines + 71 pairs total (74 baseline, 68 lr=0.05, 25 lr=0.01). New pairs: 1WEJ DockQ 0.349, 1Z0K 0.215, 1I4D 0.262. Corrected baselines give +361% mean (was +731% with step-0 approximation).</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">mean_dockq: 0.104</span>
-            <span class="timeline-metric">best: 1PPE 0.392</span>
-            <span class="timeline-metric">pairs: 71</span>
-          </div>
-        </div>
-        <div class="timeline-entry type-success">
-          <div class="timeline-time">Mar 26, 19:30</div>
-          <div class="timeline-msg">Wave 3: 14 more pairs tested. 1QA9 DockQ 0.369 (new top-5). 6 improved, 7 OOM. Total: 32 non-OOM, 31/32 improved, 12 acceptable.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">mean_dockq: 0.178</span>
-            <span class="timeline-metric">best: 1PPE 0.392</span>
-            <span class="timeline-metric">pairs: 32</span>
-          </div>
-        </div>
-        <div class="timeline-entry type-success">
-          <div class="timeline-time">Mar 26, 18:15</div>
-          <div class="timeline-msg">Wave 2: 21 new pairs from expanded MSA set. 7 improved (1PPE 0.392, 1N8O 0.382, 1MLC 0.369, 1FLE 0.224, 1K74 0.115). 14 OOM. 4 still running. Total: 26 non-OOM pairs, 25/26 improved.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">mean_dockq: 0.197</span>
-            <span class="timeline-metric">best: 1PPE 0.392</span>
-            <span class="timeline-metric">pairs: 26</span>
-          </div>
-        </div>
-        <div class="timeline-entry type-success">
+        <div class="timeline-entry type-info">
           <div class="timeline-time">Mar 26, 16:22</div>
-          <div class="timeline-msg">All 22 pairs complete (19 successful, 6 OOM). 16/19 non-OOM improved. Best: 1CGI DockQ 0.375.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">mean_dockq: 0.189</span>
-            <span class="timeline-metric">best: 1CGI 0.375</span>
-          </div>
-        </div>
-        <div class="timeline-entry type-success">
-          <div class="timeline-time">Mar 26, 15:37</div>
-          <div class="timeline-msg">lr=0.05 confirmed dominant: 1ACB DockQ 0.324, 1AK4 0.275, 1AHW 0.373. Adam + high LR outperforms SGD and lr=0.01.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">1ACB: 0.324</span>
-            <span class="timeline-metric">1AHW: 0.373</span>
-          </div>
-        </div>
-        <div class="timeline-entry type-info">
-          <div class="timeline-time">Mar 26, 14:47</div>
-          <div class="timeline-msg">r8_b4 (lr=0.01) scale-up: 7 pairs evaluated. 1ACB DockQ +395% (0.020 to 0.099).</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">config: r8_b4_lr0.01</span>
-          </div>
-        </div>
-        <div class="timeline-entry type-info">
-          <div class="timeline-time">Mar 26, 13:56</div>
-          <div class="timeline-msg">HP sweep: 4 configs on 1ACB. lr=0.01 r8 b4 best stable config before lr=0.05 discovery.</div>
-        </div>
-        <div class="timeline-entry type-warning">
-          <div class="timeline-time">Mar 26, 12:00</div>
-          <div class="timeline-msg">Evoformer baseline established: 5 pairs, mean DockQ 0.096. TTT pipeline validated.</div>
+          <div class="timeline-msg">First full TTT sweep complete (old pipeline, unpaired MSAs).</div>
         </div>
       </div>
 
@@ -1110,13 +977,11 @@ function toggleTheme() {
   html.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
   renderAllCharts();
-  // Re-init structure viewers with correct background
   if (document.getElementById('tab-structures').classList.contains('active')) {
     initStructureViewers();
   }
 }
 
-// Apply saved theme
 (function() {
   const saved = localStorage.getItem('theme');
   if (saved) document.documentElement.setAttribute('data-theme', saved);
@@ -1137,13 +1002,13 @@ function switchSubTab(tabId) {
   }
 }
 
-// ============ CHART DATA (HARDCODED) ============
-var pairs = ['1PPE','1N8O','1Z0K','1CGI','1AHW','1QA9','1MLC','3G6D','3A4S','2Z0E','1K4C','1WEJ','1ACB','2GTP','1AK4','1I4D','1B6C','1FLE','1EZU','1AKJ','1KTZ','1AVX','1EAW','1D6R','1J2J','1K74','1CLV','1WQ1','1SYX','1MAH','2HRK','1R0R','1H9D','1BUH','3L5W','1F34','1R8S','1TMQ','1FQJ','1JTG','1HCF','2YVJ','1XD3','3F1P','1OC0','3S9D','2HLE','1AY7','2C0L','1EWY','1FC2','3BX7','2O3B','1PVH','2AYO','2R4R','1XQS','4IZ7','2SIC','1NSN','1BVN','1OYV','1KKL','1E6E','1I2M','1RV6','3AAD','1US7','4FZA','1OPH','3H11','1ZHH','1GRN','4HX3','2I9B','1IBR','2OOR','1E6J','1DFJ','2OZA','1IRA','1DHK','4GXU','1JPS','1GHQ','1R6Q','1N2C','4M76','1JMO','1JWH','2GAF','2ABZ','2AJF','1NCA','1OFU','1BJ1'];
-var baseline = [0.0905,0.0237,0.0133,0.035,0.0121,0.0136,0.0169,0.0073,0.0167,0.0298,0.0136,0.0143,0.0371,0.0121,0.0123,0.0082,0.1206,0.0302,0.0136,0.0169,0.0137,0.0344,0.0127,0.0169,0.1209,0.0387,0.0768,0.0199,0.0295,0.0606,0.0311,0.0267,0.0508,0.0222,0.0152,0.019,0.0165,0.0435,0.0227,0.0402,0.0241,0.0382,0.0379,0.0372,0.0162,0.0104,0.0299,0.0289,0.0348,0.0182,0.0183,0.0229,0.0301,0.0249,0.0275,0.004,0.027,0.0256,0.0255,0.0254,0.0244,0.0233,0.0211,0.0104,0.0207,0.0184,0.0203,0.0202,0.0068,0.0131,0.019,0.0179,0.0142,0.0164,0.0147,0.0109,0.008,0.0062,0.0121,0.0094,0.0138,0.0127,0.0071,0.0108,0.01,0.0069,0.0073,0.0088,0.0062,0.0085,0.0081,0.0084,0.0077,0.0063,0.0026,0.0023];
-var bestTTT = [0.3921,0.3817,0.3798,0.3746,0.3732,0.3689,0.3687,0.367,0.3568,0.356,0.3538,0.3485,0.3241,0.31,0.2754,0.2619,0.2435,0.2244,0.1951,0.1944,0.1451,0.1435,0.1296,0.1245,0.1209,0.1153,0.0768,0.0671,0.0614,0.0606,0.0592,0.0542,0.0508,0.0503,0.0492,0.0466,0.0466,0.0435,0.0428,0.0402,0.0384,0.0382,0.0379,0.0372,0.0372,0.037,0.0368,0.0354,0.0348,0.0338,0.0323,0.0317,0.0301,0.0276,0.0275,0.0275,0.027,0.0256,0.0255,0.0254,0.0244,0.0233,0.0216,0.0212,0.0207,0.0207,0.0203,0.0202,0.0191,0.0191,0.019,0.0179,0.0174,0.0164,0.0154,0.0153,0.0151,0.0146,0.0142,0.014,0.0138,0.0127,0.0123,0.0108,0.0106,0.0099,0.0092,0.0088,0.0087,0.0085,0.0084,0.0084,0.0077,0.0063,0.0026,0.0023];
-var iptmBase = [0.1124,0.1959,0.1193,0.1046,0.1052,0.1034,0.0959,0.1094,0.1175,0.1028,0.1169,0.1446,0.1221,0.0972,0.1273,0.3242,0.1032,0.1261,0.1052,0.1094,0.0906,0.0924,0.1134,0.1194,0.1382,0.1494,0.1371,0.124,0.105,0.1188,0.0809,0.1632,0.1383,0.1153,0.1157,0.1142,0.1092,0.1329,0.085,0.1774,0.3093,0.167,0.1218,0.1651,0.1317,0.1162,0.0904,0.0905,0.1636,0.196,0.2271,0.1736,0.1426,0.0939,0.1291,0.0954,0.1285,0.1122,0.118,0.0951,0.1229,0.1369,0.1671,0.1215,0.1902,0.3117,0.0911,0.106,0.1401,0.1006,0.1548,0.1321,0.1772,0.0958,0.0933,0.2024,0.1317,0.101,0.266,0.1262,0.1034,0.1232,0.1132,0.1075,0.1277,0.1142,0.1339,0.1102,0.1222,0.122,0.1224,0.1189,0.1251,0.12,0.1252,0.1041];
-var iptmBest = [0.9188,0.9957,0.8062,0.9829,0.7533,0.9186,0.9953,0.8078,0.827,0.4537,0.9729,0.4128,0.6508,0.5298,0.3641,0.7128,0.8901,0.3706,0.8883,0.514,0.1951,0.9804,0.1076,0.4522,0.1382,0.3823,0.1371,0.0942,0.9977,0.1188,0.8435,0.5619,0.1383,0.604,0.0985,0.1103,0.9918,0.1329,0.113,0.1774,0.6369,0.167,0.1218,0.1651,0.9483,0.1843,0.975,0.2278,0.1636,0.6965,0.6887,0.9026,0.1426,0.7236,0.1291,0.3677,0.1285,0.1122,0.118,0.0951,0.1229,0.1369,0.3488,0.1273,0.1902,0.6091,0.0911,0.106,0.172,0.0988,0.1548,0.1321,0.1186,0.0958,0.1017,0.1733,0.1352,0.9747,0.2755,0.1259,0.1034,0.1232,0.1308,0.1075,0.1971,0.4046,0.1363,0.1102,0.1119,0.122,0.119,0.1189,0.1251,0.12,0.1252,0.1041];
-var delta = [0.3016,0.3581,0.3665,0.3397,0.3611,0.3554,0.3518,0.3597,0.3401,0.3263,0.3402,0.3342,0.287,0.2979,0.2631,0.2537,0.1229,0.1942,0.1816,0.1774,0.1315,0.1091,0.117,0.1076,0.0,0.0766,0.0,0.0472,0.0318,0.0,0.0281,0.0274,0.0,0.0281,0.0341,0.0277,0.0301,0.0,0.02,0.0,0.0143,0.0,0.0,0.0,0.021,0.0266,0.0069,0.0065,0.0,0.0157,0.014,0.0089,0.0,0.0027,0.0,0.0235,0.0,0.0,0.0,0.0,0.0,0.0,0.0005,0.0108,0.0,0.0022,0.0,0.0,0.0123,0.006,0.0,0.0,0.0032,0.0,0.0007,0.0044,0.0071,0.0085,0.0021,0.0046,0.0,0.0,0.0052,0.0,0.0007,0.003,0.0019,0.0,0.0024,0.0,0.0003,0.0,0.0,0.0,0.0,0.0];
+// ============ CHART DATA (44 PAIRS — PROPER BASELINES) ============
+var pairs = ['1EZU','1Z5Y','1FFW','1ACB','1HE1','1D6R','1KTZ','1AK4','1EAW','1AVX','1I4D','1HCF','1GCQ','1J2J','1CLV','1FLE','1EWY','1PPE','1IBR','1FC2','1HIA','1KKL','1Z0K','1AKJ','1BUH','1KLU','1JK9','1JZD','1MAH','1GRN','1AHW','1NSN','1S1Q','1JWH','1JPS','1IQD','1FQJ','1E6J','1KXP','1JTG','1R6Q','1GXD','1T6B','1WDW'];
+var baseline = [0.9514,0.6354,0.6111,0.4366,0.0306,0.0197,0.0176,0.0321,0.0685,0.0361,0.2683,0.0201,0.0391,0.1452,0.1209,0.0957,0.0337,0.0636,0.0514,0.0152,0.0406,0.0171,0.0448,0.0241,0.0145,0.0294,0.0285,0.0243,0.021,0.0209,0.0126,0.0184,0.0162,0.0121,0.013,0.0124,0.0118,0.0096,0.008,0.0095,0.0094,0.0036,0.008,0.0033];
+var bestTTT = [0.9514,0.6354,0.6111,0.4366,0.3804,0.3703,0.3678,0.3607,0.326,0.3113,0.2683,0.2396,0.2206,0.1452,0.1209,0.0957,0.0775,0.0636,0.0514,0.0469,0.0462,0.0448,0.0448,0.0429,0.0414,0.0294,0.0285,0.0243,0.021,0.0209,0.0186,0.0184,0.0162,0.016,0.013,0.0124,0.0118,0.0115,0.0109,0.0095,0.0094,0.0082,0.008,0.0033];
+var iptmBase = [0.8216,0.7348,0.8495,0.3202,0.2176,0.1919,0.1025,0.1581,0.2768,0.1556,0.4653,0.5119,0.1253,0.234,0.3719,0.386,0.6958,0.1987,0.5449,0.1731,0.1394,0.8042,0.1565,0.1691,0.143,0.1241,0.1852,0.1751,0.1659,0.2182,0.1397,0.1596,0.1506,0.1915,0.139,0.1737,0.6944,0.1595,0.1479,0.4247,0.1813,0.1455,0.1483,0.2161];
+var iptmBest = [0.8216,0.7348,0.8495,0.3202,0.867,0.8638,0.5072,0.9843,0.9035,0.9075,0.4653,0.7388,0.4734,0.234,0.3719,0.386,0.4808,0.1987,0.5449,0.9776,0.4752,0.7387,0.1565,0.8627,0.1064,0.1241,0.1852,0.1751,0.1659,0.2182,0.1098,0.1596,0.1506,0.107,0.139,0.1737,0.6944,0.5573,0.1218,0.4247,0.1813,0.1246,0.1483,0.2161];
+var delta = [0.0,0.0,0.0,0.0,0.3497,0.3506,0.3502,0.3286,0.2576,0.2753,0.0,0.2196,0.1816,0.0,0.0,0.0,0.0438,0.0,0.0,0.0317,0.0056,0.0277,0.0,0.0187,0.0269,0.0,0.0,0.0,0.0,0.0,0.006,0.0,0.0,0.0039,0.0,0.0,0.0,0.0019,0.0029,0.0,0.0,0.0046,0.0,0.0];
 
 // ============ CHART RENDERING ============
 let chartDockQ = null, chartIPTM = null, chartDelta = null;
@@ -1161,7 +1026,6 @@ function renderAllCharts() {
   renderDockQChart();
   renderIPTMChart();
   renderDeltaChart();
-  renderCorrelationChart();
 }
 
 function renderDockQChart() {
@@ -1174,8 +1038,8 @@ function renderDockQChart() {
     data: {
       labels: pairs,
       datasets: [
-        { label: 'Baseline (clean)', data: baseline, backgroundColor: '#42a5f5', barPercentage: 0.9, categoryPercentage: 0.85 },
-        { label: 'Best TTT', data: bestTTT, backgroundColor: '#43a047', barPercentage: 0.9, categoryPercentage: 0.85 }
+        { label: 'Baseline (paired MSA)', data: baseline, backgroundColor: '#42a5f5', barPercentage: 0.9, categoryPercentage: 0.85 },
+        { label: 'Best (baseline or TTT)', data: bestTTT, backgroundColor: '#43a047', barPercentage: 0.9, categoryPercentage: 0.85 }
       ]
     },
     options: {
@@ -1191,7 +1055,7 @@ function renderDockQChart() {
           title: { display: true, text: 'DockQ', color: c.text },
           grid: { color: c.grid },
           ticks: { color: c.text },
-          min: 0, max: 0.50
+          min: 0, max: 1.0
         },
         y: {
           grid: { display: false },
@@ -1233,8 +1097,8 @@ function renderIPTMChart() {
     data: {
       labels: pairs,
       datasets: [
-        { label: 'Baseline', data: iptmBase, backgroundColor: '#42a5f5', barPercentage: 0.8, categoryPercentage: 0.7 },
-        { label: 'Best TTT', data: iptmBest, backgroundColor: '#43a047', barPercentage: 0.8, categoryPercentage: 0.7 }
+        { label: 'Baseline ipTM', data: iptmBase, backgroundColor: '#42a5f5', barPercentage: 0.8, categoryPercentage: 0.7 },
+        { label: 'Best TTT ipTM', data: iptmBest, backgroundColor: '#43a047', barPercentage: 0.8, categoryPercentage: 0.7 }
       ]
     },
     options: {
@@ -1255,7 +1119,7 @@ function renderDeltaChart() {
   if (!ctx) return;
   if (chartDelta) chartDelta.destroy();
   const c = getChartColors();
-  const barColors = delta.map(d => d >= 0.23 ? '#43a047' : d >= 0.1 ? '#ff9800' : '#ef5350');
+  const barColors = delta.map(d => d >= 0.23 ? '#43a047' : d >= 0.1 ? '#ff9800' : d > 0 ? '#ef5350' : '#9e9e9e');
   chartDelta = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -1270,87 +1134,6 @@ function renderDeltaChart() {
       scales: {
         x: { title: { display: true, text: 'DockQ Improvement', color: c.text }, grid: { color: c.grid }, ticks: { color: c.text }, min: 0 },
         y: { grid: { display: false }, ticks: { color: c.text, font: { family: "'SF Mono','Consolas','Monaco',monospace", size: 10 } } }
-      }
-    }
-  });
-}
-
-let chartCorrelation = null;
-
-function renderCorrelationChart() {
-  const ctx = document.getElementById('chartCorrelation');
-  if (!ctx) return;
-  if (chartCorrelation) chartCorrelation.destroy();
-  const c = getChartColors();
-
-  // All (ipTM, DockQ) points from lr=0.05 runs, 30 pairs, 197 points
-  const raw = [
-    [0.1267,0.0305],[0.1349,0.1090],[0.1306,0.0927],[0.1308,0.0527],[0.1304,0.1216],[0.1319,0.0645],
-    [0.1221,0.0175],[0.1307,0.0165],[0.1344,0.0255],[0.1250,0.0230],[0.1287,0.0216],[0.1289,0.0236],
-    [0.1160,0.1153],[0.1239,0.0663],[0.1332,0.0488],[0.1491,0.0186],[0.1427,0.0193],[0.1493,0.0221],
-    [0.1274,0.0167],[0.1365,0.0267],[0.1359,0.0236],[0.9690,0.0363],[0.9821,0.3698],[0.9567,0.0815],
-    [0.1115,0.0117],[0.1280,0.0141],[0.1138,0.0128],[0.2113,0.0171],[0.6397,0.0409],[0.7533,0.3732],
-    [0.0974,0.0110],[0.1009,0.0117],[0.1084,0.0116],[0.1300,0.0108],[0.1705,0.0172],[0.3641,0.2754],
-    [0.1274,0.0166],[0.1350,0.0137],[0.1273,0.0147],[0.1165,0.0156],[0.5140,0.0453],[0.1045,0.1944],
-    [0.0828,0.0267],[0.0873,0.0179],[0.0839,0.0258],[0.0834,0.0124],[0.0949,0.0399],[0.9804,0.1435],
-    [0.0948,0.0152],[0.1024,0.0157],[0.1035,0.0147],[0.0937,0.0150],[0.1241,0.0330],[0.2278,0.0354],
-    [0.0975,0.0104],[0.0953,0.0095],[0.0967,0.0106],[0.8901,0.2435],[0.3542,0.0193],[0.0993,0.0214],
-    [0.1199,0.0013],[0.1446,0.0013],[0.1201,0.0013],[0.1218,0.0012],[0.1222,0.0013],[0.0956,0.0015],
-    [0.1332,0.0308],[0.1455,0.0503],[0.1533,0.0319],[0.1619,0.0175],[0.2614,0.0160],[0.6040,0.0284],
-    [0.1200,0.0178],[0.1373,0.0846],[0.1404,0.0317],[0.1231,0.0442],[0.2578,0.1654],[0.9829,0.3746],
-    [0.1155,0.0190],[0.1186,0.0272],[0.1466,0.0457],[0.1201,0.0372],[0.1665,0.0451],[0.4522,0.1245],
-    [0.1005,0.0061],[0.0962,0.0053],[0.1007,0.0060],[0.1255,0.0083],[0.9747,0.0146],[0.0774,0.0127],
-    [0.1031,0.0493],[0.1023,0.0630],[0.1247,0.0418],[0.1621,0.0324],[0.1003,0.0406],[0.1092,0.1263],
-    [0.1454,0.0169],[0.1552,0.0205],[0.1573,0.0155],[0.2736,0.0275],[0.2495,0.0338],[0.6965,0.0303],
-    [0.1068,0.0169],[0.1275,0.0198],[0.3716,0.0177],[0.1465,0.0226],[0.2224,0.1076],[0.8883,0.1951],
-    [0.0997,0.0154],[0.1090,0.0268],[0.1095,0.0237],[0.1022,0.0281],[0.1466,0.0212],[0.1070,0.0226],
-    [0.2690,0.0208],[0.4080,0.0184],[0.2711,0.0213],[0.2428,0.0228],[0.6887,0.0234],[0.6138,0.0323],
-    [0.1270,0.0174],[0.1369,0.0201],[0.1448,0.0193],[0.1205,0.0163],[0.1569,0.1799],[0.3706,0.2244],
-    [0.1050,0.0157],[0.1049,0.0173],[0.1055,0.3476],[0.1174,0.0159],[0.1842,0.0156],[0.9729,0.3538],
-    [0.2467,0.0761],[0.2832,0.1145],[0.2802,0.0843],[0.3294,0.1153],[0.3823,0.0947],[0.2585,0.0555],
-    [0.2114,0.0157],[0.3488,0.0149],[0.3128,0.0126],[0.1781,0.0152],[0.1698,0.0162],[0.3050,0.0216],
-    [0.0797,0.0135],[0.0846,0.0148],[0.0890,0.0123],[0.1022,0.0167],[0.9953,0.3687],[0.6488,0.0401],
-    [0.3090,0.0249],[0.2816,0.0242],[0.3287,0.0229],[0.2841,0.0369],[0.8558,0.3817],[0.9957,0.3812],
-    [0.1279,0.0095],[0.1440,0.0095],[0.1632,0.0150],[0.2054,0.0112],[0.6742,0.0228],
-    [0.1240,0.0140],[0.1208,0.0119],[0.1433,0.0127],[0.1290,0.0273],[0.2097,0.0267],[0.9483,0.0372],
-    [0.1258,0.0262],[0.1256,0.0245],[0.1092,0.0351],[0.1941,0.0752],[0.4029,0.2483],[0.9188,0.3921],
-    [0.0924,0.0185],[0.0886,0.0219],[0.0838,0.0221],[0.1135,0.0178],[0.2916,0.0276],[0.7236,0.0220],
-    [0.1255,0.0312],[0.1293,0.0314],[0.1362,0.0384],[0.1148,0.0235],[0.4104,0.0466],[0.9918,0.0328],
-    [0.1007,0.0154],[0.1120,0.0130],[0.1002,0.0204],[0.1005,0.0144],[0.4932,0.3100],[0.5298,0.1105],
-    [0.0957,0.0097],[0.1095,0.0095],[0.1070,0.0161],[0.1510,0.0172],[0.4537,0.3560],[0.1230,0.1910]
-  ];
-
-  // Color points: low ipTM gray, medium blue, high (>0.3) orange/red
-  const data = raw.map(function(p) { return {x: p[0], y: p[1]}; });
-  const colors = raw.map(function(p) {
-    if (p[0] > 0.5) return '#ef5350';
-    if (p[0] > 0.2) return '#ff9800';
-    return c.blue;
-  });
-
-  chartCorrelation = new Chart(ctx, {
-    type: 'scatter',
-    data: {
-      datasets: [
-        { label: 'ipTM < 0.2 (early steps)', data: raw.filter(p => p[0] <= 0.2).map(p => ({x:p[0],y:p[1]})), backgroundColor: c.blue + '88', borderColor: c.blue, pointRadius: 3.5, pointHoverRadius: 6 },
-        { label: 'ipTM 0.2-0.5 (diverging)', data: raw.filter(p => p[0] > 0.2 && p[0] <= 0.5).map(p => ({x:p[0],y:p[1]})), backgroundColor: '#ff980088', borderColor: '#ff9800', pointRadius: 4, pointHoverRadius: 6 },
-        { label: 'ipTM > 0.5 (spiked)', data: raw.filter(p => p[0] > 0.5).map(p => ({x:p[0],y:p[1]})), backgroundColor: '#ef535088', borderColor: '#ef5350', pointRadius: 5, pointHoverRadius: 7 }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: c.text, font: { size: 12 } } },
-        tooltip: {
-          callbacks: {
-            label: function(ctx) { return 'ipTM=' + ctx.parsed.x.toFixed(3) + ' DockQ=' + ctx.parsed.y.toFixed(3); }
-          }
-        }
-      },
-      scales: {
-        x: { title: { display: true, text: 'ipTM (computable at test time)', color: c.text, font: { size: 13 } }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0, max: 1.05 },
-        y: { title: { display: true, text: 'DockQ (requires ground truth)', color: c.text, font: { size: 13 } }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0, max: 0.45 }
       }
     }
   });
