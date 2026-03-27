@@ -998,7 +998,36 @@
         </div>
       </div>
 
-      <!-- Row 4: Structural trajectories -->
+      <!-- Row 4: Collapse Analysis -->
+      <div class="result-card" style="margin-bottom:18px;">
+        <h3>Structural Collapse Analysis (lr=0.05, improved pairs only)</h3>
+        <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
+          Of 57 improved pairs at lr=0.05, 29 are structural collapses (COM&lt;8A, bad bonds&gt;20) and 28 are real improvements.
+          Collapse: chains merge into a ball with broken geometry. Real: chains maintain proper structure.
+        </p>
+        <div class="chart-area" style="height:340px;">
+          <canvas id="chartCollapse"></canvas>
+        </div>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-card">
+          <h3>COM Distance: Step 0 vs Best Step</h3>
+          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Collapsed pairs show COM dropping from ~20A to &lt;5A. Real improvements maintain &gt;10A.</p>
+          <div class="chart-area" style="height:280px;">
+            <canvas id="chartCOMchange"></canvas>
+          </div>
+        </div>
+        <div class="result-card">
+          <h3>Bad Bonds vs DockQ Gain</h3>
+          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Collapsed predictions have 50-230 bad bonds. Real improvements have &lt;25.</p>
+          <div class="chart-area" style="height:280px;">
+            <canvas id="chartBadBonds"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 5: Structural trajectories -->
       <div class="results-grid">
         <div class="result-card">
           <h3>Average COM Distance Over Steps</h3>
@@ -1470,6 +1499,85 @@ DockQ vs native (best step by ipTM or DockQ)</div>
           scales: {
             x: { title: { display: true, text: 'Best DockQ step' } },
             y: { title: { display: true, text: 'Count' } }
+          }
+        }
+      });
+    }
+
+    // ===== DIAGNOSTICS: Collapse Analysis =====
+    var collapseData = [{"pair":"1GPW","delta":0.386,"com0":28.9,"com_best":18.6,"bb":25,"collapsed":false},{"pair":"1N8O","delta":0.381,"com0":7.6,"com_best":2.7,"bb":12,"collapsed":false},{"pair":"1AY7","delta":0.371,"com0":17.0,"com_best":4.1,"bb":90,"collapsed":true},{"pair":"2CFH","delta":0.359,"com0":26.1,"com_best":10.1,"bb":15,"collapsed":false},{"pair":"1S1Q","delta":0.358,"com0":21.4,"com_best":3.8,"bb":97,"collapsed":true},{"pair":"1FQJ","delta":0.354,"com0":27.9,"com_best":1.4,"bb":232,"collapsed":true},{"pair":"1H9D","delta":0.352,"com0":20.4,"com_best":0.7,"bb":117,"collapsed":true},{"pair":"1Z0K","delta":0.345,"com0":20.0,"com_best":5.8,"bb":76,"collapsed":true},{"pair":"1HE1","delta":0.344,"com0":22.0,"com_best":4.7,"bb":212,"collapsed":true},{"pair":"1PPE","delta":0.333,"com0":12.0,"com_best":1.4,"bb":109,"collapsed":true},{"pair":"1AK4","delta":0.329,"com0":18.6,"com_best":1.4,"bb":224,"collapsed":true},{"pair":"3FN1","delta":0.328,"com0":23.1,"com_best":1.1,"bb":86,"collapsed":true},{"pair":"2B4J","delta":0.324,"com0":20.0,"com_best":2.0,"bb":118,"collapsed":true},{"pair":"2I25","delta":0.323,"com0":21.6,"com_best":1.9,"bb":197,"collapsed":true},{"pair":"1EAW","delta":0.31,"com0":22.6,"com_best":4.2,"bb":160,"collapsed":true},{"pair":"3H11","delta":0.303,"com0":24.1,"com_best":8.2,"bb":122,"collapsed":false},{"pair":"2UUY","delta":0.298,"com0":20.8,"com_best":2.4,"bb":177,"collapsed":true},{"pair":"1FLE","delta":0.279,"com0":18.0,"com_best":2.2,"bb":119,"collapsed":true},{"pair":"2O8V","delta":0.276,"com0":28.1,"com_best":2.8,"bb":230,"collapsed":true},{"pair":"1XU1","delta":0.268,"com0":20.0,"com_best":0.9,"bb":236,"collapsed":true},{"pair":"3SZK","delta":0.245,"com0":22.1,"com_best":5.3,"bb":178,"collapsed":true},{"pair":"3PC8","delta":0.24,"com0":17.8,"com_best":4.4,"bb":41,"collapsed":true},{"pair":"1IQD","delta":0.228,"com0":23.1,"com_best":6.5,"bb":71,"collapsed":true},{"pair":"1YVB","delta":0.221,"com0":30.8,"com_best":1.0,"bb":99,"collapsed":true},{"pair":"3P57","delta":0.195,"com0":14.5,"com_best":10.6,"bb":1,"collapsed":false},{"pair":"1QA9","delta":0.188,"com0":19.9,"com_best":9.1,"bb":21,"collapsed":false},{"pair":"1GHQ","delta":0.184,"com0":24.9,"com_best":1.7,"bb":202,"collapsed":true},{"pair":"1US7","delta":0.172,"com0":24.6,"com_best":6.3,"bb":127,"collapsed":true},{"pair":"2J0T","delta":0.168,"com0":20.2,"com_best":12.2,"bb":12,"collapsed":false},{"pair":"1AKJ","delta":0.167,"com0":22.1,"com_best":4.2,"bb":387,"collapsed":true}];
+
+    // Collapse bar chart: DockQ gain colored by collapse/real
+    if (document.getElementById('chartCollapse')) {
+      new Chart(document.getElementById('chartCollapse'), {
+        type: 'bar',
+        data: {
+          labels: collapseData.map(d => d.pair),
+          datasets: [{
+            label: 'DockQ gain',
+            data: collapseData.map(d => d.delta),
+            backgroundColor: collapseData.map(d => d.collapsed ? '#ef535088' : '#43a04788'),
+            borderColor: collapseData.map(d => d.collapsed ? '#ef5350' : '#43a047'),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function(ctx) {
+              var d = collapseData[ctx.dataIndex];
+              return (d.collapsed ? 'COLLAPSE' : 'REAL') + ': +' + d.delta + ' COM:' + d.com0 + '->' + d.com_best + 'A bb=' + d.bb;
+            }}}
+          },
+          scales: {
+            x: { ticks: { font: { size: 9 }, maxRotation: 90 } },
+            y: { title: { display: true, text: 'DockQ gain' }, min: 0 }
+          }
+        }
+      });
+    }
+
+    // COM change scatter
+    if (document.getElementById('chartCOMchange')) {
+      var collPts = collapseData.filter(d => d.collapsed).map(d => ({x:d.com0, y:d.com_best}));
+      var realPts = collapseData.filter(d => !d.collapsed).map(d => ({x:d.com0, y:d.com_best}));
+      new Chart(document.getElementById('chartCOMchange'), {
+        type: 'scatter',
+        data: {
+          datasets: [
+            { label: 'Collapsed (29)', data: collPts, backgroundColor: '#ef535066', borderColor: '#ef5350', pointRadius: 5 },
+            { label: 'Real (28)', data: realPts, backgroundColor: '#43a04766', borderColor: '#43a047', pointRadius: 5 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { font: { size: 11 } } } },
+          scales: {
+            x: { title: { display: true, text: 'COM distance step 0 (A)' }, min: 0 },
+            y: { title: { display: true, text: 'COM distance best step (A)' }, min: 0 }
+          }
+        }
+      });
+    }
+
+    // Bad bonds vs delta
+    if (document.getElementById('chartBadBonds')) {
+      var bbColl = collapseData.filter(d => d.collapsed).map(d => ({x:d.bb, y:d.delta}));
+      var bbReal = collapseData.filter(d => !d.collapsed).map(d => ({x:d.bb, y:d.delta}));
+      new Chart(document.getElementById('chartBadBonds'), {
+        type: 'scatter',
+        data: {
+          datasets: [
+            { label: 'Collapsed', data: bbColl, backgroundColor: '#ef535066', borderColor: '#ef5350', pointRadius: 5 },
+            { label: 'Real', data: bbReal, backgroundColor: '#43a04766', borderColor: '#43a047', pointRadius: 5 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: {
+            x: { title: { display: true, text: 'Bad bonds at best step' } },
+            y: { title: { display: true, text: 'DockQ gain' }, min: 0 }
           }
         }
       });
