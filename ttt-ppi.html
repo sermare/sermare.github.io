@@ -770,6 +770,19 @@
         </div>
       </div>
 
+      <!-- ipTM-DockQ Correlation -->
+      <div class="result-card" style="margin-bottom:24px;">
+        <h3>ipTM as a Proxy for DockQ: Can We Select the Best Step Without Ground Truth?</h3>
+        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px; line-height:1.5;">
+          Each point is one (pair, step) evaluation. ipTM is computable at test time; DockQ requires the native structure.
+          <strong>Pearson r = 0.587 (r&sup2; = 0.34).</strong> Selecting the best step by ipTM achieves <strong>90% of oracle DockQ</strong> (0.158 vs 0.176).
+          ipTM picks the exact best step 57% of the time across 30 pairs.
+        </p>
+        <div class="chart-area" style="height:380px;">
+          <canvas id="chartCorrelation"></canvas>
+        </div>
+      </div>
+
       <!-- Consolidated Table -->
       <h3 style="font-size:16px;font-weight:500;color:var(--heading-color);margin:0 0 12px 0;">Per-Pair Results (Best Config)</h3>
       <div class="exp-table-wrapper">
@@ -1056,6 +1069,7 @@ function renderAllCharts() {
   renderDockQChart();
   renderIPTMChart();
   renderDeltaChart();
+  renderCorrelationChart();
 }
 
 function renderDockQChart() {
@@ -1164,6 +1178,87 @@ function renderDeltaChart() {
       scales: {
         x: { title: { display: true, text: 'DockQ Improvement', color: c.text }, grid: { color: c.grid }, ticks: { color: c.text }, min: 0 },
         y: { grid: { display: false }, ticks: { color: c.text, font: { family: "'SF Mono','Consolas','Monaco',monospace", size: 10 } } }
+      }
+    }
+  });
+}
+
+let chartCorrelation = null;
+
+function renderCorrelationChart() {
+  const ctx = document.getElementById('chartCorrelation');
+  if (!ctx) return;
+  if (chartCorrelation) chartCorrelation.destroy();
+  const c = getChartColors();
+
+  // All (ipTM, DockQ) points from lr=0.05 runs, 30 pairs, 197 points
+  const raw = [
+    [0.1267,0.0305],[0.1349,0.1090],[0.1306,0.0927],[0.1308,0.0527],[0.1304,0.1216],[0.1319,0.0645],
+    [0.1221,0.0175],[0.1307,0.0165],[0.1344,0.0255],[0.1250,0.0230],[0.1287,0.0216],[0.1289,0.0236],
+    [0.1160,0.1153],[0.1239,0.0663],[0.1332,0.0488],[0.1491,0.0186],[0.1427,0.0193],[0.1493,0.0221],
+    [0.1274,0.0167],[0.1365,0.0267],[0.1359,0.0236],[0.9690,0.0363],[0.9821,0.3698],[0.9567,0.0815],
+    [0.1115,0.0117],[0.1280,0.0141],[0.1138,0.0128],[0.2113,0.0171],[0.6397,0.0409],[0.7533,0.3732],
+    [0.0974,0.0110],[0.1009,0.0117],[0.1084,0.0116],[0.1300,0.0108],[0.1705,0.0172],[0.3641,0.2754],
+    [0.1274,0.0166],[0.1350,0.0137],[0.1273,0.0147],[0.1165,0.0156],[0.5140,0.0453],[0.1045,0.1944],
+    [0.0828,0.0267],[0.0873,0.0179],[0.0839,0.0258],[0.0834,0.0124],[0.0949,0.0399],[0.9804,0.1435],
+    [0.0948,0.0152],[0.1024,0.0157],[0.1035,0.0147],[0.0937,0.0150],[0.1241,0.0330],[0.2278,0.0354],
+    [0.0975,0.0104],[0.0953,0.0095],[0.0967,0.0106],[0.8901,0.2435],[0.3542,0.0193],[0.0993,0.0214],
+    [0.1199,0.0013],[0.1446,0.0013],[0.1201,0.0013],[0.1218,0.0012],[0.1222,0.0013],[0.0956,0.0015],
+    [0.1332,0.0308],[0.1455,0.0503],[0.1533,0.0319],[0.1619,0.0175],[0.2614,0.0160],[0.6040,0.0284],
+    [0.1200,0.0178],[0.1373,0.0846],[0.1404,0.0317],[0.1231,0.0442],[0.2578,0.1654],[0.9829,0.3746],
+    [0.1155,0.0190],[0.1186,0.0272],[0.1466,0.0457],[0.1201,0.0372],[0.1665,0.0451],[0.4522,0.1245],
+    [0.1005,0.0061],[0.0962,0.0053],[0.1007,0.0060],[0.1255,0.0083],[0.9747,0.0146],[0.0774,0.0127],
+    [0.1031,0.0493],[0.1023,0.0630],[0.1247,0.0418],[0.1621,0.0324],[0.1003,0.0406],[0.1092,0.1263],
+    [0.1454,0.0169],[0.1552,0.0205],[0.1573,0.0155],[0.2736,0.0275],[0.2495,0.0338],[0.6965,0.0303],
+    [0.1068,0.0169],[0.1275,0.0198],[0.3716,0.0177],[0.1465,0.0226],[0.2224,0.1076],[0.8883,0.1951],
+    [0.0997,0.0154],[0.1090,0.0268],[0.1095,0.0237],[0.1022,0.0281],[0.1466,0.0212],[0.1070,0.0226],
+    [0.2690,0.0208],[0.4080,0.0184],[0.2711,0.0213],[0.2428,0.0228],[0.6887,0.0234],[0.6138,0.0323],
+    [0.1270,0.0174],[0.1369,0.0201],[0.1448,0.0193],[0.1205,0.0163],[0.1569,0.1799],[0.3706,0.2244],
+    [0.1050,0.0157],[0.1049,0.0173],[0.1055,0.3476],[0.1174,0.0159],[0.1842,0.0156],[0.9729,0.3538],
+    [0.2467,0.0761],[0.2832,0.1145],[0.2802,0.0843],[0.3294,0.1153],[0.3823,0.0947],[0.2585,0.0555],
+    [0.2114,0.0157],[0.3488,0.0149],[0.3128,0.0126],[0.1781,0.0152],[0.1698,0.0162],[0.3050,0.0216],
+    [0.0797,0.0135],[0.0846,0.0148],[0.0890,0.0123],[0.1022,0.0167],[0.9953,0.3687],[0.6488,0.0401],
+    [0.3090,0.0249],[0.2816,0.0242],[0.3287,0.0229],[0.2841,0.0369],[0.8558,0.3817],[0.9957,0.3812],
+    [0.1279,0.0095],[0.1440,0.0095],[0.1632,0.0150],[0.2054,0.0112],[0.6742,0.0228],
+    [0.1240,0.0140],[0.1208,0.0119],[0.1433,0.0127],[0.1290,0.0273],[0.2097,0.0267],[0.9483,0.0372],
+    [0.1258,0.0262],[0.1256,0.0245],[0.1092,0.0351],[0.1941,0.0752],[0.4029,0.2483],[0.9188,0.3921],
+    [0.0924,0.0185],[0.0886,0.0219],[0.0838,0.0221],[0.1135,0.0178],[0.2916,0.0276],[0.7236,0.0220],
+    [0.1255,0.0312],[0.1293,0.0314],[0.1362,0.0384],[0.1148,0.0235],[0.4104,0.0466],[0.9918,0.0328],
+    [0.1007,0.0154],[0.1120,0.0130],[0.1002,0.0204],[0.1005,0.0144],[0.4932,0.3100],[0.5298,0.1105],
+    [0.0957,0.0097],[0.1095,0.0095],[0.1070,0.0161],[0.1510,0.0172],[0.4537,0.3560],[0.1230,0.1910]
+  ];
+
+  // Color points: low ipTM gray, medium blue, high (>0.3) orange/red
+  const data = raw.map(function(p) { return {x: p[0], y: p[1]}; });
+  const colors = raw.map(function(p) {
+    if (p[0] > 0.5) return '#ef5350';
+    if (p[0] > 0.2) return '#ff9800';
+    return c.blue;
+  });
+
+  chartCorrelation = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        { label: 'ipTM < 0.2 (early steps)', data: raw.filter(p => p[0] <= 0.2).map(p => ({x:p[0],y:p[1]})), backgroundColor: c.blue + '88', borderColor: c.blue, pointRadius: 3.5, pointHoverRadius: 6 },
+        { label: 'ipTM 0.2-0.5 (diverging)', data: raw.filter(p => p[0] > 0.2 && p[0] <= 0.5).map(p => ({x:p[0],y:p[1]})), backgroundColor: '#ff980088', borderColor: '#ff9800', pointRadius: 4, pointHoverRadius: 6 },
+        { label: 'ipTM > 0.5 (spiked)', data: raw.filter(p => p[0] > 0.5).map(p => ({x:p[0],y:p[1]})), backgroundColor: '#ef535088', borderColor: '#ef5350', pointRadius: 5, pointHoverRadius: 7 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: c.text, font: { size: 12 } } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return 'ipTM=' + ctx.parsed.x.toFixed(3) + ' DockQ=' + ctx.parsed.y.toFixed(3); }
+          }
+        }
+      },
+      scales: {
+        x: { title: { display: true, text: 'ipTM (computable at test time)', color: c.text, font: { size: 13 } }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0, max: 1.05 },
+        y: { title: { display: true, text: 'DockQ (requires ground truth)', color: c.text, font: { size: 13 } }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0, max: 0.45 }
       }
     }
   });
