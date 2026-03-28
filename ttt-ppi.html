@@ -698,551 +698,511 @@
 
   <div class="container">
 
-    <a href="index.html" class="back-link">&larr; Back to main page</a>
+    <a class="back-link" href="index.html">&larr; Home</a>
 
-    <div class="page-title">
-      Two Proteins Is All You Need
-      <span class="status-badge status-running">ZERO INIT</span>
-    </div>
-    <div class="page-subtitle">Test-Time Training for Protein-Protein Interaction Prediction</div>
-    <div class="page-desc">
-      Zero-init LoRA on AF2-Multimer Evoformer at two learning rates (lr=0.01 and lr=0.05). 50 gradient steps of masked MSA loss. Zero initialization ensures step 0 matches the unmodified model.
-    </div>
-    <div class="last-updated">Last updated: Mar 28, 2026 | <a href="data/ttt_ppi/findings.pdf" style="color:var(--link);">Findings PDF</a></div>
+    <h1 class="page-title">Two Proteins Is All You Need <span class="status-badge status-running">Running</span></h1>
+    <p class="page-subtitle">Test-Time Training for Protein-Protein Interaction Prediction</p>
+    <p class="page-desc">Zero-init LoRA on AF2-Multimer Evoformer. Testing 200 steps, cosine annealing, pair stack LoRA, and differential learning rates across DB5.5, SAbDab, and CASP-CAPRI.</p>
+    <div class="last-updated">Last updated: Mar 27, 2026 | <a href="data/ttt_ppi/findings.pdf" style="color:var(--link);">Findings PDF</a></div>
 
     <!-- Stats Row -->
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-value">182</div>
-        <div class="stat-label">DB5 Pairs</div>
+        <div class="stat-value">1170</div>
+        <div class="stat-label">Jobs Submitted</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">48%</div>
-        <div class="stat-label">lr=0.05 Success</div>
+        <div class="stat-value">85%</div>
+        <div class="stat-label">200s Success Rate</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">20 &rarr; 27</div>
-        <div class="stat-label">Acceptable</div>
+        <div class="stat-value">29/34</div>
+        <div class="stat-label">Genuine Improvements</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">103/182</div>
-        <div class="stat-label">Best-of-2 Improved</div>
+        <div class="stat-value">step 107</div>
+        <div class="stat-label">Mean Peak Step</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">88/181</div>
-        <div class="stat-label">lr=0.05 Improved</div>
+        <div class="stat-value">15 Running</div>
+        <div class="stat-label">Queue Status</div>
       </div>
     </div>
 
-    <!-- Tabs -->
+    <!-- Sub-Tabs -->
     <div class="sub-tabs">
-      <button class="sub-tab-btn active" onclick="switchSubTab('results')">Results</button>
-      <button class="sub-tab-btn" onclick="switchSubTab('diagnostics')">Diagnostics</button>
-      <button class="sub-tab-btn" onclick="switchSubTab('method')">Method</button>
-      <button class="sub-tab-btn" onclick="switchSubTab('log')">Log</button>
+      <button class="sub-tab-btn active" onclick="switchTab('overview')">Overview</button>
+      <button class="sub-tab-btn" onclick="switchTab('experiments')">Experiments</button>
+      <button class="sub-tab-btn" onclick="switchTab('diagnostics')">Diagnostics</button>
+      <button class="sub-tab-btn" onclick="switchTab('method')">Method</button>
+      <button class="sub-tab-btn" onclick="switchTab('log')">Log</button>
     </div>
 
-    <!-- ======================= TAB 1: RESULTS ======================= -->
-    <div class="sub-tab-content active" id="tab-results">
+    <!-- ===================== TAB 1: OVERVIEW ===================== -->
+    <div class="sub-tab-content active" id="tab-overview">
 
-      <!-- Scatter: Baseline DockQ vs Delta -->
-      <div class="result-card" style="margin-bottom:24px">
-        <h3>Baseline DockQ vs TTT Delta</h3>
-        <div class="chart-area" style="height:340px">
-          <canvas id="scatterDelta"></canvas>
-        </div>
+      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Experiment Comparison</h2>
+
+      <div class="exp-table-wrapper" style="max-height:none;">
+        <table class="exp-table">
+          <thead>
+            <tr>
+              <th>Experiment</th><th>Done</th><th>TTT</th><th>Genuine</th><th>Collapse</th><th>Flat</th><th>OOM</th><th>Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>200s constant (lr=0.01)</td><td>38</td><td>34</td><td>29</td><td>3</td><td>2</td><td>4</td><td style="color:#2d6a2d;font-weight:500;">85%</td></tr>
+            <tr><td>200s cosine (lr=0.01)</td><td>11</td><td>11</td><td>11</td><td>0</td><td>0</td><td>0</td><td style="color:#2d6a2d;font-weight:500;">100%</td></tr>
+            <tr><td>Recycle 10 (50s + 10 recycle)</td><td>8</td><td>8</td><td>7</td><td>0</td><td>1</td><td>0</td><td style="color:#2d6a2d;font-weight:500;">88%</td></tr>
+            <tr><td>Pair stack lr=0.005</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>100%</td></tr>
+            <tr><td>Pair stack lr=0.001</td><td>2</td><td>2</td><td>2</td><td>0</td><td>0</td><td>0</td><td>100%</td></tr>
+            <tr><td>MSA+Pair diff LR (0.01/0.001)</td><td>3</td><td>3</td><td>2</td><td>0</td><td>1</td><td>0</td><td>67%</td></tr>
+            <tr style="color:var(--text-secondary);"><td>SAbDab 200s</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>--</td></tr>
+            <tr style="color:var(--text-secondary);"><td>CASP-CAPRI lr=0.01</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>--</td></tr>
+            <tr style="color:var(--text-secondary);"><td>CASP-CAPRI lr=0.05</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>--</td></tr>
+            <tr style="color:var(--text-secondary);"><td>CASP-CAPRI 200s</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>--</td></tr>
+          </tbody>
+        </table>
       </div>
 
-      <!-- DockQ trajectory + Loss trajectory side by side -->
+      <!-- Charts Row -->
       <div class="results-grid">
+
+        <!-- Chart 1: Improvement Rate -->
         <div class="result-card">
-          <h3>Average DockQ Trajectory</h3>
-          <div class="chart-area">
-            <canvas id="dockqTraj"></canvas>
-          </div>
+          <h3>Improvement Rate by Experiment</h3>
+          <div class="chart-area"><canvas id="chartImpRate"></canvas></div>
+        </div>
+
+        <!-- Chart 2: Mean DockQ Gain -->
+        <div class="result-card">
+          <h3>Mean DockQ Gain (genuine only)</h3>
+          <div class="chart-area"><canvas id="chartDockQGain"></canvas></div>
+        </div>
+
+      </div>
+
+      <!-- Chart 3: Peak Step Distribution -->
+      <div class="result-card" style="margin-bottom:24px;">
+        <h3>Where do improvements peak? (200s constant, n=32)</h3>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">81% of genuine improvements peak after step 50. Mean peak: step 104.</p>
+        <div class="chart-area"><canvas id="chartPeakHist"></canvas></div>
+      </div>
+
+      <!-- Key Findings -->
+      <div class="results-grid" style="grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));">
+        <div class="result-card">
+          <h3>200 steps rescues non-responders</h3>
+          <p style="font-size:14px;color:var(--text);line-height:1.6;">4 pairs rescued from zero improvement at 50 steps: 1ACB +0.036, 1CGI +0.065, 1D6R +0.041, 1AHW +0.025. 85% success rate vs 28.5% at original 50 steps.</p>
         </div>
         <div class="result-card">
-          <h3>Average Loss Trajectory</h3>
-          <div class="chart-area">
-            <canvas id="lossTraj"></canvas>
-          </div>
+          <h3>Cosine beats constant LR</h3>
+          <p style="font-size:14px;color:var(--text);line-height:1.6;">Head-to-head: 5/6 wins for cosine. More consistent, fewer collapses. Constant occasionally gets large spikes (1GCQ +0.182) that cosine misses.</p>
+        </div>
+        <div class="result-card">
+          <h3>ipTM is a broken selector</h3>
+          <p style="font-size:14px;color:var(--text);line-height:1.6;">ipTM captures -2.1% of oracle gain (net negative). 25/186 pairs degraded by ipTM selection. Contact count (8A) outperforms it.</p>
         </div>
       </div>
 
-      <!-- ipTM vs DockQ scatter -->
-      <div class="result-card" style="margin-bottom:24px">
-        <h3>ipTM vs DockQ (Baseline and TTT Best)</h3>
-        <div class="chart-area" style="height:340px">
-          <canvas id="iptmDockq"></canvas>
+    </div>
+
+    <!-- ===================== TAB 2: EXPERIMENTS ===================== -->
+    <div class="sub-tab-content" id="tab-experiments">
+
+      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Per-Experiment Results</h2>
+
+      <!-- 200s Constant -->
+      <div class="findings-card">
+        <h3>200s Constant LR (lr=0.01) &mdash; 38 pairs</h3>
+        <div class="exp-table-wrapper" style="max-height:500px;">
+          <table class="exp-table" id="table-200s-constant">
+            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
         </div>
       </div>
 
-      <!-- Top 15 improvements table -->
-      <div class="result-card" style="margin-bottom:24px">
-        <h3>Top 15 Improvements (Best of Both LRs)</h3>
-        <div class="exp-table-wrapper" style="max-height:500px">
+      <!-- 200s Cosine -->
+      <div class="findings-card">
+        <h3>200s Cosine Annealing (lr=0.01) &mdash; 11 pairs</h3>
+        <div class="exp-table-wrapper" style="max-height:400px;">
+          <table class="exp-table" id="table-200s-cosine">
+            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recycle 10 -->
+      <div class="findings-card">
+        <h3>Recycle 10 (50s + 10 recycling) &mdash; 8 pairs</h3>
+        <div class="exp-table-wrapper" style="max-height:400px;">
+          <table class="exp-table" id="table-recycle10">
+            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pair Stack lr=0.005 -->
+      <div class="findings-card">
+        <h3>Pair Stack LoRA (lr=0.005) &mdash; 1 pair</h3>
+        <div class="exp-table-wrapper">
+          <table class="exp-table" id="table-pair-stack-5e3">
+            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pair Stack lr=0.001 -->
+      <div class="findings-card">
+        <h3>Pair Stack LoRA (lr=0.001) &mdash; 2 pairs</h3>
+        <div class="exp-table-wrapper">
+          <table class="exp-table" id="table-pair-stack-1e3">
+            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MSA+Pair Diff LR -->
+      <div class="findings-card">
+        <h3>MSA+Pair Differential LR (0.01/0.001) &mdash; 3 pairs</h3>
+        <div class="exp-table-wrapper">
+          <table class="exp-table" id="table-msa-pair-diff">
+            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===================== TAB 3: DIAGNOSTICS ===================== -->
+    <div class="sub-tab-content" id="tab-diagnostics">
+
+      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Diagnostics</h2>
+
+      <!-- DockQ Trajectory -->
+      <div class="result-card" style="margin-bottom:24px;">
+        <h3>DockQ Trajectory: 200 Steps (avg over 200s constant pairs)</h3>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Improved pairs (n=32) show oscillatory gains. Flat pairs (n=2) remain near baseline. Trajectories are noisy, not smooth &mdash; step-to-step autocorrelation is r = -0.47.</p>
+        <div class="chart-area" style="height:320px;"><canvas id="chartTrajectory"></canvas></div>
+      </div>
+
+      <!-- Comparison table -->
+      <div class="result-card" style="margin-bottom:24px;">
+        <h3>200s vs Original 50s</h3>
+        <div class="exp-table-wrapper" style="max-height:none;">
           <table class="exp-table">
-            <thead>
-              <tr>
-                <th>Pair</th>
-                <th>Baseline</th>
-                <th>lr=0.01</th>
-                <th>lr=0.05</th>
-                <th>Best</th>
-                <th>Delta</th>
-                <th>Best LR</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Metric</th><th>Original (50s)</th><th>200s Constant</th><th>200s Cosine</th></tr></thead>
             <tbody>
-        <tr>
-          <td>1Z5Y</td>
-          <td class="dockq-green">0.635</td>
-          <td class="dockq-yellow">0.119</td>
-          <td class="dockq-green">0.452</td>
-          <td class="dockq-green">0.452</td>
-          <td style="color:#c62828">-0.184</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>1N8O</td>
-          <td class="dockq-red">0.026</td>
-          <td class="dockq-red">0.054</td>
-          <td class="dockq-green">0.407</td>
-          <td class="dockq-green">0.407</td>
-          <td style="color:#2d6a2d">+0.381</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>1GPW</td>
-          <td class="dockq-red">0.019</td>
-          <td class="dockq-green">0.337</td>
-          <td class="dockq-green">0.405</td>
-          <td class="dockq-green">0.405</td>
-          <td style="color:#2d6a2d">+0.386</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>3PC8</td>
-          <td class="dockq-yellow">0.163</td>
-          <td class="dockq-red">0.055</td>
-          <td class="dockq-green">0.403</td>
-          <td class="dockq-green">0.403</td>
-          <td style="color:#2d6a2d">+0.240</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>1PPE</td>
-          <td class="dockq-red">0.064</td>
-          <td class="dockq-red">0.057</td>
-          <td class="dockq-green">0.396</td>
-          <td class="dockq-green">0.396</td>
-          <td style="color:#2d6a2d">+0.333</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>1Z0K</td>
-          <td class="dockq-red">0.045</td>
-          <td class="dockq-red">0.063</td>
-          <td class="dockq-green">0.390</td>
-          <td class="dockq-green">0.390</td>
-          <td style="color:#2d6a2d">+0.345</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>2CFH</td>
-          <td class="dockq-red">0.030</td>
-          <td class="dockq-red">0.018</td>
-          <td class="dockq-green">0.389</td>
-          <td class="dockq-green">0.389</td>
-          <td style="color:#2d6a2d">+0.359</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>1AY7</td>
-          <td class="dockq-red">0.016</td>
-          <td class="dockq-red">0.041</td>
-          <td class="dockq-green">0.387</td>
-          <td class="dockq-green">0.387</td>
-          <td style="color:#2d6a2d">+0.371</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>3SZK</td>
-          <td class="dockq-yellow">0.139</td>
-          <td class="dockq-yellow">0.189</td>
-          <td class="dockq-green">0.384</td>
-          <td class="dockq-green">0.384</td>
-          <td style="color:#2d6a2d">+0.245</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>2UUY</td>
-          <td class="dockq-red">0.083</td>
-          <td class="dockq-yellow">0.215</td>
-          <td class="dockq-green">0.381</td>
-          <td class="dockq-green">0.381</td>
-          <td style="color:#2d6a2d">+0.298</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>2B4J</td>
-          <td class="dockq-red">0.055</td>
-          <td class="dockq-red">0.025</td>
-          <td class="dockq-green">0.379</td>
-          <td class="dockq-green">0.379</td>
-          <td style="color:#2d6a2d">+0.324</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>1EAW</td>
-          <td class="dockq-red">0.068</td>
-          <td class="dockq-red">0.096</td>
-          <td class="dockq-green">0.378</td>
-          <td class="dockq-green">0.378</td>
-          <td style="color:#2d6a2d">+0.310</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>1FLE</td>
-          <td class="dockq-red">0.096</td>
-          <td class="dockq-red">0.026</td>
-          <td class="dockq-green">0.374</td>
-          <td class="dockq-green">0.374</td>
-          <td style="color:#2d6a2d">+0.279</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>1HE1</td>
-          <td class="dockq-red">0.031</td>
-          <td class="dockq-red">0.025</td>
-          <td class="dockq-green">0.374</td>
-          <td class="dockq-green">0.374</td>
-          <td style="color:#2d6a2d">+0.344</td>
-          <td>0.05</td>
-        </tr>
-        <tr>
-          <td>1S1Q</td>
-          <td class="dockq-red">0.016</td>
-          <td class="dockq-red">0.050</td>
-          <td class="dockq-green">0.374</td>
-          <td class="dockq-green">0.374</td>
-          <td style="color:#2d6a2d">+0.358</td>
-          <td>0.05</td>
-        </tr>
+              <tr><td>Pairs improved (of TTT-able)</td><td>53/68 (78%)</td><td>29/34 (85%)</td><td>11/11 (100%)</td></tr>
+              <tr><td>Mean DockQ gain (genuine)</td><td>+0.006</td><td>+0.039</td><td>+0.021</td></tr>
+              <tr><td>Peak improvement</td><td>+0.281</td><td>+0.253</td><td>+0.050</td></tr>
+              <tr><td>Collapses</td><td>0</td><td>3</td><td>0</td></tr>
+              <tr><td>Non-responsive</td><td>133/186</td><td>2/34</td><td>0/11</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Summary banner -->
-      <div class="info-banner">
-        Zero-init LoRA on 182 DB5 pairs: 73 improved (40%), 109 hurt.
-        11/49 SAbDab pairs improved.
-        ipTM and DockQ agree on best step for 66% of pairs.
-        Step 0 matches baseline exactly for only 22/182 pairs (known issue).
+      <!-- Collapse analysis -->
+      <div class="result-card" style="margin-bottom:24px;">
+        <h3>Collapse Analysis</h3>
+        <p style="font-size:14px;color:var(--text);line-height:1.6;">Pair stack LoRA at lr=0.01 collapses 3/3 (same failure mode as MSA at lr=0.05). Triangular attention modules are more sensitive to perturbation than MSA attention. Reducing to lr=0.005 eliminates collapse for pair stack.</p>
+        <p style="font-size:14px;color:var(--text);line-height:1.6;margin-top:8px;">In 200s constant: 3/34 collapse (9%), all with bad_bonds >= 25 and COM distance &lt; 8A. Cosine annealing: 0/11 collapses.</p>
       </div>
 
-    </div>
-
-    <!-- ======================= TAB 2: DIAGNOSTICS ======================= -->
-    <div class="sub-tab-content" id="tab-diagnostics">
-
-      <!-- Row 1: Size + Quality -->
-      <div class="results-grid">
-        <div class="result-card">
-          <h3>Success Rate by Pair Size (residues)</h3>
-          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Fraction of pairs where TTT improves DockQ. Numbers on bars = pair count.</p>
-          <div class="chart-area" style="height:280px;">
-            <canvas id="chartSizeRate"></canvas>
-          </div>
-        </div>
-        <div class="result-card">
-          <h3>Success Rate by Baseline Quality</h3>
-          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">lr=0.05: TTT helps 55% of incorrect predictions.</p>
-          <div class="chart-area" style="height:280px;">
-            <canvas id="chartQualRate"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- Row 2: Scatter plots -->
-      <div class="results-grid">
-        <div class="result-card">
-          <h3>Pair Size vs TTT Effect</h3>
-          <div class="chart-area" style="height:300px;">
-            <canvas id="chartSizeScatter"></canvas>
-          </div>
-        </div>
-        <div class="result-card">
-          <h3>Step 0 pLDDT vs TTT Effect</h3>
-          <div class="chart-area" style="height:300px;">
-            <canvas id="chartPlddtScatter"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- Row 3: Interface + Best Step -->
-      <div class="results-grid">
-        <div class="result-card">
-          <h3>Interface Size vs TTT Effect</h3>
-          <div class="chart-area" style="height:300px;">
-            <canvas id="chartIfaceScatter"></canvas>
-          </div>
-        </div>
-        <div class="result-card">
-          <h3>Best Step Distribution (improved pairs)</h3>
-          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">31/88 improved pairs (lr=0.05) have best DockQ at step 0.</p>
-          <div class="chart-area" style="height:280px;">
-            <canvas id="chartBestStep"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- Row 4: Collapse Analysis -->
-      <div class="result-card" style="margin-bottom:18px;">
-        <h3>Structural Collapse Analysis (lr=0.05, improved pairs only)</h3>
-        <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
-          Of 57 improved pairs at lr=0.05, 29 are structural collapses (COM&lt;8A, bad bonds&gt;20) and 28 are real improvements.
-          Collapse: chains merge into a ball with broken geometry. Real: chains maintain proper structure.
-        </p>
-        <div class="chart-area" style="height:340px;">
-          <canvas id="chartCollapse"></canvas>
-        </div>
-      </div>
-
-      <div class="results-grid">
-        <div class="result-card">
-          <h3>COM Distance: Step 0 vs Best Step</h3>
-          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Collapsed pairs show COM dropping from ~20A to &lt;5A. Real improvements maintain &gt;10A.</p>
-          <div class="chart-area" style="height:280px;">
-            <canvas id="chartCOMchange"></canvas>
-          </div>
-        </div>
-        <div class="result-card">
-          <h3>Bad Bonds vs DockQ Gain</h3>
-          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Collapsed predictions have 50-230 bad bonds. Real improvements have &lt;25.</p>
-          <div class="chart-area" style="height:280px;">
-            <canvas id="chartBadBonds"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- Row 5: Structural trajectories -->
-      <div class="results-grid">
-        <div class="result-card">
-          <h3>Average COM Distance Over Steps</h3>
-          <div class="chart-area">
-            <canvas id="comTraj"></canvas>
-          </div>
-        </div>
-        <div class="result-card">
-          <h3>Average Contacts (8A) Over Steps</h3>
-          <div class="chart-area">
-            <canvas id="contactsTraj"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <div class="result-card" style="margin-bottom:24px">
-        <h3>Average Interface pLDDT Over Steps</h3>
-        <div class="chart-area">
-          <canvas id="plddtTraj"></canvas>
+      <!-- Checkpoint selection -->
+      <div class="result-card" style="margin-bottom:24px;">
+        <h3>Checkpoint Selection: ipTM vs Alternatives</h3>
+        <div class="exp-table-wrapper" style="max-height:none;">
+          <table class="exp-table">
+            <thead><tr><th>Selector</th><th>% Oracle Gain</th><th>Pairs Degraded</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Oracle (best DockQ)</td><td>100%</td><td>0</td><td>Upper bound</td></tr>
+              <tr><td>LogReg confidence</td><td>47%</td><td>6/186</td><td>Trained on 50-step data</td></tr>
+              <tr><td>Contact count (8A)</td><td>~15%</td><td>--</td><td>Simple geometric proxy</td></tr>
+              <tr><td>ipTM</td><td>-2.1%</td><td>25/186</td><td>Net negative performance</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
     </div>
 
-    <!-- ======================= TAB 3: METHOD ======================= -->
+    <!-- ===================== TAB 4: METHOD ===================== -->
     <div class="sub-tab-content" id="tab-method">
+
+      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Method</h2>
 
       <div class="method-card">
         <h3>Pipeline</h3>
-        <div class="pipeline-diagram">Paired MSA (A+B)
-    |
-    v
-AF2-Multimer Evoformer (4 blocks with zero-init LoRA, rank=8)
-    |
-    |--- 50 gradient steps, lr=0.01 and lr=0.05
-    |    loss = masked MSA cross-entropy
-    |    eval every 5 steps (DockQ, ipTM, pLDDT, contacts, COM, ...)
-    |
-    v
-Structure Module -> predicted complex
-    |
-    v
-DockQ vs native (best step by ipTM or DockQ)</div>
+        <div class="pipeline-diagram">Input: Paired MSA (A + B)
+  |
+  v
+AF2-Multimer (frozen)
+  |-- Evoformer (48 blocks)
+  |     |-- MSA attention  &lt;-- LoRA (rank 4, zero-init)
+  |     |-- Pair stack      &lt;-- LoRA (optional, rank 4)
+  |
+  v
+TTT Loop (200 steps, Adam, lr=0.01)
+  |-- Forward pass with MSA row masking
+  |-- Masked MSA loss (cross-entropy)
+  |-- Update LoRA weights only
+  |-- Save checkpoint every 10 steps
+  |
+  v
+Checkpoint Selection
+  |-- Evaluate DockQ at each checkpoint
+  |-- Select best by confidence function
+  |
+  v
+Output: Predicted complex structure</div>
       </div>
 
       <div class="method-card">
-        <h3>Hyperparameters</h3>
-        <table class="hp-table">
-          <thead>
-            <tr><th>Parameter</th><th>Value</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>init</td><td>Zero (B=0, A=Kaiming normal)</td></tr>
-            <tr><td>lr</td><td>0.01, 0.05</td></tr>
-            <tr><td>rank</td><td>8</td></tr>
-            <tr><td>n_blocks</td><td>4 (Evoformer)</td></tr>
-            <tr><td>steps</td><td>50</td></tr>
-            <tr><td>eval_every</td><td>5</td></tr>
-            <tr><td>optimizer</td><td>Adam</td></tr>
-            <tr><td>loss</td><td>Masked MSA cross-entropy</td></tr>
-            <tr><td>n_trainable</td><td>98,304</td></tr>
-            <tr><td>metrics</td><td>19 per step</td></tr>
-          </tbody>
-        </table>
+        <h3>Configurations Under Test</h3>
+        <div class="exp-table-wrapper" style="max-height:none;">
+          <table class="hp-table">
+            <thead><tr><th>Parameter</th><th>200s Constant</th><th>200s Cosine</th><th>Recycle 10</th><th>Pair Stack</th><th>Diff LR</th></tr></thead>
+            <tbody>
+              <tr><td>steps</td><td>200</td><td>200</td><td>50</td><td>200</td><td>200</td></tr>
+              <tr><td>lr (MSA)</td><td>0.01</td><td>0.01</td><td>0.01</td><td>0.01</td><td>0.01</td></tr>
+              <tr><td>lr (Pair)</td><td>--</td><td>--</td><td>--</td><td>0.005 / 0.001</td><td>0.001</td></tr>
+              <tr><td>scheduler</td><td>constant</td><td>cosine</td><td>constant</td><td>constant</td><td>constant</td></tr>
+              <tr><td>recycling</td><td>3</td><td>3</td><td>10</td><td>3</td><td>3</td></tr>
+              <tr><td>LoRA rank</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td></tr>
+              <tr><td>LoRA target</td><td>MSA attn</td><td>MSA attn</td><td>MSA attn</td><td>Pair stack</td><td>MSA + Pair</td></tr>
+              <tr><td>init</td><td>zero</td><td>zero</td><td>zero</td><td>zero</td><td>zero</td></tr>
+              <tr><td>save interval</td><td>10 steps</td><td>10 steps</td><td>10 steps</td><td>10 steps</td><td>10 steps</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="method-card">
-        <h3>Key Finding</h3>
-        <div class="finding-item finding-progress">
-          Zero-init LoRA ensures the model starts from the exact AF2 baseline. The B matrix is initialized to zero,
-          so the LoRA output is zero at step 0 and the forward pass is identical to unmodified AF2. TTT improvements
-          are real signal, not recovery from random initialization damage. However, step 0 DockQ matches the
-          baseline for only 22/182 pairs due to stochastic elements in the pipeline
-          (dropout, MSA sampling).
+        <h3>Benchmarks</h3>
+        <div class="masking-grid">
+          <div class="masking-card">
+            <div class="masking-card-title">DB5.5</div>
+            <div class="masking-desc">186 heterodimeric pairs from the Docking Benchmark 5.5. Primary benchmark. All experiments run here first.</div>
+          </div>
+          <div class="masking-card">
+            <div class="masking-card-title">SAbDab</div>
+            <div class="masking-desc">49 antibody-antigen complexes. Tests generalization to immune interactions. Starting 200s runs.</div>
+          </div>
+          <div class="masking-card">
+            <div class="masking-card-title">CASP-CAPRI</div>
+            <div class="masking-desc">14 recent targets from CASP15/CAPRI. Hardest benchmark. Jobs submitted, awaiting results.</div>
+          </div>
         </div>
       </div>
 
     </div>
 
-    <!-- ======================= TAB 4: LOG ======================= -->
+    <!-- ===================== TAB 5: LOG ===================== -->
     <div class="sub-tab-content" id="tab-log">
 
+      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Experiment Log</h2>
+
       <div class="timeline">
+
         <div class="timeline-entry type-success">
-          <div class="timeline-time">Mar 27, 2026</div>
-          <div class="timeline-msg">
-            Zero-init complete: 182 DB5 + 49 SAbDab pairs.
-            73/182 DB5 improved. Step 0 mismatch issue: only
-            22/182 pairs have step 0 matching baseline exactly.
+          <div class="timeline-time">2026-03-27</div>
+          <div class="timeline-msg">200-step constant LR reaches 85% success rate (29/34 genuine improvements). 81% of peaks occur after step 50, confirming that 50 steps was insufficient.</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">rate: 85%</span>
+            <span class="timeline-metric">mean peak: step 104</span>
+            <span class="timeline-metric">rescued: 4 pairs</span>
           </div>
         </div>
-        <div class="timeline-entry type-warning">
-          <div class="timeline-time">Mar 26, 2026</div>
-          <div class="timeline-msg">
-            Previous Gaussian-init results invalidated. Random init confounded TTT signal.
-          </div>
-        </div>
+
         <div class="timeline-entry type-info">
-          <div class="timeline-time">Mar 26, 2026</div>
-          <div class="timeline-msg">
-            Project started: TTT on AF2-Multimer Evoformer via LoRA.
+          <div class="timeline-time">2026-03-27</div>
+          <div class="timeline-msg">Cosine annealing wins 5/6 head-to-head comparisons against constant LR. Produces more consistent improvements with fewer collapses, though constant LR occasionally achieves larger individual spikes.</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">cosine wins: 5/6</span>
+            <span class="timeline-metric">cosine collapses: 0/11</span>
           </div>
         </div>
+
+        <div class="timeline-entry type-warning">
+          <div class="timeline-time">2026-03-27</div>
+          <div class="timeline-msg">Pair stack LoRA at lr=0.01 collapses 3/3 pairs (same failure as MSA at lr=0.05). Triangular attention is more sensitive to perturbation. Reducing to lr=0.005 prevents collapse.</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">collapse rate at 0.01: 100%</span>
+            <span class="timeline-metric">collapse rate at 0.005: 0%</span>
+          </div>
+        </div>
+
+        <div class="timeline-entry type-error">
+          <div class="timeline-time">2026-03-26</div>
+          <div class="timeline-msg">ipTM confirmed as a broken checkpoint selector: captures -2.1% of oracle gain (net negative). 25/186 pairs actively degraded by ipTM-based selection. Contact count at 8A outperforms it.</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">ipTM oracle %: -2.1%</span>
+            <span class="timeline-metric">degraded pairs: 25/186</span>
+          </div>
+        </div>
+
+        <div class="timeline-entry type-metric">
+          <div class="timeline-time">2026-03-26</div>
+          <div class="timeline-msg">Trajectories are oscillatory, not smooth. Step-to-step DockQ autocorrelation: mean r = -0.47. TTT behaves as stochastic configuration sampling, not gradient optimization. Checkpoint selection is the binding constraint.</div>
+          <div class="timeline-metrics">
+            <span class="timeline-metric">autocorrelation: -0.47</span>
+          </div>
+        </div>
+
       </div>
 
     </div>
 
-  </div><!-- .container -->
+  </div>
 
-  <script src="main.js"></script>
+  <!-- ===================== JAVASCRIPT ===================== -->
   <script>
     // Tab switching
-    function switchSubTab(id) {
+    function switchTab(tabName) {
       document.querySelectorAll('.sub-tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.sub-tab-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById('tab-' + id).classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
       event.target.classList.add('active');
     }
 
-    // Chart defaults
-    Chart.defaults.font.family = "'Inter', -apple-system, sans-serif";
-    Chart.defaults.font.size = 12;
-    Chart.defaults.plugins.legend.labels.usePointStyle = true;
-    Chart.defaults.plugins.legend.labels.pointStyleWidth = 8;
+    // Detect theme
+    function getChartColors() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      return {
+        text: isDark ? '#c9d1d9' : '#333',
+        grid: isDark ? '#30363d' : '#e0e0e0',
+        green: '#43a047',
+        blue: '#42a5f5',
+        orange: '#ff9800',
+        red: '#ef5350',
+        purple: '#ab47bc',
+      };
+    }
 
-    const stepLabels = ['0','5','10','15','20','25','30','35','40','45','50'];
-    const lossLabels = Array.from({length:50}, (_,i) => String(i+1));
+    const c = getChartColors();
 
-    // ===== SCATTER: Baseline DockQ vs Delta =====
-    new Chart(document.getElementById('scatterDelta'), {
-      type: 'scatter',
+    // Chart 1: Improvement Rate
+    new Chart(document.getElementById('chartImpRate'), {
+      type: 'bar',
       data: {
-        datasets: [
-          {
-            label: 'lr=0.01 improved',
-            data: [{"x": 0.0126, "y": 0.0018}, {"x": 0.0157, "y": 0.0254}, {"x": 0.0013, "y": 0.0004}, {"x": 0.0145, "y": 0.0155}, {"x": 0.0197, "y": 0.01}, {"x": 0.0154, "y": 0.0041}, {"x": 0.0685, "y": 0.0274}, {"x": 0.0152, "y": 0.0016}, {"x": 0.0118, "y": 0.0284}, {"x": 0.0391, "y": 0.037}, {"x": 0.011, "y": 0.0022}, {"x": 0.0193, "y": 0.318}, {"x": 0.0209, "y": 0.0043}, {"x": 0.0036, "y": 0.0055}, {"x": 0.0195, "y": 0.0216}, {"x": 0.0201, "y": 0.0129}, {"x": 0.0124, "y": 0.0001}, {"x": 0.0277, "y": 0.0204}, {"x": 0.0095, "y": 0.0221}, {"x": 0.0121, "y": 0.0021}, {"x": 0.0243, "y": 0.0178}, {"x": 0.0349, "y": 0.091}, {"x": 0.0095, "y": 0.0337}, {"x": 0.0171, "y": 0.0051}, {"x": 0.008, "y": 0.001}, {"x": 0.0091, "y": 0.0201}, {"x": 0.026, "y": 0.0282}, {"x": 0.007, "y": 0.0078}, {"x": 0.0115, "y": 0.0019}, {"x": 0.0172, "y": 0.0023}, {"x": 0.0162, "y": 0.0333}, {"x": 0.0528, "y": 0.0085}, {"x": 0.0033, "y": 0.0013}, {"x": 0.0102, "y": 0.0031}, {"x": 0.0728, "y": 0.0241}, {"x": 0.0106, "y": 0.0021}, {"x": 0.0448, "y": 0.0183}, {"x": 0.0144, "y": 0.0019}, {"x": 0.0272, "y": 0.0068}, {"x": 0.015, "y": 0.0013}, {"x": 0.0117, "y": 0.005}, {"x": 0.0176, "y": 0.0143}, {"x": 0.0025, "y": 0.0002}, {"x": 0.0112, "y": 0.0005}, {"x": 0.0069, "y": 0.0047}, {"x": 0.0483, "y": 0.0321}, {"x": 0.013, "y": 0.0007}, {"x": 0.0183, "y": 0.0043}, {"x": 0.0208, "y": 0.0204}, {"x": 0.0253, "y": 0.0054}, {"x": 0.0834, "y": 0.1315}, {"x": 0.0099, "y": 0.0006}, {"x": 0.0166, "y": 0.0008}, {"x": 0.0154, "y": 0.016}, {"x": 0.0176, "y": 0.015}, {"x": 0.0182, "y": 0.006}, {"x": 0.0168, "y": 0.0156}, {"x": 0.0311, "y": 0.0138}, {"x": 0.0095, "y": 0.001}, {"x": 0.0131, "y": 0.0075}, {"x": 0.0175, "y": 0.0002}, {"x": 0.0042, "y": 0.004}, {"x": 0.0039, "y": 0.0023}, {"x": 0.0108, "y": 0.0004}, {"x": 0.0304, "y": 0.0864}, {"x": 0.0112, "y": 0.0081}, {"x": 0.0067, "y": 0.0002}, {"x": 0.0177, "y": 0.0047}, {"x": 0.1388, "y": 0.0503}, {"x": 0.008, "y": 0.0176}, {"x": 0.01, "y": 0.022}, {"x": 0.0084, "y": 0.0002}, {"x": 0.0077, "y": 0.0012}],
-            backgroundColor: 'rgba(66,165,245,0.55)',
-            borderColor: 'rgba(66,165,245,0.8)',
-            borderWidth: 1,
-            pointRadius: 4,
-          },
-          {
-            label: 'lr=0.01 hurt',
-            data: [{"x": 0.4366, "y": -0.4088}, {"x": 0.0321, "y": -0.011}, {"x": 0.0241, "y": -0.0087}, {"x": 0.0361, "y": -0.0188}, {"x": 0.0489, "y": -0.0396}, {"x": 0.0967, "y": -0.0712}, {"x": 0.1007, "y": -0.076}, {"x": 0.1209, "y": -0.0692}, {"x": 0.0301, "y": -0.0109}, {"x": 0.0542, "y": -0.0257}, {"x": 0.0096, "y": -0.0037}, {"x": 0.0337, "y": -0.0142}, {"x": 0.9514, "y": -0.8873}, {"x": 0.3218, "y": -0.3008}, {"x": 0.0342, "y": -0.0186}, {"x": 0.6111, "y": -0.5693}, {"x": 0.0957, "y": -0.0702}, {"x": 0.0164, "y": -0.0027}, {"x": 0.0306, "y": -0.0056}, {"x": 0.0406, "y": -0.0003}, {"x": 0.0376, "y": -0.0187}, {"x": 0.2683, "y": -0.1743}, {"x": 0.0514, "y": -0.0422}, {"x": 0.017, "y": -0.0062}, {"x": 0.1452, "y": -0.0545}, {"x": 0.0285, "y": -0.0118}, {"x": 0.0087, "y": -0.0005}, {"x": 0.013, "y": -0.004}, {"x": 0.0154, "y": -0.0013}, {"x": 0.0294, "y": -0.0169}, {"x": 0.0176, "y": -0.0026}, {"x": 0.0321, "y": -0.0103}, {"x": 0.021, "y": -0.0112}, {"x": 0.0173, "y": -0.0094}, {"x": 0.0063, "y": -0.0012}, {"x": 0.0184, "y": -0.0077}, {"x": 0.0034, "y": -0.0002}, {"x": 0.0263, "y": -0.0201}, {"x": 0.0331, "y": -0.0134}, {"x": 0.0636, "y": -0.0062}, {"x": 0.0772, "y": -0.0462}, {"x": 0.0959, "y": -0.0688}, {"x": 0.0094, "y": -0.0016}, {"x": 0.158, "y": -0.1219}, {"x": 0.0323, "y": -0.0046}, {"x": 0.0142, "y": -0.0077}, {"x": 0.008, "y": -0.0018}, {"x": 0.0488, "y": -0.0246}, {"x": 0.3933, "y": -0.3395}, {"x": 0.0187, "y": -0.0056}, {"x": 0.0369, "y": -0.018}, {"x": 0.0249, "y": -0.0053}, {"x": 0.5573, "y": -0.5297}, {"x": 0.0995, "y": -0.0672}, {"x": 0.6354, "y": -0.5164}, {"x": 0.256, "y": -0.2463}, {"x": 0.036, "y": -0.0171}, {"x": 0.0882, "y": -0.078}, {"x": 0.0216, "y": -0.0075}, {"x": 0.0082, "y": -0.0028}, {"x": 0.0551, "y": -0.0305}, {"x": 0.0295, "y": -0.012}, {"x": 0.0118, "y": -0.0046}, {"x": 0.0158, "y": -0.0016}, {"x": 0.0692, "y": -0.0347}, {"x": 0.014, "y": -0.0057}, {"x": 0.0379, "y": -0.0259}, {"x": 0.0423, "y": -0.0152}, {"x": 0.044, "y": -0.0154}, {"x": 0.0196, "y": -0.0057}, {"x": 0.0271, "y": -0.003}, {"x": 0.0171, "y": -0.0049}, {"x": 0.4569, "y": -0.4386}, {"x": 0.0359, "y": -0.0009}, {"x": 0.0606, "y": -0.0529}, {"x": 0.0148, "y": -0.0006}, {"x": 0.0569, "y": -0.0278}, {"x": 0.033, "y": -0.0117}, {"x": 0.3562, "y": -0.3498}, {"x": 0.0153, "y": -0.0111}, {"x": 0.8476, "y": -0.7738}, {"x": 0.6931, "y": -0.6784}, {"x": 0.9624, "y": -0.9543}, {"x": 0.018, "y": -0.0078}, {"x": 0.0261, "y": -0.0017}, {"x": 0.3362, "y": -0.3108}, {"x": 0.518, "y": -0.5031}, {"x": 0.0329, "y": -0.025}, {"x": 0.0238, "y": -0.0045}, {"x": 0.0992, "y": -0.0799}, {"x": 0.0251, "y": -0.0108}, {"x": 0.031, "y": -0.0185}, {"x": 0.4353, "y": -0.2337}, {"x": 0.0105, "y": -0.0003}, {"x": 0.5211, "y": -0.4993}, {"x": 0.0504, "y": -0.0367}, {"x": 0.1633, "y": -0.1081}, {"x": 0.211, "y": -0.1023}, {"x": 0.0913, "y": -0.0409}, {"x": 0.0117, "y": -0.0042}, {"x": 0.1785, "y": -0.168}, {"x": 0.0098, "y": -0.002}, {"x": 0.0255, "y": -0.0171}, {"x": 0.0928, "y": -0.0835}, {"x": 0.0173, "y": -0.0089}, {"x": 0.0198, "y": -0.007}, {"x": 0.0348, "y": -0.0264}, {"x": 0.4696, "y": -0.4552}, {"x": 0.3469, "y": -0.3372}],
-            backgroundColor: 'rgba(66,165,245,0.2)',
-            borderColor: 'rgba(66,165,245,0.4)',
-            borderWidth: 1,
-            pointRadius: 3,
-          },
-          {
-            label: 'lr=0.05 improved',
-            data: [{"x": 0.0321, "y": 0.3289}, {"x": 0.0241, "y": 0.1665}, {"x": 0.0157, "y": 0.3715}, {"x": 0.0013, "y": 0.0008}, {"x": 0.0145, "y": 0.0002}, {"x": 0.0197, "y": 0.0247}, {"x": 0.0154, "y": 0.0001}, {"x": 0.0685, "y": 0.3097}, {"x": 0.0337, "y": 0.0395}, {"x": 0.0342, "y": 0.0114}, {"x": 0.0152, "y": 0.0302}, {"x": 0.0957, "y": 0.2786}, {"x": 0.0118, "y": 0.354}, {"x": 0.0391, "y": 0.0179}, {"x": 0.011, "y": 0.1837}, {"x": 0.0164, "y": 0.0002}, {"x": 0.0193, "y": 0.3856}, {"x": 0.0209, "y": 0.0156}, {"x": 0.0036, "y": 0.0041}, {"x": 0.0195, "y": 0.3517}, {"x": 0.0201, "y": 0.0609}, {"x": 0.0306, "y": 0.3437}, {"x": 0.0406, "y": 0.0134}, {"x": 0.0124, "y": 0.2276}, {"x": 0.0095, "y": 0.0389}, {"x": 0.0243, "y": 0.0264}, {"x": 0.0349, "y": 0.0577}, {"x": 0.0095, "y": 0.0405}, {"x": 0.0171, "y": 0.0214}, {"x": 0.0176, "y": 0.0118}, {"x": 0.008, "y": 0.0068}, {"x": 0.0091, "y": 0.151}, {"x": 0.026, "y": 0.3813}, {"x": 0.0063, "y": 0.0005}, {"x": 0.007, "y": 0.0059}, {"x": 0.0034, "y": 0.0001}, {"x": 0.0636, "y": 0.3327}, {"x": 0.0115, "y": 0.1881}, {"x": 0.0094, "y": 0.0053}, {"x": 0.0172, "y": 0.0011}, {"x": 0.0162, "y": 0.3576}, {"x": 0.0187, "y": 0.172}, {"x": 0.0369, "y": 0.0009}, {"x": 0.0033, "y": 0.001}, {"x": 0.0249, "y": 0.044}, {"x": 0.0995, "y": 0.2678}, {"x": 0.0106, "y": 0.2207}, {"x": 0.0448, "y": 0.3453}, {"x": 0.0272, "y": 0.1013}, {"x": 0.0551, "y": 0.3238}, {"x": 0.0117, "y": 0.0028}, {"x": 0.0176, "y": 0.0026}, {"x": 0.0295, "y": 0.3593}, {"x": 0.0025, "y": 0.001}, {"x": 0.0118, "y": 0.0033}, {"x": 0.0112, "y": 0.018}, {"x": 0.0069, "y": 0.0024}, {"x": 0.0423, "y": 0.3229}, {"x": 0.013, "y": 0.0006}, {"x": 0.0183, "y": 0.0211}, {"x": 0.044, "y": 0.1678}, {"x": 0.0271, "y": 0.0256}, {"x": 0.0171, "y": 0.0018}, {"x": 0.0359, "y": 0.2761}, {"x": 0.0208, "y": 0.0455}, {"x": 0.0148, "y": 0.0093}, {"x": 0.033, "y": 0.0092}, {"x": 0.0834, "y": 0.2976}, {"x": 0.0261, "y": 0.0176}, {"x": 0.0166, "y": 0.0847}, {"x": 0.0176, "y": 0.0143}, {"x": 0.0168, "y": 0.0215}, {"x": 0.0311, "y": 0.3281}, {"x": 0.0095, "y": 0.0016}, {"x": 0.0131, "y": 0.3032}, {"x": 0.0175, "y": 0.002}, {"x": 0.0042, "y": 0.0039}, {"x": 0.0105, "y": 0.0097}, {"x": 0.0304, "y": 0.1948}, {"x": 0.1633, "y": 0.2398}, {"x": 0.0112, "y": 0.0045}, {"x": 0.0177, "y": 0.0139}, {"x": 0.1388, "y": 0.2448}, {"x": 0.008, "y": 0.0027}, {"x": 0.01, "y": 0.0379}, {"x": 0.0084, "y": 0.0027}, {"x": 0.0077, "y": 0.0032}],
-            backgroundColor: 'rgba(255,152,0,0.55)',
-            borderColor: 'rgba(255,152,0,0.8)',
-            borderWidth: 1,
-            pointRadius: 4,
-          },
-          {
-            label: 'lr=0.05 hurt',
-            data: [{"x": 0.4366, "y": -0.3521}, {"x": 0.0126, "y": -0.0011}, {"x": 0.0361, "y": -0.0134}, {"x": 0.0489, "y": -0.0398}, {"x": 0.0967, "y": -0.0821}, {"x": 0.1007, "y": -0.0765}, {"x": 0.1209, "y": -0.0737}, {"x": 0.0301, "y": -0.0114}, {"x": 0.0542, "y": -0.0345}, {"x": 0.0096, "y": -0.0029}, {"x": 0.9514, "y": -0.8854}, {"x": 0.3218, "y": -0.3095}, {"x": 0.6111, "y": -0.5341}, {"x": 0.0376, "y": -0.0259}, {"x": 0.2683, "y": -0.2388}, {"x": 0.0514, "y": -0.0396}, {"x": 0.017, "y": -0.0048}, {"x": 0.1452, "y": -0.0965}, {"x": 0.0277, "y": -0.0052}, {"x": 0.0285, "y": -0.015}, {"x": 0.0087, "y": -0.0003}, {"x": 0.013, "y": -0.0066}, {"x": 0.0121, "y": -0.0024}, {"x": 0.0294, "y": -0.0227}, {"x": 0.0321, "y": -0.0089}, {"x": 0.021, "y": -0.0086}, {"x": 0.0173, "y": -0.0104}, {"x": 0.0184, "y": -0.0071}, {"x": 0.0263, "y": -0.0154}, {"x": 0.0331, "y": -0.0109}, {"x": 0.0772, "y": -0.0457}, {"x": 0.0959, "y": -0.0731}, {"x": 0.158, "y": -0.1488}, {"x": 0.0323, "y": -0.0103}, {"x": 0.0142, "y": -0.0075}, {"x": 0.0528, "y": -0.0022}, {"x": 0.008, "y": -0.0013}, {"x": 0.0488, "y": -0.0269}, {"x": 0.3933, "y": -0.3685}, {"x": 0.0102, "y": -0.0014}, {"x": 0.0728, "y": -0.0454}, {"x": 0.5573, "y": -0.5434}, {"x": 0.6354, "y": -0.1838}, {"x": 0.256, "y": -0.2431}, {"x": 0.036, "y": -0.0214}, {"x": 0.0882, "y": -0.0749}, {"x": 0.0216, "y": -0.0059}, {"x": 0.0144, "y": -0.0038}, {"x": 0.0082, "y": -0.0034}, {"x": 0.015, "y": -0.0059}, {"x": 0.0483, "y": -0.0214}, {"x": 0.0158, "y": -0.0047}, {"x": 0.0692, "y": -0.0408}, {"x": 0.014, "y": -0.0059}, {"x": 0.0379, "y": -0.0016}, {"x": 0.0196, "y": -0.0121}, {"x": 0.4569, "y": -0.092}, {"x": 0.0606, "y": -0.0544}, {"x": 0.0253, "y": -0.0086}, {"x": 0.0569, "y": -0.0381}, {"x": 0.3562, "y": -0.3461}, {"x": 0.0153, "y": -0.0111}, {"x": 0.8476, "y": -0.5977}, {"x": 0.6931, "y": -0.6775}, {"x": 0.9624, "y": -0.9527}, {"x": 0.018, "y": -0.0096}, {"x": 0.0099, "y": -0.0016}, {"x": 0.3362, "y": -0.2985}, {"x": 0.0154, "y": -0.0006}, {"x": 0.518, "y": -0.5009}, {"x": 0.0329, "y": -0.0044}, {"x": 0.0238, "y": -0.0055}, {"x": 0.0992, "y": -0.0859}, {"x": 0.0182, "y": -0.0009}, {"x": 0.0251, "y": -0.0169}, {"x": 0.031, "y": -0.0184}, {"x": 0.4353, "y": -0.3648}, {"x": 0.0039, "y": 0.0}, {"x": 0.5211, "y": -0.5027}, {"x": 0.0504, "y": -0.0417}, {"x": 0.0108, "y": -0.0006}, {"x": 0.0067, "y": -0.0001}, {"x": 0.211, "y": -0.1334}, {"x": 0.0913, "y": -0.0352}, {"x": 0.0117, "y": -0.0002}, {"x": 0.1785, "y": -0.1597}, {"x": 0.0098, "y": -0.0011}, {"x": 0.0255, "y": -0.0174}, {"x": 0.0928, "y": -0.0841}, {"x": 0.0173, "y": -0.005}, {"x": 0.0198, "y": -0.0118}, {"x": 0.0348, "y": -0.0043}, {"x": 0.4696, "y": -0.4596}, {"x": 0.3469, "y": -0.3348}],
-            backgroundColor: 'rgba(255,152,0,0.2)',
-            borderColor: 'rgba(255,152,0,0.4)',
-            borderWidth: 1,
-            pointRadius: 3,
-          }
-        ]
+        labels: ['200s constant', '200s cosine', 'Recycle 10', 'Original 50s', 'Pair stack 0.005'],
+        datasets: [{
+          data: [85, 100, 88, 78, 100],
+          backgroundColor: ['#43a047', '#66bb6a', '#81c784', '#42a5f5', '#a5d6a7'],
+          borderRadius: 4,
+        }]
       },
       options: {
+        indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
-        scales: {
-          x: { title: { display: true, text: 'Baseline DockQ' } },
-          y: { title: { display: true, text: 'DockQ Delta (TTT best - baseline)' } }
-        },
         plugins: {
+          legend: { display: false },
           tooltip: {
             callbacks: {
-              label: function(ctx) {
-                return ctx.dataset.label + ': (' + ctx.parsed.x.toFixed(3) + ', ' + ctx.parsed.y.toFixed(3) + ')';
-              }
+              label: ctx => ctx.raw + '%'
             }
           }
+        },
+        scales: {
+          x: { max: 105, ticks: { callback: v => v + '%', color: c.text }, grid: { color: c.grid } },
+          y: { ticks: { color: c.text }, grid: { display: false } }
         }
       }
     });
 
-    // ===== DockQ Trajectory =====
-    new Chart(document.getElementById('dockqTraj'), {
+    // Chart 2: Mean DockQ Gain
+    new Chart(document.getElementById('chartDockQGain'), {
+      type: 'bar',
+      data: {
+        labels: ['200s constant', '200s cosine', 'Original 50s'],
+        datasets: [{
+          data: [0.039, 0.021, 0.006],
+          backgroundColor: ['#43a047', '#66bb6a', '#42a5f5'],
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => '+' + ctx.raw.toFixed(3)
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { callback: v => '+' + v.toFixed(3), color: c.text }, grid: { color: c.grid } },
+          y: { ticks: { color: c.text }, grid: { display: false } }
+        }
+      }
+    });
+
+    // Chart 3: Peak Step Histogram
+    new Chart(document.getElementById('chartPeakHist'), {
+      type: 'bar',
+      data: {
+        labels: ['0-50', '51-100', '101-150', '151-200'],
+        datasets: [{
+          label: 'Pairs',
+          data: [6, 9, 11, 6],
+          backgroundColor: ['#42a5f5', '#43a047', '#66bb6a', '#81c784'],
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => ctx.raw + ' pairs'
+            }
+          }
+        },
+        scales: {
+          x: { title: { display: true, text: 'Peak Step Range', color: c.text }, ticks: { color: c.text }, grid: { display: false } },
+          y: { title: { display: true, text: 'Number of Pairs', color: c.text }, ticks: { color: c.text, stepSize: 2 }, grid: { color: c.grid } }
+        }
+      }
+    });
+
+    // DockQ Trajectory Chart
+    const trajLabels = [0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200];
+    const trajImproved = [0.0297,0.0286,0.0309,0.0317,0.034,0.0369,0.0392,0.0333,0.0428,0.0311,0.0373,0.0316,0.0317,0.036,0.0378,0.0323,0.0299,0.0324,0.0424,0.0431,0.0402];
+    const trajFlat = [0.0199,0.0176,0.0169,0.0172,0.0185,0.014,0.0171,0.019,0.018,0.0177,0.0183,0.0153,0.0174,0.0168,0.0191,0.019,0.0182,0.0182,0.0184,0.0177,0.0165];
+
+    new Chart(document.getElementById('chartTrajectory'), {
       type: 'line',
       data: {
-        labels: stepLabels,
+        labels: trajLabels,
         datasets: [
           {
-            label: 'lr=0.05 imp (88)',
-            data: [0.0302, 0.0366, 0.0354, 0.0356, 0.0383, 0.0386, 0.054, 0.0741, 0.1103, 0.1353, 0.136],
-            borderColor: 'rgba(67,160,71,0.9)',
+            label: 'Improved pairs (n=32)',
+            data: trajImproved,
+            borderColor: '#43a047',
             backgroundColor: 'rgba(67,160,71,0.1)',
             fill: true,
             tension: 0.3,
             pointRadius: 3,
           },
           {
-            label: 'lr=0.01 imp (73)',
-            data: [0.0283, 0.0327, 0.0325, 0.0322, 0.033, 0.0392, 0.0399, 0.0362, 0.0422, 0.0355, 0.0327],
-            borderColor: 'rgba(66,165,245,0.9)',
-            backgroundColor: 'rgba(66,165,245,0.1)',
-            fill: true,
-            tension: 0.3,
-            pointRadius: 3,
-          },
-          {
-            label: 'Hurt avg',
-            data: [0.0172, 0.0306, 0.0538, 0.0348, 0.0304, 0.0311, 0.0536, 0.0558, 0.0826, 0.0494, 0.0826],
-            borderColor: 'rgba(229,57,53,0.9)',
-            backgroundColor: 'rgba(229,57,53,0.1)',
+            label: 'Flat pairs (n=2)',
+            data: trajFlat,
+            borderColor: '#ef5350',
+            backgroundColor: 'rgba(239,83,80,0.1)',
             fill: true,
             tension: 0.3,
             pointRadius: 3,
@@ -1252,444 +1212,134 @@ DockQ vs native (best step by ipTM or DockQ)</div>
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: c.text } },
+        },
         scales: {
-          x: { title: { display: true, text: 'Step' } },
-          y: { title: { display: true, text: 'Average DockQ' } }
+          x: { title: { display: true, text: 'TTT Step', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid } },
+          y: { title: { display: true, text: 'Mean DockQ', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid } }
         }
       }
     });
 
-    // ===== Loss Trajectory =====
-    new Chart(document.getElementById('lossTraj'), {
-      type: 'line',
-      data: {
-        labels: lossLabels,
-        datasets: [
-          {
-            label: 'lr=0.05 imp',
-            data: [1.0677, 1.0371, 0.9277, 0.8294, 0.7875, 0.725, 0.6985, 0.7, 0.7341, 0.6639, 0.674, 0.6143, 0.6015, 0.591, 0.6069, 0.5959, 0.5868, 0.6068, 0.6663, 0.7289, 0.8049, 0.9522, 1.2097, 1.4434, 1.7666, 2.0067, 2.3677, 2.6111, 2.9657, 3.4766, 4.17, 5.2245, 7.2361, 8.8959, 10.3194, 11.6891, 13.1976, 14.4739, 15.3831, 18.3985, 22.2432, 25.8073, 28.3091, 31.0593, 33.729, 33.6078, 34.7831, 34.9661, 36.7051, 39.8901],
-            borderColor: 'rgba(67,160,71,0.9)',
-            tension: 0.3,
-            pointRadius: 0,
-          },
-          {
-            label: 'lr=0.01 imp',
-            data: [1.0174, 1.0182, 0.9868, 0.9266, 0.8731, 0.8241, 0.7968, 0.7796, 0.7532, 0.7195, 0.6859, 0.6532, 0.6199, 0.5866, 0.5541, 0.5209, 0.4874, 0.454, 0.4231, 0.3945, 0.3664, 0.3411, 0.3183, 0.2968, 0.2771, 0.259, 0.2402, 0.2256, 0.2094, 0.1981, 0.1863, 0.1761, 0.1655, 0.1557, 0.1468, 0.1386, 0.1311, 0.1245, 0.1191, 0.1121, 0.1065, 0.1006, 0.0948, 0.0901, 0.0845, 0.0813, 0.0748, 0.0717, 0.0675, 0.0655],
-            borderColor: 'rgba(66,165,245,0.9)',
-            tension: 0.3,
-            pointRadius: 0,
-          },
-          {
-            label: 'lr=0.05 hurt',
-            data: [1.1453, 1.0395, 0.9672, 0.8643, 0.8336, 0.7764, 0.7663, 0.7174, 0.7251, 0.6923, 0.6855, 0.6558, 0.6351, 0.6185, 0.6135, 0.6037, 0.6201, 0.6236, 0.6251, 0.6345, 0.6495, 0.6608, 0.6919, 0.7569, 0.8683, 0.9906, 1.1974, 1.5448, 2.1565, 2.7281, 3.5044, 4.9591, 6.0471, 6.222, 7.9512, 9.4818, 11.1743, 13.5843, 17.2781, 19.5786, 21.852, 24.7922, 24.5578, 25.9398, 26.5617, 28.7683, 31.8703, 33.3739, 35.6991, 38.1986],
-            borderColor: 'rgba(229,57,53,0.9)',
-            tension: 0.3,
-            pointRadius: 0,
-          },
-          {
-            label: 'lr=0.01 hurt',
-            data: [1.1134, 1.0675, 1.0366, 0.9856, 0.9272, 0.8771, 0.8502, 0.8337, 0.8075, 0.7735, 0.7405, 0.71, 0.6799, 0.6439, 0.6121, 0.5782, 0.5447, 0.5148, 0.4804, 0.4502, 0.4222, 0.397, 0.3699, 0.3452, 0.3243, 0.3024, 0.2842, 0.2671, 0.249, 0.232, 0.2187, 0.2056, 0.1956, 0.1882, 0.1796, 0.1665, 0.1623, 0.1488, 0.1434, 0.1364, 0.1274, 0.1216, 0.1135, 0.1077, 0.1023, 0.0959, 0.0919, 0.0891, 0.0938, 0.0819],
-            borderColor: 'rgba(229,57,53,0.4)',
-            borderDash: [5, 5],
-            tension: 0.3,
-            pointRadius: 0,
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { title: { display: true, text: 'Step' } },
-          y: { title: { display: true, text: 'Average Loss' } }
-        }
-      }
-    });
+    // Experiment tables data
+    const experiments = {
+      '200s-constant': [
+        {pair:'1ACB',baseline:0.0898,best:0.1256,delta:0.0359,peak:150,status:'genuine'},
+        {pair:'1AHW',baseline:0.0154,best:0.0400,delta:0.0246,peak:180,status:'genuine'},
+        {pair:'1AK4',baseline:0.0166,best:0.0170,delta:0.0004,peak:20,status:'flat'},
+        {pair:'1AY7',baseline:0.0144,best:0.0287,delta:0.0143,peak:60,status:'genuine'},
+        {pair:'1BVN',baseline:0,best:0,delta:0,peak:0,status:'OOM'},
+        {pair:'1CGI',baseline:0.0419,best:0.1066,delta:0.0647,peak:80,status:'genuine'},
+        {pair:'1D6R',baseline:0.0270,best:0.0680,delta:0.0410,peak:130,status:'genuine'},
+        {pair:'1DFJ',baseline:0,best:0,delta:0,peak:0,status:'OOM'},
+        {pair:'1DHK',baseline:0,best:0,delta:0,peak:0,status:'OOM'},
+        {pair:'1E6E',baseline:0,best:0,delta:0,peak:0,status:'OOM'},
+        {pair:'1EAW',baseline:0.0275,best:0.0916,delta:0.0640,peak:100,status:'genuine'},
+        {pair:'1EWY',baseline:0.0294,best:0.0525,delta:0.0231,peak:130,status:'genuine'},
+        {pair:'1EZU',baseline:0.0136,best:0.0462,delta:0.0326,peak:200,status:'genuine'},
+        {pair:'1F51',baseline:0.0421,best:0.0649,delta:0.0228,peak:50,status:'genuine'},
+        {pair:'1FC2',baseline:0.0142,best:0.0274,delta:0.0132,peak:70,status:'genuine'},
+        {pair:'1FFW',baseline:0.0657,best:0.0714,delta:0.0057,peak:10,status:'genuine'},
+        {pair:'1FLE',baseline:0.0177,best:0.0748,delta:0.0571,peak:80,status:'genuine'},
+        {pair:'1GCQ',baseline:0.0462,best:0.2278,delta:0.1817,peak:180,status:'genuine'},
+        {pair:'1H9D',baseline:0.0315,best:0.0543,delta:0.0228,peak:80,status:'genuine'},
+        {pair:'1HCF',baseline:0.0198,best:0.0209,delta:0.0010,peak:60,status:'genuine'},
+        {pair:'1HE1',baseline:0.0424,best:0.2950,delta:0.2526,peak:200,status:'genuine'},
+        {pair:'1HIA',baseline:0.0276,best:0.0573,delta:0.0298,peak:120,status:'genuine'},
+        {pair:'1JK9',baseline:0.0158,best:0.0223,delta:0.0066,peak:50,status:'genuine'},
+        {pair:'1K4C',baseline:0.0085,best:0.0132,delta:0.0047,peak:110,status:'genuine'},
+        {pair:'1K74',baseline:0.0315,best:0.1355,delta:0.1041,peak:140,status:'genuine'},
+        {pair:'1KAC',baseline:0.0118,best:0.0190,delta:0.0073,peak:170,status:'genuine'},
+        {pair:'1KKL',baseline:0.0231,best:0.0238,delta:0.0006,peak:70,status:'flat'},
+        {pair:'1KTZ',baseline:0.0146,best:0.0194,delta:0.0048,peak:90,status:'genuine'},
+        {pair:'1RV6',baseline:0.0153,best:0.0230,delta:0.0078,peak:160,status:'genuine'},
+        {pair:'1S1Q',baseline:0.0536,best:0.0563,delta:0.0027,peak:10,status:'genuine'},
+        {pair:'1SYX',baseline:0.0287,best:0.0379,delta:0.0092,peak:110,status:'genuine'},
+        {pair:'2B4J',baseline:0.0100,best:0.0303,delta:0.0203,peak:30,status:'genuine'},
+        {pair:'2I25',baseline:0.0184,best:0.0277,delta:0.0094,peak:140,status:'genuine'},
+        {pair:'2IDO',baseline:0.0178,best:0.0314,delta:0.0136,peak:110,status:'genuine'},
+        {pair:'2OOB',baseline:0.0273,best:0.0316,delta:0.0044,peak:20,status:'genuine'},
+        {pair:'2X9A',baseline:0.0249,best:0.0286,delta:0.0037,peak:120,status:'genuine'},
+        {pair:'3P57',baseline:0.0412,best:0.0472,delta:0.0060,peak:80,status:'genuine'},
+        {pair:'3PC8',baseline:0.0660,best:0.0805,delta:0.0146,peak:120,status:'genuine'},
+      ],
+      '200s-cosine': [
+        {pair:'1FFW',baseline:0.0432,best:0.0630,delta:0.0198,peak:30,status:'genuine'},
+        {pair:'1GCQ',baseline:0.0327,best:0.0571,delta:0.0244,peak:20,status:'genuine'},
+        {pair:'1HCF',baseline:0.0228,best:0.0259,delta:0.0032,peak:60,status:'genuine'},
+        {pair:'1HIA',baseline:0.0221,best:0.0722,delta:0.0502,peak:100,status:'genuine'},
+        {pair:'1J2J',baseline:0.0249,best:0.0295,delta:0.0045,peak:30,status:'genuine'},
+        {pair:'1KTZ',baseline:0.0125,best:0.0321,delta:0.0196,peak:10,status:'genuine'},
+        {pair:'1N8O',baseline:0.0261,best:0.0579,delta:0.0317,peak:90,status:'genuine'},
+        {pair:'1QA9',baseline:0.0135,best:0.0174,delta:0.0039,peak:90,status:'genuine'},
+        {pair:'1S1Q',baseline:0.0654,best:0.0910,delta:0.0256,peak:200,status:'genuine'},
+        {pair:'1SYX',baseline:0.0362,best:0.0552,delta:0.0190,peak:60,status:'genuine'},
+        {pair:'3PC8',baseline:0.0691,best:0.0845,delta:0.0154,peak:30,status:'genuine'},
+      ],
+      'recycle10': [
+        {pair:'1AY7',baseline:0.0159,best:0.0235,delta:0.0075,peak:60,status:'genuine'},
+        {pair:'1FFW',baseline:0.0651,best:0.0678,delta:0.0027,peak:100,status:'genuine'},
+        {pair:'1GCQ',baseline:0.0519,best:0.0545,delta:0.0026,peak:30,status:'genuine'},
+        {pair:'1HIA',baseline:0.0220,best:0.0358,delta:0.0138,peak:50,status:'genuine'},
+        {pair:'1KTZ',baseline:0.0134,best:0.0150,delta:0.0015,peak:100,status:'genuine'},
+        {pair:'1QA9',baseline:0.0110,best:0.0174,delta:0.0063,peak:70,status:'genuine'},
+        {pair:'1RV6',baseline:0.0216,best:0.0312,delta:0.0096,peak:110,status:'genuine'},
+        {pair:'2X9A',baseline:0.0243,best:0.0244,delta:0.0000,peak:30,status:'flat'},
+      ],
+      'pair-stack-5e3': [
+        {pair:'3F1P',baseline:0.1657,best:0.2004,delta:0.0347,peak:20,status:'genuine'},
+      ],
+      'pair-stack-1e3': [
+        {pair:'1N8O',baseline:0.0296,best:0.0573,delta:0.0277,peak:90,status:'genuine'},
+        {pair:'2IDO',baseline:0.0168,best:0.0182,delta:0.0014,peak:70,status:'genuine'},
+      ],
+      'msa-pair-diff': [
+        {pair:'1K74',baseline:0.0951,best:0.0951,delta:0.0000,peak:0,status:'flat'},
+        {pair:'1KTZ',baseline:0.0136,best:0.0161,delta:0.0025,peak:50,status:'genuine'},
+        {pair:'1S1Q',baseline:0.0336,best:0.0429,delta:0.0093,peak:100,status:'genuine'},
+      ],
+    };
 
-    // ===== ipTM vs DockQ =====
-    new Chart(document.getElementById('iptmDockq'), {
-      type: 'scatter',
-      data: {
-        datasets: [
-          {
-            label: 'Baseline',
-            data: [{"x": 0.4366, "y": 0.3202}, {"x": 0.0126, "y": 0.1397}, {"x": 0.0321, "y": 0.1581}, {"x": 0.0241, "y": 0.1691}, {"x": 0.0361, "y": 0.1556}, {"x": 0.0157, "y": 0.7493}, {"x": 0.0489, "y": 0.1721}, {"x": 0.0013, "y": 0.6458}, {"x": 0.0145, "y": 0.143}, {"x": 0.0967, "y": 0.2033}, {"x": 0.1007, "y": 0.3638}, {"x": 0.1209, "y": 0.3719}, {"x": 0.0197, "y": 0.1919}, {"x": 0.0154, "y": 0.3558}, {"x": 0.0301, "y": 0.207}, {"x": 0.0542, "y": 0.371}, {"x": 0.0096, "y": 0.1595}, {"x": 0.0685, "y": 0.2768}, {"x": 0.0337, "y": 0.6958}, {"x": 0.9514, "y": 0.8216}, {"x": 0.3218, "y": 0.5526}, {"x": 0.0342, "y": 0.1406}, {"x": 0.0152, "y": 0.1731}, {"x": 0.6111, "y": 0.8495}, {"x": 0.0957, "y": 0.386}, {"x": 0.0118, "y": 0.6944}, {"x": 0.0391, "y": 0.1253}, {"x": 0.011, "y": 0.202}, {"x": 0.0164, "y": 0.2092}, {"x": 0.0193, "y": 0.0904}, {"x": 0.0209, "y": 0.2182}, {"x": 0.0036, "y": 0.1455}, {"x": 0.0195, "y": 0.3497}, {"x": 0.0201, "y": 0.5119}, {"x": 0.0306, "y": 0.2176}, {"x": 0.0406, "y": 0.1394}, {"x": 0.0376, "y": 0.2981}, {"x": 0.2683, "y": 0.4653}, {"x": 0.0514, "y": 0.5449}, {"x": 0.0124, "y": 0.1737}, {"x": 0.017, "y": 0.1972}, {"x": 0.1452, "y": 0.234}, {"x": 0.0277, "y": 0.2114}, {"x": 0.0285, "y": 0.1852}, {"x": 0.0087, "y": 0.2173}, {"x": 0.013, "y": 0.139}, {"x": 0.0095, "y": 0.4247}, {"x": 0.0121, "y": 0.1915}, {"x": 0.0243, "y": 0.1751}, {"x": 0.0154, "y": 0.2515}, {"x": 0.0349, "y": 0.6498}, {"x": 0.0095, "y": 0.0706}, {"x": 0.0171, "y": 0.8042}, {"x": 0.0294, "y": 0.1241}, {"x": 0.0176, "y": 0.1025}, {"x": 0.008, "y": 0.1479}, {"x": 0.0321, "y": 0.1267}, {"x": 0.021, "y": 0.1659}, {"x": 0.0091, "y": 0.1231}, {"x": 0.0173, "y": 0.2015}, {"x": 0.026, "y": 0.1689}, {"x": 0.0063, "y": 0.1246}, {"x": 0.0184, "y": 0.1596}, {"x": 0.007, "y": 0.2444}, {"x": 0.0034, "y": 0.1468}, {"x": 0.0263, "y": 0.138}, {"x": 0.0331, "y": 0.2542}, {"x": 0.0636, "y": 0.1987}, {"x": 0.0772, "y": 0.2482}, {"x": 0.0115, "y": 0.2116}, {"x": 0.0959, "y": 0.7149}, {"x": 0.0094, "y": 0.1813}, {"x": 0.158, "y": 0.5312}, {"x": 0.0172, "y": 0.1392}, {"x": 0.0323, "y": 0.4049}, {"x": 0.0162, "y": 0.1506}, {"x": 0.0142, "y": 0.1173}, {"x": 0.0528, "y": 0.1895}, {"x": 0.008, "y": 0.1483}, {"x": 0.0488, "y": 0.2849}, {"x": 0.3933, "y": 0.7881}, {"x": 0.0187, "y": 0.186}, {"x": 0.0369, "y": 0.1914}, {"x": 0.0033, "y": 0.2161}, {"x": 0.0102, "y": 0.1464}, {"x": 0.0249, "y": 0.1443}, {"x": 0.0728, "y": 0.2515}, {"x": 0.5573, "y": 0.6922}, {"x": 0.0995, "y": 0.2522}, {"x": 0.0106, "y": 0.0847}, {"x": 0.0448, "y": 0.1565}, {"x": 0.6354, "y": 0.7348}, {"x": 0.256, "y": 0.7204}, {"x": 0.036, "y": 0.1248}, {"x": 0.0882, "y": 0.2148}, {"x": 0.0216, "y": 0.1724}, {"x": 0.0144, "y": 0.252}, {"x": 0.0082, "y": 0.2128}, {"x": 0.0272, "y": 0.1267}, {"x": 0.015, "y": 0.179}, {"x": 0.0551, "y": 0.1819}, {"x": 0.0117, "y": 0.1574}, {"x": 0.0176, "y": 0.5913}, {"x": 0.0295, "y": 0.1026}, {"x": 0.0025, "y": 0.1478}, {"x": 0.0118, "y": 0.1585}, {"x": 0.0112, "y": 0.1207}, {"x": 0.0069, "y": 0.1199}, {"x": 0.0483, "y": 0.1909}, {"x": 0.0158, "y": 0.114}, {"x": 0.0692, "y": 0.275}, {"x": 0.014, "y": 0.1587}, {"x": 0.0379, "y": 0.173}, {"x": 0.0423, "y": 0.1704}, {"x": 0.013, "y": 0.1732}, {"x": 0.0183, "y": 0.1814}, {"x": 0.044, "y": 0.1443}, {"x": 0.0196, "y": 0.1957}, {"x": 0.0271, "y": 0.1034}, {"x": 0.0171, "y": 0.1425}, {"x": 0.4569, "y": 0.5413}, {"x": 0.0359, "y": 0.1838}, {"x": 0.0208, "y": 0.3379}, {"x": 0.0606, "y": 0.5325}, {"x": 0.0253, "y": 0.1998}, {"x": 0.0148, "y": 0.1581}, {"x": 0.0569, "y": 0.4733}, {"x": 0.033, "y": 0.59}, {"x": 0.3562, "y": 0.8255}, {"x": 0.0153, "y": 0.1457}, {"x": 0.8476, "y": 0.8662}, {"x": 0.6931, "y": 0.8344}, {"x": 0.0834, "y": 0.2631}, {"x": 0.9624, "y": 0.9217}, {"x": 0.018, "y": 0.1132}, {"x": 0.0099, "y": 0.1803}, {"x": 0.0261, "y": 0.7829}, {"x": 0.3362, "y": 0.6985}, {"x": 0.0166, "y": 0.1319}, {"x": 0.0154, "y": 0.1696}, {"x": 0.518, "y": 0.7574}, {"x": 0.0329, "y": 0.5457}, {"x": 0.0238, "y": 0.1208}, {"x": 0.0176, "y": 0.3137}, {"x": 0.0992, "y": 0.2386}, {"x": 0.0182, "y": 0.1211}, {"x": 0.0168, "y": 0.1406}, {"x": 0.0251, "y": 0.1674}, {"x": 0.031, "y": 0.4198}, {"x": 0.4353, "y": 0.8004}, {"x": 0.0311, "y": 0.1152}, {"x": 0.0095, "y": 0.1431}, {"x": 0.0131, "y": 0.2135}, {"x": 0.0175, "y": 0.1517}, {"x": 0.0042, "y": 0.1916}, {"x": 0.0105, "y": 0.127}, {"x": 0.0039, "y": 0.696}, {"x": 0.5211, "y": 0.6193}, {"x": 0.0504, "y": 0.2301}, {"x": 0.0108, "y": 0.0941}, {"x": 0.0304, "y": 0.0942}, {"x": 0.1633, "y": 0.7062}, {"x": 0.0112, "y": 0.1233}, {"x": 0.0067, "y": 0.1475}, {"x": 0.0177, "y": 0.1273}, {"x": 0.1388, "y": 0.23}, {"x": 0.211, "y": 0.4442}, {"x": 0.008, "y": 0.1867}, {"x": 0.0913, "y": 0.2966}, {"x": 0.01, "y": 0.1841}, {"x": 0.0117, "y": 0.098}, {"x": 0.1785, "y": 0.7959}, {"x": 0.0098, "y": 0.173}, {"x": 0.0255, "y": 0.3605}, {"x": 0.0928, "y": 0.7358}, {"x": 0.0173, "y": 0.1525}, {"x": 0.0198, "y": 0.1904}, {"x": 0.0084, "y": 0.1405}, {"x": 0.0348, "y": 0.1441}, {"x": 0.4696, "y": 0.529}, {"x": 0.3469, "y": 0.7604}, {"x": 0.0077, "y": 0.1309}],
-            backgroundColor: 'rgba(158,158,158,0.35)',
-            borderColor: 'rgba(158,158,158,0.6)',
-            borderWidth: 1,
-            pointRadius: 3,
-          },
-          {
-            label: 'lr=0.01 best',
-            data: [{"x": 0.0278, "y": 0.1344}, {"x": 0.0144, "y": 0.0994}, {"x": 0.0211, "y": 0.1073}, {"x": 0.0154, "y": 0.0963}, {"x": 0.0172, "y": 0.0823}, {"x": 0.0411, "y": 0.0755}, {"x": 0.0093, "y": 0.1234}, {"x": 0.0017, "y": 0.1077}, {"x": 0.03, "y": 0.1067}, {"x": 0.0254, "y": 0.1313}, {"x": 0.0247, "y": 0.0967}, {"x": 0.0517, "y": 0.1386}, {"x": 0.0297, "y": 0.0993}, {"x": 0.0195, "y": 0.2505}, {"x": 0.0193, "y": 0.1174}, {"x": 0.0286, "y": 0.1231}, {"x": 0.0059, "y": 0.0956}, {"x": 0.0958, "y": 0.1198}, {"x": 0.0195, "y": 0.1395}, {"x": 0.0641, "y": 0.0867}, {"x": 0.021, "y": 0.1022}, {"x": 0.0157, "y": 0.1334}, {"x": 0.0168, "y": 0.1068}, {"x": 0.0419, "y": 0.1539}, {"x": 0.0255, "y": 0.1154}, {"x": 0.0401, "y": 0.0976}, {"x": 0.076, "y": 0.1082}, {"x": 0.0131, "y": 0.179}, {"x": 0.0137, "y": 0.1154}, {"x": 0.3373, "y": 0.1398}, {"x": 0.0253, "y": 0.1327}, {"x": 0.009, "y": 0.126}, {"x": 0.0411, "y": 0.0839}, {"x": 0.033, "y": 0.1078}, {"x": 0.0251, "y": 0.1203}, {"x": 0.0404, "y": 0.0862}, {"x": 0.0189, "y": 0.1487}, {"x": 0.0941, "y": 0.5474}, {"x": 0.0091, "y": 0.1778}, {"x": 0.0125, "y": 0.124}, {"x": 0.0108, "y": 0.0958}, {"x": 0.0907, "y": 0.1144}, {"x": 0.048, "y": 0.1203}, {"x": 0.0166, "y": 0.2017}, {"x": 0.0082, "y": 0.1099}, {"x": 0.009, "y": 0.1038}, {"x": 0.0317, "y": 0.1584}, {"x": 0.0142, "y": 0.1101}, {"x": 0.0421, "y": 0.1588}, {"x": 0.0141, "y": 0.0913}, {"x": 0.126, "y": 0.1552}, {"x": 0.0433, "y": 0.1088}, {"x": 0.0222, "y": 0.1486}, {"x": 0.0125, "y": 0.0868}, {"x": 0.015, "y": 0.0791}, {"x": 0.0089, "y": 0.1219}, {"x": 0.0218, "y": 0.1119}, {"x": 0.0098, "y": 0.11}, {"x": 0.0292, "y": 0.1116}, {"x": 0.0079, "y": 0.1068}, {"x": 0.0542, "y": 0.1238}, {"x": 0.0051, "y": 0.106}, {"x": 0.0106, "y": 0.0937}, {"x": 0.0148, "y": 0.0995}, {"x": 0.0032, "y": 0.1244}, {"x": 0.0062, "y": 0.1095}, {"x": 0.0197, "y": 0.1562}, {"x": 0.0574, "y": 0.1233}, {"x": 0.0309, "y": 0.0835}, {"x": 0.0135, "y": 0.0933}, {"x": 0.0271, "y": 0.2197}, {"x": 0.0078, "y": 0.1024}, {"x": 0.0361, "y": 0.144}, {"x": 0.0196, "y": 0.1218}, {"x": 0.0277, "y": 0.1}, {"x": 0.0495, "y": 0.1294}, {"x": 0.0065, "y": 0.0921}, {"x": 0.0613, "y": 0.1093}, {"x": 0.0062, "y": 0.1478}, {"x": 0.0241, "y": 0.1281}, {"x": 0.0537, "y": 0.1258}, {"x": 0.013, "y": 0.0923}, {"x": 0.0189, "y": 0.0887}, {"x": 0.0046, "y": 0.1484}, {"x": 0.0133, "y": 0.1381}, {"x": 0.0196, "y": 0.0996}, {"x": 0.0969, "y": 0.1445}, {"x": 0.0275, "y": 0.2283}, {"x": 0.0322, "y": 0.2688}, {"x": 0.0127, "y": 0.1033}, {"x": 0.0631, "y": 0.1307}, {"x": 0.119, "y": 0.2549}, {"x": 0.0096, "y": 0.1173}, {"x": 0.0189, "y": 0.1244}, {"x": 0.0102, "y": 0.1001}, {"x": 0.0142, "y": 0.0967}, {"x": 0.0163, "y": 0.1077}, {"x": 0.0053, "y": 0.1278}, {"x": 0.034, "y": 0.1378}, {"x": 0.0163, "y": 0.1556}, {"x": 0.0246, "y": 0.0972}, {"x": 0.0167, "y": 0.1105}, {"x": 0.0319, "y": 0.1462}, {"x": 0.0176, "y": 0.0862}, {"x": 0.0028, "y": 0.0994}, {"x": 0.0072, "y": 0.1276}, {"x": 0.0117, "y": 0.1024}, {"x": 0.0116, "y": 0.1235}, {"x": 0.0804, "y": 0.0815}, {"x": 0.0142, "y": 0.1029}, {"x": 0.0345, "y": 0.0947}, {"x": 0.0083, "y": 0.2748}, {"x": 0.012, "y": 0.0784}, {"x": 0.0272, "y": 0.0868}, {"x": 0.0138, "y": 0.1044}, {"x": 0.0226, "y": 0.0848}, {"x": 0.0286, "y": 0.1092}, {"x": 0.0139, "y": 0.1277}, {"x": 0.0241, "y": 0.1588}, {"x": 0.0122, "y": 0.094}, {"x": 0.0183, "y": 0.1164}, {"x": 0.035, "y": 0.1269}, {"x": 0.0412, "y": 0.1492}, {"x": 0.0078, "y": 0.1211}, {"x": 0.0307, "y": 0.1144}, {"x": 0.0141, "y": 0.1015}, {"x": 0.0291, "y": 0.1145}, {"x": 0.0212, "y": 0.129}, {"x": 0.0063, "y": 0.1187}, {"x": 0.0042, "y": 0.0865}, {"x": 0.0738, "y": 0.1551}, {"x": 0.0146, "y": 0.1424}, {"x": 0.2148, "y": 0.1045}, {"x": 0.0081, "y": 0.1287}, {"x": 0.0102, "y": 0.0914}, {"x": 0.0104, "y": 0.0965}, {"x": 0.0244, "y": 0.2197}, {"x": 0.0254, "y": 0.1261}, {"x": 0.0174, "y": 0.1045}, {"x": 0.0314, "y": 0.1137}, {"x": 0.0149, "y": 0.0987}, {"x": 0.0079, "y": 0.0904}, {"x": 0.0193, "y": 0.124}, {"x": 0.0326, "y": 0.1313}, {"x": 0.0194, "y": 0.1222}, {"x": 0.0242, "y": 0.1019}, {"x": 0.0325, "y": 0.1166}, {"x": 0.0143, "y": 0.1247}, {"x": 0.0125, "y": 0.1279}, {"x": 0.2015, "y": 0.1528}, {"x": 0.0449, "y": 0.0852}, {"x": 0.0105, "y": 0.1323}, {"x": 0.0206, "y": 0.0956}, {"x": 0.0177, "y": 0.1265}, {"x": 0.0083, "y": 0.1018}, {"x": 0.0102, "y": 0.0991}, {"x": 0.0062, "y": 0.0928}, {"x": 0.0218, "y": 0.1196}, {"x": 0.0137, "y": 0.1951}, {"x": 0.0112, "y": 0.1095}, {"x": 0.1169, "y": 0.1383}, {"x": 0.0552, "y": 0.0872}, {"x": 0.0193, "y": 0.1348}, {"x": 0.0069, "y": 0.0999}, {"x": 0.0224, "y": 0.1126}, {"x": 0.1891, "y": 0.2976}, {"x": 0.1087, "y": 0.4163}, {"x": 0.0256, "y": 0.1303}, {"x": 0.0503, "y": 0.1705}, {"x": 0.0321, "y": 0.1372}, {"x": 0.0075, "y": 0.091}, {"x": 0.0105, "y": 0.1273}, {"x": 0.0078, "y": 0.115}, {"x": 0.0084, "y": 0.1374}, {"x": 0.0093, "y": 0.1317}, {"x": 0.0084, "y": 0.1136}, {"x": 0.0129, "y": 0.1265}, {"x": 0.0086, "y": 0.0942}, {"x": 0.0084, "y": 0.0993}, {"x": 0.0143, "y": 0.1156}, {"x": 0.0097, "y": 0.1544}, {"x": 0.0089, "y": 0.1348}],
-            backgroundColor: 'rgba(66,165,245,0.45)',
-            borderColor: 'rgba(66,165,245,0.7)',
-            borderWidth: 1,
-            pointRadius: 4,
-          },
-          {
-            label: 'lr=0.05 best',
-            data: [{"x": 0.0845, "y": 0.9163}, {"x": 0.0115, "y": 0.089}, {"x": 0.361, "y": 0.0761}, {"x": 0.1907, "y": 0.7174}, {"x": 0.0227, "y": 0.0953}, {"x": 0.3872, "y": 0.6118}, {"x": 0.0091, "y": 0.1232}, {"x": 0.0021, "y": 0.088}, {"x": 0.0147, "y": 0.1003}, {"x": 0.0145, "y": 0.1309}, {"x": 0.0242, "y": 0.1005}, {"x": 0.0472, "y": 0.1206}, {"x": 0.0444, "y": 0.0972}, {"x": 0.0155, "y": 0.2006}, {"x": 0.0187, "y": 0.1283}, {"x": 0.0198, "y": 0.1246}, {"x": 0.0067, "y": 0.0942}, {"x": 0.3782, "y": 0.5706}, {"x": 0.0732, "y": 0.1666}, {"x": 0.066, "y": 0.4083}, {"x": 0.0123, "y": 0.115}, {"x": 0.0456, "y": 0.2852}, {"x": 0.0454, "y": 0.1234}, {"x": 0.077, "y": 0.5137}, {"x": 0.3743, "y": 0.4506}, {"x": 0.3658, "y": 0.8892}, {"x": 0.0569, "y": 0.2175}, {"x": 0.1947, "y": 0.9012}, {"x": 0.0165, "y": 0.1222}, {"x": 0.4049, "y": 0.4562}, {"x": 0.0365, "y": 0.1274}, {"x": 0.0077, "y": 0.1268}, {"x": 0.3712, "y": 0.7687}, {"x": 0.0809, "y": 0.1954}, {"x": 0.3743, "y": 0.5604}, {"x": 0.054, "y": 0.7772}, {"x": 0.0117, "y": 0.128}, {"x": 0.0295, "y": 0.1152}, {"x": 0.0118, "y": 0.1884}, {"x": 0.24, "y": 0.8838}, {"x": 0.0122, "y": 0.0919}, {"x": 0.0487, "y": 0.2135}, {"x": 0.0224, "y": 0.1263}, {"x": 0.0134, "y": 0.2367}, {"x": 0.0084, "y": 0.1062}, {"x": 0.0064, "y": 0.1011}, {"x": 0.0484, "y": 0.1343}, {"x": 0.0097, "y": 0.1}, {"x": 0.0506, "y": 0.1154}, {"x": 0.0927, "y": 0.2092}, {"x": 0.05, "y": 0.111}, {"x": 0.0385, "y": 0.847}, {"x": 0.0067, "y": 0.1023}, {"x": 0.0294, "y": 0.3623}, {"x": 0.0148, "y": 0.1183}, {"x": 0.0232, "y": 0.1068}, {"x": 0.0124, "y": 0.1033}, {"x": 0.1602, "y": 0.7628}, {"x": 0.0068, "y": 0.1641}, {"x": 0.4073, "y": 0.6213}, {"x": 0.0068, "y": 0.0984}, {"x": 0.0113, "y": 0.1074}, {"x": 0.0129, "y": 0.0928}, {"x": 0.0035, "y": 0.1346}, {"x": 0.011, "y": 0.1081}, {"x": 0.0222, "y": 0.1195}, {"x": 0.3962, "y": 0.959}, {"x": 0.0314, "y": 0.1621}, {"x": 0.1996, "y": 0.3002}, {"x": 0.0228, "y": 0.1709}, {"x": 0.0147, "y": 0.1053}, {"x": 0.0091, "y": 0.1058}, {"x": 0.0183, "y": 0.1074}, {"x": 0.022, "y": 0.5237}, {"x": 0.3737, "y": 0.8393}, {"x": 0.0067, "y": 0.0935}, {"x": 0.0506, "y": 0.6828}, {"x": 0.0067, "y": 0.1472}, {"x": 0.0219, "y": 0.1283}, {"x": 0.0247, "y": 0.1371}, {"x": 0.1906, "y": 0.6922}, {"x": 0.0378, "y": 0.3861}, {"x": 0.0043, "y": 0.1239}, {"x": 0.0089, "y": 0.1539}, {"x": 0.0689, "y": 0.1051}, {"x": 0.0274, "y": 0.1097}, {"x": 0.0139, "y": 0.1256}, {"x": 0.3673, "y": 0.8394}, {"x": 0.2313, "y": 0.9314}, {"x": 0.3901, "y": 0.8684}, {"x": 0.4516, "y": 0.2499}, {"x": 0.0129, "y": 0.1152}, {"x": 0.0146, "y": 0.0971}, {"x": 0.0133, "y": 0.0993}, {"x": 0.0157, "y": 0.115}, {"x": 0.0106, "y": 0.1158}, {"x": 0.0048, "y": 0.1223}, {"x": 0.1285, "y": 0.4775}, {"x": 0.0091, "y": 0.1449}, {"x": 0.3789, "y": 0.6071}, {"x": 0.0145, "y": 0.1101}, {"x": 0.0202, "y": 0.1556}, {"x": 0.3888, "y": 0.7598}, {"x": 0.0036, "y": 0.0976}, {"x": 0.0151, "y": 0.1405}, {"x": 0.0292, "y": 0.0946}, {"x": 0.0093, "y": 0.1171}, {"x": 0.0269, "y": 0.108}, {"x": 0.0111, "y": 0.105}, {"x": 0.0284, "y": 0.1022}, {"x": 0.0081, "y": 0.1942}, {"x": 0.0363, "y": 0.0824}, {"x": 0.3653, "y": 0.9445}, {"x": 0.0136, "y": 0.1032}, {"x": 0.0394, "y": 0.5894}, {"x": 0.2118, "y": 0.2064}, {"x": 0.0075, "y": 0.1308}, {"x": 0.0527, "y": 0.3348}, {"x": 0.0189, "y": 0.0993}, {"x": 0.3649, "y": 0.5433}, {"x": 0.312, "y": 0.9746}, {"x": 0.0663, "y": 0.6689}, {"x": 0.0062, "y": 0.1269}, {"x": 0.0167, "y": 0.1}, {"x": 0.0241, "y": 0.0966}, {"x": 0.0188, "y": 0.115}, {"x": 0.0422, "y": 0.1215}, {"x": 0.0101, "y": 0.122}, {"x": 0.0042, "y": 0.0801}, {"x": 0.2499, "y": 0.9769}, {"x": 0.0156, "y": 0.1348}, {"x": 0.381, "y": 0.8069}, {"x": 0.0096, "y": 0.1303}, {"x": 0.0084, "y": 0.0932}, {"x": 0.0083, "y": 0.1097}, {"x": 0.0437, "y": 0.997}, {"x": 0.0377, "y": 0.1474}, {"x": 0.1013, "y": 0.7765}, {"x": 0.0148, "y": 0.0853}, {"x": 0.0171, "y": 0.1044}, {"x": 0.0285, "y": 0.1104}, {"x": 0.0184, "y": 0.1303}, {"x": 0.032, "y": 0.1468}, {"x": 0.0134, "y": 0.1202}, {"x": 0.0172, "y": 0.106}, {"x": 0.0383, "y": 0.1111}, {"x": 0.0082, "y": 0.1451}, {"x": 0.0127, "y": 0.109}, {"x": 0.0705, "y": 0.5076}, {"x": 0.3591, "y": 0.9778}, {"x": 0.0111, "y": 0.123}, {"x": 0.3163, "y": 0.9589}, {"x": 0.0194, "y": 0.1887}, {"x": 0.0081, "y": 0.4316}, {"x": 0.0202, "y": 0.32}, {"x": 0.0039, "y": 0.9191}, {"x": 0.0183, "y": 0.1106}, {"x": 0.0087, "y": 0.1512}, {"x": 0.0101, "y": 0.1338}, {"x": 0.2252, "y": 0.3828}, {"x": 0.4031, "y": 0.1532}, {"x": 0.0157, "y": 0.139}, {"x": 0.0066, "y": 0.1162}, {"x": 0.0316, "y": 0.099}, {"x": 0.3835, "y": 0.9477}, {"x": 0.0777, "y": 0.1634}, {"x": 0.0106, "y": 0.1285}, {"x": 0.0561, "y": 0.1628}, {"x": 0.0479, "y": 0.1421}, {"x": 0.0115, "y": 0.1092}, {"x": 0.0188, "y": 0.1177}, {"x": 0.0086, "y": 0.0986}, {"x": 0.0081, "y": 0.1251}, {"x": 0.0087, "y": 0.1259}, {"x": 0.0123, "y": 0.1145}, {"x": 0.0081, "y": 0.1204}, {"x": 0.0111, "y": 0.0978}, {"x": 0.0305, "y": 0.2457}, {"x": 0.01, "y": 0.1446}, {"x": 0.0121, "y": 0.1414}, {"x": 0.0109, "y": 0.4221}],
-            backgroundColor: 'rgba(67,160,71,0.45)',
-            borderColor: 'rgba(67,160,71,0.7)',
-            borderWidth: 1,
-            pointRadius: 4,
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { title: { display: true, text: 'DockQ' } },
-          y: { title: { display: true, text: 'ipTM' } }
-        }
-      }
-    });
+    function statusBadge(s) {
+      const map = {
+        'genuine': '<span class="exp-status exp-status-completed">genuine</span>',
+        'collapse': '<span class="exp-status exp-status-failed">collapse</span>',
+        'flat': '<span class="exp-status exp-status-pending">flat</span>',
+        'OOM': '<span class="exp-status exp-status-partial">OOM</span>',
+      };
+      return map[s] || s;
+    }
 
-    // ===== DIAGNOSTICS: Size Success Rate =====
-    var sizeBinLabels = ["<200", "200-300", "300-400", "400-500", ">500"];
-    var sizeSuccessRate = [0.77, 0.83, 0.36, 0.51, 0.28];
-    var sizeBinCounts = [13, 30, 50, 41, 47];
-    if (document.getElementById('chartSizeRate')) {
-      new Chart(document.getElementById('chartSizeRate'), {
-        type: 'bar',
-        data: {
-          labels: sizeBinLabels,
-          datasets: [{
-            label: 'Success rate',
-            data: sizeSuccessRate,
-            backgroundColor: sizeSuccessRate.map(v => v > 0.5 ? '#43a04788' : '#ef535088'),
-            borderColor: sizeSuccessRate.map(v => v > 0.5 ? '#43a047' : '#ef5350'),
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: ctx => ctx.parsed.y*100 + '% (' + sizeBinCounts[ctx.dataIndex] + ' pairs)' } }
-          },
-          scales: {
-            x: { title: { display: true, text: 'Total residues' } },
-            y: { title: { display: true, text: 'Fraction improved' }, min: 0, max: 1 }
-          }
-        }
+    function dockqClass(v) {
+      if (v >= 0.23) return 'dockq-green';
+      if (v >= 0.05) return 'dockq-yellow';
+      return '';
+    }
+
+    function fillTable(tableId, key) {
+      const tbody = document.querySelector('#table-' + tableId + ' tbody');
+      const data = experiments[key];
+      if (!data) return;
+      data.forEach(r => {
+        const tr = document.createElement('tr');
+        if (r.status === 'OOM') tr.className = 'row-oom';
+        tr.innerHTML = '<td>' + r.pair + '</td>' +
+          '<td class="' + dockqClass(r.baseline) + '">' + (r.status === 'OOM' ? '--' : r.baseline.toFixed(4)) + '</td>' +
+          '<td class="' + dockqClass(r.best) + '">' + (r.status === 'OOM' ? '--' : r.best.toFixed(4)) + '</td>' +
+          '<td>' + (r.status === 'OOM' ? '--' : (r.delta >= 0 ? '+' : '') + r.delta.toFixed(4)) + '</td>' +
+          '<td>' + (r.status === 'OOM' ? '--' : r.peak) + '</td>' +
+          '<td>' + statusBadge(r.status) + '</td>';
+        tbody.appendChild(tr);
       });
     }
 
-    // ===== DIAGNOSTICS: Quality Success Rate =====
-    if (document.getElementById('chartQualRate')) {
-      new Chart(document.getElementById('chartQualRate'), {
-        type: 'bar',
-        data: {
-          labels: ['incorrect','acceptable','medium','high'],
-          datasets: [{
-            label: 'Success rate',
-            data: [0.55, 0.0, 0.0, 0.0],
-            backgroundColor: ['#43a04788','#ef535088','#ef535088','#ef535088'],
-            borderWidth: 1
-          },{
-            label: 'Mean delta',
-            data: [0.048, -0.31, -0.49, -0.812],
-            backgroundColor: ['#42a5f588','#42a5f588','#42a5f588','#42a5f588'],
-            borderWidth: 1,
-            yAxisID: 'y2'
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { display: true, labels: { font: { size: 10 } } } },
-          scales: {
-            x: { title: { display: true, text: 'Baseline quality' } },
-            y: { title: { display: true, text: 'Fraction improved' }, min: 0, max: 1, position: 'left' },
-            y2: { title: { display: true, text: 'Mean delta DockQ' }, position: 'right', grid: { drawOnChartArea: false } }
-          }
-        }
-      });
-    }
-
-    // ===== DIAGNOSTICS: Size Scatter =====
-    var sizeVsDelta = [{"x": 304, "y": -0.3521}, {"x": 414, "y": -0.0011}, {"x": 310, "y": 0.3289}, {"x": 390, "y": 0.1665}, {"x": 395, "y": -0.0134}, {"x": 185, "y": 0.3715}, {"x": 433, "y": -0.0398}, {"x": 431, "y": 0.0008}, {"x": 357, "y": 0.0002}, {"x": 567, "y": -0.0821}, {"x": 301, "y": -0.0765}, {"x": 502, "y": -0.0737}, {"x": 281, "y": 0.0247}, {"x": 580, "y": 0.0001}, {"x": 690, "y": -0.0114}, {"x": 570, "y": -0.0345}, {"x": 429, "y": -0.0029}, {"x": 297, "y": 0.3097}, {"x": 401, "y": 0.0395}, {"x": 280, "y": -0.8854}, {"x": 463, "y": -0.3095}, {"x": 300, "y": 0.0114}, {"x": 251, "y": 0.0302}, {"x": 196, "y": -0.5341}, {"x": 287, "y": 0.2786}, {"x": 450, "y": 0.354}, {"x": 126, "y": 0.0179}, {"x": 436, "y": 0.1837}, {"x": 683, "y": 0.0002}, {"x": 454, "y": 0.3856}, {"x": 388, "y": 0.0156}, {"x": 816, "y": 0.0041}, {"x": 250, "y": 0.3517}, {"x": 242, "y": 0.0609}, {"x": 311, "y": 0.3437}, {"x": 128, "y": 0.0134}, {"x": 553, "y": -0.0259}, {"x": 373, "y": -0.2388}, {"x": 627, "y": -0.0396}, {"x": 364, "y": 0.2276}, {"x": 456, "y": -0.0048}, {"x": 206, "y": -0.0965}, {"x": 575, "y": -0.0052}, {"x": 306, "y": -0.015}, {"x": 684, "y": -0.0003}, {"x": 413, "y": -0.0066}, {"x": 427, "y": 0.0389}, {"x": 536, "y": -0.0024}, {"x": 337, "y": 0.0264}, {"x": 242, "y": 0.0577}, {"x": 309, "y": 0.0405}, {"x": 253, "y": 0.0214}, {"x": 409, "y": -0.0227}, {"x": 188, "y": 0.0118}, {"x": 787, "y": 0.0068}, {"x": 616, "y": -0.0089}, {"x": 594, "y": -0.0086}, {"x": 435, "y": 0.151}, {"x": 343, "y": -0.0104}, {"x": 108, "y": 0.3813}, {"x": 610, "y": 0.0005}, {"x": 348, "y": -0.0071}, {"x": 401, "y": 0.0059}, {"x": 614, "y": 0.0001}, {"x": 598, "y": -0.0154}, {"x": 378, "y": -0.0109}, {"x": 252, "y": 0.3327}, {"x": 370, "y": -0.0457}, {"x": 197, "y": 0.1881}, {"x": 325, "y": -0.0731}, {"x": 284, "y": 0.0053}, {"x": 347, "y": -0.1488}, {"x": 297, "y": 0.0011}, {"x": 186, "y": -0.0103}, {"x": 208, "y": 0.3576}, {"x": 477, "y": -0.0075}, {"x": 197, "y": -0.0022}, {"x": 846, "y": -0.0013}, {"x": 587, "y": -0.0269}, {"x": 310, "y": -0.3685}, {"x": 401, "y": 0.172}, {"x": 236, "y": 0.0009}, {"x": 482, "y": 0.001}, {"x": 327, "y": -0.0014}, {"x": 486, "y": 0.044}, {"x": 304, "y": -0.0454}, {"x": 429, "y": -0.5434}, {"x": 274, "y": 0.2678}, {"x": 352, "y": 0.2207}, {"x": 230, "y": 0.3453}, {"x": 254, "y": -0.1838}, {"x": 552, "y": -0.2431}, {"x": 320, "y": -0.0214}, {"x": 547, "y": -0.0749}, {"x": 377, "y": -0.0059}, {"x": 600, "y": -0.0038}, {"x": 771, "y": -0.0034}, {"x": 430, "y": 0.1013}, {"x": 548, "y": -0.0059}, {"x": 217, "y": 0.3238}, {"x": 512, "y": 0.0028}, {"x": 414, "y": 0.0026}, {"x": 312, "y": 0.3593}, {"x": 334, "y": 0.001}, {"x": 873, "y": 0.0033}, {"x": 500, "y": 0.018}, {"x": 723, "y": 0.0024}, {"x": 442, "y": -0.0214}, {"x": 451, "y": -0.0047}, {"x": 321, "y": -0.0408}, {"x": 520, "y": -0.0059}, {"x": 298, "y": -0.0016}, {"x": 243, "y": 0.3229}, {"x": 387, "y": 0.0006}, {"x": 248, "y": 0.0211}, {"x": 285, "y": 0.1678}, {"x": 303, "y": -0.0121}, {"x": 478, "y": 0.0256}, {"x": 456, "y": 0.0018}, {"x": 376, "y": -0.092}, {"x": 337, "y": 0.2761}, {"x": 116, "y": 0.0455}, {"x": 742, "y": -0.0544}, {"x": 410, "y": -0.0086}, {"x": 348, "y": 0.0093}, {"x": 672, "y": -0.0381}, {"x": 402, "y": 0.0092}, {"x": 815, "y": -0.3461}, {"x": 433, "y": -0.0111}, {"x": 382, "y": -0.5977}, {"x": 339, "y": -0.6775}, {"x": 275, "y": 0.2976}, {"x": 629, "y": -0.9527}, {"x": 477, "y": -0.0096}, {"x": 314, "y": -0.0016}, {"x": 151, "y": 0.0176}, {"x": 508, "y": -0.2985}, {"x": 433, "y": 0.0847}, {"x": 310, "y": -0.0006}, {"x": 517, "y": -0.5009}, {"x": 417, "y": -0.0044}, {"x": 761, "y": -0.0055}, {"x": 293, "y": 0.0143}, {"x": 616, "y": -0.0859}, {"x": 362, "y": -0.0009}, {"x": 512, "y": 0.0215}, {"x": 327, "y": -0.0169}, {"x": 394, "y": -0.0184}, {"x": 225, "y": -0.3648}, {"x": 250, "y": 0.3281}, {"x": 329, "y": 0.0016}, {"x": 441, "y": 0.3032}, {"x": 247, "y": 0.002}, {"x": 360, "y": 0.0039}, {"x": 471, "y": 0.0097}, {"x": 300, "y": 0.0}, {"x": 434, "y": -0.5027}, {"x": 464, "y": -0.0417}, {"x": 373, "y": -0.0006}, {"x": 180, "y": 0.1948}, {"x": 174, "y": 0.2398}, {"x": 774, "y": 0.0045}, {"x": 433, "y": -0.0001}, {"x": 307, "y": 0.0139}, {"x": 282, "y": 0.2448}, {"x": 440, "y": -0.1334}, {"x": 622, "y": 0.0027}, {"x": 343, "y": -0.0352}, {"x": 427, "y": 0.0379}, {"x": 500, "y": -0.0002}, {"x": 605, "y": -0.1597}, {"x": 367, "y": -0.0011}, {"x": 370, "y": -0.0174}, {"x": 899, "y": -0.0841}, {"x": 650, "y": -0.005}, {"x": 771, "y": -0.0118}, {"x": 268, "y": 0.0027}, {"x": 434, "y": -0.0043}, {"x": 392, "y": -0.4596}, {"x": 790, "y": -0.3348}, {"x": 475, "y": 0.0032}];
-    if (document.getElementById('chartSizeScatter')) {
-      var sImp = sizeVsDelta.filter(p => p.y > 0);
-      var sHurt = sizeVsDelta.filter(p => p.y <= 0);
-      new Chart(document.getElementById('chartSizeScatter'), {
-        type: 'scatter',
-        data: {
-          datasets: [
-            { label: 'Improved', data: sImp, backgroundColor: '#43a04766', borderColor: '#43a047', pointRadius: 3.5 },
-            { label: 'Hurt', data: sHurt, backgroundColor: '#ef535066', borderColor: '#ef5350', pointRadius: 3.5 }
-          ]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          scales: {
-            x: { title: { display: true, text: 'Total residues' } },
-            y: { title: { display: true, text: 'Delta DockQ' } }
-          }
-        }
-      });
-    }
-
-    // ===== DIAGNOSTICS: pLDDT Scatter =====
-    var plddtVsDelta = [{"x": 32.6, "y": -0.3521}, {"x": 35.0, "y": -0.0011}, {"x": 31.9, "y": 0.3289}, {"x": 32.1, "y": 0.1665}, {"x": 31.0, "y": -0.0134}, {"x": 36.8, "y": 0.3715}, {"x": 31.1, "y": -0.0398}, {"x": 25.1, "y": 0.0008}, {"x": 30.2, "y": 0.0002}, {"x": 28.6, "y": -0.0821}, {"x": 29.5, "y": -0.0765}, {"x": 28.3, "y": -0.0737}, {"x": 26.7, "y": 0.0247}, {"x": 65.1, "y": 0.0001}, {"x": 32.4, "y": -0.0114}, {"x": 28.1, "y": -0.0345}, {"x": 32.8, "y": -0.0029}, {"x": 32.5, "y": 0.3097}, {"x": 43.4, "y": 0.0395}, {"x": 35.4, "y": -0.8854}, {"x": 30.8, "y": -0.3095}, {"x": 28.5, "y": 0.0114}, {"x": 33.9, "y": 0.0302}, {"x": 42.0, "y": -0.5341}, {"x": 28.5, "y": 0.2786}, {"x": 34.1, "y": 0.354}, {"x": 40.9, "y": 0.0179}, {"x": 38.1, "y": 0.1837}, {"x": 50.0, "y": 0.0002}, {"x": 53.7, "y": 0.3856}, {"x": 38.7, "y": 0.0156}, {"x": 29.6, "y": 0.0041}, {"x": 36.6, "y": 0.3517}, {"x": 33.7, "y": 0.0609}, {"x": 42.5, "y": 0.3437}, {"x": 33.0, "y": 0.0134}, {"x": 30.2, "y": -0.0259}, {"x": 43.5, "y": -0.2388}, {"x": 53.2, "y": -0.0396}, {"x": 42.5, "y": 0.2276}, {"x": 27.6, "y": -0.0048}, {"x": 43.5, "y": -0.0965}, {"x": 27.7, "y": -0.0052}, {"x": 47.5, "y": -0.015}, {"x": 31.9, "y": -0.0003}, {"x": 37.8, "y": -0.0066}, {"x": 45.0, "y": 0.0389}, {"x": 29.1, "y": -0.0024}, {"x": 37.0, "y": 0.0264}, {"x": 36.2, "y": 0.0577}, {"x": 34.4, "y": 0.0405}, {"x": 38.3, "y": 0.0214}, {"x": 29.2, "y": -0.0227}, {"x": 29.7, "y": 0.0118}, {"x": 27.6, "y": 0.0068}, {"x": 30.8, "y": -0.0089}, {"x": 28.4, "y": -0.0086}, {"x": 28.5, "y": 0.151}, {"x": 40.3, "y": -0.0104}, {"x": 38.8, "y": 0.3813}, {"x": 27.6, "y": 0.0005}, {"x": 31.3, "y": -0.0071}, {"x": 35.2, "y": 0.0059}, {"x": 44.7, "y": 0.0001}, {"x": 29.5, "y": -0.0154}, {"x": 32.5, "y": -0.0109}, {"x": 26.2, "y": 0.3327}, {"x": 36.5, "y": -0.0457}, {"x": 33.2, "y": 0.1881}, {"x": 38.7, "y": -0.0731}, {"x": 36.7, "y": 0.0053}, {"x": 49.3, "y": -0.1488}, {"x": 35.0, "y": 0.0011}, {"x": 43.5, "y": -0.0103}, {"x": 39.0, "y": 0.3576}, {"x": 31.4, "y": -0.0075}, {"x": 48.6, "y": -0.0022}, {"x": 34.7, "y": -0.0013}, {"x": 28.3, "y": -0.0269}, {"x": 38.7, "y": -0.3685}, {"x": 36.5, "y": 0.172}, {"x": 34.5, "y": 0.0009}, {"x": 47.8, "y": 0.001}, {"x": 47.7, "y": -0.0014}, {"x": 36.0, "y": 0.044}, {"x": 33.5, "y": -0.0454}, {"x": 47.5, "y": -0.5434}, {"x": 41.9, "y": 0.2678}, {"x": 41.2, "y": 0.2207}, {"x": 50.6, "y": 0.3453}, {"x": 59.4, "y": -0.1838}, {"x": 36.6, "y": -0.2431}, {"x": 37.7, "y": -0.0214}, {"x": 29.1, "y": -0.0749}, {"x": 46.4, "y": -0.0059}, {"x": 30.7, "y": -0.0038}, {"x": 29.3, "y": -0.0034}, {"x": 33.1, "y": 0.1013}, {"x": 35.6, "y": -0.0059}, {"x": 35.2, "y": 0.3238}, {"x": 27.4, "y": 0.0028}, {"x": 56.9, "y": 0.0026}, {"x": 48.2, "y": 0.3593}, {"x": 31.2, "y": 0.001}, {"x": 27.5, "y": 0.0033}, {"x": 36.0, "y": 0.018}, {"x": 28.9, "y": 0.0024}, {"x": 31.9, "y": -0.0214}, {"x": 37.0, "y": -0.0047}, {"x": 34.9, "y": -0.0408}, {"x": 66.1, "y": -0.0059}, {"x": 36.2, "y": -0.0016}, {"x": 31.9, "y": 0.3229}, {"x": 24.8, "y": 0.0006}, {"x": 31.0, "y": 0.0211}, {"x": 33.2, "y": 0.1678}, {"x": 32.0, "y": -0.0121}, {"x": 50.0, "y": 0.0256}, {"x": 36.0, "y": 0.0018}, {"x": 39.9, "y": -0.092}, {"x": 49.6, "y": 0.2761}, {"x": 70.7, "y": 0.0455}, {"x": 20.8, "y": -0.0544}, {"x": 41.5, "y": -0.0086}, {"x": 30.7, "y": 0.0093}, {"x": 30.7, "y": -0.0381}, {"x": 33.6, "y": 0.0092}, {"x": 33.4, "y": -0.3461}, {"x": 39.5, "y": -0.0111}, {"x": 36.6, "y": -0.5977}, {"x": 36.7, "y": -0.6775}, {"x": 30.6, "y": 0.2976}, {"x": 32.8, "y": -0.9527}, {"x": 30.6, "y": -0.0096}, {"x": 32.5, "y": -0.0016}, {"x": 48.6, "y": 0.0176}, {"x": 37.7, "y": -0.2985}, {"x": 31.7, "y": 0.0847}, {"x": 38.3, "y": -0.0006}, {"x": 34.2, "y": -0.5009}, {"x": 46.9, "y": -0.0044}, {"x": 25.0, "y": -0.0055}, {"x": 44.7, "y": 0.0143}, {"x": 32.1, "y": -0.0859}, {"x": 34.7, "y": -0.0009}, {"x": 26.7, "y": 0.0215}, {"x": 44.2, "y": -0.0169}, {"x": 37.9, "y": -0.0184}, {"x": 43.3, "y": -0.3648}, {"x": 33.8, "y": 0.3281}, {"x": 36.4, "y": 0.0016}, {"x": 33.8, "y": 0.3032}, {"x": 41.5, "y": 0.002}, {"x": 42.6, "y": 0.0039}, {"x": 29.8, "y": 0.0097}, {"x": 33.2, "y": 0.0}, {"x": 42.1, "y": -0.5027}, {"x": 42.4, "y": -0.0417}, {"x": 32.7, "y": -0.0006}, {"x": 35.7, "y": 0.1948}, {"x": 32.6, "y": 0.2398}, {"x": 39.6, "y": 0.0045}, {"x": 36.3, "y": -0.0001}, {"x": 32.7, "y": 0.0139}, {"x": 65.9, "y": 0.2448}, {"x": 58.6, "y": -0.1334}, {"x": 32.6, "y": 0.0027}, {"x": 30.7, "y": -0.0352}, {"x": 45.9, "y": 0.0379}, {"x": 30.0, "y": -0.0002}, {"x": 41.3, "y": -0.1597}, {"x": 32.5, "y": -0.0011}, {"x": 34.7, "y": -0.0174}, {"x": 29.9, "y": -0.0841}, {"x": 25.8, "y": -0.005}, {"x": 28.0, "y": -0.0118}, {"x": 33.9, "y": 0.0027}, {"x": 34.0, "y": -0.0043}, {"x": 34.8, "y": -0.4596}, {"x": 39.2, "y": -0.3348}, {"x": 57.6, "y": 0.0032}];
-    if (document.getElementById('chartPlddtScatter')) {
-      var pImp = plddtVsDelta.filter(p => p.y > 0);
-      var pHurt = plddtVsDelta.filter(p => p.y <= 0);
-      new Chart(document.getElementById('chartPlddtScatter'), {
-        type: 'scatter',
-        data: {
-          datasets: [
-            { label: 'Improved', data: pImp, backgroundColor: '#43a04766', borderColor: '#43a047', pointRadius: 3.5 },
-            { label: 'Hurt', data: pHurt, backgroundColor: '#ef535066', borderColor: '#ef5350', pointRadius: 3.5 }
-          ]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          scales: {
-            x: { title: { display: true, text: 'pLDDT (step 0)' } },
-            y: { title: { display: true, text: 'Delta DockQ' } }
-          }
-        }
-      });
-    }
-
-    // ===== DIAGNOSTICS: Interface Scatter =====
-    var ifaceVsDelta = [{"x": 126, "y": -0.3521}, {"x": 31, "y": -0.0011}, {"x": 88, "y": 0.3289}, {"x": 85, "y": 0.1665}, {"x": 133, "y": -0.0134}, {"x": 71, "y": 0.3715}, {"x": 119, "y": -0.0398}, {"x": 0, "y": 0.0008}, {"x": 66, "y": 0.0002}, {"x": 161, "y": -0.0821}, {"x": 174, "y": -0.0765}, {"x": 142, "y": -0.0737}, {"x": 121, "y": 0.0247}, {"x": 116, "y": 0.0001}, {"x": 231, "y": -0.0114}, {"x": 164, "y": -0.0345}, {"x": 93, "y": -0.0029}, {"x": 170, "y": 0.3097}, {"x": 106, "y": 0.0395}, {"x": 198, "y": -0.8854}, {"x": 317, "y": -0.3095}, {"x": 136, "y": 0.0114}, {"x": 68, "y": 0.0302}, {"x": 74, "y": -0.5341}, {"x": 153, "y": 0.2786}, {"x": 128, "y": 0.354}, {"x": 89, "y": 0.0179}, {"x": 67, "y": 0.1837}, {"x": 154, "y": 0.0002}, {"x": 163, "y": 0.3856}, {"x": 156, "y": 0.0156}, {"x": 148, "y": 0.0041}, {"x": 210, "y": 0.3517}, {"x": 263, "y": 0.0609}, {"x": 144, "y": 0.3437}, {"x": 39, "y": 0.0134}, {"x": 143, "y": -0.0259}, {"x": 245, "y": -0.2388}, {"x": 186, "y": -0.0396}, {"x": 53, "y": 0.2276}, {"x": 211, "y": -0.0048}, {"x": 62, "y": -0.0965}, {"x": 166, "y": -0.0052}, {"x": 8, "y": -0.015}, {"x": 214, "y": -0.0003}, {"x": 75, "y": -0.0066}, {"x": 156, "y": 0.0389}, {"x": 28, "y": -0.0024}, {"x": 49, "y": 0.0264}, {"x": 49, "y": 0.0577}, {"x": 103, "y": 0.0405}, {"x": 81, "y": 0.0214}, {"x": 68, "y": -0.0227}, {"x": 81, "y": 0.0118}, {"x": 209, "y": 0.0068}, {"x": 178, "y": -0.0089}, {"x": 148, "y": -0.0086}, {"x": 109, "y": 0.151}, {"x": 42, "y": -0.0104}, {"x": 28, "y": 0.3813}, {"x": 79, "y": 0.0005}, {"x": 40, "y": -0.0071}, {"x": 84, "y": 0.0059}, {"x": 0, "y": 0.0001}, {"x": 126, "y": -0.0154}, {"x": 231, "y": -0.0109}, {"x": 151, "y": 0.3327}, {"x": 119, "y": -0.0457}, {"x": 54, "y": 0.1881}, {"x": 152, "y": -0.0731}, {"x": 0, "y": 0.0053}, {"x": 203, "y": -0.1488}, {"x": 27, "y": 0.0011}, {"x": 14, "y": -0.0103}, {"x": 119, "y": 0.3576}, {"x": 85, "y": -0.0075}, {"x": 62, "y": -0.0022}, {"x": 157, "y": -0.0013}, {"x": 215, "y": -0.0269}, {"x": 147, "y": -0.3685}, {"x": 88, "y": 0.172}, {"x": 22, "y": 0.0009}, {"x": 0, "y": 0.001}, {"x": 37, "y": -0.0014}, {"x": 160, "y": 0.044}, {"x": 172, "y": -0.0454}, {"x": 127, "y": -0.5434}, {"x": 146, "y": 0.2678}, {"x": 155, "y": 0.2207}, {"x": 115, "y": 0.3453}, {"x": 96, "y": -0.1838}, {"x": 157, "y": -0.2431}, {"x": 90, "y": -0.0214}, {"x": 150, "y": -0.0749}, {"x": 155, "y": -0.0059}, {"x": 74, "y": -0.0038}, {"x": 94, "y": -0.0034}, {"x": 212, "y": 0.1013}, {"x": 224, "y": -0.0059}, {"x": 43, "y": 0.3238}, {"x": 144, "y": 0.0028}, {"x": 162, "y": 0.0026}, {"x": 163, "y": 0.3593}, {"x": 0, "y": 0.001}, {"x": 55, "y": 0.0033}, {"x": 141, "y": 0.018}, {"x": 238, "y": 0.0024}, {"x": 3, "y": -0.0214}, {"x": 94, "y": -0.0047}, {"x": 176, "y": -0.0408}, {"x": 138, "y": -0.0059}, {"x": 109, "y": -0.0016}, {"x": 117, "y": 0.3229}, {"x": 145, "y": 0.0006}, {"x": 126, "y": 0.0211}, {"x": 143, "y": 0.1678}, {"x": 71, "y": -0.0121}, {"x": 39, "y": 0.0256}, {"x": 156, "y": 0.0018}, {"x": 91, "y": -0.092}, {"x": 128, "y": 0.2761}, {"x": 80, "y": 0.0455}, {"x": 284, "y": -0.0544}, {"x": 192, "y": -0.0086}, {"x": 186, "y": 0.0093}, {"x": 413, "y": -0.0381}, {"x": 66, "y": 0.0092}, {"x": 606, "y": -0.3461}, {"x": 61, "y": -0.0111}, {"x": 169, "y": -0.5977}, {"x": 147, "y": -0.6775}, {"x": 128, "y": 0.2976}, {"x": 135, "y": -0.9527}, {"x": 4, "y": -0.0096}, {"x": 40, "y": -0.0016}, {"x": 71, "y": 0.0176}, {"x": 86, "y": -0.2985}, {"x": 232, "y": 0.0847}, {"x": 67, "y": -0.0006}, {"x": 559, "y": -0.5009}, {"x": 74, "y": -0.0044}, {"x": 324, "y": -0.0055}, {"x": 140, "y": 0.0143}, {"x": 113, "y": -0.0859}, {"x": 111, "y": -0.0009}, {"x": 161, "y": 0.0215}, {"x": 24, "y": -0.0169}, {"x": 70, "y": -0.0184}, {"x": 71, "y": -0.3648}, {"x": 188, "y": 0.3281}, {"x": 47, "y": 0.0016}, {"x": 237, "y": 0.3032}, {"x": 7, "y": 0.002}, {"x": 0, "y": 0.0039}, {"x": 118, "y": 0.0097}, {"x": 0, "y": 0.0}, {"x": 264, "y": -0.5027}, {"x": 57, "y": -0.0417}, {"x": 38, "y": -0.0006}, {"x": 421, "y": 0.1948}, {"x": 68, "y": 0.2398}, {"x": 630, "y": 0.0045}, {"x": 7, "y": -0.0001}, {"x": 126, "y": 0.0139}, {"x": 161, "y": 0.2448}, {"x": 265, "y": -0.1334}, {"x": 224, "y": 0.0027}, {"x": 61, "y": -0.0352}, {"x": 271, "y": 0.0379}, {"x": 411, "y": -0.0002}, {"x": 82, "y": -0.1597}, {"x": 72, "y": -0.0011}, {"x": 54, "y": -0.0174}, {"x": 813, "y": -0.0841}, {"x": 71, "y": -0.005}, {"x": 95, "y": -0.0118}, {"x": 0, "y": 0.0027}, {"x": 90, "y": -0.0043}, {"x": 301, "y": -0.4596}, {"x": 566, "y": -0.3348}, {"x": 65, "y": 0.0032}];
-    if (document.getElementById('chartIfaceScatter')) {
-      var iImp = ifaceVsDelta.filter(p => p.y > 0);
-      var iHurt = ifaceVsDelta.filter(p => p.y <= 0);
-      new Chart(document.getElementById('chartIfaceScatter'), {
-        type: 'scatter',
-        data: {
-          datasets: [
-            { label: 'Improved', data: iImp, backgroundColor: '#43a04766', borderColor: '#43a047', pointRadius: 3.5 },
-            { label: 'Hurt', data: iHurt, backgroundColor: '#ef535066', borderColor: '#ef5350', pointRadius: 3.5 }
-          ]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          scales: {
-            x: { title: { display: true, text: 'Interface contacts (ground truth)' } },
-            y: { title: { display: true, text: 'Delta DockQ' } }
-          }
-        }
-      });
-    }
-
-    // ===== DIAGNOSTICS: Best Step Histogram =====
-    if (document.getElementById('chartBestStep')) {
-      var bsLabels = ['0','5','10','15','20','25','30','35','40','45','50'];
-      var bsCounts = [31, 0, 3, 0, 1, 3, 2, 5, 12, 15, 16];
-      new Chart(document.getElementById('chartBestStep'), {
-        type: 'bar',
-        data: {
-          labels: bsLabels,
-          datasets: [{
-            label: 'Pairs',
-            data: bsCounts,
-            backgroundColor: bsCounts.map((v,i) => i === 0 ? '#9e9e9e88' : '#43a04788'),
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { title: { display: true, text: 'Best DockQ step' } },
-            y: { title: { display: true, text: 'Count' } }
-          }
-        }
-      });
-    }
-
-    // ===== DIAGNOSTICS: Collapse Analysis =====
-    var collapseData = [{"pair":"1GPW","delta":0.386,"com0":28.9,"com_best":18.6,"bb":25,"collapsed":false},{"pair":"1N8O","delta":0.381,"com0":7.6,"com_best":2.7,"bb":12,"collapsed":false},{"pair":"1AY7","delta":0.371,"com0":17.0,"com_best":4.1,"bb":90,"collapsed":true},{"pair":"2CFH","delta":0.359,"com0":26.1,"com_best":10.1,"bb":15,"collapsed":false},{"pair":"1S1Q","delta":0.358,"com0":21.4,"com_best":3.8,"bb":97,"collapsed":true},{"pair":"1FQJ","delta":0.354,"com0":27.9,"com_best":1.4,"bb":232,"collapsed":true},{"pair":"1H9D","delta":0.352,"com0":20.4,"com_best":0.7,"bb":117,"collapsed":true},{"pair":"1Z0K","delta":0.345,"com0":20.0,"com_best":5.8,"bb":76,"collapsed":true},{"pair":"1HE1","delta":0.344,"com0":22.0,"com_best":4.7,"bb":212,"collapsed":true},{"pair":"1PPE","delta":0.333,"com0":12.0,"com_best":1.4,"bb":109,"collapsed":true},{"pair":"1AK4","delta":0.329,"com0":18.6,"com_best":1.4,"bb":224,"collapsed":true},{"pair":"3FN1","delta":0.328,"com0":23.1,"com_best":1.1,"bb":86,"collapsed":true},{"pair":"2B4J","delta":0.324,"com0":20.0,"com_best":2.0,"bb":118,"collapsed":true},{"pair":"2I25","delta":0.323,"com0":21.6,"com_best":1.9,"bb":197,"collapsed":true},{"pair":"1EAW","delta":0.31,"com0":22.6,"com_best":4.2,"bb":160,"collapsed":true},{"pair":"3H11","delta":0.303,"com0":24.1,"com_best":8.2,"bb":122,"collapsed":false},{"pair":"2UUY","delta":0.298,"com0":20.8,"com_best":2.4,"bb":177,"collapsed":true},{"pair":"1FLE","delta":0.279,"com0":18.0,"com_best":2.2,"bb":119,"collapsed":true},{"pair":"2O8V","delta":0.276,"com0":28.1,"com_best":2.8,"bb":230,"collapsed":true},{"pair":"1XU1","delta":0.268,"com0":20.0,"com_best":0.9,"bb":236,"collapsed":true},{"pair":"3SZK","delta":0.245,"com0":22.1,"com_best":5.3,"bb":178,"collapsed":true},{"pair":"3PC8","delta":0.24,"com0":17.8,"com_best":4.4,"bb":41,"collapsed":true},{"pair":"1IQD","delta":0.228,"com0":23.1,"com_best":6.5,"bb":71,"collapsed":true},{"pair":"1YVB","delta":0.221,"com0":30.8,"com_best":1.0,"bb":99,"collapsed":true},{"pair":"3P57","delta":0.195,"com0":14.5,"com_best":10.6,"bb":1,"collapsed":false},{"pair":"1QA9","delta":0.188,"com0":19.9,"com_best":9.1,"bb":21,"collapsed":false},{"pair":"1GHQ","delta":0.184,"com0":24.9,"com_best":1.7,"bb":202,"collapsed":true},{"pair":"1US7","delta":0.172,"com0":24.6,"com_best":6.3,"bb":127,"collapsed":true},{"pair":"2J0T","delta":0.168,"com0":20.2,"com_best":12.2,"bb":12,"collapsed":false},{"pair":"1AKJ","delta":0.167,"com0":22.1,"com_best":4.2,"bb":387,"collapsed":true}];
-
-    // Collapse bar chart: DockQ gain colored by collapse/real
-    if (document.getElementById('chartCollapse')) {
-      new Chart(document.getElementById('chartCollapse'), {
-        type: 'bar',
-        data: {
-          labels: collapseData.map(d => d.pair),
-          datasets: [{
-            label: 'DockQ gain',
-            data: collapseData.map(d => d.delta),
-            backgroundColor: collapseData.map(d => d.collapsed ? '#ef535088' : '#43a04788'),
-            borderColor: collapseData.map(d => d.collapsed ? '#ef5350' : '#43a047'),
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: function(ctx) {
-              var d = collapseData[ctx.dataIndex];
-              return (d.collapsed ? 'COLLAPSE' : 'REAL') + ': +' + d.delta + ' COM:' + d.com0 + '->' + d.com_best + 'A bb=' + d.bb;
-            }}}
-          },
-          scales: {
-            x: { ticks: { font: { size: 9 }, maxRotation: 90 } },
-            y: { title: { display: true, text: 'DockQ gain' }, min: 0 }
-          }
-        }
-      });
-    }
-
-    // COM change scatter
-    if (document.getElementById('chartCOMchange')) {
-      var collPts = collapseData.filter(d => d.collapsed).map(d => ({x:d.com0, y:d.com_best}));
-      var realPts = collapseData.filter(d => !d.collapsed).map(d => ({x:d.com0, y:d.com_best}));
-      new Chart(document.getElementById('chartCOMchange'), {
-        type: 'scatter',
-        data: {
-          datasets: [
-            { label: 'Collapsed (29)', data: collPts, backgroundColor: '#ef535066', borderColor: '#ef5350', pointRadius: 5 },
-            { label: 'Real (28)', data: realPts, backgroundColor: '#43a04766', borderColor: '#43a047', pointRadius: 5 }
-          ]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { labels: { font: { size: 11 } } } },
-          scales: {
-            x: { title: { display: true, text: 'COM distance step 0 (A)' }, min: 0 },
-            y: { title: { display: true, text: 'COM distance best step (A)' }, min: 0 }
-          }
-        }
-      });
-    }
-
-    // Bad bonds vs delta
-    if (document.getElementById('chartBadBonds')) {
-      var bbColl = collapseData.filter(d => d.collapsed).map(d => ({x:d.bb, y:d.delta}));
-      var bbReal = collapseData.filter(d => !d.collapsed).map(d => ({x:d.bb, y:d.delta}));
-      new Chart(document.getElementById('chartBadBonds'), {
-        type: 'scatter',
-        data: {
-          datasets: [
-            { label: 'Collapsed', data: bbColl, backgroundColor: '#ef535066', borderColor: '#ef5350', pointRadius: 5 },
-            { label: 'Real', data: bbReal, backgroundColor: '#43a04766', borderColor: '#43a047', pointRadius: 5 }
-          ]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          scales: {
-            x: { title: { display: true, text: 'Bad bonds at best step' } },
-            y: { title: { display: true, text: 'DockQ gain' }, min: 0 }
-          }
-        }
-      });
-    }
-
-    // ===== DIAGNOSTICS: COM Distance =====
-    new Chart(document.getElementById('comTraj'), {
-      type: 'line',
-      data: {
-        labels: stepLabels,
-        datasets: [
-          {
-            label: 'Improved (88)',
-            data: [22.3739, 20.8058, 21.0129, 20.9788, 20.8962, 19.7478, 17.889, 14.3455, 9.239, 6.9736, 5.3317],
-            borderColor: 'rgba(67,160,71,0.9)',
-            backgroundColor: 'rgba(67,160,71,0.1)',
-            fill: true,
-            tension: 0.3,
-            pointRadius: 3,
-          },
-          {
-            label: 'Hurt (93)',
-            data: [23.7693, 22.3728, 22.3406, 22.6637, 22.6503, 22.3093, 21.2385, 17.2176, 13.3774, 11.4212, 8.0553],
-            borderColor: 'rgba(229,57,53,0.9)',
-            backgroundColor: 'rgba(229,57,53,0.1)',
-            fill: true,
-            tension: 0.3,
-            pointRadius: 3,
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { title: { display: true, text: 'Step' } },
-          y: { title: { display: true, text: 'COM Distance (A)' } }
-        }
-      }
-    });
-
-    // ===== DIAGNOSTICS: Contacts 8A =====
-    new Chart(document.getElementById('contactsTraj'), {
-      type: 'line',
-      data: {
-        labels: stepLabels,
-        datasets: [
-          {
-            label: 'Improved (88)',
-            data: [136.0, 114.6271, 110.339, 113.3051, 138.9322, 639.4746, 1327.7288, 3045.7288, 6590.5763, 7463.7966, 10317.6102],
-            borderColor: 'rgba(67,160,71,0.9)',
-            backgroundColor: 'rgba(67,160,71,0.1)',
-            fill: true,
-            tension: 0.3,
-            pointRadius: 3,
-          },
-          {
-            label: 'Hurt (93)',
-            data: [190.6022, 98.5, 98.25, 97.875, 95.125, 91.3125, 316.0625, 1940.6875, 5236.5625, 7067.0, 9553.6875],
-            borderColor: 'rgba(229,57,53,0.9)',
-            backgroundColor: 'rgba(229,57,53,0.1)',
-            fill: true,
-            tension: 0.3,
-            pointRadius: 3,
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { title: { display: true, text: 'Step' } },
-          y: { title: { display: true, text: 'Contacts (8A)' } }
-        }
-      }
-    });
-
-    // ===== DIAGNOSTICS: Interface pLDDT =====
-    new Chart(document.getElementById('plddtTraj'), {
-      type: 'line',
-      data: {
-        labels: stepLabels,
-        datasets: [
-          {
-            label: 'Improved (88)',
-            data: [34.254, 34.3306, 34.4014, 35.0433, 34.6906, 35.8425, 36.3037, 37.3806, 41.5539, 42.8474, 44.4607],
-            borderColor: 'rgba(67,160,71,0.9)',
-            backgroundColor: 'rgba(67,160,71,0.1)',
-            fill: true,
-            tension: 0.3,
-            pointRadius: 3,
-          },
-          {
-            label: 'Hurt (93)',
-            data: [32.7002, 38.302, 37.7058, 38.3364, 39.5869, 39.1443, 36.948, 42.6191, 40.7551, 42.5322, 49.1078],
-            borderColor: 'rgba(229,57,53,0.9)',
-            backgroundColor: 'rgba(229,57,53,0.1)',
-            fill: true,
-            tension: 0.3,
-            pointRadius: 3,
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { title: { display: true, text: 'Step' } },
-          y: { title: { display: true, text: 'Interface pLDDT' } }
-        }
-      }
-    });
+    fillTable('200s-constant', '200s-constant');
+    fillTable('200s-cosine', '200s-cosine');
+    fillTable('recycle10', 'recycle10');
+    fillTable('pair-stack-5e3', 'pair-stack-5e3');
+    fillTable('pair-stack-1e3', 'pair-stack-1e3');
+    fillTable('msa-pair-diff', 'msa-pair-diff');
   </script>
 
 </body>
