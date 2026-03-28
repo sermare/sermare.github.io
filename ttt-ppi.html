@@ -701,49 +701,49 @@
     <a class="back-link" href="index.html">&larr; Home</a>
 
     <h1 class="page-title">Two Proteins Is All You Need <span class="status-badge status-running">Running</span></h1>
-    <p class="page-subtitle">Test-Time Training for Protein-Protein Interaction Prediction</p>
-    <p class="page-desc">Zero-init LoRA on AF2-Multimer Evoformer. Testing 200 steps, cosine annealing, pair stack LoRA, and differential learning rates across DB5.5, SAbDab, and CASP-CAPRI.</p>
+    <p class="page-subtitle">Test-Time Training for PPI Prediction &mdash; Live Dashboard</p>
+    <p class="page-desc">Zero-init LoRA on AF2-Multimer. 1091 jobs submitted, ~12 GPUs running concurrently.</p>
     <div class="last-updated">Last updated: Mar 27, 2026 | <a href="data/ttt_ppi/findings.pdf" style="color:var(--link);">Findings PDF</a></div>
 
     <!-- Stats Row -->
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-value">1170</div>
-        <div class="stat-label">Jobs Submitted</div>
+        <div class="stat-value">73/1091</div>
+        <div class="stat-label">Jobs Complete</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">88%</div>
-        <div class="stat-label">200s Success Rate</div>
+        <div class="stat-value">94%</div>
+        <div class="stat-label">200s Genuine Rate</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">44/50</div>
-        <div class="stat-label">Genuine Improvements</div>
+        <div class="stat-value">1</div>
+        <div class="stat-label">Threshold Crossings</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">step 107</div>
-        <div class="stat-label">Mean Peak Step</div>
+        <div class="stat-value">step 102</div>
+        <div class="stat-label">Mean Peak</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">15 Running</div>
-        <div class="stat-label">Queue Status</div>
+        <div class="stat-value">12 Running</div>
+        <div class="stat-label">GPUs Active</div>
       </div>
     </div>
 
     <!-- Sub-Tabs -->
     <div class="sub-tabs">
-      <button class="sub-tab-btn active" onclick="switchTab('overview')">Overview</button>
-      <button class="sub-tab-btn" onclick="switchTab('experiments')">Experiments</button>
-      <button class="sub-tab-btn" onclick="switchTab('diagnostics')">Diagnostics</button>
+      <button class="sub-tab-btn active" onclick="switchTab('status')">Status</button>
+      <button class="sub-tab-btn" onclick="switchTab('results')">Results</button>
+      <button class="sub-tab-btn" onclick="switchTab('trajectories')">Trajectories</button>
       <button class="sub-tab-btn" onclick="switchTab('method')">Method</button>
-      <button class="sub-tab-btn" onclick="switchTab('log')">Log</button>
     </div>
 
-    <!-- ===================== TAB 1: OVERVIEW ===================== -->
-    <div class="sub-tab-content active" id="tab-overview">
+    <!-- ===================== TAB 1: STATUS ===================== -->
+    <div class="sub-tab-content active" id="tab-status">
 
-      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Experiment Comparison</h2>
+      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Should I keep running?</h2>
 
-      <div class="exp-table-wrapper" style="max-height:none;">
+      <!-- Section A: Experiment health -->
+      <div class="exp-table-wrapper" style="max-height:none;margin-bottom:24px;">
         <table class="exp-table">
           <thead>
             <tr>
@@ -751,185 +751,102 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>200s constant (lr=0.01)</td><td>71</td><td>36</td><td>29</td><td>3</td><td>2</td><td>4</td><td style="color:#2d6a2d;font-weight:500;">88%</td></tr>
-            <tr><td>200s cosine (lr=0.01)</td><td>11</td><td>11</td><td>11</td><td>0</td><td>0</td><td>0</td><td style="color:#2d6a2d;font-weight:500;">100%</td></tr>
-            <tr><td>Recycle 10 (50s + 10 recycle)</td><td>8</td><td>8</td><td>7</td><td>0</td><td>1</td><td>0</td><td style="color:#2d6a2d;font-weight:500;">90%</td></tr>
-            <tr><td>Pair stack lr=0.005</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>100%</td></tr>
-            <tr><td>Pair stack lr=0.001</td><td>2</td><td>2</td><td>2</td><td>0</td><td>0</td><td>0</td><td>100%</td></tr>
-            <tr><td>MSA+Pair diff LR (0.01/0.001)</td><td>3</td><td>3</td><td>2</td><td>0</td><td>1</td><td>0</td><td>67%</td></tr>
-            <tr style="color:var(--text-secondary);"><td>SAbDab 200s</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>--</td></tr>
-            <tr style="color:var(--text-secondary);"><td>CASP-CAPRI lr=0.01</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>--</td></tr>
-            <tr style="color:var(--text-secondary);"><td>CASP-CAPRI lr=0.05</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>--</td></tr>
-            <tr style="color:var(--text-secondary);"><td>CASP-CAPRI 200s</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>--</td></tr>
+            <tr><td>200s constant</td><td>73</td><td>51</td><td>48</td><td>0</td><td>3</td><td>22</td><td style="color:#2d6a2d;font-weight:500;">94%</td></tr>
+            <tr><td>200s cosine</td><td>11</td><td>11</td><td>11</td><td>0</td><td>0</td><td>0</td><td style="color:#2d6a2d;font-weight:500;">100%</td></tr>
+            <tr><td>Recycle 10</td><td>8</td><td>8</td><td>7</td><td>0</td><td>1</td><td>0</td><td style="color:#2d6a2d;font-weight:500;">87%</td></tr>
+            <tr><td>Pair stack 0.005</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td style="color:#c62828;font-weight:500;">0%</td></tr>
+            <tr><td>Pair stack 0.001</td><td>2</td><td>2</td><td>2</td><td>0</td><td>0</td><td>0</td><td style="color:#2d6a2d;font-weight:500;">100%</td></tr>
+            <tr><td>MSA+Pair diff LR</td><td>3</td><td>3</td><td>2</td><td>0</td><td>1</td><td>0</td><td style="color:#e65100;font-weight:500;">66%</td></tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Charts Row -->
-      <div class="results-grid">
-
-        <!-- Chart 1: Improvement Rate -->
-        <div class="result-card">
-          <h3>Improvement Rate by Experiment</h3>
-          <div class="chart-area"><canvas id="chartImpRate"></canvas></div>
-        </div>
-
-        <!-- Chart 2: Mean DockQ Gain -->
-        <div class="result-card">
-          <h3>Mean DockQ Gain (genuine only)</h3>
-          <div class="chart-area"><canvas id="chartDockQGain"></canvas></div>
-        </div>
-
+      <!-- Section B: Head-to-head -->
+      <div class="info-banner" style="margin-bottom:24px;">
+        Cosine vs constant head-to-head: 9 comparable pairs. Cosine wins 6, Constant wins 3. Cosine is more consistent but constant gets larger spikes.
       </div>
 
-      <!-- Chart 3: Peak Step Distribution -->
+      <!-- Section C: Queue status -->
+      <div class="info-banner">
+        Running: 12. Pending: 1039. OOM rate (200s): 30% (22/73). Estimated time to complete: ~50 hours at current throughput.
+      </div>
+
+    </div>
+
+    <!-- ===================== TAB 2: RESULTS ===================== -->
+    <div class="sub-tab-content" id="tab-results">
+
+      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Is TTT solving docking?</h2>
+
+      <!-- Chart 1: Scatter plot -->
       <div class="result-card" style="margin-bottom:24px;">
-        <h3>Where do improvements peak? (200s constant, n=32)</h3>
-        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">81% of genuine improvements peak after step 50. Mean peak: step 104.</p>
+        <h3>Baseline DockQ vs Best TTT DockQ (all experiments)</h3>
+        <div class="chart-area" style="height:400px;"><canvas id="chartScatter"></canvas></div>
+      </div>
+
+      <!-- Chart 2: Mean DockQ gain bar chart -->
+      <div class="result-card" style="margin-bottom:24px;">
+        <h3>Mean DockQ gain per experiment</h3>
+        <div class="chart-area"><canvas id="chartDockQGain"></canvas></div>
+      </div>
+
+      <!-- Chart 3: Peak step histogram -->
+      <div class="result-card" style="margin-bottom:24px;">
+        <h3>Peak step histogram (200s constant, n=47)</h3>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">mean=102, median=110, 78% peak after step 50</p>
         <div class="chart-area"><canvas id="chartPeakHist"></canvas></div>
       </div>
 
-      <!-- Key Findings -->
-      <div class="results-grid" style="grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));">
-        <div class="result-card">
-          <h3>200 steps rescues non-responders</h3>
-          <p style="font-size:14px;color:var(--text);line-height:1.6;">4 pairs rescued from zero improvement at 50 steps: 1ACB +0.036, 1CGI +0.065, 1D6R +0.041, 1AHW +0.025. 85% success rate vs 28.5% at original 50 steps.</p>
-        </div>
-        <div class="result-card">
-          <h3>Cosine beats constant LR</h3>
-          <p style="font-size:14px;color:var(--text);line-height:1.6;">Head-to-head: 5/6 wins for cosine. More consistent, fewer collapses. Constant occasionally gets large spikes (1GCQ +0.182) that cosine misses.</p>
-        </div>
-        <div class="result-card">
-          <h3>ipTM is a broken selector</h3>
-          <p style="font-size:14px;color:var(--text);line-height:1.6;">ipTM captures -2.1% of oracle gain (net negative). 25/186 pairs degraded by ipTM selection. Contact count (8A) outperforms it.</p>
-        </div>
+      <!-- Top 10 improvements table -->
+      <div class="exp-table-wrapper" style="max-height:none;margin-bottom:24px;">
+        <table class="exp-table">
+          <thead>
+            <tr><th>Pair</th><th>Experiment</th><th>Baseline</th><th>Best</th><th>Delta</th><th>Peak Step</th><th>Crosses 0.23?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1HE1</td><td>200s constant</td><td>0.042</td><td class="dockq-green">0.295</td><td>+0.253</td><td>200</td><td style="color:#2d6a2d;font-weight:500;">YES</td></tr>
+            <tr><td>1GCQ</td><td>200s constant</td><td>0.046</td><td>0.228</td><td>+0.182</td><td>180</td><td></td></tr>
+            <tr><td>1J2J</td><td>200s constant</td><td>0.047</td><td>0.159</td><td>+0.112</td><td>170</td><td></td></tr>
+            <tr><td>1K74</td><td>200s constant</td><td>0.031</td><td>0.136</td><td>+0.104</td><td>140</td><td></td></tr>
+            <tr><td>1PPE</td><td>200s constant</td><td>0.027</td><td>0.109</td><td>+0.082</td><td>180</td><td></td></tr>
+            <tr><td>1CGI</td><td>200s constant</td><td>0.042</td><td>0.107</td><td>+0.065</td><td>80</td><td></td></tr>
+            <tr><td>1EAW</td><td>200s constant</td><td>0.028</td><td>0.092</td><td>+0.064</td><td>100</td><td></td></tr>
+            <tr><td>1R0R</td><td>200s constant</td><td>0.031</td><td>0.091</td><td>+0.061</td><td>40</td><td></td></tr>
+            <tr><td>1FLE</td><td>200s constant</td><td>0.018</td><td>0.075</td><td>+0.057</td><td>80</td><td></td></tr>
+            <tr><td>1HIA</td><td>200s cosine</td><td>0.022</td><td>0.072</td><td>+0.050</td><td>100</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paper stats banner -->
+      <div class="info-banner">
+        Improvement rate: 94.1% (95% CI: 87.7&ndash;100%, n=51). 1/51 crossed DockQ=0.23 threshold. Mean gain: +0.033. Median: +0.015.
       </div>
 
     </div>
 
-    <!-- ===================== TAB 2: EXPERIMENTS ===================== -->
-    <div class="sub-tab-content" id="tab-experiments">
+    <!-- ===================== TAB 3: TRAJECTORIES ===================== -->
+    <div class="sub-tab-content" id="tab-trajectories">
 
-      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Per-Experiment Results</h2>
+      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Training Trajectories</h2>
 
-      <!-- 200s Constant -->
-      <div class="findings-card">
-        <h3>200s Constant LR (lr=0.01) &mdash; 38 pairs</h3>
-        <div class="exp-table-wrapper" style="max-height:500px;">
-          <table class="exp-table" id="table-200s-constant">
-            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- 200s Cosine -->
-      <div class="findings-card">
-        <h3>200s Cosine Annealing (lr=0.01) &mdash; 11 pairs</h3>
-        <div class="exp-table-wrapper" style="max-height:400px;">
-          <table class="exp-table" id="table-200s-cosine">
-            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Recycle 10 -->
-      <div class="findings-card">
-        <h3>Recycle 10 (50s + 10 recycling) &mdash; 8 pairs</h3>
-        <div class="exp-table-wrapper" style="max-height:400px;">
-          <table class="exp-table" id="table-recycle10">
-            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Pair Stack lr=0.005 -->
-      <div class="findings-card">
-        <h3>Pair Stack LoRA (lr=0.005) &mdash; 1 pair</h3>
-        <div class="exp-table-wrapper">
-          <table class="exp-table" id="table-pair-stack-5e3">
-            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Pair Stack lr=0.001 -->
-      <div class="findings-card">
-        <h3>Pair Stack LoRA (lr=0.001) &mdash; 2 pairs</h3>
-        <div class="exp-table-wrapper">
-          <table class="exp-table" id="table-pair-stack-1e3">
-            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- MSA+Pair Diff LR -->
-      <div class="findings-card">
-        <h3>MSA+Pair Differential LR (0.01/0.001) &mdash; 3 pairs</h3>
-        <div class="exp-table-wrapper">
-          <table class="exp-table" id="table-msa-pair-diff">
-            <thead><tr><th>Pair</th><th>Baseline</th><th>TTT Best</th><th>Delta</th><th>Peak Step</th><th>Status</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ===================== TAB 3: DIAGNOSTICS ===================== -->
-    <div class="sub-tab-content" id="tab-diagnostics">
-
-      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Diagnostics</h2>
-
-      <!-- DockQ Trajectory -->
+      <!-- Average DockQ over 200 steps -->
       <div class="result-card" style="margin-bottom:24px;">
-        <h3>DockQ Trajectory: 200 Steps (avg over 200s constant pairs)</h3>
-        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Improved pairs (n=32) show oscillatory gains. Flat pairs (n=2) remain near baseline. Trajectories are noisy, not smooth &mdash; step-to-step autocorrelation is r = -0.47.</p>
-        <div class="chart-area" style="height:320px;"><canvas id="chartTrajectory"></canvas></div>
+        <h3>Average DockQ over 200 steps (200s constant)</h3>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Improved pairs (n=47) vs flat pairs (n=4). Trajectories are oscillatory, not smooth.</p>
+        <div class="chart-area" style="height:320px;"><canvas id="chartTrajectoryDockQ"></canvas></div>
       </div>
 
-      <!-- Comparison table -->
+      <!-- Average loss over 200 steps -->
       <div class="result-card" style="margin-bottom:24px;">
-        <h3>200s vs Original 50s</h3>
-        <div class="exp-table-wrapper" style="max-height:none;">
-          <table class="exp-table">
-            <thead><tr><th>Metric</th><th>Original (50s)</th><th>200s Constant</th><th>200s Cosine</th></tr></thead>
-            <tbody>
-              <tr><td>Pairs improved (of TTT-able)</td><td>53/68 (78%)</td><td>44/50 (85%)</td><td>11/11 (100%)</td></tr>
-              <tr><td>Mean DockQ gain (genuine)</td><td>+0.006</td><td>+0.039</td><td>+0.021</td></tr>
-              <tr><td>Peak improvement</td><td>+0.281</td><td>+0.253</td><td>+0.050</td></tr>
-              <tr><td>Collapses</td><td>0</td><td>3</td><td>0</td></tr>
-              <tr><td>Non-responsive</td><td>133/186</td><td>2/34</td><td>0/11</td></tr>
-            </tbody>
-          </table>
-        </div>
+        <h3>Average loss over 200 steps (200s constant)</h3>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">MSA masked loss converges rapidly. Most learning happens in the first 50 steps.</p>
+        <div class="chart-area" style="height:320px;"><canvas id="chartTrajectoryLoss"></canvas></div>
       </div>
 
-      <!-- Collapse analysis -->
-      <div class="result-card" style="margin-bottom:24px;">
-        <h3>Collapse Analysis</h3>
-        <p style="font-size:14px;color:var(--text);line-height:1.6;">Pair stack LoRA at lr=0.01 collapses 3/3 (same failure mode as MSA at lr=0.05). Triangular attention modules are more sensitive to perturbation than MSA attention. Reducing to lr=0.005 eliminates collapse for pair stack.</p>
-        <p style="font-size:14px;color:var(--text);line-height:1.6;margin-top:8px;">In 200s constant: 3/34 collapse (9%), all with bad_bonds >= 25 and COM distance &lt; 8A. Cosine annealing: 0/11 collapses.</p>
-      </div>
-
-      <!-- Checkpoint selection -->
-      <div class="result-card" style="margin-bottom:24px;">
-        <h3>Checkpoint Selection: ipTM vs Alternatives</h3>
-        <div class="exp-table-wrapper" style="max-height:none;">
-          <table class="exp-table">
-            <thead><tr><th>Selector</th><th>% Oracle Gain</th><th>Pairs Degraded</th><th>Notes</th></tr></thead>
-            <tbody>
-              <tr><td>Oracle (best DockQ)</td><td>100%</td><td>0</td><td>Upper bound</td></tr>
-              <tr><td>LogReg confidence</td><td>47%</td><td>6/186</td><td>Trained on 50-step data</td></tr>
-              <tr><td>Contact count (8A)</td><td>~15%</td><td>--</td><td>Simple geometric proxy</td></tr>
-              <tr><td>ipTM</td><td>-2.1%</td><td>25/186</td><td>Net negative performance</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <!-- Autocorrelation note -->
+      <div class="info-banner">
+        Step-to-step DockQ autocorrelation: r = -0.47. TTT is stochastic sampling, not smooth optimization. Each checkpoint is a semi-independent sample from the LoRA-perturbed model.
       </div>
 
     </div>
@@ -966,20 +883,20 @@ Output: Predicted complex structure</div>
       </div>
 
       <div class="method-card">
-        <h3>Configurations Under Test</h3>
+        <h3>All 6 experiment configurations</h3>
         <div class="exp-table-wrapper" style="max-height:none;">
           <table class="hp-table">
-            <thead><tr><th>Parameter</th><th>200s Constant</th><th>200s Cosine</th><th>Recycle 10</th><th>Pair Stack</th><th>Diff LR</th></tr></thead>
+            <thead><tr><th>Parameter</th><th>200s Constant</th><th>200s Cosine</th><th>Recycle 10</th><th>Pair Stack 0.005</th><th>Pair Stack 0.001</th><th>Diff LR</th></tr></thead>
             <tbody>
-              <tr><td>steps</td><td>200</td><td>200</td><td>50</td><td>200</td><td>200</td></tr>
-              <tr><td>lr (MSA)</td><td>0.01</td><td>0.01</td><td>0.01</td><td>0.01</td><td>0.01</td></tr>
-              <tr><td>lr (Pair)</td><td>--</td><td>--</td><td>--</td><td>0.005 / 0.001</td><td>0.001</td></tr>
-              <tr><td>scheduler</td><td>constant</td><td>cosine</td><td>constant</td><td>constant</td><td>constant</td></tr>
-              <tr><td>recycling</td><td>3</td><td>3</td><td>10</td><td>3</td><td>3</td></tr>
-              <tr><td>LoRA rank</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td></tr>
-              <tr><td>LoRA target</td><td>MSA attn</td><td>MSA attn</td><td>MSA attn</td><td>Pair stack</td><td>MSA + Pair</td></tr>
-              <tr><td>init</td><td>zero</td><td>zero</td><td>zero</td><td>zero</td><td>zero</td></tr>
-              <tr><td>save interval</td><td>10 steps</td><td>10 steps</td><td>10 steps</td><td>10 steps</td><td>10 steps</td></tr>
+              <tr><td>steps</td><td>200</td><td>200</td><td>50</td><td>200</td><td>200</td><td>200</td></tr>
+              <tr><td>lr (MSA)</td><td>0.01</td><td>0.01</td><td>0.01</td><td>0.01</td><td>0.01</td><td>0.01</td></tr>
+              <tr><td>lr (Pair)</td><td>--</td><td>--</td><td>--</td><td>0.005</td><td>0.001</td><td>0.001</td></tr>
+              <tr><td>scheduler</td><td>constant</td><td>cosine</td><td>constant</td><td>constant</td><td>constant</td><td>constant</td></tr>
+              <tr><td>recycling</td><td>3</td><td>3</td><td>10</td><td>3</td><td>3</td><td>3</td></tr>
+              <tr><td>LoRA rank</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td></tr>
+              <tr><td>LoRA target</td><td>MSA attn</td><td>MSA attn</td><td>MSA attn</td><td>Pair stack</td><td>Pair stack</td><td>MSA + Pair</td></tr>
+              <tr><td>init</td><td>zero</td><td>zero</td><td>zero</td><td>zero</td><td>zero</td><td>zero</td></tr>
+              <tr><td>save interval</td><td>10 steps</td><td>10 steps</td><td>10 steps</td><td>10 steps</td><td>10 steps</td><td>10 steps</td></tr>
             </tbody>
           </table>
         </div>
@@ -1001,62 +918,6 @@ Output: Predicted complex structure</div>
             <div class="masking-desc">14 recent targets from CASP15/CAPRI. Hardest benchmark. Jobs submitted, awaiting results.</div>
           </div>
         </div>
-      </div>
-
-    </div>
-
-    <!-- ===================== TAB 5: LOG ===================== -->
-    <div class="sub-tab-content" id="tab-log">
-
-      <h2 style="font-size:18px;font-weight:400;color:var(--heading-color);margin-bottom:14px;">Experiment Log</h2>
-
-      <div class="timeline">
-
-        <div class="timeline-entry type-success">
-          <div class="timeline-time">2026-03-27</div>
-          <div class="timeline-msg">200-step constant LR reaches 85% success rate (44/50 genuine improvements). 81% of peaks occur after step 50, confirming that 50 steps was insufficient.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">rate: 85%</span>
-            <span class="timeline-metric">mean peak: step 104</span>
-            <span class="timeline-metric">rescued: 4 pairs</span>
-          </div>
-        </div>
-
-        <div class="timeline-entry type-info">
-          <div class="timeline-time">2026-03-27</div>
-          <div class="timeline-msg">Cosine annealing wins 5/6 head-to-head comparisons against constant LR. Produces more consistent improvements with fewer collapses, though constant LR occasionally achieves larger individual spikes.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">cosine wins: 5/6</span>
-            <span class="timeline-metric">cosine collapses: 0/11</span>
-          </div>
-        </div>
-
-        <div class="timeline-entry type-warning">
-          <div class="timeline-time">2026-03-27</div>
-          <div class="timeline-msg">Pair stack LoRA at lr=0.01 collapses 3/3 pairs (same failure as MSA at lr=0.05). Triangular attention is more sensitive to perturbation. Reducing to lr=0.005 prevents collapse.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">collapse rate at 0.01: 100%</span>
-            <span class="timeline-metric">collapse rate at 0.005: 0%</span>
-          </div>
-        </div>
-
-        <div class="timeline-entry type-error">
-          <div class="timeline-time">2026-03-26</div>
-          <div class="timeline-msg">ipTM confirmed as a broken checkpoint selector: captures -2.1% of oracle gain (net negative). 25/186 pairs actively degraded by ipTM-based selection. Contact count at 8A outperforms it.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">ipTM oracle %: -2.1%</span>
-            <span class="timeline-metric">degraded pairs: 25/186</span>
-          </div>
-        </div>
-
-        <div class="timeline-entry type-metric">
-          <div class="timeline-time">2026-03-26</div>
-          <div class="timeline-msg">Trajectories are oscillatory, not smooth. Step-to-step DockQ autocorrelation: mean r = -0.47. TTT behaves as stochastic configuration sampling, not gradient optimization. Checkpoint selection is the binding constraint.</div>
-          <div class="timeline-metrics">
-            <span class="timeline-metric">autocorrelation: -0.47</span>
-          </div>
-        </div>
-
       </div>
 
     </div>
@@ -1089,44 +950,83 @@ Output: Predicted complex structure</div>
 
     const c = getChartColors();
 
-    // Chart 1: Improvement Rate
-    new Chart(document.getElementById('chartImpRate'), {
-      type: 'bar',
+    // ========== TAB 2: RESULTS CHARTS ==========
+
+    // Chart 1: Scatter plot — baseline vs best TTT DockQ
+    const scatter200s = [{x:0.0898,y:0.1256},{x:0.0154,y:0.04},{x:0.0166,y:0.017},{x:0.0139,y:0.0267},{x:0.0144,y:0.0287},{x:0.0452,y:0.0673},{x:0.0173,y:0.0173},{x:0.0419,y:0.1066},{x:0.027,y:0.068},{x:0.0112,y:0.0112},{x:0.0747,y:0.0747},{x:0.017,y:0.017},{x:0.0275,y:0.0916},{x:0.0294,y:0.0525},{x:0.0136,y:0.0462},{x:0.0421,y:0.0649},{x:0.0142,y:0.0274},{x:0.0657,y:0.0714},{x:0.0177,y:0.0748},{x:0.0462,y:0.2278},{x:0.0057,y:0.0057},{x:0.0136,y:0.0457},{x:0.0071,y:0.0071},{x:0.0315,y:0.0543},{x:0.0198,y:0.0209},{x:0.0424,y:0.295},{x:0.0121,y:0.0121},{x:0.0276,y:0.0573},{x:0.0123,y:0.0123},{x:0.217,y:0.2244},{x:0.0119,y:0.0119},{x:0.0466,y:0.1587},{x:0.0134,y:0.0134},{x:0.0158,y:0.0223},{x:0.0104,y:0.0104},{x:0.0176,y:0.0176},{x:0.029,y:0.0487},{x:0.0085,y:0.0132},{x:0.0315,y:0.1355},{x:0.0118,y:0.019},{x:0.0231,y:0.0238},{x:0.0146,y:0.0194},{x:0.0073,y:0.0073},{x:0.0067,y:0.0067},{x:0.0574,y:0.0574},{x:0.0088,y:0.0121},{x:0.0057,y:0.0057},{x:0.0065,y:0.0065},{x:0.0118,y:0.024},{x:0.0031,y:0.0031},{x:0.0092,y:0.0092},{x:0.0396,y:0.0427},{x:0.0267,y:0.109},{x:0.0097,y:0.0134},{x:0.0306,y:0.0913},{x:0.0076,y:0.008},{x:0.0234,y:0.0483},{x:0.0103,y:0.0245},{x:0.0153,y:0.023},{x:0.0536,y:0.0563},{x:0.0287,y:0.0379},{x:0.007,y:0.007},{x:0.0094,y:0.0094},{x:0.029,y:0.0702},{x:0.0184,y:0.0291},{x:0.0069,y:0.0069},{x:0.01,y:0.0303},{x:0.0184,y:0.0277},{x:0.0178,y:0.0314},{x:0.0273,y:0.0316},{x:0.0249,y:0.0286},{x:0.0412,y:0.0472},{x:0.066,y:0.0805}];
+    const scatterCosine = [{x:0.0432,y:0.063},{x:0.0327,y:0.0571},{x:0.0228,y:0.0259},{x:0.0221,y:0.0722},{x:0.0249,y:0.0295},{x:0.0125,y:0.0321},{x:0.0261,y:0.0579},{x:0.0135,y:0.0174},{x:0.0654,y:0.091},{x:0.0362,y:0.0552},{x:0.0691,y:0.0845}];
+    const scatterRecycle = [{x:0.0159,y:0.0235},{x:0.0651,y:0.0678},{x:0.0519,y:0.0545},{x:0.022,y:0.0358},{x:0.0134,y:0.015},{x:0.011,y:0.0174},{x:0.0216,y:0.0312},{x:0.0243,y:0.0244}];
+    const scatterPairStack = [{x:0.0143,y:0.0154},{x:0.017,y:0.109},{x:0.0613,y:0.1215},{x:0.0612,y:0.0612},{x:0.0137,y:0.0152},{x:0.0472,y:0.0538},{x:0.0286,y:0.0443},{x:0.0719,y:0.0972},{x:0.0286,y:0.0392},{x:0.0129,y:0.0145},{x:0.0201,y:0.0201},{x:0.0057,y:0.0073},{x:0.0619,y:0.0629},{x:0.0186,y:0.0276},{x:0.052,y:0.052},{x:0.0326,y:0.4553},{x:0.0229,y:0.0273},{x:0.0176,y:0.0229},{x:0.0163,y:0.0298},{x:0.023,y:0.0232},{x:0.0084,y:0.0126},{x:0.2115,y:0.219}];
+
+    // Diagonal plugin
+    const diagonalPlugin = {
+      id: 'diagonalLine',
+      afterDraw(chart) {
+        const {ctx, scales: {x, y}} = chart;
+        const min = Math.max(x.min, y.min);
+        const max = Math.min(x.max, y.max);
+        ctx.save();
+        ctx.setLineDash([6, 4]);
+        ctx.strokeStyle = '#999';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x.getPixelForValue(min), y.getPixelForValue(min));
+        ctx.lineTo(x.getPixelForValue(max), y.getPixelForValue(max));
+        ctx.stroke();
+        // Horizontal line at y=0.23
+        ctx.setLineDash([4, 3]);
+        ctx.strokeStyle = '#ef5350';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x.getPixelForValue(x.min), y.getPixelForValue(0.23));
+        ctx.lineTo(x.getPixelForValue(x.max), y.getPixelForValue(0.23));
+        ctx.stroke();
+        // Vertical line at x=0.23
+        ctx.beginPath();
+        ctx.moveTo(x.getPixelForValue(0.23), y.getPixelForValue(y.min));
+        ctx.lineTo(x.getPixelForValue(0.23), y.getPixelForValue(y.max));
+        ctx.stroke();
+        ctx.restore();
+      }
+    };
+
+    new Chart(document.getElementById('chartScatter'), {
+      type: 'scatter',
       data: {
-        labels: ['200s constant', '200s cosine', 'Recycle 10', 'Original 50s', 'Pair stack 0.005'],
-        datasets: [{
-          data: [85, 100, 88, 78, 100],
-          backgroundColor: ['#43a047', '#66bb6a', '#81c784', '#42a5f5', '#a5d6a7'],
-          borderRadius: 4,
-        }]
+        datasets: [
+          { label: '200s constant', data: scatter200s, backgroundColor: 'rgba(67,160,71,0.6)', borderColor: '#43a047', pointRadius: 4 },
+          { label: '200s cosine', data: scatterCosine, backgroundColor: 'rgba(66,165,245,0.6)', borderColor: '#42a5f5', pointRadius: 5 },
+          { label: 'Recycle 10', data: scatterRecycle, backgroundColor: 'rgba(171,71,188,0.6)', borderColor: '#ab47bc', pointRadius: 5 },
+          { label: 'Pair stack', data: scatterPairStack, backgroundColor: 'rgba(255,152,0,0.6)', borderColor: '#ff9800', pointRadius: 5 },
+        ]
       },
       options: {
-        indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false },
+          legend: { labels: { color: c.text } },
           tooltip: {
             callbacks: {
-              label: ctx => ctx.raw + '%'
+              label: ctx => ctx.dataset.label + ': baseline=' + ctx.parsed.x.toFixed(3) + ', best=' + ctx.parsed.y.toFixed(3)
             }
           }
         },
         scales: {
-          x: { max: 105, ticks: { callback: v => v + '%', color: c.text }, grid: { color: c.grid } },
-          y: { ticks: { color: c.text }, grid: { display: false } }
+          x: { title: { display: true, text: 'Baseline DockQ', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0 },
+          y: { title: { display: true, text: 'Best TTT DockQ', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid }, min: 0 }
         }
-      }
+      },
+      plugins: [diagonalPlugin]
     });
 
-    // Chart 2: Mean DockQ Gain
+    // Chart 2: Mean DockQ gain bar chart
     new Chart(document.getElementById('chartDockQGain'), {
       type: 'bar',
       data: {
-        labels: ['200s constant', '200s cosine', 'Original 50s'],
+        labels: ['200s constant', '200s cosine', 'Recycle 10', 'Pair stack 0.001', 'MSA+Pair diff'],
         datasets: [{
-          data: [0.039, 0.021, 0.006],
-          backgroundColor: ['#43a047', '#66bb6a', '#42a5f5'],
+          data: [0.033, 0.020, 0.006, 0.015, 0.006],
+          backgroundColor: ['#43a047', '#42a5f5', '#ab47bc', '#ff9800', '#78909c'],
           borderRadius: 4,
         }]
       },
@@ -1149,14 +1049,14 @@ Output: Predicted complex structure</div>
       }
     });
 
-    // Chart 3: Peak Step Histogram
+    // Chart 3: Peak Step Histogram (200s constant)
     new Chart(document.getElementById('chartPeakHist'), {
       type: 'bar',
       data: {
         labels: ['0-50', '51-100', '101-150', '151-200'],
         datasets: [{
           label: 'Pairs',
-          data: [6, 9, 11, 6],
+          data: [11, 12, 16, 9],
           backgroundColor: ['#42a5f5', '#43a047', '#66bb6a', '#81c784'],
           borderRadius: 4,
         }]
@@ -1179,18 +1079,20 @@ Output: Predicted complex structure</div>
       }
     });
 
-    // DockQ Trajectory Chart
-    const trajLabels = [0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200];
-    const trajImproved = [0.0297,0.0286,0.0309,0.0317,0.034,0.0369,0.0392,0.0333,0.0428,0.0311,0.0373,0.0316,0.0317,0.036,0.0378,0.0323,0.0299,0.0324,0.0424,0.0431,0.0402];
-    const trajFlat = [0.0199,0.0176,0.0169,0.0172,0.0185,0.014,0.0171,0.019,0.018,0.0177,0.0183,0.0153,0.0174,0.0168,0.0191,0.019,0.0182,0.0182,0.0184,0.0177,0.0165];
+    // ========== TAB 3: TRAJECTORIES CHARTS ==========
 
-    new Chart(document.getElementById('chartTrajectory'), {
+    const trajLabels = [0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200];
+    const trajImproved = [0.032,0.0316,0.0343,0.0335,0.036,0.0379,0.0414,0.0353,0.0414,0.0345,0.0385,0.0352,0.0377,0.0397,0.0408,0.0367,0.0335,0.0373,0.0438,0.0431,0.0412];
+    const trajFlat = [0.0168,0.0156,0.0155,0.0155,0.0162,0.0139,0.0155,0.0165,0.0159,0.0158,0.0162,0.0147,0.0158,0.0155,0.0166,0.0167,0.016,0.016,0.016,0.0157,0.0152];
+    const trajLoss = [1.0084,0.6745,0.3564,0.1661,0.0892,0.0573,0.0391,0.0292,0.0234,0.0163,0.0173,0.0149,0.0128,0.0114,0.013,0.0089,0.0089,0.0078,0.0113,0.0066,0.011];
+
+    new Chart(document.getElementById('chartTrajectoryDockQ'), {
       type: 'line',
       data: {
         labels: trajLabels,
         datasets: [
           {
-            label: 'Improved pairs (n=32)',
+            label: 'Improved pairs (n=47)',
             data: trajImproved,
             borderColor: '#43a047',
             backgroundColor: 'rgba(67,160,71,0.1)',
@@ -1199,7 +1101,7 @@ Output: Predicted complex structure</div>
             pointRadius: 3,
           },
           {
-            label: 'Flat pairs (n=2)',
+            label: 'Flat pairs (n=4)',
             data: trajFlat,
             borderColor: '#ef5350',
             backgroundColor: 'rgba(239,83,80,0.1)',
@@ -1222,124 +1124,34 @@ Output: Predicted complex structure</div>
       }
     });
 
-    // Experiment tables data
-    const experiments = {
-      '200s-constant': [
-        {pair:'1ACB',baseline:0.0898,best:0.1256,delta:0.0359,peak:150,status:'genuine'},
-        {pair:'1AHW',baseline:0.0154,best:0.0400,delta:0.0246,peak:180,status:'genuine'},
-        {pair:'1AK4',baseline:0.0166,best:0.0170,delta:0.0004,peak:20,status:'flat'},
-        {pair:'1AY7',baseline:0.0144,best:0.0287,delta:0.0143,peak:60,status:'genuine'},
-        {pair:'1BVN',baseline:0,best:0,delta:0,peak:0,status:'OOM'},
-        {pair:'1CGI',baseline:0.0419,best:0.1066,delta:0.0647,peak:80,status:'genuine'},
-        {pair:'1D6R',baseline:0.0270,best:0.0680,delta:0.0410,peak:130,status:'genuine'},
-        {pair:'1DFJ',baseline:0,best:0,delta:0,peak:0,status:'OOM'},
-        {pair:'1DHK',baseline:0,best:0,delta:0,peak:0,status:'OOM'},
-        {pair:'1E6E',baseline:0,best:0,delta:0,peak:0,status:'OOM'},
-        {pair:'1EAW',baseline:0.0275,best:0.0916,delta:0.0640,peak:100,status:'genuine'},
-        {pair:'1EWY',baseline:0.0294,best:0.0525,delta:0.0231,peak:130,status:'genuine'},
-        {pair:'1EZU',baseline:0.0136,best:0.0462,delta:0.0326,peak:200,status:'genuine'},
-        {pair:'1F51',baseline:0.0421,best:0.0649,delta:0.0228,peak:50,status:'genuine'},
-        {pair:'1FC2',baseline:0.0142,best:0.0274,delta:0.0132,peak:70,status:'genuine'},
-        {pair:'1FFW',baseline:0.0657,best:0.0714,delta:0.0057,peak:10,status:'genuine'},
-        {pair:'1FLE',baseline:0.0177,best:0.0748,delta:0.0571,peak:80,status:'genuine'},
-        {pair:'1GCQ',baseline:0.0462,best:0.2278,delta:0.1817,peak:180,status:'genuine'},
-        {pair:'1H9D',baseline:0.0315,best:0.0543,delta:0.0228,peak:80,status:'genuine'},
-        {pair:'1HCF',baseline:0.0198,best:0.0209,delta:0.0010,peak:60,status:'genuine'},
-        {pair:'1HE1',baseline:0.0424,best:0.2950,delta:0.2526,peak:200,status:'genuine'},
-        {pair:'1HIA',baseline:0.0276,best:0.0573,delta:0.0298,peak:120,status:'genuine'},
-        {pair:'1JK9',baseline:0.0158,best:0.0223,delta:0.0066,peak:50,status:'genuine'},
-        {pair:'1K4C',baseline:0.0085,best:0.0132,delta:0.0047,peak:110,status:'genuine'},
-        {pair:'1K74',baseline:0.0315,best:0.1355,delta:0.1041,peak:140,status:'genuine'},
-        {pair:'1KAC',baseline:0.0118,best:0.0190,delta:0.0073,peak:170,status:'genuine'},
-        {pair:'1KKL',baseline:0.0231,best:0.0238,delta:0.0006,peak:70,status:'flat'},
-        {pair:'1KTZ',baseline:0.0146,best:0.0194,delta:0.0048,peak:90,status:'genuine'},
-        {pair:'1RV6',baseline:0.0153,best:0.0230,delta:0.0078,peak:160,status:'genuine'},
-        {pair:'1S1Q',baseline:0.0536,best:0.0563,delta:0.0027,peak:10,status:'genuine'},
-        {pair:'1SYX',baseline:0.0287,best:0.0379,delta:0.0092,peak:110,status:'genuine'},
-        {pair:'2B4J',baseline:0.0100,best:0.0303,delta:0.0203,peak:30,status:'genuine'},
-        {pair:'2I25',baseline:0.0184,best:0.0277,delta:0.0094,peak:140,status:'genuine'},
-        {pair:'2IDO',baseline:0.0178,best:0.0314,delta:0.0136,peak:110,status:'genuine'},
-        {pair:'2OOB',baseline:0.0273,best:0.0316,delta:0.0044,peak:20,status:'genuine'},
-        {pair:'2X9A',baseline:0.0249,best:0.0286,delta:0.0037,peak:120,status:'genuine'},
-        {pair:'3P57',baseline:0.0412,best:0.0472,delta:0.0060,peak:80,status:'genuine'},
-        {pair:'3PC8',baseline:0.0660,best:0.0805,delta:0.0146,peak:120,status:'genuine'},
-      ],
-      '200s-cosine': [
-        {pair:'1FFW',baseline:0.0432,best:0.0630,delta:0.0198,peak:30,status:'genuine'},
-        {pair:'1GCQ',baseline:0.0327,best:0.0571,delta:0.0244,peak:20,status:'genuine'},
-        {pair:'1HCF',baseline:0.0228,best:0.0259,delta:0.0032,peak:60,status:'genuine'},
-        {pair:'1HIA',baseline:0.0221,best:0.0722,delta:0.0502,peak:100,status:'genuine'},
-        {pair:'1J2J',baseline:0.0249,best:0.0295,delta:0.0045,peak:30,status:'genuine'},
-        {pair:'1KTZ',baseline:0.0125,best:0.0321,delta:0.0196,peak:10,status:'genuine'},
-        {pair:'1N8O',baseline:0.0261,best:0.0579,delta:0.0317,peak:90,status:'genuine'},
-        {pair:'1QA9',baseline:0.0135,best:0.0174,delta:0.0039,peak:90,status:'genuine'},
-        {pair:'1S1Q',baseline:0.0654,best:0.0910,delta:0.0256,peak:200,status:'genuine'},
-        {pair:'1SYX',baseline:0.0362,best:0.0552,delta:0.0190,peak:60,status:'genuine'},
-        {pair:'3PC8',baseline:0.0691,best:0.0845,delta:0.0154,peak:30,status:'genuine'},
-      ],
-      'recycle10': [
-        {pair:'1AY7',baseline:0.0159,best:0.0235,delta:0.0075,peak:60,status:'genuine'},
-        {pair:'1FFW',baseline:0.0651,best:0.0678,delta:0.0027,peak:100,status:'genuine'},
-        {pair:'1GCQ',baseline:0.0519,best:0.0545,delta:0.0026,peak:30,status:'genuine'},
-        {pair:'1HIA',baseline:0.0220,best:0.0358,delta:0.0138,peak:50,status:'genuine'},
-        {pair:'1KTZ',baseline:0.0134,best:0.0150,delta:0.0015,peak:100,status:'genuine'},
-        {pair:'1QA9',baseline:0.0110,best:0.0174,delta:0.0063,peak:70,status:'genuine'},
-        {pair:'1RV6',baseline:0.0216,best:0.0312,delta:0.0096,peak:110,status:'genuine'},
-        {pair:'2X9A',baseline:0.0243,best:0.0244,delta:0.0000,peak:30,status:'flat'},
-      ],
-      'pair-stack-5e3': [
-        {pair:'3F1P',baseline:0.1657,best:0.2004,delta:0.0347,peak:20,status:'genuine'},
-      ],
-      'pair-stack-1e3': [
-        {pair:'1N8O',baseline:0.0296,best:0.0573,delta:0.0277,peak:90,status:'genuine'},
-        {pair:'2IDO',baseline:0.0168,best:0.0182,delta:0.0014,peak:70,status:'genuine'},
-      ],
-      'msa-pair-diff': [
-        {pair:'1K74',baseline:0.0951,best:0.0951,delta:0.0000,peak:0,status:'flat'},
-        {pair:'1KTZ',baseline:0.0136,best:0.0161,delta:0.0025,peak:50,status:'genuine'},
-        {pair:'1S1Q',baseline:0.0336,best:0.0429,delta:0.0093,peak:100,status:'genuine'},
-      ],
-    };
-
-    function statusBadge(s) {
-      const map = {
-        'genuine': '<span class="exp-status exp-status-completed">genuine</span>',
-        'collapse': '<span class="exp-status exp-status-failed">collapse</span>',
-        'flat': '<span class="exp-status exp-status-pending">flat</span>',
-        'OOM': '<span class="exp-status exp-status-partial">OOM</span>',
-      };
-      return map[s] || s;
-    }
-
-    function dockqClass(v) {
-      if (v >= 0.23) return 'dockq-green';
-      if (v >= 0.05) return 'dockq-yellow';
-      return '';
-    }
-
-    function fillTable(tableId, key) {
-      const tbody = document.querySelector('#table-' + tableId + ' tbody');
-      const data = experiments[key];
-      if (!data) return;
-      data.forEach(r => {
-        const tr = document.createElement('tr');
-        if (r.status === 'OOM') tr.className = 'row-oom';
-        tr.innerHTML = '<td>' + r.pair + '</td>' +
-          '<td class="' + dockqClass(r.baseline) + '">' + (r.status === 'OOM' ? '--' : r.baseline.toFixed(4)) + '</td>' +
-          '<td class="' + dockqClass(r.best) + '">' + (r.status === 'OOM' ? '--' : r.best.toFixed(4)) + '</td>' +
-          '<td>' + (r.status === 'OOM' ? '--' : (r.delta >= 0 ? '+' : '') + r.delta.toFixed(4)) + '</td>' +
-          '<td>' + (r.status === 'OOM' ? '--' : r.peak) + '</td>' +
-          '<td>' + statusBadge(r.status) + '</td>';
-        tbody.appendChild(tr);
-      });
-    }
-
-    fillTable('200s-constant', '200s-constant');
-    fillTable('200s-cosine', '200s-cosine');
-    fillTable('recycle10', 'recycle10');
-    fillTable('pair-stack-5e3', 'pair-stack-5e3');
-    fillTable('pair-stack-1e3', 'pair-stack-1e3');
-    fillTable('msa-pair-diff', 'msa-pair-diff');
+    new Chart(document.getElementById('chartTrajectoryLoss'), {
+      type: 'line',
+      data: {
+        labels: trajLabels,
+        datasets: [
+          {
+            label: 'Mean MSA loss (n=51)',
+            data: trajLoss,
+            borderColor: '#42a5f5',
+            backgroundColor: 'rgba(66,165,245,0.1)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: c.text } },
+        },
+        scales: {
+          x: { title: { display: true, text: 'TTT Step', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid } },
+          y: { title: { display: true, text: 'MSA Masked Loss', color: c.text }, ticks: { color: c.text }, grid: { color: c.grid } }
+        }
+      }
+    });
   </script>
 
 </body>
