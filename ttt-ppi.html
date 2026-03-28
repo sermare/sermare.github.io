@@ -1053,6 +1053,9 @@
     function makeIntScatter(canvasId, xKey, xLabel) {
       var ctx = document.getElementById(canvasId);
       if (!ctx) return;
+      var dk = document.documentElement.getAttribute('data-theme') === 'dark';
+      var txtC = dk ? '#c9d1d9' : '#333';
+      var gridC = dk ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
       var imp = structData.filter(d => d.d > 0.001).map(d => ({x: d[xKey], y: d.d}));
       var flat = structData.filter(d => d.d <= 0.001).map(d => ({x: d[xKey], y: d.d}));
       new Chart(ctx, {
@@ -1065,10 +1068,10 @@
         },
         options: {
           responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { labels: { font: { size: 10 } } } },
+          plugins: { legend: { labels: { color: txtC, font: { size: 10 } } } },
           scales: {
-            x: { title: { display: true, text: xLabel } },
-            y: { title: { display: true, text: "DockQ gain" } }
+            x: { title: { display: true, text: xLabel, color: txtC }, ticks: { color: txtC }, grid: { color: gridC } },
+            y: { title: { display: true, text: "DockQ gain", color: txtC }, ticks: { color: txtC }, grid: { color: gridC } }
           }
         }
       });
