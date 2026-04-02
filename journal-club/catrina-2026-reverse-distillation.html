@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reverse Distillation — Solo Journal Club</title>
+  <meta name="author" content="Sergio E. Mares">
+  <link rel="stylesheet" href="../stylesheet.css">
+  <link rel="icon" type="image/png" href="../data/avatar.png">
+  <style>
+    .container { max-width: 860px; }
+    .back-link { font-size: 15px; margin-bottom: 18px; display: inline-block; }
+    .page-title { font-size: 28px; font-weight: 700; color: var(--name-color); margin-bottom: 4px; }
+    .page-subtitle { font-size: 16px; color: var(--text-secondary); margin-bottom: 24px; }
+    .paper-meta { font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 28px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-alt); }
+    .paper-meta strong { color: var(--heading-color); }
+    .jc-section { margin-bottom: 36px; }
+    .jc-section h2 { font-size: 22px; font-weight: 600; color: var(--heading-color); margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .jc-section h3 { font-size: 18px; font-weight: 600; color: var(--heading-color); margin-top: 20px; margin-bottom: 8px; }
+    .jc-section p { font-size: 16px; color: var(--text); line-height: 1.75; margin-bottom: 12px; }
+    .jc-section ul, .jc-section ol { padding-left: 24px; font-size: 16px; color: var(--text); line-height: 1.75; margin-bottom: 12px; }
+    .jc-section li { margin-bottom: 6px; }
+    .jc-section em { color: var(--text-secondary); }
+    .jc-section code { font-size: 15px; background: var(--bg-alt); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }
+    .jc-figure { margin: 20px 0; text-align: center; }
+    .jc-figure img { max-width: 100%; border-radius: 6px; border: 1px solid var(--border); }
+    .jc-figure figcaption { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-top: 8px; text-align: left; padding: 0 8px; }
+    .jc-refs { font-size: 14.5px; color: var(--text); line-height: 1.7; }
+    .jc-refs li { margin-bottom: 8px; }
+    .jc-refs a { word-break: break-all; }
+
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 16px 0; }
+    .data-table th { padding: 10px 12px; text-align: left; font-weight: 600; color: var(--heading-color); border-bottom: 2px solid var(--border); font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; background: var(--bg-alt); }
+    .data-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+    .data-table tbody tr:hover { background: var(--bg-alt); }
+    .takeaway-box { padding: 16px 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-alt); margin: 16px 0; }
+    .takeaway-box p { margin-bottom: 6px; }
+    .review-box { padding: 16px 20px; border: 1px solid var(--border); border-radius: 8px; margin: 12px 0; }
+    .review-box.positive { border-left: 3px solid #2d6a2d; }
+    .review-box.critical { border-left: 3px solid #c0392b; }
+    .review-box.neutral { border-left: 3px solid var(--text-secondary); }
+    .review-box .reviewer-header { font-weight: 600; font-size: 14px; color: var(--heading-color); margin-bottom: 6px; }
+    .review-box p { font-size: 15px; line-height: 1.7; margin-bottom: 6px; }
+    .step-box { padding: 14px 18px; border-radius: 8px; margin-bottom: 10px; font-size: 16px; line-height: 1.75; background: var(--bg-alt); border-left: 3px solid var(--link); }
+    .step-box .step-label { font-weight: 600; color: var(--link); font-size: 14px; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn"></button>
+  <div class="container">
+    <a href="../journal-club.html" class="back-link">&larr; Back to Journal Club</a>
+
+    <div class="page-title">Reverse Distillation: Consistently Scaling Protein Language Model Representations</div>
+    <div class="page-subtitle">Paper #2 &mdash; Solo Journal Club</div>
+
+    <div class="paper-meta">
+      <strong>Authors:</strong> Darius Catrina*, Christian Bepler*, Samuel Sledzieski, Rohit Singh<br>
+      <strong>Affiliation:</strong> Duke University / Flatiron Institute<br>
+      <strong>Published:</strong> ICLR 2026 (Poster)<br>
+      <strong>OpenReview:</strong> <a href="https://openreview.net/forum?id=f12Lo7ZUX5">openreview.net/forum?id=f12Lo7ZUX5</a><br>
+      <strong>Code:</strong> <a href="https://github.com/rohitsinghlab/plm_reverse_distillation">github.com/rohitsinghlab/plm_reverse_distillation</a><br>
+      <strong>Date discussed:</strong> April 2026
+    </div>
+
+    <!-- ===== Historical Context ===== -->
+    <div class="jc-section">
+      <h2>Historical Context</h2>
+      <p>In NLP, scaling laws are remarkably predictable &mdash; double the parameters, get proportionally better performance (Kaplan et al. 2020, Chinchilla 2022). But in the protein world, something breaks:</p>
+      <ul>
+        <li>ESM-2 8M &rarr; 35M &rarr; 150M &rarr; 650M: performance goes up</li>
+        <li>ESM-2 650M &rarr; 3B: plateaus on many tasks</li>
+        <li>ESM-2 3B &rarr; 15B: <strong>actually gets worse</strong> on ProteinGym DMS benchmarks</li>
+      </ul>
+      <p>This was documented by Li et al. (2024) and the ProteinGym leaderboard, where the 650M model frequently beats the 15B. Pascal Notin wrote a blog post titled "Have we hit the scaling wall for protein language models?" This paper proposes a fix.</p>
+    </div>
+
+    <!-- ===== The Problem ===== -->
+    <div class="jc-section">
+      <h2>The Core Problem</h2>
+      <p>The hypothesis: small models are <strong>capacity-constrained</strong>, so they prioritize the most broadly useful features &mdash; secondary structure, hydrophobicity, conserved motifs. Large models have room to also encode rarer patterns (family-specific allosteric signals, higher-order epistatic interactions), but these get <strong>entangled</strong> with the basic features in the same embedding space. When you use a linear probe, the rare features act as noise that drowns out the fundamental signal.</p>
+    </div>
+
+    <!-- ===== The Algorithm ===== -->
+    <div class="jc-section">
+      <h2>The Algorithm: Step by Step</h2>
+      <p>Normal knowledge distillation compresses a big model into a small one (teacher &rarr; student). Reverse distillation flips it: <strong>use the small model to decompose the big one</strong>.</p>
+
+      <figure class="jc-figure">
+        <img src="figures/catrina-fig-p3-1.png" alt="Overview of Reverse Distillation pipeline">
+        <figcaption><strong>Figure 1 from Catrina et al. 2026.</strong> The reverse distillation pipeline: (1) compute embeddings from both models, (2) learn a linear mapping from small to large, (3) SVD the residual to summarize the orthogonal subspace, (4) chain iteratively across the model family to build Matryoshka-style nested embeddings.</figcaption>
+      </figure>
+      <p>Concrete example with ESM-2 8M (dim=320) and ESM-2 650M (dim=1280), run on L=500,000 total residue positions:</p>
+
+      <div class="step-box">
+        <div class="step-label">Step 1: Generate Embeddings</div>
+        Run all sequences through both models. H<sub>r</sub> = 8M output (L &times; 320). H<sub>p</sub> = 650M output (L &times; 1280).
+      </div>
+
+      <div class="step-box">
+        <div class="step-label">Step 2: Learn the Linear Mapping</div>
+        Fit W* (320 &times; 1280) via principal component regression: H<sub>predicted</sub> = H<sub>r</sub> &times; W*. This asks: how much of the 650M representation is just a linear transformation of what the 8M already knows?
+      </div>
+
+      <div class="step-box">
+        <div class="step-label">Step 3: Compute the Residual</div>
+        R = H<sub>p</sub> &minus; H<sub>predicted</sub> (size L &times; 1280). This is everything the 650M encodes that <strong>cannot be linearly predicted from the 8M model</strong> &mdash; the unique contribution of the larger model.
+      </div>
+
+      <div class="step-box">
+        <div class="step-label">Step 4: Compress Residual via SVD</div>
+        Apply SVD to R. Take the top (1280 &minus; 320) = 960 right singular vectors (V<sub>res</sub>). These are the 960 orthogonal directions capturing the most variance in the residual. Project: H<sub>res</sub> = R &times; V<sub>res</sub> (L &times; 960).
+      </div>
+
+      <div class="step-box">
+        <div class="step-label">Step 5: Concatenate</div>
+        H<sub>rd</sub> = [H<sub>r</sub>, H<sub>res</sub>] = [320 dims from 8M, 960 dims of residual] = 1280 dims total. The embedding is now <strong>pre-organized</strong>: basic features first, specialized features second.
+      </div>
+
+      <h3>The Matryoshka Property</h3>
+      <p>Named after Russian nesting dolls. After chaining through the full ESM-2 family, the rd.15B embedding (5120 dims) is structured so that:</p>
+      <ul>
+        <li>Truncate to first 320 dims &rarr; exactly the 8M embedding</li>
+        <li>Truncate to first 640 dims &rarr; rd.35M</li>
+        <li>Truncate to first 1280 dims &rarr; rd.650M</li>
+        <li>Truncate to first 2560 dims &rarr; rd.3B</li>
+        <li>Full 5120 dims &rarr; rd.15B</li>
+      </ul>
+      <p>Each prefix is a valid, functional embedding at that scale. Embed once, choose your compute budget downstream. And crucially &mdash; <strong>performance monotonically improves as you include more dimensions</strong>.</p>
+    </div>
+
+    <!-- ===== Results ===== -->
+    <div class="jc-section">
+      <h2>Key Results</h2>
+
+      <h3>ProteinGym DMS (Single Mutants, 28 datasets)</h3>
+      <table class="data-table">
+        <thead><tr><th>Model</th><th>Spearman &rho;</th><th>rd version</th><th>Spearman &rho;</th></tr></thead>
+        <tbody>
+          <tr><td>ESM-2 650M</td><td>0.879</td><td>rd.650M</td><td><strong>0.885</strong></td></tr>
+          <tr><td>ESM-2 3B</td><td>0.881</td><td>rd.3B</td><td><strong>0.893</strong></td></tr>
+          <tr><td>ESM-2 15B</td><td>0.899</td><td>rd.15B</td><td><strong>0.904</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Scaling Consistency</h3>
+      <table class="data-table">
+        <thead><tr><th>Comparison</th><th>% datasets where larger wins</th></tr></thead>
+        <tbody>
+          <tr><td>Baseline: 3B &gt; 650M</td><td>54% (broken)</td></tr>
+          <tr><td>rd.3B &gt; rd.650M</td><td><strong>93%</strong> (fixed)</td></tr>
+          <tr><td>Baseline: 15B &gt; 3B</td><td>~75%</td></tr>
+          <tr><td>rd.15B &gt; rd.3B</td><td><strong>~86%</strong> (fixed)</td></tr>
+        </tbody>
+      </table>
+
+      <p>Multi-mutant predictions show larger gains: rd.15B hits 0.615 on 4-mutant datasets vs. 0.566 for baseline 15B. Inference overhead is only 1.5&ndash;1.7x since the small models are fast.</p>
+    </div>
+
+    <!-- ===== Connection to Paper 1 ===== -->
+    <div class="jc-section">
+      <h2>Connection to Paper #1 (Potts Models)</h2>
+      <p>The parallel to the Potts decomposition from <a href="levy-2017-potts.html">Paper #1</a> is direct. The fields h<sub>i</sub>(s<sub>i</sub>) capture broadly conserved per-site features. The couplings J<sub>ij</sub>(s<sub>i</sub>, s<sub>j</sub>) capture higher-order epistatic interactions. In raw ESM embeddings, these get mixed. Reverse distillation is performing an analogous decomposition: separate the broadly-shared signal (small model subspace) from the unique higher-order signal (orthogonal residual).</p>
+    </div>
+
+    <!-- ===== Peer Review ===== -->
+    <div class="jc-section">
+      <h2>ICLR 2026 Peer Review</h2>
+      <p>The paper went through OpenReview with four reviewers. It was a close call &mdash; accepted as poster, with the rebuttal doing significant heavy lifting.</p>
+
+      <table class="data-table">
+        <thead><tr><th>Reviewer</th><th>Rating</th><th>Confidence</th><th>Stance</th></tr></thead>
+        <tbody>
+          <tr><td>akEp</td><td><strong>8</strong> (accept)</td><td>3/5</td><td>Enthusiastic. Only concern: inference overhead</td></tr>
+          <tr><td>nDBC</td><td><strong>8</strong> (accept)</td><td>3/5</td><td>"Highly novel," "elegant." Wanted 15B and O-LoRA citation</td></tr>
+          <tr><td>XboP</td><td><strong>6</strong> (marginal accept)</td><td>4/5</td><td>Pushed hard on linearity limitation and 15B gap</td></tr>
+          <tr><td>xk7u</td><td><strong>4</strong> (marginal reject)</td><td>4/5</td><td>The skeptic. Unvalidated hypothesis, trivial theorem, missing baselines</td></tr>
+        </tbody>
+      </table>
+
+      <h3>What the Original Submission Was Missing</h3>
+      <p>Three of four reviewers flagged that the original submission <strong>didn't include the 15B model</strong> &mdash; where the scaling failure is most severe. The paper originally only showed 650M &rarr; 3B. The rd.15B experiments were completed during rebuttal and saved the paper.</p>
+
+      <h3>Reviewer xk7u's Hits (the Skeptic)</h3>
+      <div class="review-box critical">
+        <div class="reviewer-header">Hit 1: Unvalidated hypothesis</div>
+        <p>"The paper builds its entire motivation on the 'general vs. specialized representation' hypothesis but does not provide a quantitative or qualitative analysis to validate it."</p>
+        <p><em>The SAE experiments (Section 3.4, Figure 2) were added during rebuttal to address this. But they only tested on the 35M model, not where the scaling problem lives (3B/15B).</em></p>
+      </div>
+
+      <div class="review-box critical">
+        <div class="reviewer-header">Hit 2: Trivial theorem</div>
+        <p>"The proposed Optimal Constrained Approximation theorem only guarantees minimal reconstruction error under a prefix constraint: a standard property of linear least squares combined with SVD."</p>
+        <p><em>This is correct. It's Eckart-Young with a prefix constraint. The theory isn't novel.</em></p>
+      </div>
+
+      <div class="review-box critical">
+        <div class="reviewer-header">Hit 3: Missing fusion baseline</div>
+        <p>"It remains unclear whether RD's improvement comes from its 'distillation mechanism' or simply from aggregating multi-scale features."</p>
+        <p><em>When the concatenation + PCA baseline was added (Appendix A.2), it won 62&ndash;76% of the time. The Matryoshka property is an engineering convenience that justifies the method, but the naive approach is often better at raw performance.</em></p>
+      </div>
+
+      <h3>The Meta-Review Verdict</h3>
+      <div class="review-box neutral">
+        <div class="reviewer-header">Area Chair WU8a</div>
+        <p>"The authors' responses address the most critical concerns... Reviewer xk7u would have increased the score from 4 to 6." Accepted as poster, with the acknowledgment that generality beyond ESM-2 is untested.</p>
+      </div>
+
+      <figure class="jc-figure">
+        <img src="figures/catrina-fig-p9-1.png" alt="SAE analysis: reverse distilled embeddings capture more GO terms">
+        <figcaption><strong>Figure 2 from Catrina et al. 2026.</strong> Sparse autoencoder (SAE) analysis comparing base ESM-2 35M vs. rd.35M. (a) rd.35M features are enriched for more GO terms, indicating more functionally relevant information. (b) Similar monospecificity (feature consistency). (c) rd.35M features are significantly less general (more specific biological functions). Added during rebuttal to address Reviewer xk7u's concern about the unsupported "general vs. specialized" hypothesis.</figcaption>
+      </figure>
+
+      <h3>A Buried Rebuttal Detail</h3>
+      <p>The authors revealed during rebuttal that nonlinear mapping improves reconstruction (R&sup2; from 0.422 to 0.528 for 8M&rarr;35M) but <strong>"did not immediately translate to improved downstream performance."</strong> This is actually revealing &mdash; better reconstruction of the large model's embedding doesn't help downstream tasks. It suggests linear decomposition works not because it's a good approximation, but because <strong>it's a good regularizer</strong>: it forces the residual to be simple, making the linear probe's job easier.</p>
+    </div>
+
+    <!-- ===== What a Simple Reading Misses ===== -->
+    <div class="jc-section">
+      <h2>What a Simple Reading Might Miss</h2>
+      <ol>
+        <li><strong>Only tested with linear probes.</strong> Every benchmark uses ridge regression. If your downstream predictor is a nonlinear MLP head, does the entanglement problem still matter? Never tested.</li>
+        <li><strong>1,000 training sequences determine everything.</strong> W* and V<sub>res</sub> are learned from 1,000 UniRef50 sequences and applied to every future protein. No robustness analysis on training set composition.</li>
+        <li><strong>Concatenation + PCA often wins.</strong> The simpler baseline beats reverse distillation 62&ndash;76% of the time but lacks the Matryoshka nesting. If you don't need nesting, the simpler method is better.</li>
+        <li><strong>ESM-2-specific.</strong> The method depends on k<sub>small</sub> &lt; k<sub>large</sub>. Most other model families don't have naturally increasing embedding dimensions across scales.</li>
+        <li><strong>The fundamental question is unanswered.</strong> <em>Why</em> do PLMs scale poorly? The paper shows <em>that</em> decomposition helps and hypothesizes feature entanglement, but the SAE evidence is only on 35M. The mechanism remains unclear.</li>
+        <li><strong>The term "reverse distillation" is borrowed, not coined.</strong> The authors acknowledge in a footnote that the term existed in anomaly detection literature. Their usage &mdash; decomposing large models using smaller ones as a basis &mdash; is distinct.</li>
+      </ol>
+    </div>
+
+    <!-- ===== Bottom Line ===== -->
+    <div class="jc-section">
+      <h2>Bottom Line</h2>
+      <p>A clean, practical paper that fixes a real problem (ESM-2 15B underperforming 650M) with straightforward linear algebra: least-squares regression + SVD. The Matryoshka nesting is a nice engineering property. But the contribution is more "engineering fix" than "scientific insight" &mdash; the scaling problem is patched, not explained, and the simpler concat+PCA baseline often performs better. The linear ceiling and ESM-2-only scope are real limitations. Still, if you use ESM-2 embeddings in practice, rd.15B is the new default.</p>
+    </div>
+
+    <!-- ===== Key References ===== -->
+    <div class="jc-section">
+      <h2>Key References Discussed</h2>
+      <ol class="jc-refs">
+        <li>Lin Z et al. <strong>Evolutionary-scale prediction of atomic-level protein structure with a language model.</strong> <em>Science</em> 379:1123&ndash;1130, 2023. <a href="https://doi.org/10.1126/science.ade2574">doi:10.1126/science.ade2574</a> &mdash; <em>ESM-2 model family (8M to 15B parameters) that exhibits the scaling plateau this paper fixes.</em></li>
+        <li>Li F-Z et al. <strong>Feature reuse and scaling: Understanding transfer learning with protein language models.</strong> <em>bioRxiv</em>, 2024. &mdash; <em>Documented that downstream tasks rely on early, low-level features; larger models don't consistently help.</em></li>
+        <li>Notin P et al. <strong>ProteinGym: Large-scale benchmarks for protein fitness prediction and design.</strong> <em>NeurIPS</em> 36:64331&ndash;64379, 2023. <a href="https://doi.org/10.48550/arXiv.2305.15706">doi:10.48550/arXiv.2305.15706</a> &mdash; <em>The benchmark where ESM-2 15B underperforms 650M, motivating this work.</em></li>
+        <li>Kusupati A et al. <strong>Matryoshka representation learning.</strong> <em>NeurIPS</em> 35:30233&ndash;30249, 2022. &mdash; <em>Original Matryoshka embeddings for NLP (within a single model). This paper extends the concept across model scales.</em></li>
+        <li>Kaplan J et al. <strong>Scaling laws for neural language models.</strong> <em>arXiv:2001.08361</em>, 2020. &mdash; <em>Established predictable scaling in NLP that protein models fail to follow.</em></li>
+        <li>Gujral O et al. <strong>Sparse autoencoders uncover biologically interpretable features in protein language model representations.</strong> <em>PNAS</em>, 2025. <a href="https://doi.org/10.1073/pnas.2506316122">doi:10.1073/pnas.2506316122</a> &mdash; <em>SAE methodology used in Section 3.4 to probe feature interpretability.</em></li>
+        <li>Wayment-Steele HK et al. <strong>Learning millisecond protein dynamics from what is missing in NMR spectra.</strong> <em>bioRxiv</em>, 2025. &mdash; <em>R2/R1 prediction task where rd.15B shows especially large gains (0.368 &rarr; 0.468).</em></li>
+        <li>Zhang Z et al. <strong>Protein language models learn evolutionary statistics of interacting sequence motifs.</strong> <em>PNAS</em> 121:e2406285121, 2024. <a href="https://doi.org/10.1073/pnas.2406285121">doi:10.1073/pnas.2406285121</a> &mdash; <em>Showed ESM-2 3B contact recovery comparable to 15B, reinforcing the scaling ceiling.</em></li>
+      </ol>
+    </div>
+
+    <div class="footer">
+      Solo Journal Club &mdash; Sergio E. Mares &middot; 2026
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.getElementById('themeBtn').textContent = next === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    }
+    (function() {
+      const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', saved);
+      document.getElementById('themeBtn').textContent = saved === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    })();
+  </script>
+</body>
+</html>
