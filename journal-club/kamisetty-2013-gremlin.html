@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GREMLIN — Solo Journal Club</title>
+  <meta name="author" content="Sergio E. Mares">
+  <link rel="stylesheet" href="../stylesheet.css">
+  <link rel="icon" type="image/png" href="../data/avatar.png">
+  <style>
+    .container { max-width: 860px; }
+    .back-link { font-size: 15px; margin-bottom: 18px; display: inline-block; }
+    .page-title { font-size: 28px; font-weight: 700; color: var(--name-color); margin-bottom: 4px; }
+    .page-subtitle { font-size: 16px; color: var(--text-secondary); margin-bottom: 24px; }
+    .paper-meta { font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 28px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-alt); }
+    .paper-meta strong { color: var(--heading-color); }
+    .jc-section { margin-bottom: 36px; }
+    .jc-section h2 { font-size: 22px; font-weight: 600; color: var(--heading-color); margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .jc-section h3 { font-size: 18px; font-weight: 600; color: var(--heading-color); margin-top: 20px; margin-bottom: 8px; }
+    .jc-section p { font-size: 16px; color: var(--text); line-height: 1.75; margin-bottom: 12px; }
+    .jc-section ul, .jc-section ol { padding-left: 24px; font-size: 16px; color: var(--text); line-height: 1.75; margin-bottom: 12px; }
+    .jc-section li { margin-bottom: 6px; }
+    .jc-section em { color: var(--text-secondary); }
+    .jc-section code { font-size: 15px; background: var(--bg-alt); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }
+    .jc-figure { margin: 20px 0; text-align: center; }
+    .jc-figure img { max-width: 100%; border-radius: 6px; border: 1px solid var(--border); }
+    .jc-figure figcaption { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-top: 8px; text-align: left; padding: 0 8px; }
+    .jc-refs { font-size: 14.5px; color: var(--text); line-height: 1.7; }
+    .jc-refs li { margin-bottom: 8px; }
+    .jc-refs a { word-break: break-all; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 16px 0; }
+    .data-table th { padding: 10px 12px; text-align: left; font-weight: 600; color: var(--heading-color); border-bottom: 2px solid var(--border); font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; background: var(--bg-alt); }
+    .data-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+    .data-table tbody tr:hover { background: var(--bg-alt); }
+    .takeaway-box { padding: 16px 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-alt); margin: 16px 0; }
+    .takeaway-box p { margin-bottom: 6px; }
+    .step-box { padding: 14px 18px; border-radius: 8px; margin-bottom: 10px; font-size: 16px; line-height: 1.75; background: var(--bg-alt); border-left: 3px solid var(--link); }
+    .step-box .step-label { font-weight: 600; color: var(--link); font-size: 14px; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn"></button>
+  <div class="container">
+    <a href="../journal-club.html" class="back-link">&larr; Back to Journal Club</a>
+
+    <div class="page-title">Assessing the Utility of Coevolution-based Residue&ndash;Residue Contact Predictions in a Sequence- and Structure-Rich Era</div>
+    <div class="page-subtitle">Paper #3 &mdash; Solo Journal Club</div>
+
+    <div class="paper-meta">
+      <strong>Authors:</strong> Hetunandan Kamisetty, Sergey Ovchinnikov, David Baker<br>
+      <strong>Affiliation:</strong> University of Washington / HHMI<br>
+      <strong>Published:</strong> <em>PNAS</em>, September 2013<br>
+      <strong>Tool:</strong> <a href="http://gremlin.bakerlab.org">gremlin.bakerlab.org</a><br>
+      <strong>Date discussed:</strong> April 2026
+    </div>
+
+    <!-- ===== Historical Context ===== -->
+    <div class="jc-section">
+      <h2>Historical Context</h2>
+      <p>This is a 2013 paper from the Baker lab &mdash; with Sergey Ovchinnikov as second author. This is where the Baker lab enters the coevolution game, and it's a direct bridge between the statistical physics work (<a href="levy-2017-potts.html">Paper #1</a>) and everything that followed: large-scale structure prediction (Ovchinnikov et al. 2015), trRosetta (2020), RFdiffusion (2023).</p>
+
+      <p><strong>Where the field stood in 2013:</strong></p>
+      <ul>
+        <li><strong>DCA</strong> (Morcos et al. 2011) &mdash; predict contacts by inverting the covariance matrix (mean-field approximation to the Potts model)</li>
+        <li><strong>PSICOV</strong> (Jones et al. 2012) &mdash; sparse inverse covariance estimation (graphical lasso)</li>
+        <li><strong>PLMDCA</strong> (Ekeberg et al. 2013) &mdash; pseudolikelihood maximization, more accurate than mean-field but slower</li>
+        <li>Critical question remained: <strong>when are predicted contacts actually useful for structure prediction?</strong></li>
+      </ul>
+
+      <p>This paper does two things: introduces <strong>GREMLIN</strong> (an improved pseudolikelihood method with structural priors), and then honestly asks how often contact prediction actually helps given that we also have more structures in the PDB every year.</p>
+    </div>
+
+    <!-- ===== It's a Potts Model ===== -->
+    <div class="jc-section">
+      <h2>Same Potts Model, Different Names</h2>
+      <p>GREMLIN <strong>is</strong> a Potts model. The equation is identical to <a href="levy-2017-potts.html">Paper #1</a>:</p>
+
+      <div class="takeaway-box">
+        <p><strong>Paper #1 (Levy et al.):</strong> H(S) = &Sigma;<sub>i</sub> h<sub>i</sub>(s<sub>i</sub>) + &Sigma;<sub>i&lt;j</sub> J<sub>ij</sub>(s<sub>i</sub>, s<sub>j</sub>)</p>
+        <p><strong>Paper #3 (GREMLIN):</strong> P(X = x) = (1/Z) exp[ &Sigma;<sub>i</sub> v<sub>i</sub>(x<sub>i</sub>) + &Sigma;<sub>i&lt;j</sub> w<sub>ij</sub>(x<sub>i</sub>, x<sub>j</sub>) ]</p>
+      </div>
+
+      <p>Same thing &mdash; v<sub>i</sub> = h<sub>i</sub> (fields), w<sub>ij</sub> = J<sub>ij</sub> (couplings), P(S) &prop; exp(&minus;H(S)). Different notation, same model. The paper says explicitly: "This is a maximum-entropy model and is also referred to as a Markov Random Field."</p>
+
+      <p>The naming depends on your community:</p>
+      <ul>
+        <li><strong>Statistical physics:</strong> Potts model, Hamiltonian, fields and couplings</li>
+        <li><strong>Machine learning / graphical models:</strong> Markov Random Field (MRF), node potentials and edge potentials</li>
+        <li><strong>Computational biology:</strong> Direct Coupling Analysis (DCA), coevolution model</li>
+      </ul>
+      <p>Same math, three vocabularies.</p>
+    </div>
+
+    <!-- ===== Input / Output ===== -->
+    <div class="jc-section">
+      <h2>Input, Model, Output</h2>
+
+      <h3>Input</h3>
+      <p>The MSA matrix: N sequences &times; L positions, where each entry is one of 21 amino acids (20 + gap). Say you have 5,000 homologs of a 200-residue protein. Your input is a 5000 &times; 200 matrix of amino acid characters.</p>
+
+      <h3>What the Model Learns</h3>
+      <ul>
+        <li><strong>v<sub>i</sub>(a)</strong> &mdash; for each position i, a score for each of 21 amino acids. An L &times; 21 table (the fields).</li>
+        <li><strong>w<sub>ij</sub>(a, b)</strong> &mdash; for each pair (i,j), a 21 &times; 21 matrix scoring every amino acid combination. L&times;(L&minus;1)/2 matrices of size 21 &times; 21 (the couplings).</li>
+      </ul>
+
+      <h3>What the Pseudolikelihood Optimizes</h3>
+      <p>The pseudolikelihood doesn't model the full joint probability of an entire sequence. It models each position <strong>conditionally</strong> &mdash; given all the other positions in a sequence, what's the probability of the amino acid at position i?</p>
+
+      <div class="takeaway-box">
+        <p><strong>P(x<sub>i</sub> = a | all other positions) = (1/Z<sub>i</sub>) &times; exp[ v<sub>i</sub>(a) + &Sigma;<sub>j &ne; i</sub> w<sub>ij</sub>(a, x<sub>j</sub>) ]</strong></p>
+      </div>
+
+      <p>This says: the probability that position i is alanine depends on alanine's field score at that position <strong>plus</strong> the coupling scores between alanine-at-position-i and whatever amino acid is actually sitting at every other position j in this sequence.</p>
+
+      <p>Z<sub>i</sub> is just a sum over 21 amino acids &mdash; trivial. The full joint likelihood would need Z summing over 21<sup>200</sup> possible sequences &mdash; impossible. That's why pseudolikelihood is tractable.</p>
+
+      <p>The total objective: maximize the sum of these conditional log-probabilities across all N sequences and all L positions. Gradient descent on v and w until convergence.</p>
+
+      <h3>Output</h3>
+      <p>After fitting, for contact prediction you collapse each coupling matrix to a single score per pair:</p>
+      <p><strong>score(i,j) = ||w<sub>ij</sub>||<sub>F</sub></strong> (Frobenius norm), then apply APC correction, rank all pairs. Top-ranked = predicted contacts.</p>
+
+      <table class="data-table">
+        <thead><tr><th></th><th>Shape</th><th>What it is</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Input</strong></td><td>N &times; L</td><td>MSA (amino acid sequences)</td></tr>
+          <tr><td><strong>Learned fields</strong></td><td>L &times; 21</td><td>Per-site amino acid preferences</td></tr>
+          <tr><td><strong>Learned couplings</strong></td><td>L &times; L &times; 21 &times; 21</td><td>Pairwise amino acid preferences</td></tr>
+          <tr><td><strong>Output (contacts)</strong></td><td>L &times; L</td><td>Contact score matrix</td></tr>
+          <tr><td><strong>Output (fitness)</strong></td><td>Scalar per sequence</td><td>H(S) = statistical energy</td></tr>
+          <tr><td><strong>Output (conditional)</strong></td><td>L &times; 21 per sequence</td><td>P(a at position i | rest)</td></tr>
+        </tbody>
+      </table>
+
+      <p>The model is the same Potts Hamiltonian. What you extract depends on your application &mdash; contacts, fitness, or conditional probabilities. This paper uses it for contacts. <a href="levy-2017-potts.html">Paper #1</a> used it for fitness. And the conditional probability output (L &times; 21) is exactly what protein language models like ESM later learned to compute implicitly with masked language modeling.</p>
+    </div>
+
+    <!-- ===== Four Methods Compared ===== -->
+    <div class="jc-section">
+      <h2>Four Methods for the Same Model</h2>
+      <p>All four methods fit the same Potts Hamiltonian. They differ in <strong>how</strong> they infer the parameters. <strong>None are neural networks</strong> &mdash; this is all classical statistical inference and optimization.</p>
+
+      <h3>DCA (Morcos et al. 2011) &mdash; Matrix Inversion</h3>
+      <div class="step-box">
+        <div class="step-label">Algorithm</div>
+        1. Compute single-site frequencies M<sub>i</sub> and pairwise frequencies F<sub>ij</sub> from MSA<br>
+        2. Build covariance matrix: C<sub>ij</sub> = F<sub>ij</sub> &minus; M<sub>i</sub> &times; M<sub>j</sub><br>
+        3. Invert: &Omega; = C<sup>&minus;1</sup><br>
+        4. Large |&Omega;<sub>ij</sub>| = direct coupling = predicted contact
+      </div>
+      <p><strong>Approximation:</strong> Assumes the distribution is Gaussian (mean-field). Amino acids are discrete (21 states), not Gaussian, so this is wrong &mdash; but works surprisingly well. Uses large pseudocount (&lambda; = 0.5) for regularization.</p>
+      <p><strong>Speed:</strong> Very fast &mdash; just a matrix inversion.</p>
+
+      <h3>PSICOV (Jones et al. 2012) &mdash; Sparse Inverse Covariance</h3>
+      <div class="step-box">
+        <div class="step-label">Algorithm</div>
+        1. Convert amino acids to binary indicators (one-hot encoding)<br>
+        2. Compute covariance matrix in binary space<br>
+        3. Estimate sparse inverse via graphical lasso: min &minus;log det(&Omega;) + tr(C&Omega;) + &rho;||&Omega;||<sub>1</sub><br>
+        4. L1 penalty forces most couplings to exactly zero (sparsity)<br>
+        5. Remaining non-zero entries = predicted contacts
+      </div>
+      <p><strong>Key difference from DCA:</strong> L1 regularization gives an explicitly sparse coupling matrix &mdash; more physically motivated since most residue pairs don't interact. Same Gaussian assumption though.</p>
+
+      <h3>PLMDCA (Ekeberg et al. 2013) &mdash; Pseudolikelihood</h3>
+      <div class="step-box">
+        <div class="step-label">Algorithm</div>
+        1. Instead of full joint P(X), maximize pseudolikelihood: PLL = &Sigma;<sub>n</sub> &Sigma;<sub>i</sub> log P(x<sub>i</sub><sup>n</sup> | x<sub>&minus;i</sub><sup>n</sup>)<br>
+        2. Each conditional has local partition function Z<sub>i</sub> summing over 21 states (trivial)<br>
+        3. Optimize v, w by gradient descent with uniform L2 regularization<br>
+        4. Extract couplings, Frobenius norm, APC, rank
+      </div>
+      <p><strong>Key advance:</strong> No Gaussian approximation &mdash; works directly with discrete 21-state Potts model. Consistent estimator (converges to true parameters with enough data). But 5&ndash;20x slower than DCA.</p>
+
+      <h3>GREMLIN (This paper, 2013) &mdash; Pseudolikelihood + Prior</h3>
+      <div class="step-box">
+        <div class="step-label">Algorithm</div>
+        1. Same pseudolikelihood objective as PLMDCA<br>
+        2. But regularization is <strong>not uniform</strong> &mdash; each pair (i,j) gets its own strength:<br>
+        &nbsp;&nbsp;&nbsp;&lambda;<sup>w</sup><sub>ij</sub> = &lambda;<sub>c</sub> &times; (1 &minus; &lambda;<sub>p</sub> &times; log(&pi;(i,j)))<br>
+        where &pi;(i,j) = prior probability that i,j are in contact<br>
+        3. Optimize v, w by gradient descent<br>
+        4. APC correction, rank &rarr; predicted contacts
+      </div>
+
+      <h3>How the Prior Works</h3>
+      <p>The prior &pi;(i,j) is <strong>empirically derived from known protein structures</strong> (PISCES database of non-redundant crystal structures). Two versions:</p>
+      <ul>
+        <li><strong>&pi;<sub>ss</sub> (simple):</strong> Based on sequence separation |i&minus;j| and predicted secondary structure (PSIPRED). Empirical frequencies: "among all known structures, when two residues are both in helices and separated by 15 positions, what fraction are in contact?"</li>
+        <li><strong>&pi;<sub>svm</sub> (powerful):</strong> Contact probabilities from SVMCON &mdash; an SVM trained on structural features. Richer but requires more computation.</li>
+      </ul>
+      <p>The prior enters through <strong>regularization strength</strong>, not as a direct prediction:</p>
+      <ul>
+        <li><strong>High &pi;(i,j)</strong> (pair likely in contact) &rarr; weak regularization &rarr; the data is free to learn a strong coupling</li>
+        <li><strong>Low &pi;(i,j)</strong> (pair unlikely in contact) &rarr; strong regularization &rarr; coupling shrunk toward zero</li>
+      </ul>
+      <p>The prior doesn't override the coevolution signal &mdash; it adjusts how much evidence the model requires. This is a Bayesian approach: structural knowledge sets the prior, coevolution data provides the likelihood.</p>
+
+      <h3>Side-by-Side Summary</h3>
+      <table class="data-table">
+        <thead><tr><th></th><th>DCA</th><th>PSICOV</th><th>PLMDCA</th><th>GREMLIN</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Model</strong></td><td>Potts (Gaussian approx)</td><td>Potts (Gaussian approx)</td><td>Potts (exact discrete)</td><td>Potts (exact discrete)</td></tr>
+          <tr><td><strong>Inference</strong></td><td>Covariance inversion</td><td>Graphical lasso</td><td>Pseudolikelihood + GD</td><td>Pseudolikelihood + GD</td></tr>
+          <tr><td><strong>Regularization</strong></td><td>Uniform L2</td><td>L1 + L2 (sparse)</td><td>Uniform L2</td><td><strong>Per-pair L2</strong> (prior)</td></tr>
+          <tr><td><strong>Prior info</strong></td><td>None</td><td>None</td><td>None</td><td><strong>Yes</strong></td></tr>
+          <tr><td><strong>Speed</strong></td><td>Very fast</td><td>Moderate</td><td>Slow</td><td>Moderate</td></tr>
+          <tr><td><strong>Neural net?</strong></td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+        </tbody>
+      </table>
+
+      <p>The progression: DCA &rarr; PSICOV (better regularization, same approximation) &rarr; PLMDCA (drop the Gaussian, use pseudolikelihood) &rarr; GREMLIN (same inference, add structural priors). Each step is a motivated improvement on the same underlying Potts model.</p>
+    </div>
+
+    <!-- ===== Results ===== -->
+    <div class="jc-section">
+      <h2>Results</h2>
+
+      <figure class="jc-figure">
+        <img src="figures/kamisetty-fig1-accuracy.png" alt="GREMLIN contact prediction accuracy compared to DCA, PSICOV, MIc">
+        <figcaption><strong>Figure 1 from Kamisetty et al. 2013.</strong> Contact prediction accuracy across 329 CAMEO targets. (A&ndash;C) GREMLIN without prior outperforms DCA, PSICOV, and MIc &mdash; points above the diagonal mean GREMLIN wins. (D) GREMLIN with vs. without simple prior &mdash; highly correlated, meaning the pseudolikelihood inference is doing the heavy lifting, not the prior. (F&ndash;G) Accuracy vs. alignment depth: GREMLIN is better across all depths.</figcaption>
+      </figure>
+
+      <p><strong>Key observation:</strong> The GREMLIN (no prior) vs. GREMLIN (with prior) comparison (panel D) shows points tightly clustered on the diagonal. The prior gives a small bump at shallow depths, but the real gap is between GREMLIN and DCA/PSICOV (panels A&ndash;C). The improvement comes from <strong>dropping the Gaussian approximation</strong>, not from the prior.</p>
+
+      <p>Two separable contributions:</p>
+      <ol>
+        <li><strong>Pseudolikelihood over mean-field</strong> &mdash; the big win, purely better inference on the same model</li>
+        <li><strong>Prior-informed regularization</strong> &mdash; nice-to-have at shallow depths, not the main story</li>
+      </ol>
+    </div>
+
+    <!-- ===== The Catch-22 ===== -->
+    <div class="jc-section">
+      <h2>The Catch-22: When Do Contacts Actually Help?</h2>
+      <p>This is what makes the paper exceptional. They don't just show GREMLIN is better &mdash; they rigorously ask <strong>when it matters</strong>. And they find a catch-22:</p>
+
+      <ul>
+        <li>Contact predictions are accurate when the MSA has <strong>&gt;5L sequences</strong> (L = protein length, at 90% identity filtering)</li>
+        <li>But families with that many sequences usually also have a <strong>close structural homolog</strong> in the PDB &mdash; so you can just do comparative modeling</li>
+        <li>Contacts are most useful when MSA sequences are <strong>more similar to the query than to the closest structural homolog</strong> (HH&Delta; &gt; 0.5)</li>
+      </ul>
+
+      <p>They categorize all 329 CAMEO targets:</p>
+      <table class="data-table">
+        <thead><tr><th>Category</th><th>%</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>I</strong></td><td>40%</td><td>Contact info not useful &mdash; can't discriminate native from models</td></tr>
+          <tr><td><strong>II</strong></td><td>29%</td><td>Can rank models but can't beat the best comparative model</td></tr>
+          <tr><td><strong>III</strong></td><td>10%</td><td>Can actually improve beyond comparative modeling &mdash; the sweet spot</td></tr>
+        </tbody>
+      </table>
+
+      <p>Across all of Pfam: only <strong>422 out of 12,452 families</strong> (~3.4%) have both enough sequences for accurate prediction AND no close structural homolog. That's the real target list.</p>
+
+      <div class="takeaway-box">
+        <p>The paper is remarkably honest for a methods paper: it shows the tool is good, then shows that the cases where it actually helps are rare. But those 422 families became the target list for the Baker lab's next landmark: Ovchinnikov et al. 2015, which determined structures of ~600 previously unsolved protein families using GREMLIN contacts + Rosetta.</p>
+      </div>
+    </div>
+
+    <!-- ===== Historical Significance ===== -->
+    <div class="jc-section">
+      <h2>The Pipeline That Changed Structural Biology</h2>
+      <p>The GREMLIN framework evolved into a pipeline that reshaped the field:</p>
+      <ol>
+        <li><strong>GREMLIN (2013, this paper):</strong> Pseudolikelihood inference of the Potts model, contact prediction</li>
+        <li><strong>Ovchinnikov et al. 2015 (<em>eLife</em>):</strong> GREMLIN contacts fed into Rosetta &rarr; ~600 new protein family structures solved</li>
+        <li><strong>trRosetta (2020):</strong> Replace hand-crafted Rosetta assembly with a neural network predicting distance/angle distributions from coevolution features</li>
+        <li><strong>RoseTTAFold / AlphaFold2 (2021):</strong> End-to-end from MSA to structure, with the Evoformer inheriting the two-track decomposition</li>
+      </ol>
+      <p>The prior mechanism in GREMLIN foreshadowed the idea that you could combine coevolutionary signal with other sources of structural information &mdash; which is exactly what trRosetta and AlphaFold2 do, just with learned representations instead of hand-crafted priors.</p>
+      <p>And the conditional probability output P(a at position i | rest) from the fitted Potts model is exactly what protein language models like ESM compute via masked language modeling &mdash; but ESM learns it implicitly from raw sequences across all families, while GREMLIN fits it explicitly from a single family's MSA.</p>
+    </div>
+
+    <!-- ===== Key References ===== -->
+    <div class="jc-section">
+      <h2>Key References Discussed</h2>
+      <ol class="jc-refs">
+        <li>Morcos F et al. <strong>Direct-coupling analysis of residue coevolution captures native contacts across many protein families.</strong> <em>PNAS</em> 108:E1293&ndash;E1301, 2011. <a href="https://doi.org/10.1073/pnas.1111471108">doi:10.1073/pnas.1111471108</a> &mdash; <em>DCA: mean-field approximation, covariance matrix inversion.</em></li>
+        <li>Jones DT et al. <strong>PSICOV: Precise structural contact prediction using sparse inverse covariance estimation.</strong> <em>Bioinformatics</em> 28:184&ndash;190, 2012. <a href="https://doi.org/10.1093/bioinformatics/btr638">doi:10.1093/bioinformatics/btr638</a> &mdash; <em>Graphical lasso approach with L1 sparsity.</em></li>
+        <li>Ekeberg M et al. <strong>Improved contact prediction in proteins: using pseudolikelihoods to infer Potts models.</strong> <em>Phys Rev E</em> 87:012707, 2013. <a href="https://doi.org/10.1103/PhysRevE.87.012707">doi:10.1103/PhysRevE.87.012707</a> &mdash; <em>PLMDCA: first pseudolikelihood approach, showed superiority over mean-field.</em></li>
+        <li>Ovchinnikov S et al. <strong>Large-scale determination of previously unsolved protein structures using evolutionary information.</strong> <em>eLife</em> 4:e09248, 2015. <a href="https://doi.org/10.7554/eLife.09248">doi:10.7554/eLife.09248</a> &mdash; <em>Used GREMLIN contacts + Rosetta to solve ~600 new structures. Direct follow-up to this paper.</em></li>
+        <li>Yang J et al. <strong>Improved protein structure prediction using predicted interresidue orientations.</strong> <em>PNAS</em> 117:1496&ndash;1503, 2020. <a href="https://doi.org/10.1073/pnas.1914677117">doi:10.1073/pnas.1914677117</a> &mdash; <em>trRosetta: neural network replacing the GREMLIN &rarr; Rosetta pipeline.</em></li>
+        <li>Jumper J et al. <strong>Highly accurate protein structure prediction with AlphaFold.</strong> <em>Nature</em> 596:583&ndash;589, 2021. <a href="https://doi.org/10.1038/s41586-021-03819-2">doi:10.1038/s41586-021-03819-2</a> &mdash; <em>Evoformer architecture inherits the two-track (single-site + pairwise) decomposition from this lineage.</em></li>
+      </ol>
+    </div>
+
+    <div class="footer">
+      Solo Journal Club &mdash; Sergio E. Mares &middot; 2026
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.getElementById('themeBtn').textContent = next === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    }
+    (function() {
+      const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', saved);
+      document.getElementById('themeBtn').textContent = saved === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    })();
+  </script>
+</body>
+</html>
