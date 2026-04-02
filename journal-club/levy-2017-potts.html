@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Potts Hamiltonian Models — Solo Journal Club</title>
+  <meta name="author" content="Sergio E. Mares">
+  <link rel="stylesheet" href="../stylesheet.css">
+  <link rel="icon" type="image/png" href="../data/avatar.png">
+  <style>
+    .container { max-width: 860px; }
+    .back-link { font-size: 15px; margin-bottom: 18px; display: inline-block; }
+    .page-title { font-size: 28px; font-weight: 700; color: var(--name-color); margin-bottom: 4px; }
+    .page-subtitle { font-size: 16px; color: var(--text-secondary); margin-bottom: 24px; }
+    .paper-meta { font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 28px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-alt); }
+    .paper-meta strong { color: var(--heading-color); }
+
+    .jc-section { margin-bottom: 36px; }
+    .jc-section h2 { font-size: 22px; font-weight: 600; color: var(--heading-color); margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .jc-section h3 { font-size: 18px; font-weight: 600; color: var(--heading-color); margin-top: 20px; margin-bottom: 8px; }
+    .jc-section p { font-size: 16px; color: var(--text); line-height: 1.75; margin-bottom: 12px; }
+    .jc-section ul, .jc-section ol { padding-left: 24px; font-size: 16px; color: var(--text); line-height: 1.75; margin-bottom: 12px; }
+    .jc-section li { margin-bottom: 6px; }
+    .jc-section em { color: var(--text-secondary); }
+    .jc-section code { font-size: 15px; background: var(--bg-alt); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }
+
+    .jc-dialogue { margin-bottom: 24px; }
+    .jc-q, .jc-a { padding: 14px 18px; border-radius: 8px; margin-bottom: 10px; font-size: 16px; line-height: 1.75; }
+    .jc-q { background: var(--bg-alt); border-left: 3px solid var(--link); }
+    .jc-q .speaker { font-weight: 600; color: var(--link); font-size: 14px; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+    .jc-a { background: var(--bg); border-left: 3px solid var(--heading-color); }
+    .jc-a .speaker { font-weight: 600; color: var(--heading-color); font-size: 14px; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 16px 0; }
+    .data-table th { padding: 10px 12px; text-align: left; font-weight: 600; color: var(--heading-color); border-bottom: 2px solid var(--border); font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; background: var(--bg-alt); }
+    .data-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+    .data-table tbody tr:hover { background: var(--bg-alt); }
+
+    .takeaway-box { padding: 16px 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-alt); margin: 16px 0; }
+    .takeaway-box p { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn"></button>
+  <div class="container">
+    <a href="../journal-club.html" class="back-link">&larr; Back to Journal Club</a>
+
+    <div class="page-title">Potts Hamiltonian Models of Protein Co-variation, Free Energy Landscapes, and Evolutionary Fitness</div>
+    <div class="page-subtitle">Paper #1 &mdash; Solo Journal Club</div>
+
+    <div class="paper-meta">
+      <strong>Authors:</strong> Ronald M. Levy, Allan Haldane, William F. Flynn<br>
+      <strong>Affiliation:</strong> Temple University<br>
+      <strong>Journal:</strong> <em>Current Opinion in Structural Biology</em>, April 2017<br>
+      <strong>Type:</strong> Review<br>
+      <strong>Date discussed:</strong> April 2026
+    </div>
+
+    <!-- ===== Historical Context ===== -->
+    <div class="jc-section">
+      <h2>Historical Context</h2>
+      <p>This review lands at a pivotal moment in computational biology &mdash; 2017, right at the cusp between the "coevolution era" and the "deep learning era" of protein structure prediction. It synthesizes a decade of work using statistical physics to understand protein sequences.</p>
+
+      <h3>The Lineage</h3>
+      <ol>
+        <li><strong>Early 2000s:</strong> People noticed that mutations at two positions in a protein family tend to be correlated if those residues are in physical contact. Simple covariance matrices from MSAs could hint at contacts, but they were noisy &mdash; indirect correlations muddied everything.</li>
+        <li><strong>2009&ndash;2011 &mdash; Direct Coupling Analysis (DCA):</strong> Weigt et al. (2009) and Morcos et al. (2011) borrowed from statistical physics &mdash; specifically spin-glass models &mdash; and applied the maximum entropy principle: find the simplest probability distribution over sequences that reproduces the observed single-site and pairwise frequencies from the MSA. This gives you a Potts Hamiltonian. The coupling parameters directly separate real contacts from transitive noise. Contact prediction accuracy jumped dramatically.</li>
+        <li><strong>2013 &mdash; Pseudolikelihood methods (PLM):</strong> Kamisetty, Ovchinnikov &amp; Baker showed that pseudolikelihood maximization was faster and more accurate for contact prediction than mean-field DCA. This became the workhorse method.</li>
+        <li><strong>2014&ndash;2016 &mdash; Beyond contacts:</strong> People realized the Potts model isn't just a contact predictor &mdash; it's a statistical model of the entire sequence landscape. The Hamiltonian H(S) correlates with folding free energy &Delta;G, with fitness, and can capture epistasis.</li>
+      </ol>
+    </div>
+
+    <!-- ===== Introduction to Hamiltonian Models ===== -->
+    <div class="jc-section">
+      <h2>A Gentle Introduction to Hamiltonian Models for Protein Sequences</h2>
+
+      <p><strong>The basic question:</strong> Given a family of related protein sequences (say, thousands of kinase sequences from across the tree of life), can we build a mathematical model that captures <em>why</em> certain amino acid combinations appear together and others don't?</p>
+
+      <p><strong>Start with the simplest model &mdash; independent sites.</strong> Imagine each position in the protein evolves independently. Position 42 "likes" to be leucine 60% of the time, valine 30%, etc. This is essentially a Position-Specific Scoring Matrix (PSSM). It works okay for sequence search, but it misses something huge: <strong>correlations between positions</strong>.</p>
+
+      <p><strong>The Hamiltonian &mdash; an energy function over sequences.</strong> Borrowing from statistical physics, we assign every possible sequence S a statistical score:</p>
+
+      <div class="takeaway-box">
+        <p><strong>H(S) = &Sigma;<sub>i</sub> h<sub>i</sub>(s<sub>i</sub>) + &Sigma;<sub>i&lt;j</sub> J<sub>ij</sub>(s<sub>i</sub>, s<sub>j</sub>)</strong></p>
+      </div>
+
+      <h3>The Fields: h<sub>i</sub>(s<sub>i</sub>)</h3>
+      <p>The <strong>site-wise bias</strong> &mdash; how much position i "prefers" each of the 21 possible amino acids (20 + gap), independent of everything else. It captures the frequency of each amino acid at this position across all sequences in the MSA.</p>
+      <p>If position 50 is always glycine (say, because it's in a tight loop where only glycine fits sterically), then h<sub>50</sub>(Gly) will be very favorable and h<sub>50</sub>(Trp) very unfavorable. If a position is highly variable, the fields will be relatively flat.</p>
+      <p>This component is equivalent to a PSSM. If you <em>only</em> had the fields and no couplings, you'd have an <strong>independent model</strong> &mdash; each position does its own thing.</p>
+
+      <h3>The Couplings: J<sub>ij</sub>(s<sub>i</sub>, s<sub>j</sub>)</h3>
+      <p>This is where the power is. J<sub>ij</sub>(s<sub>i</sub>, s<sub>j</sub>) asks: <strong>given that position i is amino acid A and position j is amino acid B, is that combination more or less likely than you'd expect from the individual frequencies alone?</strong></p>
+      <p>It's not a single number per pair &mdash; it's a 21&times;21 matrix for every pair (i,j). So J<sub>12</sub>(Lys, Glu) might be very favorable because a salt bridge forms, while J<sub>12</sub>(Lys, Lys) might be unfavorable because you've got two positive charges clashing.</p>
+      <p>The critical insight of DCA is that <strong>raw correlations in the MSA mix direct and indirect effects</strong>. If residue A contacts B, and B contacts C, then A and C will look correlated even if they never interact. The Potts model inversion disentangles this &mdash; the J parameters represent <strong>direct</strong> couplings.</p>
+
+      <h3>Scale</h3>
+      <p>For a 100-residue protein, the full Hamiltonian has:</p>
+      <ul>
+        <li><strong>100 &times; 21 = 2,100</strong> field parameters</li>
+        <li><strong>C(100,2) &times; 21 &times; 21 &asymp; 2.2 million</strong> coupling parameters</li>
+      </ul>
+      <p>That's a lot of parameters, which is why you need deep MSAs (thousands of sequences) to fit the model. It's also why this approach struggled for orphan proteins with few homologs &mdash; a limitation that protein language models like ESM later solved by sharing information across families.</p>
+
+      <h3>The Intuition</h3>
+      <div class="takeaway-box">
+        <p><strong>Fields alone</strong> = "position 50 likes glycine" (a profile)</p>
+        <p><strong>Fields + couplings</strong> = "position 50 likes glycine, <em>especially when</em> position 23 is proline" (a landscape)</p>
+      </div>
+
+      <h3>The Probability of a Sequence</h3>
+      <p>Follows the Boltzmann distribution: <strong>P(S) &prop; exp(&minus;H(S))</strong>. Sequences with low H(S) are common in the family. Sequences with high H(S) are rare or nonexistent. This is the <strong>maximum entropy</strong> model &mdash; the least biased distribution that reproduces observed frequencies.</p>
+
+      <p><strong>Important caveat:</strong> H(S) is a <em>statistical score</em>, not a physical energy in kilocalories. The fact that it correlates with physical &Delta;G is an empirical observation, not a derivation. It's a statistical look-up table, not an energy landscape.</p>
+    </div>
+
+    <!-- ===== Connection to Evoformer ===== -->
+    <div class="jc-section">
+      <h2>The Potts &rarr; Evoformer Connection</h2>
+      <p>The architectural parallel between the Potts model and AlphaFold2's Evoformer is striking and almost certainly not coincidental:</p>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Potts Model</th><th>Evoformer (AlphaFold2)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>h<sub>i</sub>(s<sub>i</sub>) &mdash; fields per position</td><td><strong>MSA representation</strong> &mdash; per-residue embeddings via row/column attention</td></tr>
+          <tr><td>J<sub>ij</sub>(s<sub>i</sub>, s<sub>j</sub>) &mdash; 21&times;21 coupling matrix per pair</td><td><strong>Pair representation</strong> &mdash; full L&times;L matrix of pairwise embeddings</td></tr>
+          <tr><td>Inverse inference from MSA frequencies</td><td>Learned end-to-end from MSA + structure supervision</td></tr>
+          <tr><td>Maximum entropy (least biased fit)</td><td>Transformer (massively overparameterized, regularized by data)</td></tr>
+        </tbody>
+      </table>
+
+      <p>The Evoformer's MSA track processes rows (individual sequences) and columns (positions across sequences). The column attention reads off single-site statistics analogous to h<sub>i</sub>. The row attention lets sequences talk to each other &mdash; extracting covariation patterns.</p>
+
+      <p>The pair track maintains an explicit L&times;L matrix updated by outer products from the MSA track. This <em>is</em> the coupling matrix, except instead of 21&times;21 scalars, it's a rich learned embedding. The triangular attention enforces geometric consistency &mdash; exactly the transitivity correction DCA performs when separating direct from indirect couplings.</p>
+
+      <h3>The Historical Thread</h3>
+      <p><strong>Potts/DCA (2009&ndash;2013)</strong> &rarr; <strong>coevolution contacts + Rosetta (Baker lab, 2015&ndash;2017)</strong> &rarr; <strong>trRosetta (2020)</strong> &rarr; <strong>AlphaFold2 Evoformer (2021)</strong>. The two-track decomposition (single-site + pairwise) was inherited from decades of coevolutionary analysis. Deep learning replaced the statistical physics inference with a neural network that could learn far richer representations.</p>
+    </div>
+
+    <!-- ===== Epistasis ===== -->
+    <div class="jc-section">
+      <h2>Epistasis &mdash; Context-Dependent Mutation Effects</h2>
+
+      <p><strong>Definition:</strong> Epistasis is when the effect of a mutation depends on what other mutations are already present in the sequence. A mutation that's deleterious in one background can be neutral or even beneficial in another. The whole is not the sum of the parts.</p>
+
+      <p>In Potts model terms, epistasis is literally encoded in the couplings J<sub>ij</sub>(s<sub>i</sub>, s<sub>j</sub>). If you mutate position i, the fitness effect depends on what's at every coupled position j. This is why the independent model (fields only, no couplings) systematically underperforms.</p>
+
+      <p>This term deserves more use in the protein ML field &mdash; when people talk about "context-dependent mutation effects" or "non-additive interactions," they're describing epistasis.</p>
+
+      <h3>The Numbers: Potts &Delta;H vs. Experimental Fitness</h3>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Study</th><th>System</th><th>Correlation</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Figliuzzi et al. 2015</td>
+            <td>TEM-1 beta-lactamase (DMS)</td>
+            <td><strong>R = 0.74</strong> (R&sup2; = 0.55)</td>
+            <td>&Delta;H vs. &Delta;&Delta;G: R = 0.81. Independent model only R = 0.63</td>
+          </tr>
+          <tr>
+            <td>Ferguson et al. 2013</td>
+            <td>HIV-1 Gag (replicative fitness)</td>
+            <td><strong>&rho; = &minus;0.81</strong></td>
+            <td>50 engineered mutants. Regularized: r = &minus;0.85, AUROC = 0.93</td>
+          </tr>
+          <tr>
+            <td>Hopf et al. 2017 (EVmutation)</td>
+            <td>34 DMS datasets</td>
+            <td><strong>&rho; = 0.4&ndash;0.87</strong></td>
+            <td>Best: beta-lactamase 0.87, HIV 0.81. ProteinGym avg: 0.397</td>
+          </tr>
+          <tr>
+            <td>Barton et al. 2016</td>
+            <td>HIV immune escape timing</td>
+            <td><strong>r = 0.66&ndash;0.81</strong></td>
+            <td>86% correct escape location. Entropy alone: pseudo-R&sup2; = 0.05</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="takeaway-box">
+        <p>A model with <strong>no structural data, no physics, no thermodynamic measurements</strong> &mdash; just sequence statistics from an MSA &mdash; achieves R = 0.74&ndash;0.85 against experimental fitness and &Delta;&Delta;G. The independent model consistently underperforms, meaning epistasis is not a subtle effect &mdash; it's a major component of protein fitness.</p>
+      </div>
+    </div>
+
+    <!-- ===== Inference Methods ===== -->
+    <div class="jc-section">
+      <h2>Inference Methods</h2>
+      <p>The method used to infer Potts parameters changes the answer, not just the speed:</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>Method</th><th>Speed</th><th>Accuracy</th><th>Best for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Mean-field DCA</td><td>Very fast</td><td>Approximate</td><td>Contact prediction</td></tr>
+          <tr><td>Pseudolikelihood (PLM)</td><td>Fast</td><td>Good</td><td>Contact prediction</td></tr>
+          <tr><td>Monte Carlo</td><td>Slow</td><td>Exact</td><td>Fitness/energy prediction</td></tr>
+          <tr><td>ACE (Adaptive Cluster Expansion)</td><td>Moderate</td><td>Good</td><td>Fitness/energy prediction</td></tr>
+        </tbody>
+      </table>
+      <p>Mean-field DCA <em>underestimates</em> sequence diversity and generates overly fit sequences. PLM tends to produce less stable sequences than reality. Only Monte Carlo and ACE faithfully reproduce the actual MSA statistics.</p>
+    </div>
+
+    <!-- ===== Caveats ===== -->
+    <div class="jc-section">
+      <h2>What a Simple Reading Might Miss</h2>
+
+      <ol>
+        <li><strong>The phylogenetic correction is hand-waved.</strong> The Potts model assumes each MSA sequence is an independent draw from P(S). That's wrong &mdash; sequences are related by a phylogenetic tree. The fix (cluster at ~80% identity, reweight) is crude. Every correlation number has an asterisk.</li>
+        <li><strong>No insertions or deletions.</strong> The Hamiltonian is defined over a fixed-length aligned sequence. Gaps are a 21st character, which is a hack. The model fundamentally can't reason about indels &mdash; a limitation protein language models later solved.</li>
+        <li><strong>2.2 million parameters need deep MSAs.</strong> For shallow MSAs (orphan proteins, designed proteins), the model fails. This is exactly the gap ESM was built to fill, and why the ProteinGym average drops to &rho; &asymp; 0.4.</li>
+        <li><strong>The "energy" is not energy.</strong> H(S) is a statistical score. The correlation with &Delta;G is empirical, not derived. The bridge (evolutionary selection pressure) assumes near-neutral evolution and folding stability as the dominant fitness determinant, which don't always hold.</li>
+        <li><strong>HIV fitness validation has selection bias.</strong> The model trains on in vivo sequences but validates against in vitro fitness. The engineered mutants were chosen to span a predictable range, not sampled randomly.</li>
+        <li><strong>The Potts model is already a generative model.</strong> You can sample from P(S) via MCMC. This was done in some referenced work but wasn't the focus. In hindsight, this is the direct precursor to modern generative protein design &mdash; the leap from "score sequences" to "sample new ones" was there in 2017.</li>
+      </ol>
+    </div>
+
+    <!-- ===== Bottom Line ===== -->
+    <div class="jc-section">
+      <h2>Bottom Line</h2>
+      <p>This paper is the intellectual ancestor of the modern protein ML stack. The Potts Hamiltonian &mdash; a statistical look-up table built from sequence co-variation, decomposed into per-site fields and pairwise couplings &mdash; achieves remarkable predictive power for fitness, stability, and structural contacts. Its two-track decomposition (single-site + pairwise) directly prefigures the Evoformer architecture. Its limitations (deep MSA requirement, fixed-length, no geometry) are exactly the problems that protein language models and structure prediction networks were built to overcome.</p>
+      <p>This is the baseline that every protein ML model is implicitly competing against.</p>
+    </div>
+
+    <div class="footer">
+      Solo Journal Club &mdash; Sergio E. Mares &middot; 2026
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.getElementById('themeBtn').textContent = next === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    }
+    (function() {
+      const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', saved);
+      document.getElementById('themeBtn').textContent = saved === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    })();
+  </script>
+</body>
+</html>

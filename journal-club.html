@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solo Journal Club — Sergio E. Mares</title>
+  <meta name="author" content="Sergio E. Mares">
+  <meta name="description" content="Solo journal club — reviewing papers in protein ML, one at a time.">
+  <link rel="stylesheet" href="stylesheet.css">
+  <link rel="icon" type="image/png" href="data/avatar.png">
+  <style>
+    .container { max-width: 860px; }
+    .back-link { font-size: 15px; margin-bottom: 18px; display: inline-block; }
+    .page-title { font-size: 28px; font-weight: 700; color: var(--name-color); margin-bottom: 4px; }
+    .page-subtitle { font-size: 16px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 28px; }
+
+    .jc-list { list-style: none; padding: 0; }
+    .jc-item { display: flex; gap: 16px; align-items: baseline; padding: 16px 18px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; transition: background 0.2s, box-shadow 0.2s; }
+    .jc-item:hover { background: var(--bg-alt); box-shadow: var(--shadow); }
+    .jc-num { flex-shrink: 0; font-size: 14px; font-weight: 700; color: var(--text-secondary); min-width: 28px; }
+    .jc-info { flex: 1; }
+    .jc-paper-title { font-weight: 600; color: var(--link); font-size: 16.5px; line-height: 1.4; margin-bottom: 3px; }
+    .jc-paper-title a { color: var(--link); }
+    .jc-paper-title a:hover { color: var(--link-hover); }
+    .jc-paper-meta { font-size: 14.5px; color: var(--text-secondary); }
+    .jc-status { flex-shrink: 0; }
+
+    .tag-discussed { background: var(--tag-bg); color: var(--tag-text); }
+    .tag-upcoming { background: var(--tag-bg-reading); color: var(--tag-text-reading); }
+
+    .jc-divider { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin: 28px 0 14px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn"></button>
+  <div class="container">
+    <a href="index.html" class="back-link">&larr; Back to Home</a>
+
+    <div class="page-title">Solo Journal Club</div>
+    <div class="page-subtitle">
+      Working through 32 papers in the protein ML space &mdash; from coevolutionary models to diffusion-based design.
+      Sorted from foundational to frontier. Each paper gets a full discussion page with historical context,
+      key takeaways, and honest caveats.
+    </div>
+
+    <div class="jc-divider">Discussed</div>
+
+    <ul class="jc-list">
+      <li class="jc-item">
+        <span class="jc-num">#1</span>
+        <div class="jc-info">
+          <div class="jc-paper-title"><a href="journal-club/levy-2017-potts.html">Potts Hamiltonian Models of Protein Co-variation, Free Energy Landscapes, and Evolutionary Fitness</a></div>
+          <div class="jc-paper-meta">Levy, Haldane, Flynn &middot; <em>Curr Opin Struct Biol</em> 2017 &middot; Review</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-discussed">Discussed</span></span>
+      </li>
+    </ul>
+
+    <div class="jc-divider">Upcoming</div>
+
+    <ul class="jc-list">
+      <li class="jc-item">
+        <span class="jc-num">#2</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Reverse Distillation: Consistently Scaling Protein Language Model Representations</div>
+          <div class="jc-paper-meta">Catrina et al. &middot; 2026</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#3</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Assessing the Utility of Coevolution-based Residue-Residue Contact Predictions</div>
+          <div class="jc-paper-meta">Kamisetty, Ovchinnikov, Baker &middot; <em>PNAS</em> 2013</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#4</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">DeepLIFT: Learning Important Features Through Propagating Activation Differences</div>
+          <div class="jc-paper-meta">Shrikumar et al. &middot; 2017</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#5</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">SurfProp: Surface-based Property Prediction for Antibody Developability</div>
+          <div class="jc-paper-meta">Rao et al. &middot; 2023</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#6</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">State-of-the-Art Estimation of Protein Model Accuracy Using AlphaFold</div>
+          <div class="jc-paper-meta">Roney et al. &middot; <em>Phys Rev Lett</em> 2022</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#7</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">EigenFold: Generative Protein Structure Prediction with Diffusion Models</div>
+          <div class="jc-paper-meta">Jing et al. &middot; 2023</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#8</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">AlphaFold2 Has More to Learn About Protein Energy Landscapes</div>
+          <div class="jc-paper-meta">Chakravarty et al. &middot; 2023</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#9</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Assessment of AlphaFold Protein Models for Small-Molecule Ligand Docking</div>
+          <div class="jc-paper-meta">Maidanik et al. &middot; 2026</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#10</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Enhanced Diffusion Sampling: Efficient Rare Event Sampling with Diffusion Models</div>
+          <div class="jc-paper-meta">Xie et al. &middot; 2026</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#11</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Ibex: Pan-immunoglobulin Structure Prediction</div>
+          <div class="jc-paper-meta">Dreyer et al. &middot; 2025</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#12</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Predicting Specificity of TCR-pMHC Interactions</div>
+          <div class="jc-paper-meta">Culka et al. &middot; 2025</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#13</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Millisecond Prediction of Protein Contact Maps from Amino Acid Sequences</div>
+          <div class="jc-paper-meta">Lin et al. &middot; 2026</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#14</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Test-Time Training Done Right</div>
+          <div class="jc-paper-meta">Zhang et al. &middot; 2025</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#15</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Detection of Protein Symmetry and Structural Rearrangements via SSE</div>
+          <div class="jc-paper-meta">Lin et al. &middot; 2025</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#16</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">mBER: Controllable de novo Antibody Design with Million-Scale Screening</div>
+          <div class="jc-paper-meta">Swanson et al. &middot; 2025</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#17</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">FAMPNN: Sidechain Conditioning for Full-Atom Protein Sequence Design</div>
+          <div class="jc-paper-meta">Shuai et al. &middot; 2025</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#18</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Learning Hamiltonian Flow Maps for Large-Timestep Molecular Dynamics</div>
+          <div class="jc-paper-meta">Ripken et al. &middot; 2026</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#19</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">ConfDiff: Force-Guided SE(3) Diffusion for Protein Conformation Generation</div>
+          <div class="jc-paper-meta">Wang et al. &middot; 2024</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#20</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">FrameDiff: SE(3) Diffusion Model for Protein Backbone Generation</div>
+          <div class="jc-paper-meta">Yim et al. &middot; 2023</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#21</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">AF2BIND: Predicting Small-Molecule Binding Sites Using AlphaFold2</div>
+          <div class="jc-paper-meta">Gazizov et al. &middot; <em>Nat Methods</em> 2026</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#22</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">VoxMol: 3D Molecule Generation by Denoising Voxel Grids</div>
+          <div class="jc-paper-meta">Pinheiro et al. &middot; 2023</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#23</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Compressing the Collective Knowledge of ESM into a Single Protein Language Model</div>
+          <div class="jc-paper-meta">Dinh et al. &middot; <em>Nat Methods</em> 2026</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#24</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">ProteinMPNN: Robust Deep Learning Based Protein Sequence Design</div>
+          <div class="jc-paper-meta">Dauparas et al. &middot; 2022</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#25</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Scaling Atomistic Protein Binder Design with Generative Pretraining</div>
+          <div class="jc-paper-meta">Didi et al. (Proteina-Complexa) &middot; 2026</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#26</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">ProteinEBM: Protein Diffusion Models as Statistical Potentials</div>
+          <div class="jc-paper-meta">Roney, Ou, Ovchinnikov &middot; 2025</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#27</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Toward Machine-Guided Design of Proteins</div>
+          <div class="jc-paper-meta">Biswas et al. &middot; 2018</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#28</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">BioEmu: Scalable Emulation of Protein Equilibrium Ensembles</div>
+          <div class="jc-paper-meta">Lewis et al. &middot; 2024</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#29</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Synonymous Mutations in Representative Yeast Genes Are Mostly Strongly Non-Neutral</div>
+          <div class="jc-paper-meta">Shen et al. &middot; <em>Nature</em> 2022</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#30</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">ProteinTTT: One Protein Is All You Need</div>
+          <div class="jc-paper-meta">Bushuiev et al. &middot; 2026</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#31</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Protein Hunter: Exploiting Structure Hallucination for Protein Design</div>
+          <div class="jc-paper-meta">Cho et al. &middot; 2025</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+      <li class="jc-item">
+        <span class="jc-num">#32</span>
+        <div class="jc-info">
+          <div class="jc-paper-title">Latent Generative Search for de novo Biomolecular Interactions at Scale</div>
+          <div class="jc-paper-meta">Didi et al. (Proteina-Complexa validation) &middot; 2026</div>
+        </div>
+        <span class="jc-status"><span class="tag tag-upcoming">Upcoming</span></span>
+      </li>
+    </ul>
+
+    <div class="footer">
+      Solo Journal Club &mdash; Sergio E. Mares &middot; 2026
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.getElementById('themeBtn').textContent = next === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    }
+    (function() {
+      const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', saved);
+      document.getElementById('themeBtn').textContent = saved === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    })();
+  </script>
+</body>
+</html>
