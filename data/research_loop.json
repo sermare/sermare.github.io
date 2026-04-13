@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T23:24:32Z",
+  "generated_at": "2026-04-13T23:55:04Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2590,
-    "assistant_turns": 3842,
+    "user_turns": 2641,
+    "assistant_turns": 3925,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T23:23:10.896Z"
+    "last_ts": "2026-04-13T23:54:43.204Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,83 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-13T23:52:31.545Z",
+      "text": "Cleanup complete — home now 12G (was 17G, freed ~5G). **PPAC cluster-aware on S1131: ρ = +0.6099 ± 0.0090** (1129 rows, 42 clusters).",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:50:24.384Z",
+      "text": "No `from mhcflurry` imports in our code — the 2.3 GB in `~/.local/share/mhcflurry` is unused package-installed weights. Both .boltz and mhcflurry are safe to delete.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:49:36.303Z",
+      "text": "**Tsuboyama K50 LoRA DPL complete: ρ = +0.7447 ± 0.0122 (all 15/15 cells)**. Final number; paper footnote can be updated from \"12 completed\" to \"all 15\".",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:48:42.593Z",
+      "text": "ProtAttBA f0s0 at epoch 10: val ρ=0.5714 (best 0.5849). Cluster-aware training works.",
+      "tags": [
+        "result"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:46:26.690Z",
+      "text": "Proceeding with safe cleanups and patching env_setup.sh to prevent HF xet leaks.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:46:21.093Z",
+      "text": "Here's the audit. Some things *did* land in `/global/home` despite `env_setup.sh`:\n\n**Total home usage: ~17 GB.** Breakdown:\n\n| Path | Size | Origin | Safe to delete? |\n|---|---|---|---|\n| `~/.boltz` | **7.5 GB** | Old boltz2 model weights (pre-sprint) | Ask — unrelated to ΔPL project |\n| `~/.local/share/mhcflurry` | **2.3 GB** | MHCFlurry model weights (BindingGym pretrain control) | Ask — may still need for ΔPL |\n| `~/.local/lib` | 1.6 GB | `pip --user` installs (accumulated) | Ask — some may be in PATH |\n| `~/.local/share/code-server` | 1.3 GB | VS Code remote server | **Keep** — IDE in use |\n| `~/.cache/pip` | 1.1 GB | pip download cache | **Safe to purge** |\n| `~/.local/share/claude` | 891 MB | Claude Code data | **Keep** |\n| `~/.cache/jedi` | 190 MB | Python autocomplete cache | **Safe to purge** |\n| `~/.local/share/Trash` | 81 MB | Trash folder | **Safe to purge** |\n| `~/.cache/hu…",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:39:43.228Z",
+      "text": "Done — 9 ProtAttBA (folds 2–4 × 3 seeds) and 15 RDE jobs now on savio2_1080ti lowprio. Folds 0–1 ProtAttBA keep running on A40s where they already got slots. RDE-Network is small enough to fit 1080ti's 11GB easily.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:32:35.814Z",
+      "text": "Good catch. Let me check the savio2_1080ti config and move the pending RDE + ProtAttBA jobs there.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:31:34.698Z",
+      "text": "All 15 RDE jobs pending in savio_lowprio. They'll dequeue as A40 slots open. Nothing further to do on RDE — matches our 5-fold × 3-seed cluster-aware protocol exactly.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:31:28.815Z",
+      "text": "Confirmed — our ΔPL protocol is 5 folds × 3 seeds = 15 (fold, seed) cells (see `results/twophase_oof_cluster/fold0..4_seed0..2/`). The 15 RDE jobs I already queued (33376488–33376503, skipping 502) are exactly that: 5 folds × 3 seeds (2022/2023/2024). No change needed — they're pending low-prio now.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:30:34.713Z",
+      "text": "RDE setup agent done — environment, checkpoints, and SKEMPI cache all verified. Cluster split validated (val sizes 1007/1506/1369/1144/1680 match the sibling's submission). Both RDE agents now complete. Waiting on PPAC training agent + scheduled wake-up.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
       "ts": "2026-04-13T23:23:10.833Z",
       "text": "Sleeping 20 min. Current state: master table + paper prose updated with Tsuboyama DPL LoRA +0.744; 51 jobs in queue; 2 agents still running (PPAC impl, RDE clone/setup).",
       "tags": [
@@ -299,86 +376,6 @@
       "text": "Confirmed and clarified. Current state of the paper's master table (`paper/main.tex:540-569`):\n\n**No leaky supervised baseline numbers are in the paper right now.** The table has only:\n- 6 zero-shot columns (ESM2, ESM1v, ProtBert, Tranception, ESM-IF, SaProt)\n- 1 structural supervised: StaB-ddG (already on our cluster-disjoint n=230)\n- 3 ΔPL variants (UN, frozen, LoRA)\n- 1 ensemble\n\nThere is **no ProtAttBA / PPAC / GearBind / RDE-Network column** — that's the \"no supervised sequence comparison\" gap you flagged earlier.\n\n**The 3 retrain agents running right now are explicitly building cluster-aware numbers on our 15-fold split using `data/pdb_cluster_map.json`:**\n- ProtAttBA: GroupKFold by cluster ID, not random KFold (15 jobs: 5 folds × 3 seeds)\n- PPAC: GroupKFold by cluster ID, not random KFold (5 folds)\n- RDE-Network: cluster-aware FOLD2PDBS, not the Luo hand-curated split (5 folds)\n-…",
       "tags": [
         "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:56:14.620Z",
-      "text": "Right — that's exactly why I dispatched the 4 retrain agents just now. Let me confirm what's currently in the paper/master table so we don't ship leaky numbers.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:56:07.359Z",
-      "text": "GearBind blocked — repo is inference-only (no train script, no FoldX mutant PDBs, needs separate torch1.8/torchdrug env — multi-day install). Marking N/A in cluster-aware column; will keep the published Luo-split number with a footnote. Waiting on ProtAttBA, PPAC, RDE-Network agents.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:55:30.092Z",
-      "text": "4 retrain agents launched in parallel (ProtAttBA, GearBind, PPAC, RDE-Network). Embedding analysis resubmitted as job 33376196. Now I'll wait for agent completions while monitoring cluster state.\n\nCurrent state: 15 Tsuboyama LoRA jobs still running (ep 4-5/5), 5 ProteinGym LoRA jobs running, ESM-IF+SaProt on Tsuboyama running, embedding analysis resubmitted, 4 baseline retrain agents dispatched.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:54:05.962Z",
-      "text": "Now dispatching the 4 retrain agents in parallel. Each needs the full context to modify the harness and submit the jobs.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:53:43.407Z",
-      "text": "Good, I have a clean template. Let me write the embedding sbatch script and resubmit while dispatching baseline agents in parallel.",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:53:16.675Z",
-      "text": "Now I'll dispatch the 4 retrain agents in parallel and simultaneously resubmit the embedding analysis job.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:42:50.950Z",
-      "text": "Audit agent dispatched. Will return with:\n\n- Training data used (SKEMPI v2 / S1131 / Luo split / custom)\n- Exact split protocol (random K-fold, leave-one-complex, mmseqs cluster at what threshold)\n- Whether they used homology clustering at all\n- Reported ρ on which split\n- 1-5 priority score for \"should we actually run this on our 15-fold cluster-aware split\"\n\n**Expected answer**: most of these probably used either (a) random mutation-level K-fold (worst, full homology leakage) or (b) leave-one-complex-out at the PDB level (our old protocol, moderate leakage). **Very few will have used actual mmseqs cluster-aware splits** — that's StaB-ddG's contribution and one reason their paper stood out.\n\nOnce the audit lands, I'll spawn execution agents for the 2-3 highest-priority models and spam low-priority parallel jobs. The honest paper story will then be **\"We evaluate on a 30%-identity cluste…",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:38:30.089Z",
-      "text": "Embedding analysis submitted (job **33376055**). Now your question about supervised sequence-based baselines.\n\n## **You're right — we're missing supervised sequence-only comparisons.**\n\nThe current SKEMPI comparison column set is:\n- **Zero-shot sequence**: ESM-2, ESM-1v, ProtBert, Tranception, SaProt — these are all pretrained LMs scored via log P ratios, NO task-specific training\n- **Supervised structural**: StaB-ddG, GearBind (literature), ThermoMPNN (for stability) — all use 3D coordinates\n- **Supervised sequence**: **UN (unconstrained MLP on frozen ESM-2)** — that's our ablation, not a strong baseline\n- **Our model**: ΔPL frozen / ΔPL LoRA\n\n**What's missing: a supervised sequence-only ΔΔG predictor from the literature**, evaluated on our cluster-aware SKEMPI split.\n\nReal candidates we should add:\n\n| Model | Year | Arch | Training |\n|---|---|---|---|\n| **ProtAttBA** | 2024 Bioinf. | E…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:37:05.984Z",
-      "text": "Launching all 4 embedding analyses in parallel via a single sbatch job.",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:36:44.096Z",
-      "text": "## 30-min update — **first full-Tsuboyama LoRA DPL fold complete**\n\n**tsub_f0s0 DPL ep 5/5: ρ = +0.7635** (best yet). UN head now training. **Final DPL pooled should land ~+0.73-0.76.**\n\n| fold/seed | DPL final ρ |\n|---|---|\n| tsub_f0s0 | **+0.7635** ✓ done |\n| tsub_f4s2 | **+0.7348** ✓ done |\n| tsub_f2s0 | +0.7205 (ep 4/5) |\n\n**Tsuboyama K50 comparison table (current):**\n\n| Model | ρ |\n|---|---|\n| ProtBert zs | 0.269 |\n| ESM-1v zs | 0.271 |\n| ESM-2 650M zs | 0.389 |\n| ΔPL frozen | 0.691 |\n| UN frozen | 0.682 |\n| **ΔPL LoRA** | **~0.75** (3 folds done, climbing) |\n| ThermoMPNN (supervised structural) | **0.835** |\n\n**The honest narrative**: ΔPL LoRA beats all zero-shot sequence LMs by +0.36, the unconstrained MLP by +0.06, and lands ~0.08 below ThermoMPNN. **Best sequence-only stability predictor, second to a specialized supervised structural model.**\n\n## ProteinGym LoRA finally producin…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:35:49.558Z",
-      "text": "**You nailed the exact problem with the UMAP analysis.** Single-residue ESM-2 embeddings at mutated positions cluster primarily by **protein identity** — because the ESM-2 context vector at position i in protein X is drawn from a very different region of ESM-2's 1280-dim space than position j in protein Y, regardless of whether they're at binding interfaces.\n\nThe binding ΔΔG signal is **first-order dominated** by:\n1. Which protein (massive variance)\n2. Which local structural environment (large variance — core vs surface vs interface)\n3. Which substitution (small variance — the thing we actually care about)\n\nIf you UMAP the raw embedding, you see the protein clusters, not the binding effect.\n\n## What to do instead (ordered by scientific defensibility)\n\n**Option A — Mt−Wt perturbation embeddings (my recommendation)**\nFor each mutation, compute:\n```\ndelta_emb_i = ESM-2(mt_seq)[pos_i] − ESM-…",
-      "tags": [
         "model"
       ]
     }
