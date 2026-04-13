@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T12:22:22Z",
+  "generated_at": "2026-04-13T12:52:25Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2294,
-    "assistant_turns": 3416,
+    "user_turns": 2302,
+    "assistant_turns": 3427,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T12:02:50.378Z"
+    "last_ts": "2026-04-13T12:35:09.400Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,14 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T12:35:02.454Z",
+      "text": "**StaB-ddG on BindingGym (zero-shot inference):** Mean |ρ| = **0.20** across 10 assays. All anti-correlated (sign expected — their predictions are ΔΔG, BindingGym scores are fitness). Per-assay range 0.05-0.36.\n\n| Model on BindingGym (LOAEO across 16 assays) | mean |ρ| |\n|---|---|\n| StaB-ddG (zero-shot, all 10 assays) | **0.20** |\n| ESM-2 zero-shot | ~0.22 (from earlier blitz) |\n| ESM-1v zero-shot | ~0.22 |\n| ProtBert zero-shot | ~0.21 |\n| **DPL LoRA (trained per fold)** | **0.276** |\n| **UN LoRA (trained per fold)** | **0.294** |\n\nOur LoRA-trained models edge out StaB-ddG zero-shot on BindingGym, but the comparison is unfair (StaB-ddG didn't get to train on the other 15 BindingGym assays).\n\n## Other completions\n\n**stab_lora (FireProt LoRA) TIMED OUT** at 5h. Got 2 of 3 seeds done:\n- Seed 0 best ρ ≈ +0.34\n- Seed 1 best ρ ≈ +0.357 at ep 12 (still climbing)\n- Mean (2 seeds): ~+0.35 — beats…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T12:02:43.816Z",
       "text": "## 🎯 THE FINAL HONEST HEADLINE\n\n**15-of-15 cluster-aware LoRA SKEMPI OOF complete. This is the leakage-free number.**\n\n```\nCluster-aware 15-fold LoRA OOF (n=7677)\n  ΔPL LoRA (cluster-aware training)  ρ = +0.3405\n  \nIntersection with StaB-ddG test (n=1433)\n  ΔPL LoRA (honest)                  ρ = +0.3100\n  StaB-ddG alone                     ρ = +0.5419\n  \nBest blend α=0.2                     ρ = +0.5641  ← NEW HEADLINE\n  Δρ vs StaB alone: +0.0222 [+0.011, +0.033]  p < 10⁻⁴\n```\n\n## The full three-column protocol comparison\n\n| Protocol | ΔPL alone | StaB alone | Ensemble | α* | Δρ over StaB |\n|---|---|---|---|---|---|\n| Loose OOF (PDB GKF, leaky) | +0.510 | +0.525 | **+0.592** | 0.5 | **+0.066** |\n| Strict post-hoc filter | +0.427 | +0.531 | +0.573 | 0.3 | +0.042 |\n| **15-fold cluster-aware (honest)** | **+0.310** | **+0.542** | **+0.5641** | **0.2** | **+0.022** |\n\n**The honest leakage-fre…",
@@ -391,13 +399,6 @@
       "tags": [
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:46:29.791Z",
-      "text": "Going aggressive. Installing torch_geometric first (needed for ESM-IF), then launching ~20+ zero-shot jobs across all models × all datasets.",
-      "tags": [
-        "note"
       ]
     }
   ]
