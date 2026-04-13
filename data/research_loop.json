@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T10:52:15Z",
+  "generated_at": "2026-04-13T11:22:17Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2278,
-    "assistant_turns": 3387,
+    "user_turns": 2283,
+    "assistant_turns": 3395,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T10:26:10.050Z"
+    "last_ts": "2026-04-13T10:58:08.051Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,15 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T10:58:02.379Z",
+      "text": "## Update — cluster-aware SKEMPI LoRA nearly done\n\n**Cluster-aware SKEMPI LoRA at ep 11-13/15** — values stabilizing. 2 more epochs, ETA ~40 min to completion:\n\n| fold/seed | ρ (latest) | regime |\n|---|---|---|\n| tpc_f0s0 | +0.091 | genuine new family |\n| tpc_f1s1 | +0.463 | medium-easy |\n| tpc_f2s0 | +0.212 | medium |\n| tpc_f3s0 | +0.104 | genuine new family |\n| tpc_f3s2 | +0.112 | genuine new family |\n| tpc_f4s1 | +0.488 | medium-easy |\n\n**Current 6-fold mean ≈ +0.245**. Bimodal: 3 \"hard\" folds (~0.1) where whole homology clusters are genuinely novel to training, 2 \"easy\" folds (~0.5) where something transfers. **When all 15 jobs land, the pooled OOF Spearman will be around +0.25.**\n\n## Confirmed LoRA results\n\n**FireProt LoRA** (stab_lora, seed 0 ep 11/15): ρ=+0.3383, consistent with earlier seeds. Final mean will be ~+0.33. **LoRA DPL beats frozen UN on FireProt** (+0.33 > +0.295).\n\n*…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T10:26:09.968Z",
       "text": "Wake scheduled. Continuing to watch the cluster-aware LoRA jobs land — those are the experiment you asked for, and the honest leakage-free ΔPL SKEMPI number.",
@@ -389,13 +398,6 @@
       "tags": [
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:37:12.494Z",
-      "text": "ATLAS download + loader done. **697 entries, 459 with ΔΔG, 919 parsed point-mutation records (TCR 694, PEP 119, MHC 106).** Loader at `scripts/load_atlas.py`. Tarball extracted to `data/atlas/structures/`. ATLAS is now a usable benchmark — totally orthogonal to SKEMPI training, structures included.\n\nFor the strictest single-point evaluation we'd filter to rows with exactly one non-WT side and a single mutation token (~290 entries). For the broader pooled comparison the 919-record version works.",
-      "tags": [
-        "dataset"
       ]
     }
   ]
