@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T20:23:24Z",
+  "generated_at": "2026-04-13T20:53:29Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2412,
-    "assistant_turns": 3590,
+    "user_turns": 2416,
+    "assistant_turns": 3596,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T20:07:30.793Z"
+    "last_ts": "2026-04-13T20:38:55.203Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,14 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T20:38:48.609Z",
+      "text": "## 30-min update\n\n**Tsuboyama full 30k LoRA strong after ep 2:**\n\n| fold/seed | ep | DPL ρ |\n|---|---|---|\n| tsub_f0s0 | 2 | **+0.7342** ↑ (from +0.6837 ep 1) |\n| tsub_f1s1 | 1 | +0.5820 |\n| tsub_f2s0 | 1 | +0.6411 |\n| tsub_f4s1 | 2 | +0.6972 |\n\n**Trending toward pooled ρ ≈ +0.70** across the 15 full-Tsuboyama LoRA jobs — consistent with the frozen-feature DPL +0.6906. LoRA isn't meaningfully improving Tsuboyama (consistent with other stability findings). Still 3 more epochs + UN head to go per job. Each epoch ~2300-2900s (~45 min). ETA ~5-6h.\n\n**ProteinGym pgm2 LoRA still at ep 1/3** after 1:30h — ~70 min/epoch × 3 epochs × 2 heads = ~7h. 8h walltime tight but fits. 4-5 of the 5 resubmits should land clean results.\n\n**24 jobs running.** No action needed — just monitoring.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T20:07:19.394Z",
       "text": "## 30-min update\n\n**New jobs finished:**\n\n| Job | Result |\n|---|---|\n| `deltapot_atlas_lora` (33359429) | **COMPLETED** in 4:37h — full 5 seeds × 5 folds DPL+UN on ATLAS |\n| `stabddg_atlas` (33369181) | COMPLETED in 7:48, **873 predictions written** (but residue-renumbering collision drops join to 25 matched rows → suspicious ρ=+0.74 on the matched subset) |\n| `zs_saprot_atlas` (33369180) | **FAILED** again after the env fix — a different error. Need to diagnose. |\n| `mhc_baselines` (33369182) | **ran a previous version** and wrote `ESM-1v.csv`/`ESM-2-650M.csv`/`ProtBert.csv` for the 96-mutation MHC-only subset |\n\n## Clean numbers on ATLAS MHC-only (n=96)\n\n| Model | ρ (zero-shot) |\n|---|---|\n| **ESM-1v** | **+0.021** |\n| **ESM-2-650M** | **−0.131** |\n| **ProtBert** | **−0.159** |\n\n**All effectively zero on the HLA heavy-chain mutation subset.** Confirms that pre-trained sequence LMs carr…",
@@ -387,14 +395,6 @@
       "text": "**Root cause of all the failures**: `OSError: [Errno 122] Disk quota exceeded` in home directory (~/.cache/torch and ~/.cache/huggingface). Your home quota is full. Every model download is hitting it.\n\nThis is exactly what you just asked me to fix. Setting up loop-local caches for HF and torch, resubmitting.",
       "tags": [
         "error"
-      ]
-    },
-    {
-      "ts": "2026-04-13T14:59:54.246Z",
-      "text": "## First control comparison (3 models so far)\n\n| Model | n | alone ρ | StaB alone | Best blend | α* | Δρ vs StaB | p |\n|---|---|---|---|---|---|---|---|\n| **ΔPL LoRA cluster-aware** | 1433 | +0.310 | +0.542 | **+0.564** | 0.2 | **+0.022** | <10⁻⁴ |\n| ΔPL LoRA loose-OOF (leaky) | 1410 | +0.510 | +0.525 | +0.592 | 0.5 | +0.066 | <10⁻⁴ |\n| **ESM-2 zero-shot** | 1491 | −0.004 | +0.531 | +0.531 | **0.0** | **0.000** | 1.0 |\n\n**Control 1: ESM-2 zero-shot adds ZERO when ensembled with StaB-ddG.** The optimal weight is α=0 (pure StaB). So the +0.022 lift from our cluster-aware ΔPL is **NOT a generic \"any sequence model helps\" effect**. ESM-2 alone has no signal on SKEMPI binding (ρ≈0), and the blend correctly assigns it zero weight. **Our ΔPL contributes something real that ESM-2 zero-shot does not.**\n\nWhen ESM-1v / ProtBert / Tranception / SaProt SKEMPI / ESM-2-3B / GearBind land from the agent…",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
