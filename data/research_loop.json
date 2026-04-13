@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T20:53:29Z",
+  "generated_at": "2026-04-13T21:23:56Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2416,
-    "assistant_turns": 3596,
+    "user_turns": 2431,
+    "assistant_turns": 3617,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T20:38:55.203Z"
+    "last_ts": "2026-04-13T21:23:06.015Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,64 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T21:23:00.628Z",
+      "text": "**ThermoMPNN is set up and running** (job **33370196**). Critical findings from the agent's smoke test:\n\n- **Smoke test on 20 rows**: **Pearson = −0.834, Spearman = −0.792** — that's a MASSIVE correlation magnitude, just with a sign flip (ThermoMPNN uses destabilizing-positive, ours uses negative; easy post-hoc flip).\n- **If this holds on the full 27,345 matched rows, ThermoMPNN will land around |ρ| ≈ +0.79** on Tsuboyama — substantially above our ΔPL +0.69 and LoRA DPL ~+0.73.\n\n**That means ThermoMPNN beats our ΔPL on Tsuboyama stability.** Which makes sense: ThermoMPNN is a supervised structural stability model specifically trained for this task. The honest paper claim is **we're within ~0.10 ρ of ThermoMPNN on stability, tied with StaB-ddG category methods on binding, and win on sample efficiency at small k≤2 multi-site mutations**.\n\n**Coverage**: 27,345 / 30,000 Tsuboyama rows match…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:19:41.356Z",
+      "text": "## 30-min update\n\n**Tsuboyama LoRA is actually improving over frozen!**\n\n| fold/seed | ep | DPL ρ |\n|---|---|---|\n| tsub_f0s0 | 3/5 | **+0.7492** ↑ |\n| tsub_f2s2 | 2/5 | +0.6841 |\n| tsub_f4s2 | 3/5 | +0.7189 |\n\nStill climbing at ep 3. **Pooled will likely settle around +0.72-0.75** — meaningfully higher than the frozen +0.6906. **LoRA helps on Tsuboyama** (unlike the earlier 8k partial run where DPL ≈ UN ≈ +0.60). This is the first positive LoRA signal on stability since FireProt (where LoRA gave +0.34 vs frozen +0.23).\n\nIf this holds, the story becomes: **LoRA lifts DPL on BOTH stability benchmarks** (FireProt +0.10, Tsuboyama +0.05), which is a real LoRA contribution to report.\n\n**ProteinGym pgm2 still crawling** — ep 1-2/3 for most. CP2C9 at +0.388 (best), ACE2 at +0.193 (worst). Per-epoch ~65 min, will just squeak in 3 epochs before wall clock.\n\n**Tsuboyama zero-shot baselines (33370…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:15:22.966Z",
+      "text": "Paper-update agent dispatched. It will:\n\n1. **Aggregate** every (model, dataset) Spearman from `results/` into a master CSV — covering all 12 datasets and ~11 models\n2. **Remove** the non-essential figures (stratification, cycle violation, synthetic, crossover, UMAP, per-dataset bars, sample-size curve), keeping only the Gemini schematic\n3. **Replace** the separate tables and figures with ONE comprehensive benchmark table\n4. **Update abstract + discussion** with the honest **cluster-aware +0.564 ensemble** number (not the leaky +0.592) and the DPL scope claim (wins on PPI binding, ties on diverse stability, hurts on dense stability)\n5. **Rebuild the PDF** and report the final page count\n\nShould take ~10-15 min. While it runs, 23 SLURM jobs continue in parallel, including the Tsuboyama zero-shot baseline blitz (pending) and the 15 full-Tsuboyama LoRA jobs (ep 2/5).",
+      "tags": [
+        "result",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:13:26.844Z",
+      "text": "**Agent A done**: job **33370078** queued (PD). `zeroshot_seq_tsuboyama.py` will score all 30k Tsuboyama rows with ESM-2 650M, ESM-1v, and ProtBert (masked-marginal log ratio). Incremental summary.json writes so a late crash preserves earlier model results. Once it runs we'll have the first apples-to-apples sequence-zero-shot numbers on the same 30k subsample we trained on. ETA ~2-3h.",
+      "tags": [
+        "error",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:12:25.511Z",
+      "text": "**3 Tsuboyama baseline agents dispatched:**\n\n1. **Agent A** — ESM-2 / ESM-1v / ProtBert zero-shot on Tsuboyama (sequence-only, uses the `sequence` column in the CSV)\n2. **Agent B** — ESM-IF + SaProt on Tsuboyama (downloads ~14 MB AlphaFold PDBs from Zenodo, uses structure + foldseek)\n3. **Agent C** — ThermoMPNN install + run (the published SOTA supervised stability model; the one number that would be most informative for \"are we ≥ SOTA on monomer stability\")\n\n**22 SLURM jobs still running** — 15 full-Tsuboyama LoRA at ep 1-2/5, 5 pgm2 ProteinGym LoRA, FireProt LoRA, S1131 LoRA, SAbDab-v2 LoRA, AbBiBench LoRA, 2 ESM-IF CPU holdouts.\n\nWhen all 3 agent jobs land (~3-6h), I'll rerun `ensemble_all_models_vs_stab.py` variant for stability — for each (model, dataset) we'll have:\n\n| Dataset | DPL frozen | DPL LoRA | UN frozen | UN LoRA | ESM-2 zs | ESM-1v zs | ProtBert zs | ESM-IF | SaProt | The…",
+      "tags": [
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:11:25.208Z",
+      "text": "Launching 3 agents to run baselines on Tsuboyama in parallel.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:10:43.925Z",
+      "text": "**Honest answer: we're NOT beating other models on Tsuboyama.** We're proving a *scope* claim, not a *superiority* claim. Let me be precise.\n\n## What Tsuboyama K50 is\n\n- Tsuboyama et al. 2023 Nature paper — **monomeric protein folding stability** from cDNA-display proteolysis. Not binding, not PPI, just \"how stable is this mutant compared to its WT fold\".\n- ~850k mutations in the full dataset, 30k in our filtered subset (362 diverse proteins).\n\n## What we're actually proving with it\n\n**Narrative**: \"DPL doesn't *hurt* on large, diverse stability data — unlike FireProt where DPL lost to UN because 5 dominant DMS scans created dense per-protein contexts.\"\n\n| Dataset | DPL | UN | Result |\n|---|---|---|---|\n| FireProt (dense, 5 DMS scans dominate) | +0.234 | +0.295 | DPL LOSES by 0.06 |\n| **Tsuboyama (diverse, 362 proteins)** | **+0.6906** | **+0.6820** | **DPL ≈ UN (tie, +0.009)** |\n\n**This…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T20:38:48.609Z",
       "text": "## 30-min update\n\n**Tsuboyama full 30k LoRA strong after ep 2:**\n\n| fold/seed | ep | DPL ρ |\n|---|---|---|\n| tsub_f0s0 | 2 | **+0.7342** ↑ (from +0.6837 ep 1) |\n| tsub_f1s1 | 1 | +0.5820 |\n| tsub_f2s0 | 1 | +0.6411 |\n| tsub_f4s1 | 2 | +0.6972 |\n\n**Trending toward pooled ρ ≈ +0.70** across the 15 full-Tsuboyama LoRA jobs — consistent with the frozen-feature DPL +0.6906. LoRA isn't meaningfully improving Tsuboyama (consistent with other stability findings). Still 3 more epochs + UN head to go per job. Each epoch ~2300-2900s (~45 min). ETA ~5-6h.\n\n**ProteinGym pgm2 LoRA still at ep 1/3** after 1:30h — ~70 min/epoch × 3 epochs × 2 heads = ~7h. 8h walltime tight but fits. 4-5 of the 5 resubmits should land clean results.\n\n**24 jobs running.** No action needed — just monitoring.",
@@ -342,59 +400,6 @@
       "text": "**ESM-1v failure**: max sequence length is 1024 but some SKEMPI chains are 1269 residues. Need to truncate. Also resubmitting.",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T18:58:18.970Z",
-      "text": "Fix is clear: `get_sequence_loss` calls `batch_converter(batch)` without device, so coords land on CPU while model is on CUDA. Forcing ESM-IF to CPU (simplest and robust — the model is only 142M params):",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T18:56:46.799Z",
-      "text": "## Status update\n\n**19 jobs running, 1 unfinished agent** (GearBind still setting up).\n\n**Things that WORKED:**\n\n| Model | Number | n | Status |\n|---|---|---|---|\n| ESM-2 3B zero-shot SKEMPI | ρ = **−0.129** | 7876 | done |\n| ProtBert zero-shot SKEMPI | ρ = **−0.118** | 7876 | done |\n\nBoth large sequence LMs land near zero on SKEMPI (sign conventions mean absolute ~0.12 of noise). **Consistent with the earlier finding that zero-shot sequence LMs carry no SKEMPI binding signal.**\n\n**Things that FAILED THIS ROUND:**\n\n1. **ESM-1v SKEMPI** — still failing (exit 1 after 2:40). Probably a model-loading issue specific to ESM-1v.\n2. **ESM-IF on all 8 datasets** — the biotite fix worked (skipped_load=12 only, vs 4956 before), but a NEW bug: `\"Expected all tensors to be on the same device, cuda:0 and cpu\"` during scoring. Coords tensor is on CPU while model is on CUDA. One-line fix.\n3. **Trancepti…",
-      "tags": [
-        "error",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T18:17:05.274Z",
-      "text": "**3 new dataset LoRA jobs running** (Agent 3 done):\n\n| Job | Dataset | Rows | Groups | Notes |\n|---|---|---|---|---|\n| 33359429 deltapot_atlas_lora | ATLAS TCR-pMHC | 214 | 21 PDBs | IMGT-numbered, fixed via wt-anchor matching |\n| 33359430 deltapot_sabdab_pairs_v2_lora | SAbDab pairs v2 | 317 | 64 antigens | Chothia numbering, capped at 50 subs/pair |\n| 33359431 deltapot_abbibench_lora | AbBiBench | 6068 | 16 assays | DMS, capped 400/assay |\n\nAll three use LoRA r=16 + 5-fold × 5-seed GKF + DPL/UN heads. ETAs around 2-5h.\n\nThis adds **3 more honest binding benchmarks** to the per-dataset table. ATLAS especially is interesting — totally novel TCR-pMHC structures, no SKEMPI overlap, and is exactly the \"MHC structural data\" you've been asking for since the beginning.\n\nNow we have a comprehensive picture:\n\n| Dataset | DPL_LoRA result | When |\n|---|---|---|\n| SKEMPI cluster-aware | +0.310 alon…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T18:06:42.776Z",
-      "text": "Wake scheduled. Continuing to monitor agents and jobs.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T18:06:35.734Z",
-      "text": "**12 new jobs submitted with scratch caches** — ESM-1v, ESM-2 3B, Tranception, ProtBert on SKEMPI + ESM-IF on all 8 datasets. All downloads now go to `/global/scratch/users/sergiomar10/loop/{hf_cache,torch_cache}`, nothing touches `/global/home`.\n\n## Current progress (31 jobs running)\n\n**Running from earlier submissions:**\n- 13 `pgym_*` — parallel ProteinGym LoRA LOAEO (from Agent 5's resubmit — one job per held-out assay, much smarter than the serial version)\n- 3 `deltapot_*_lora` — ATLAS + SAbDab v2 + AbBiBench LoRA DPL (from Agent 3)\n- `s1131_lora_clu`, `dpl_s1131_lora`, `stab_lora` — resubmitted from Agent 5\n\n**Just submitted (scratch caches):**\n- 4 sequence baselines on SKEMPI (ESM-1v, ESM-2 3B, Tranception, ProtBert)\n- 8 ESM-IF runs (one per dataset)\n\n**Finished while I wasn't looking:**\n- `tsuboyama_lora_8k` — TIMED OUT at 6h. Got ~3 fold-seeds done (DPL ~+0.60, UN ~+0.60, tie)\n-…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T18:05:34.011Z",
-      "text": "Understood — NOT touching /global/home. Setting env vars to redirect all future downloads to `/global/scratch/users/sergiomar10/loop/hf_cache` and resubmitting.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T18:01:33.695Z",
-      "text": "**Root cause of all the failures**: `OSError: [Errno 122] Disk quota exceeded` in home directory (~/.cache/torch and ~/.cache/huggingface). Your home quota is full. Every model download is hitting it.\n\nThis is exactly what you just asked me to fix. Setting up loop-local caches for HF and torch, resubmitting.",
-      "tags": [
-        "error"
       ]
     }
   ]
