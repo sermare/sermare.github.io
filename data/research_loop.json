@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T17:53:00Z",
+  "generated_at": "2026-04-13T18:23:04Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2328,
-    "assistant_turns": 3463,
+    "user_turns": 2343,
+    "assistant_turns": 3490,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T14:59:54.408Z"
+    "last_ts": "2026-04-13T18:17:05.715Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,43 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T18:17:05.274Z",
+      "text": "**3 new dataset LoRA jobs running** (Agent 3 done):\n\n| Job | Dataset | Rows | Groups | Notes |\n|---|---|---|---|---|\n| 33359429 deltapot_atlas_lora | ATLAS TCR-pMHC | 214 | 21 PDBs | IMGT-numbered, fixed via wt-anchor matching |\n| 33359430 deltapot_sabdab_pairs_v2_lora | SAbDab pairs v2 | 317 | 64 antigens | Chothia numbering, capped at 50 subs/pair |\n| 33359431 deltapot_abbibench_lora | AbBiBench | 6068 | 16 assays | DMS, capped 400/assay |\n\nAll three use LoRA r=16 + 5-fold × 5-seed GKF + DPL/UN heads. ETAs around 2-5h.\n\nThis adds **3 more honest binding benchmarks** to the per-dataset table. ATLAS especially is interesting — totally novel TCR-pMHC structures, no SKEMPI overlap, and is exactly the \"MHC structural data\" you've been asking for since the beginning.\n\nNow we have a comprehensive picture:\n\n| Dataset | DPL_LoRA result | When |\n|---|---|---|\n| SKEMPI cluster-aware | +0.310 alon…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T18:06:42.776Z",
+      "text": "Wake scheduled. Continuing to monitor agents and jobs.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T18:06:35.734Z",
+      "text": "**12 new jobs submitted with scratch caches** — ESM-1v, ESM-2 3B, Tranception, ProtBert on SKEMPI + ESM-IF on all 8 datasets. All downloads now go to `/global/scratch/users/sergiomar10/loop/{hf_cache,torch_cache}`, nothing touches `/global/home`.\n\n## Current progress (31 jobs running)\n\n**Running from earlier submissions:**\n- 13 `pgym_*` — parallel ProteinGym LoRA LOAEO (from Agent 5's resubmit — one job per held-out assay, much smarter than the serial version)\n- 3 `deltapot_*_lora` — ATLAS + SAbDab v2 + AbBiBench LoRA DPL (from Agent 3)\n- `s1131_lora_clu`, `dpl_s1131_lora`, `stab_lora` — resubmitted from Agent 5\n\n**Just submitted (scratch caches):**\n- 4 sequence baselines on SKEMPI (ESM-1v, ESM-2 3B, Tranception, ProtBert)\n- 8 ESM-IF runs (one per dataset)\n\n**Finished while I wasn't looking:**\n- `tsuboyama_lora_8k` — TIMED OUT at 6h. Got ~3 fold-seeds done (DPL ~+0.60, UN ~+0.60, tie)\n-…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T18:05:34.011Z",
+      "text": "Understood — NOT touching /global/home. Setting env vars to redirect all future downloads to `/global/scratch/users/sergiomar10/loop/hf_cache` and resubmitting.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T18:01:33.695Z",
+      "text": "**Root cause of all the failures**: `OSError: [Errno 122] Disk quota exceeded` in home directory (~/.cache/torch and ~/.cache/huggingface). Your home quota is full. Every model download is hitting it.\n\nThis is exactly what you just asked me to fix. Setting up loop-local caches for HF and torch, resubmitting.",
+      "tags": [
+        "error"
+      ]
+    },
     {
       "ts": "2026-04-13T14:59:54.246Z",
       "text": "## First control comparison (3 models so far)\n\n| Model | n | alone ρ | StaB alone | Best blend | α* | Δρ vs StaB | p |\n|---|---|---|---|---|---|---|---|\n| **ΔPL LoRA cluster-aware** | 1433 | +0.310 | +0.542 | **+0.564** | 0.2 | **+0.022** | <10⁻⁴ |\n| ΔPL LoRA loose-OOF (leaky) | 1410 | +0.510 | +0.525 | +0.592 | 0.5 | +0.066 | <10⁻⁴ |\n| **ESM-2 zero-shot** | 1491 | −0.004 | +0.531 | +0.531 | **0.0** | **0.000** | 1.0 |\n\n**Control 1: ESM-2 zero-shot adds ZERO when ensembled with StaB-ddG.** The optimal weight is α=0 (pure StaB). So the +0.022 lift from our cluster-aware ΔPL is **NOT a generic \"any sequence model helps\" effect**. ESM-2 alone has no signal on SKEMPI binding (ρ≈0), and the blend correctly assigns it zero weight. **Our ΔPL contributes something real that ESM-2 zero-shot does not.**\n\nWhen ESM-1v / ProtBert / Tranception / SaProt SKEMPI / ESM-2-3B / GearBind land from the agent…",
@@ -362,44 +399,6 @@
       "tags": [
         "result",
         "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T08:34:38.190Z",
-      "text": "**SaProt SKEMPI zero-shot: ρ = +0.1824 on 4956 mutations.** First real structure-aware zero-shot baseline on SKEMPI that's correlated in the right direction. Between zero-shot ESM (~0) and supervised methods.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T08:33:26.778Z",
-      "text": "**Clustering done: 349 PDBs → 129 clusters** (top-5 cluster sizes: 30/23/21/17/15, 80 singletons). All 15 `tpc_*` cluster-aware LoRA jobs started on schedule.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T08:12:04.412Z",
-      "text": "torch_geometric/scatter/sparse/cluster stack is in. Resubmitted all 8 ESM-IF zero-shot jobs (33358372-79). **30 jobs running total.** Queue includes:\n\n- 15 cluster-aware LoRA OOF (pending clustering completion)\n- 8 ESM-IF zero-shot (resubmitted)\n- 8 SaProt zero-shot (still running from the first blitz)\n- 4 StaB-ddG inference (S1131, PPB-Affinity, BindingGym, ... + dependencies)\n- 3 LoRA DPL (S1131/pgym/bgym)\n- 7 ProtAttBA folds\n- Tsuboyama stability run\n- Clustering job (running)\n- stab_lora (FireProt LoRA)\n- zs_all_pgym / zs_all_bgym (3-model zero-shot blitz)",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T08:02:45.371Z",
-      "text": "**15 cluster-aware LoRA jobs queued**, waiting on the clustering job (33358347) via SLURM `--dependency=afterok`. As soon as the cluster map lands, all 15 start in parallel.\n\nPipeline:\n1. **33358347** (clustering, ~5 min on compute node) → produces `data/pdb_cluster_map.json`\n2. **33358348-62** (`tpc_f{0..4}s{0..2}`) wait for step 1, then start training with `--cluster-file` — so SKEMPI's 5-fold split becomes **cluster-aware instead of PDB-aware**, eliminating the homology leakage.\n3. After ~3.5h: 15 fold/seed npz files land in `results/twophase_oof_cluster/`\n4. I'll then run `assemble_twophase_oof_ensemble.py` on that directory → **the truly fair cluster-aware LoRA OOF ensemble number**\n\nThis is the exact experiment that answers \"what's our real SOTA claim without any leakage\".",
-      "tags": [
-        "dataset",
-        "model",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T08:02:15.033Z",
-      "text": "Launcher for the cluster-aware LoRA OOF — 15 parallel jobs, each with `--cluster-file`, dependent on the clustering job finishing:",
-      "tags": [
         "model"
       ]
     }
