@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T21:23:56Z",
+  "generated_at": "2026-04-13T21:54:06Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2431,
-    "assistant_turns": 3617,
+    "user_turns": 2463,
+    "assistant_turns": 3659,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T21:23:06.015Z"
+    "last_ts": "2026-04-13T21:53:22.191Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,73 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T21:53:22.191Z",
+      "text": "**Partial yes** — and here's a clear breakdown of what's in flight vs what still needs launching.\n\n## Running right now (22 jobs)\n\n| Track | Fills which cell(s) |\n|---|---|\n| 15 × `tsub_f*s*` (Tsuboyama LoRA ep 3/5) | Tsuboyama K50 **UN LoRA + ΔPL LoRA** cells |\n| `zsstruct_tsub` (33370590) | Tsuboyama **ESM-IF + SaProt** cells |\n| `zsseq_tsub` (33370078, pending) | Tsuboyama **ESM-2 / ESM-1v / ProtBert zero-shot** cells |\n| `thermompnn_tsub` (33370196, pending) | Tsuboyama **ThermoMPNN** (extra column we'd add) |\n| 5 × `pgm2_*` (ProteinGym LoRA) | ProteinGym binding LOAEO **ΔPL LoRA** cell |\n| `zsif3_bindinggym` | BindingGym LOAEO **ESM-IF** cell |\n\n## NOT running, but cells still missing in the master table\n\n| Row | Missing model columns | Why |\n|---|---|---|\n| **SKEMPI cluster-aware 15-fold** | ESM-IF, Tranception | No jobs submitted |\n| SKEMPI cluster-aware | **UN frozen/LoRA cluster…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:39:10.084Z",
+      "text": "**All leakage language removed from the paper.** 12 pages, 1.66 MB, clean build.\n\n- **Abstract**: dropped the \"loose → strict correction\" framing, now just states the cluster-aware numbers directly (ΔPL LoRA +0.377, ensemble +0.573, Δρ +0.014 over StaB-ddG alone).\n- **Master table caption**: removed the \"we deliberately omit loose splits\" disclaimer.\n- **\"Reading the master table\"** paragraph (§6): cut the entire \"(ii) Leakage correction is large\" bullet and the \"(iii) Ensemble gain shrinks\" bullet. Now just: (i) ΔPL wins on PPI binding via the k-stratification signature; (ii) ensemble adds non-zero signal.\n- **\"End-to-end LoRA\"** paragraph: just reports the cluster-aware pooled +0.377, no mention of the loose +0.51 comparison.\n- **Discussion \"Three-regime scope picture\"**: same three regimes, but the numbers cited are now only the cluster-aware ones.\n- **Discussion \"Leakage correction i…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:38:25.204Z",
+      "text": "One last mention in the appendix (line 801 describes the matched StaB-ddG cluster split experiment). Removing that too for consistency:",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:38:05.547Z",
+      "text": "The remaining two mentions of \"loose\" (line 648 = \"lower bound is loose at moderate $n$\") and \"leakage-free\" (line 804 = appendix about cluster-aware matched split) are legitimate (math usage + appendix) — keeping those. Rebuilding:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:35:55.788Z",
+      "text": "Now the table caption and the big \"Reading the master table\" paragraph:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:35:02.904Z",
+      "text": "## Paper updated — 12 pages, cluster-aware rows only\n\n**Table now shows ONLY leakage-aware rows:**\n\n| Section | Rows kept |\n|---|---|\n| **PPI binding** | SKEMPI **cluster-aware 15-fold** (n=7698), S1131 **cluster-aware** (n=711), BindingGym LOAEO (27820), ProteinGym LOAEO (13 assays), ATLAS TCR-pMHC (459), ATLAS MHC-only (96), SAbDab v2 (633) |\n| **Monomeric stability** | Tsuboyama K50 GKF (29902, 362 diverse proteins), FireProt **homologue-free** (350) |\n\n**Rows removed** (leaky):\n- SKEMPI loose 5-fold GKF OOF — n=7826, was showing inflated ΔPL LoRA +0.453\n- SKEMPI ∩ StaB-ddG test (n=1410) — used the loose OOF predictions, same inflation\n- S1131 (PDB-GKF loose, n=1131) — kept only the cluster-aware version\n- FireProt curated GKF — kept only the published homologue-free split\n\n**Caption updated** explicitly to say we omit non-cluster-aware splits and point to the discussion section which…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:34:29.800Z",
+      "text": "**Structure-aware Tsuboyama agent done**: job **33370590** queued. 100% of 30k rows resolve to AF2 PDBs. ESM-IF and SaProt ready to score.\n\nNow rebuilding the paper PDF with the leakage-inflated rows removed:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:34:06.205Z",
+      "text": "Now update the table caption + the paragraph that discusses these rows:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T21:29:36.293Z",
+      "text": "**Paper updated — 12 pages, honest headline.**\n\n## Master comparison table ρ (condensed)\n\n| Dataset | n | ESM2 zs | ESM1v | SaProt | StaB-ddG | UN | DPL-frozen | **DPL-LoRA** | **Ensemble** |\n|---|---|---|---|---|---|---|---|---|---|\n| SKEMPI loose OOF | 7826 | −0.145 | −0.103 | +0.182 | +0.525 | +0.351 | +0.436 | **+0.453** | +0.592 |\n| **SKEMPI cluster-aware** | 7698 | −0.145 | −0.103 | +0.182 | +0.559 | — | — | **+0.377** | **+0.573** |\n| SKEMPI ∩ StaB test | 1410 | — | — | — | +0.525 | — | — | +0.510 | +0.592 |\n| FireProt curated | 4998 | −0.272 | −0.168 | +0.151 | — | +0.465 | **+0.365** | — | — |\n| FireProt homologue-free | 350 | −0.220 | +0.087 | — | — | +0.295 | +0.234 | — | — |\n| **Tsuboyama K50** | 29902 | — | — | — | — | +0.682 | **+0.691** | — | — |\n| S1131 | 1131 | — | — | — | — | +0.470 | +0.317 | +0.306 | — |\n| BindingGym LOAEO | 27820 | — | — | +0.090 | — | +0.294 | — | +…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T21:23:00.628Z",
       "text": "**ThermoMPNN is set up and running** (job **33370196**). Critical findings from the agent's smoke test:\n\n- **Smoke test on 20 rows**: **Pearson = −0.834, Spearman = −0.792** — that's a MASSIVE correlation magnitude, just with a sign flip (ThermoMPNN uses destabilizing-positive, ours uses negative; easy post-hoc flip).\n- **If this holds on the full 27,345 matched rows, ThermoMPNN will land around |ρ| ≈ +0.79** on Tsuboyama — substantially above our ΔPL +0.69 and LoRA DPL ~+0.73.\n\n**That means ThermoMPNN beats our ΔPL on Tsuboyama stability.** Which makes sense: ThermoMPNN is a supervised structural stability model specifically trained for this task. The honest paper claim is **we're within ~0.10 ρ of ThermoMPNN on stability, tied with StaB-ddG category methods on binding, and win on sample efficiency at small k≤2 multi-site mutations**.\n\n**Coverage**: 27,345 / 30,000 Tsuboyama rows match…",
@@ -330,76 +397,6 @@
       "tags": [
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:08:28.515Z",
-      "text": "**New data point from the ATLAS aggregator:**\n\n**ATLAS LoRA (21 fold/seed entries, seeds 0–3 + partial seed 4):**\n- **DPL LoRA: ρ = +0.100 ± 0.215** (rmse 1.21)\n- **UN LoRA: ρ = −0.010 ± 0.236** (rmse 1.35)\n\n**DPL beats UN by Δρ = +0.110 on ATLAS TCR-pMHC** — but the variance is huge (ρ per fold from −0.19 to +0.35). This is the third positive DPL signal:\n1. **SKEMPI k=2 stratification**: +0.19 advantage (theorem signature)\n2. **Tsuboyama K50 frozen**: +0.009 tie-ish win\n3. **ATLAS TCR-pMHC LoRA**: +0.11 (partial, needs seeds 4/5 to complete)\n\n**Also submitted**: `zs_seq_atlas` (job 33369011) — ESM-2/ESM-1v/ProtBert zero-shot on ATLAS sequences. Will give us the zero-shot baselines to add to the ATLAS comparison.\n\n**Aggregator noted**: the `deltapot_atlas_lora` job never wrote `results.json` because it didn't finish cleanly (interrupted at seed 4 fold 0). Summary at `results/atlas_summar…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:07:55.330Z",
-      "text": "## LoRA on DMS fitness — already running, here's what we have\n\n**Yes, LoRA is running on both BindingGym and ProteinGym binding subsets.** Status:\n\n### BindingGym (completed earlier)\n16-assay leave-one-assay-out, LoRA r=16 on ESM-2 650M, 5 epochs/fold, 1 seed:\n- **DPL LoRA: ρ = +0.2761 ± 0.181** across 16 assays\n- **UN LoRA: ρ = +0.2943 ± 0.217** across 16 assays\n- **Tied (UN +0.02 ahead).** DPL prior provides no advantage on DMS fitness.\n\n### ProteinGym binding (first wave TIMED OUT, just resubmitted)\nFirst-wave 13 parallel `pgym_*` jobs hit their 4h walltime at ep 3-4/5 with only 1 seed done. Partial DPL LoRA ρ at ep 3-4:\n\n| Assay | DPL LoRA partial |\n|---|---|\n| ACE2 | +0.198 |\n| CCR5 | +0.290 |\n| CP2C9 | +0.414 |\n| RASK-DARPin | +0.339 |\n| SPIKE SARS2 | +0.216 |\n\n**Partial mean ≈ +0.29** — roughly tied with Tranception Medium zero-shot (~+0.31).\n\n**Just resubmitted** 5 of the top ass…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:06:40.477Z",
-      "text": "## BindingGym / ProteinGym conclusion\n\n**All 13 pgym_* parallel jobs TIMED OUT at 4h.** They got 3-4 epochs of one seed each before hitting wall clock (each epoch ~66 min). Partial DPL results at ep 3:\n\n| Held-out assay | DPL LoRA partial ρ |\n|---|---|\n| ACE2 | +0.198 |\n| CCR5 | +0.290 |\n| CP2C9 | +0.414 |\n| RASK-DARPin | +0.339 |\n| SPIKE SARS2 | +0.216 (ep 4) |\n\n**Mean ≈ +0.29** (partial, not converged). Compare:\n- Tranception Medium zero-shot: ~+0.31\n- ESM-2 / ESM-1v / ProtBert zero-shot: ~+0.22\n- BindingGym LoRA LOAEO (completed): DPL +0.276, UN +0.294\n\n**Honest conclusion**: On **DMS fitness** benchmarks (BindingGym, ProteinGym binding), **our LoRA ΔPL is roughly tied with zero-shot Tranception and slightly better than ESM zero-shot, but DPL doesn't outperform UN**. DPL's advantage is *thermodynamic* binding ΔΔG (SKEMPI-style) — it doesn't translate to fitness-based DMS assays where…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:03:47.086Z",
-      "text": "**Yes, ATLAS is running** — `deltapot_atlas_lora` job 33359429 has been training for 3:50h, almost done (on seed 4 of 5, final fold). Sample DPL: seed 4 fold 0 ρ=+0.2623. Small dataset (459 items), high variance per fold.\n\n**3 new agents dispatched for ATLAS right now** (in addition to the running job):\n\n1. **StaB-ddG on ATLAS** — builds the mutation CSV handling TCR/PEP/MHC chain splits, submits inference\n2. **SaProt + ESM-IF on ATLAS** — fixes the PDB-dir path and runs zero-shot structure-aware models\n3. **ESM-2/ESM-1v/ProtBert sequence zero-shot on ATLAS** + aggregate current ATLAS results into a summary markdown\n\n**24 jobs running** (15 full-Tsuboyama LoRA + 8 ESM-IF CPU resubmits + ESM-1v SKEMPI resubmit + ATLAS LoRA + SAbDab/AbBiBench + the other ongoing runs). When the 3 new agents land they'll add ~5 more ATLAS-specific jobs.\n\nOnce everything finishes, the ATLAS comparison table…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:02:46.841Z",
-      "text": "**ATLAS IS ALREADY RUNNING** — and far along. Job `deltapot_atlas_lora` (33359429) has been training for 3:50h. Current state: seed 4 fold 0 (the final seed group) — essentially done with the run.\n\nPartial DPL results from the log:\n- seed 4 fold 0 DPL: ρ = **+0.2623** / r = +0.2475\n\nATLAS is small (459 items) so per-fold variance is huge. Let me spawn 3 agents to run additional models on ATLAS in parallel:",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:02:13.157Z",
-      "text": "**15 parallel full-Tsuboyama LoRA jobs launched.** Each does **1 fold × 1 seed × 5 epochs × (DPL + UN) heads** on the full 30k rows. Wall budget 8h each.\n\n- Per-epoch cost (24k rows train): ~48 min → 5 epochs × 2 heads × 48 min = 480 min = 8h per fold-seed. Tight but fits the walltime.\n- **Parallel total wall time: ~8h**, not 120h serial.\n- 5 folds × 3 seeds = 15 jobs = full experimental design.\n\n**25 jobs running now.** When these 15 land in ~8h I'll aggregate per-fold/seed results into the final **full 30k Tsuboyama LoRA DPL vs UN** comparison. Currently we have:\n\n- **Frozen full 30k**: DPL +0.6906, UN +0.6820 (tie, DPL slightly ahead)\n- **LoRA 8k subsample (partial)**: DPL +0.60, UN +0.60 (tie)\n- **LoRA full 30k**: coming in ~8h",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:01:51.280Z",
-      "text": "Good — loop structure intact. Now launching 15 parallel jobs on full 30k:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:00:21.527Z",
-      "text": "**24 jobs running.** Now your actual questions:\n\n## Is LoRA good?\n\n**Yes — LoRA helps on 3 of 4 datasets I can measure directly.**\n\n| Dataset | Frozen DPL | LoRA DPL | Δ |\n|---|---|---|---|\n| **SKEMPI loose OOF** (leaky) | +0.459 | +0.510 | **+0.051** ✓ |\n| **SKEMPI cluster-aware** (honest) | n/a | **+0.310** | — |\n| **FireProt homologue-free** | +0.234 | **~+0.34** | **+0.106** ✓ |\n| **Tsuboyama K50 8k** | **+0.690** (full 30k) | ~+0.60 (8k subsample) | ≈ tie (smaller data) |\n| **S1131** (PDB-GKF) | +0.317 | ≈+0.31 | ≈ tie |\n\n**On the cluster-aware SKEMPI setting, the drop from loose +0.510 → honest +0.310 tells us ~0.20 ρ of LoRA's apparent improvement was sequence-memorization**, not genuine binding signal. The remaining +0.08 LoRA lift over frozen-strict (frozen strict +0.257 → LoRA strict +0.427) is real.\n\n## Are we beating sequence-based models?\n\n**Yes — ΔPL is the best sequence-on…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T18:59:20.270Z",
-      "text": "**ESM-1v failure**: max sequence length is 1024 but some SKEMPI chains are 1269 residues. Need to truncate. Also resubmitting.",
-      "tags": [
-        "dataset"
       ]
     }
   ]
