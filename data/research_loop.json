@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T07:51:18Z",
+  "generated_at": "2026-04-13T07:51:55Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2225,
-    "assistant_turns": 3295,
+    "user_turns": 2227,
+    "assistant_turns": 3300,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T07:51:09.336Z"
+    "last_ts": "2026-04-13T07:51:53.481Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,14 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T07:51:40.169Z",
+      "text": "StaB-ddG is ready. Launching StaB-ddG on 3 datasets + Tsuboyama LoRA DPL simultaneously:",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T07:51:08.124Z",
       "text": "**Tsuboyama K50 unlocked.** Downloaded + joined + sanity-checked:\n- 389,068 single mutations, 412 WT proteins, all with sequences\n- Joined FireProt megascale file → **390k rows with `aa_seq` column** at `data/stability/fireprotdb_megascale_ddg_with_seq.csv` (96.2% coverage)\n- **CAUTION: sign flipped.** Tsuboyama `ddG_ML` is `dG_mutant − dG_wt` (destabilizing = negative), opposite of FireProt DDG. Handle when scoring.\n\nThis is the biggest stability benchmark available. 390k vs our 5k FireProt curated. Launching a LoRA ΔPL run on it now (subsampled to 20k for tractability, 5 seeds, leave-protein-out GKF):",
@@ -384,13 +392,6 @@
     {
       "ts": "2026-04-13T07:08:12.576Z",
       "text": "Stability+LoRA submitted as 33358216. Now your figure critique.\n\n## Re: Figure 1\n\n**Yes, I agree completely.** Here's my honest read:\n\n**What works in the current Gemini Figure 1:**\n- The \"problem & constraints\" panel on the left — visually clear that R1/R2/R3 are graph identities, and the mutation cycle motivation is intuitive\n- The ΔPL architectural-constraint and CCT loss-based-regularizer center panels — this is the load-bearing schematic content\n- It establishes the \"two complementary learners\" framing on one page\n\n**What's wrong with it:**\n1. **Right column is redundant theatre.** The \"Theoretical Sample-Complexity Advantage\" plot duplicates Figure \\ref{fig:sample_size}, and the \"Empirical Validation\" bar chart duplicates Figure \\ref{fig:per_dataset}. Putting results in Figure 1 is bad form — the figure is supposed to *introduce* the method, not pre-spoil the experiments.\n2. **\"Key…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:07:31.677Z",
-      "text": "Launching the LoRA stability job and then addressing the figure critique.",
       "tags": [
         "model"
       ]
