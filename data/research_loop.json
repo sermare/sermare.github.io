@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T08:52:01Z",
+  "generated_at": "2026-04-13T09:22:03Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2258,
-    "assistant_turns": 3354,
+    "user_turns": 2267,
+    "assistant_turns": 3369,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T08:50:56.228Z"
+    "last_ts": "2026-04-13T09:22:02.513Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,46 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T09:21:55.800Z",
+      "text": "## 30-min update\n\n**Cluster-aware SKEMPI LoRA (the big one)** — at **ep 5/15** for all 15 jobs:\n\n| Fold/seed | ep 5 ρ |\n|---|---|\n| tpc_f0s0 | +0.086 |\n| tpc_f2s1 | +0.161 |\n| tpc_f4s2 | +0.438 |\n\n**Per-fold variance is huge** as expected — cluster-aware folds hold out whole homology families, some \"hard\" (fold 0 seed 0 ~0.09) and some \"easy\" (fold 4 seed 2 ~0.44). Peak numbers usually come at ep 9-12, still 10 epochs to go. ETA ~2h. When these land the pooled OOF will tell us the honest cluster-aware ΔPL SKEMPI number.\n\n**FireProt LoRA** (`stab_lora`, 2:13 elapsed) — seed 0 and 1 done, seed 2 at ep 2/15\n- **Best so far: seed 1 ρ=+0.3434** (vs frozen DPL +0.234, UN +0.295)\n- **LoRA closes the DPL<UN gap on FireProt!** +0.34 > UN +0.29. LoRA genuinely helps even on stability once context is contextual enough.\n\n**ProteinGym LOAEO LoRA** (`dpl_pgym_lora`, 1:53 elapsed)\n- First fold `ACE2_HU…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T09:02:07.167Z",
+      "text": "Both tracks launched:\n\n- **33358538** `tsuboyama_lora` — running on A40, 8h wall, **LoRA rerun of the +0.6906 frozen DPL Tsuboyama number**\n- **33358539** `s1131_cluster` — completed in 7s, cluster map at `data/s1131_cluster_map.json`\n- **33358541** `s1131_lora_clu` — now released (dependency cleared), 4h wall, **cluster-aware S1131 LoRA** replacing the PDB-GKF version\n\nPlus the 15 cluster-aware SKEMPI `tpc_*` jobs still at ~50 min elapsed. Pipeline complete.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T08:59:07.766Z",
+      "text": "Agent dispatched. It's writing:\n1. **Tsuboyama LoRA trainer** — 30k rows, 362 protein groups, 5-fold × 3-seed, LoRA r=16 — the LoRA rerun of the +0.6906 frozen DPL result\n2. **S1131 cluster-aware variant** — cluster the 112 S1131 PDBs, modify the existing S1131 LoRA trainer to use cluster groups, run with dependency\n\nBoth will be running in the background in ~2 min.\n\n**Meanwhile the summary of what's cleanly running:**\n\n| Track | Jobs | Status |\n|---|---|---|\n| SKEMPI cluster-aware LoRA OOF | 15 jobs (`tpc_f0s0`..`tpc_f4s2`) | running, 46 min elapsed, ETA ~3h — **this is the definitive leakage-free ΔPL SKEMPI number** |\n| FireProt LoRA | `stab_lora` 1 job | running, 1:41 elapsed |\n| ProteinGym LoRA LOAEO | `dpl_pgym_lora` | running, 1:21 elapsed |\n| BindingGym LoRA LOAEO | `dpl_bgym_lora` | running, 1:21 elapsed |\n| S1131 LoRA (PDB GKF, flawed) | `dpl_s1131_lora` | running, 1:21 elapsed…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T08:58:22.827Z",
+      "text": "## Your \"no LoRA, no leak\" numbers\n\nJust computed from the existing frozen OOF. Two protocols, two numbers:\n\n| Protocol | n | Frozen DPL | Frozen UN | Notes |\n|---|---|---|---|---|\n| Matched StaB cluster split (retrain from scratch on their 119 train PDBs) | 2125 | **+0.376** | +0.410 | Already in paper §6.5 |\n| Frozen OOF on strict cluster-free subset of StaB test | **250** | **+0.2574** | **+0.2936** | UN beats frozen DPL here |\n| Loose OOF intersection (WITH cluster leakage) | 1782 | +0.5294 | +0.3664 | Inflated by ~0.27 ρ |\n\n**Big reveal**: frozen DPL drops by **−0.27 ρ** on the strict slice (+0.5294 → +0.2574). LoRA DPL only drops by −0.08 ρ (+0.510 → +0.427). **The LoRA fine-tune is doing substantial work that frozen features cannot** — LoRA's genuine binding signal is ~0.17 higher than frozen DPL on the honest subset.\n\n**Also notable**: on the leakage-free slice, **frozen DPL (+0.…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T08:57:16.626Z",
+      "text": "Two quick answers and then launching the reruns.\n\n## \"How did we perform without LoRA AND no leak?\"\n\nTwo datapoints we already have:\n\n1. **Matched StaB-ddG cluster split, frozen DPL retrained on their 119 train PDBs from scratch: ρ = +0.376** (paper §6.5). This is the cleanest \"no LoRA, no leakage\" SKEMPI number we have — already in the paper.\n\n2. **Frozen DPL OOF (PDB GKF) filtered to the leakage-free subset** — let me compute this right now on the already-saved `results/deltapot_strat_s5/per_item_preds.npz`:",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T08:50:49.876Z",
       "text": "## Update (30 min in)\n\n**Compute landed:**\n\n**Tsuboyama K50 stability — flipping the negative result**\n- **DPL +0.6906 ± 0.014** vs **UN +0.6820 ± 0.018** on 30k mutations / 362 groups / 5-fold × 3-seed GKF\n- DPL finally wins on stability — by a hair (+0.009), but consistent across all 15 folds\n- Mechanism confirmed: Tsuboyama has 362 diverse mini-proteins (vs FireProt's 125 with 5 dominant DMS scans). Sparse contexts → DPL's additive prior works. The agent's hypothesis was right.\n\n**SaProt zero-shot (3 datasets working, 5 failed with empty loaders)**\n| Dataset | n | ρ |\n|---|---|---|\n| SKEMPI | 4956 | **+0.1824** |\n| FireProt test | 347 | +0.1511 |\n| BindingGym | 35116 | −0.0895 (anti) |\n| ATLAS, PPB-Affinity, ProteinGym, S1131, SAbDab-v2 | — | empty (loader bug) |\n\n**ESM-IF: all 8 runs wrote 0 predictions.** biotite PDB parser failing silently. Needs debugging.\n\n**StaB-ddG on S1131**\n-…",
@@ -355,46 +395,6 @@
       "text": "SAbDab pair extractor v2 done — **633 pairs across 97 antigens** (vs 88 in v1). Output at `data/sabdab_pairs_v2.csv`. ddG mean −0.13, range [−6.4, +5.9] kcal/mol.\n\nThe agent flagged the right caveat: median pair has 94 mutations, so it's more \"antibody A vs antibody B against same antigen\" than point-mutation ΔΔG. Recommends two evaluation regimes:\n- **Tight subset** (n_mut ≤10, 89 pairs) — true point-mutation\n- **Full set** (633 pairs) — antibody-vs-antibody\n\nBoth are usable for ΔPL since cycle-consistency holds regardless of mutation count, but the tight subset is the cleaner head-to-head with SKEMPI/AB-Bind. We'd report both with separate splits.",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:30:48.294Z",
-      "text": "FoldX agent: can't install (registration-walled), but **we already have precomputed FoldX predictions** at `baselines/stabddg/foldx.csv` (4457 rows, columns `#Pdb,Mutation(s)_cleaned,ddG,ddG_pred`). Same source as the StaB-ddG paper's FoldX comparison. I'll join this against our SKEMPI test set when computing the final comparison table — that gives FoldX as a free baseline without any new compute.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:30:40.220Z",
-      "text": "All-results aggregator landed — `results/all_results_table.csv` with 32 rows covering everything we have so far (SKEMPI OOF DPL/UN/RES/ensemble, FireProt frozen at d∈{256,512,1024}, S1131, FireProt zero-shot, ProteinGym Tranception per-assay). It re-runs cleanly so I can call it again as the LoRA pgym/bgym/s1131 jobs finish.\n\nNotable adds I hadn't seen:\n- **DPL_frozen on SKEMPI = 0.4592, UN_frozen = 0.3513, RES_frozen = 0.4372** — the original 5-seed pooled OOF, all from `deltapot_strat_s5/per_item_preds.npz`. Confirms our headline frozen ΔPL number.\n- **DPL_LoRA OOF pooled = 0.4856** — slightly higher than the 0.4845 I reported earlier, comes from the rigorously-aligned pooled assembly.\n\nStill waiting on: dpl_pgym_lora (33358279), dpl_bgym_lora (33358280), dpl_s1131_lora (33358281), zs_all_pgym (33358227), zs_all_bgym (33358228), 7 ProtAttBA folds, dpl_pgym frozen (33358214), dpl_bgym f…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:30:24.841Z",
-      "text": "**Critical finding from the baseline survey: GearBind exists and may beat us.**\n\nThe agent dug up a baseline I had completely missed:\n\n> **GearBind ensemble** (Cai et al. 2024, Nature Communications) — structural geometric GNN, gets **ρ = +0.643 / r = +0.729** on a 5-fold split-by-complex over SKEMPI v2 (n=5729). The non-ensemble version: ρ=+0.498. With pretraining: ρ=+0.525. **Ensemble: +0.643.**\n\nThat number is on a *split-by-complex* protocol (cluster-aware in the strong sense — entire PDBs held out per fold), so it's directly comparable to a leakage-free ΔΔG number. Our **strict matched-cluster ensemble lands at +0.5731** — **~0.07 below GearBind's reported +0.643**.\n\n**The honest read**: we may NOT be SOTA on SKEMPI binding ΔΔG once you account for GearBind. The previous \"we beat StaB-ddG\" claim is correct on the StaB cluster split, but GearBind on its own split outperforms our stri…",
-      "tags": [
-        "result",
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:29:34.184Z",
-      "text": "Auto-appendix table generator finished. Output at `paper/auto_appendix_tables.tex` (3 booktabs tables: per-dataset DPL vs UN, zero-shot baselines, ensemble blends). Empty rows for `dpl_proteingym_loaeo`, `dpl_bindinggym_loaeo`, `zeroshot_all_pgym`, `zeroshot_all_bgym` — those are still running, will re-run the aggregator when they land. The agent flagged that the ensemble p-values used a single pooled point estimate; we should bootstrap before publishing — already have that infrastructure in `assemble_twophase_oof_ensemble.py`.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:29:17.890Z",
-      "text": "Critical finding from the stability investigation agent. Saving to memory and moving on.\n\n**Mechanism nailed**: FireProt curated isn't 125 proteins — it's 5 dominant DMS scans (1PGA alone = 18.8% of items, top-5 PDBs = 53%). 41% of mutations sit at positions with ≥5 alt-AAs already measured. **DPL's `h(b,c) − h(a,c)` is per-position additive: when a single context $c$ has many alternative substitutions, DPL collapses to a 20×20 per-protein substitution matrix and structurally cannot fit per-position residuals** (which is the dominant signal — buried residues have 2.6× the |ΔΔG| of exposed ones).\n\nThe smoking gun: the agent re-checked the SKEMPI test set and found **DPL's win-rate over UN drops from 50% at singleton positions to 30% at positions with >5 mutations**. Same mechanism, smaller dose in SKEMPI. **DPL is a sparse-context regularizer: it helps when each context has 1–2 mutations…",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
