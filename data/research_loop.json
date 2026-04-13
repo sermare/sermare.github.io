@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T22:54:21Z",
+  "generated_at": "2026-04-13T23:24:32Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2508,
-    "assistant_turns": 3717,
+    "user_turns": 2590,
+    "assistant_turns": 3842,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T22:54:02.501Z"
+    "last_ts": "2026-04-13T23:23:10.896Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,172 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-13T23:23:10.833Z",
+      "text": "Sleeping 20 min. Current state: master table + paper prose updated with Tsuboyama DPL LoRA +0.744; 51 jobs in queue; 2 agents still running (PPAC impl, RDE clone/setup).",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:23:03.821Z",
+      "text": "Paper prose updated with new Tsuboyama LoRA number. Now I'll sleep until the next natural checkpoint — PPAC agent should be close (CPU-fast), and the first ProtAttBA jobs (currently running ~15min) should have some epoch telemetry.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:22:33.799Z",
+      "text": "Queue state: 15 tsub LoRA (R), 15 RDE cluster (PD), 15 ProtAttBA cluster (PD+R), 5 ProteinGym (R), 1 zsstruct resubmit = 51 jobs.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:21:19.419Z",
+      "text": "**Tsuboyama K50 LoRA DPL: ρ = +0.7437 ± 0.0134 (n=12/15 finished)** — beats frozen DPL (+0.691) by +0.053, still -0.09 below ThermoMPNN (+0.835).",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:20:33.717Z",
+      "text": "Figure landed — panel (D) shows the cluster-aware OOF scatter at ρ=+0.340. Panels A/B/C are essentially null UMAP views (as predicted — single-residue embeddings won't stratify by ΔΔG through 2D). Let me set up aggregation for Tsuboyama LoRA so we can populate the table once all 15 jobs finish.",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:20:07.006Z",
+      "text": "zsstruct_tsub resubmitted with 14h walltime (33376475). Now let me check the embedding figure visually and update any aggregation.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:18:18.966Z",
+      "text": "12/15 DPL runs landed. Tsuboyama LoRA DPL mean so far ≈ **+0.745** (beats frozen +0.691 by ~+0.054, was the paper's recorded gap).",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:17:59.108Z",
+      "text": "Tsuboyama fold0 DPL: **ρ=+0.7635** (beats frozen +0.691 by +0.07). Training UN baseline now. Let me survey all fold progress.",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:17:10.189Z",
+      "text": "Autonomous loop: taking stock of the job queue and harvesting any results that have landed.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:11:35.802Z",
+      "text": "RDE-Network: 5 cluster-aware fold jobs queued (33376414–18, seed=2022). Fold sizes: 1007/1506/1369/1144/1680 mutations. 4 PDBs missing from cluster map assigned as singletons. Waiting on PPAC training and the RDE sibling (clone/setup) agents.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:08:39.701Z",
+      "text": "PPAC features are READY — `results/ppac_benchmark/ppac_s1131_delta_features.npz` (1129 rows × 1280d ESM-2 650M delta, 43 clusters, `fea_dim=1280`). No blockers. The training agent will pick this up. Waiting on PPAC training agent, RDE clone+setup, and RDE code/launch.\n\n(User's `GAEncoder` line selection is RDE-Network's EGNN backbone at `rde/models/rde_ddg.py:44` — noted, the sibling RDE agents are already working in that repo tree.)",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:05:18.311Z",
+      "text": "All 4 retrain agents dispatched in parallel, plus 15 ProtAttBA jobs re-submitted directly (33376304–20). Running now:\n- **ProtAttBA**: 15 sbatch jobs queued\n- **PPAC**: 2 agents (impl + feature prep)\n- **RDE-Network**: 2 agents (clone/env + code adaptation/launch)\n- **GearBind**: dropped (inference-only repo)\n\nWill report as each completes.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:03:37.458Z",
+      "text": "15 ProtAttBA jobs re-queued (33376304–20). Now dispatching 2 agents for PPAC and 2 for RDE-Network in parallel.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:03:20.901Z",
+      "text": "I'll re-submit ProtAttBA directly (harness is ready, jobs were just cancelled) and dispatch 2 agents each for PPAC and RDE-Network.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:01:38.778Z",
+      "text": "Honest breakdown — none of these are big. They're all small MLPs or small GNNs on top of pretrained features. The cost is infrastructure/preprocessing pain, not compute.\n\n| Model | Size | Actual training cost | Pain points |\n|---|---|---|---|\n| **ProtAttBA** | ~1–5 M params. Small attention head over ESM-2 / ProtBert embeddings (features precomputed). | **Tiny.** 1 fold ≈ 20–60 min on 1 A40. 15 jobs total parallel = done in an afternoon. | None real — we already had the GroupKFold harness working minutes ago. |\n| **PPAC** | 5-layer MLP on ProtT5 + ESM-2 delta features (~100k–1M params). | **Trivially small.** CPU in minutes per fold. | Need to compute ProtT5 + ESM-2 delta features up front if not cached. |\n| **RDE-Network / DDGPred** (Luo) | EGNN, ~2–5 M params, trained on rotamer density estimator pre-features. | **Small-to-medium.** 1 fold ~1–3 h on 1 A40. | Need RDE pretraining or the…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:58:26.580Z",
+      "text": "Cancelled. Here's the consensus training-protocol report for the supervised PPI ΔΔG baselines, pulled from the earlier literature audit:\n\n## Published SKEMPI baselines — training protocol consensus\n\n| Model | Split protocol | Cluster-aware? | Published ρ | Notes |\n|---|---|---|---|---|\n| **ProtAttBA** (Lin 2024) | Random 10-fold `KFold(shuffle=True)` on S1131 | No (HIGH leak) | **~0.78** on S1131 | Aux 30% mmseqs split gives a lower number |\n| **PPAC** (Zhang 2025) | Random 5-fold CV on S1131 + holdout | No (HIGH leak) | ρ not cleanly reported | ProtT5+ESM2 MLP |\n| **RDE-Network / DDGPred** (Luo ICLR 2023) | Hand-curated split-by-complex (FOLD2PDBS) | No (MED-HIGH) | **0.40–0.47** on Luo 5-fold | De facto \"LOCO\" standard |\n| **GearBind-P** (Cai NatComm 2024) | Same split-by-complex as Luo | No (MED-HIGH) | **0.525 ± 0.046** (single); 0.643 ensemble | No mmseqs clustering |\n| **mCSM-PPI2*…",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:57:23.902Z",
+      "text": "Understood — cancelling retrains and compiling published numbers instead.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:56:59.406Z",
+      "text": "ProtAttBA: 15 jobs queued (33376226–40) on S1131 cluster-aware (1129 rows, 42 clusters, 5 folds × 3 seeds). Waiting on PPAC and RDE-Network.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:56:52.009Z",
+      "text": "Confirmed and clarified. Current state of the paper's master table (`paper/main.tex:540-569`):\n\n**No leaky supervised baseline numbers are in the paper right now.** The table has only:\n- 6 zero-shot columns (ESM2, ESM1v, ProtBert, Tranception, ESM-IF, SaProt)\n- 1 structural supervised: StaB-ddG (already on our cluster-disjoint n=230)\n- 3 ΔPL variants (UN, frozen, LoRA)\n- 1 ensemble\n\nThere is **no ProtAttBA / PPAC / GearBind / RDE-Network column** — that's the \"no supervised sequence comparison\" gap you flagged earlier.\n\n**The 3 retrain agents running right now are explicitly building cluster-aware numbers on our 15-fold split using `data/pdb_cluster_map.json`:**\n- ProtAttBA: GroupKFold by cluster ID, not random KFold (15 jobs: 5 folds × 3 seeds)\n- PPAC: GroupKFold by cluster ID, not random KFold (5 folds)\n- RDE-Network: cluster-aware FOLD2PDBS, not the Luo hand-curated split (5 folds)\n-…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:56:14.620Z",
+      "text": "Right — that's exactly why I dispatched the 4 retrain agents just now. Let me confirm what's currently in the paper/master table so we don't ship leaky numbers.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:56:07.359Z",
+      "text": "GearBind blocked — repo is inference-only (no train script, no FoldX mutant PDBs, needs separate torch1.8/torchdrug env — multi-day install). Marking N/A in cluster-aware column; will keep the published Luo-split number with a footnote. Waiting on ProtAttBA, PPAC, RDE-Network agents.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:55:30.092Z",
+      "text": "4 retrain agents launched in parallel (ProtAttBA, GearBind, PPAC, RDE-Network). Embedding analysis resubmitted as job 33376196. Now I'll wait for agent completions while monitoring cluster state.\n\nCurrent state: 15 Tsuboyama LoRA jobs still running (ep 4-5/5), 5 ProteinGym LoRA jobs running, ESM-IF+SaProt on Tsuboyama running, embedding analysis resubmitted, 4 baseline retrain agents dispatched.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:54:05.962Z",
+      "text": "Now dispatching the 4 retrain agents in parallel. Each needs the full context to modify the harness and submit the jobs.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
       "ts": "2026-04-13T22:53:43.407Z",
       "text": "Good, I have a clean template. Let me write the embedding sbatch script and resubmit while dispatching baseline agents in parallel.",
       "tags": [
@@ -214,184 +380,6 @@
       "text": "**You nailed the exact problem with the UMAP analysis.** Single-residue ESM-2 embeddings at mutated positions cluster primarily by **protein identity** — because the ESM-2 context vector at position i in protein X is drawn from a very different region of ESM-2's 1280-dim space than position j in protein Y, regardless of whether they're at binding interfaces.\n\nThe binding ΔΔG signal is **first-order dominated** by:\n1. Which protein (massive variance)\n2. Which local structural environment (large variance — core vs surface vs interface)\n3. Which substitution (small variance — the thing we actually care about)\n\nIf you UMAP the raw embedding, you see the protein clusters, not the binding effect.\n\n## What to do instead (ordered by scientific defensibility)\n\n**Option A — Mt−Wt perturbation embeddings (my recommendation)**\nFor each mutation, compute:\n```\ndelta_emb_i = ESM-2(mt_seq)[pos_i] − ESM-…",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:00:41.576Z",
-      "text": "## 30-min update — huge Tsuboyama results\n\n**ThermoMPNN on Tsuboyama (27,247 rows): |ρ| = 0.8354** — **this is SOTA stability.** It beats us by ~0.14.\n\n**Zero-shot LMs on Tsuboyama (full 29,902 rows):**\n\n| Model | |ρ| |\n|---|---|\n| ESM-2 650M | **0.389** |\n| ESM-1v | 0.271 |\n| ProtBert | 0.269 |\n\n**ΔPL LoRA Tsuboyama at ep 4/5** (still climbing):\n- tsub_f0s0: +0.7599\n- tsub_f2s0: +0.7166 (ep 3)\n- tsub_f4s2: +0.7402\n\nPooled LoRA will land around **+0.74-0.75**.\n\n## Tsuboyama K50 comparison table (so far)\n\n| Model | ρ | Note |\n|---|---|---|\n| ProtBert zs | 0.269 | worst |\n| ESM-1v zs | 0.271 | |\n| ESM-2 650M zs | 0.389 | |\n| **ΔPL frozen** | **0.691** | ours |\n| **UN frozen** | **0.682** | tied with DPL |\n| **ΔPL LoRA** | ~**0.745** | ours (ep 4, climbing) |\n| **ThermoMPNN** | **0.835** | SOTA supervised structural |\n\n**Honest read**: On monomer stability ΔΔG (the largest public benchmark)…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:53:22.191Z",
-      "text": "**Partial yes** — and here's a clear breakdown of what's in flight vs what still needs launching.\n\n## Running right now (22 jobs)\n\n| Track | Fills which cell(s) |\n|---|---|\n| 15 × `tsub_f*s*` (Tsuboyama LoRA ep 3/5) | Tsuboyama K50 **UN LoRA + ΔPL LoRA** cells |\n| `zsstruct_tsub` (33370590) | Tsuboyama **ESM-IF + SaProt** cells |\n| `zsseq_tsub` (33370078, pending) | Tsuboyama **ESM-2 / ESM-1v / ProtBert zero-shot** cells |\n| `thermompnn_tsub` (33370196, pending) | Tsuboyama **ThermoMPNN** (extra column we'd add) |\n| 5 × `pgm2_*` (ProteinGym LoRA) | ProteinGym binding LOAEO **ΔPL LoRA** cell |\n| `zsif3_bindinggym` | BindingGym LOAEO **ESM-IF** cell |\n\n## NOT running, but cells still missing in the master table\n\n| Row | Missing model columns | Why |\n|---|---|---|\n| **SKEMPI cluster-aware 15-fold** | ESM-IF, Tranception | No jobs submitted |\n| SKEMPI cluster-aware | **UN frozen/LoRA cluster…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:39:10.084Z",
-      "text": "**All leakage language removed from the paper.** 12 pages, 1.66 MB, clean build.\n\n- **Abstract**: dropped the \"loose → strict correction\" framing, now just states the cluster-aware numbers directly (ΔPL LoRA +0.377, ensemble +0.573, Δρ +0.014 over StaB-ddG alone).\n- **Master table caption**: removed the \"we deliberately omit loose splits\" disclaimer.\n- **\"Reading the master table\"** paragraph (§6): cut the entire \"(ii) Leakage correction is large\" bullet and the \"(iii) Ensemble gain shrinks\" bullet. Now just: (i) ΔPL wins on PPI binding via the k-stratification signature; (ii) ensemble adds non-zero signal.\n- **\"End-to-end LoRA\"** paragraph: just reports the cluster-aware pooled +0.377, no mention of the loose +0.51 comparison.\n- **Discussion \"Three-regime scope picture\"**: same three regimes, but the numbers cited are now only the cluster-aware ones.\n- **Discussion \"Leakage correction i…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:38:25.204Z",
-      "text": "One last mention in the appendix (line 801 describes the matched StaB-ddG cluster split experiment). Removing that too for consistency:",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:38:05.547Z",
-      "text": "The remaining two mentions of \"loose\" (line 648 = \"lower bound is loose at moderate $n$\") and \"leakage-free\" (line 804 = appendix about cluster-aware matched split) are legitimate (math usage + appendix) — keeping those. Rebuilding:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:35:55.788Z",
-      "text": "Now the table caption and the big \"Reading the master table\" paragraph:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:35:02.904Z",
-      "text": "## Paper updated — 12 pages, cluster-aware rows only\n\n**Table now shows ONLY leakage-aware rows:**\n\n| Section | Rows kept |\n|---|---|\n| **PPI binding** | SKEMPI **cluster-aware 15-fold** (n=7698), S1131 **cluster-aware** (n=711), BindingGym LOAEO (27820), ProteinGym LOAEO (13 assays), ATLAS TCR-pMHC (459), ATLAS MHC-only (96), SAbDab v2 (633) |\n| **Monomeric stability** | Tsuboyama K50 GKF (29902, 362 diverse proteins), FireProt **homologue-free** (350) |\n\n**Rows removed** (leaky):\n- SKEMPI loose 5-fold GKF OOF — n=7826, was showing inflated ΔPL LoRA +0.453\n- SKEMPI ∩ StaB-ddG test (n=1410) — used the loose OOF predictions, same inflation\n- S1131 (PDB-GKF loose, n=1131) — kept only the cluster-aware version\n- FireProt curated GKF — kept only the published homologue-free split\n\n**Caption updated** explicitly to say we omit non-cluster-aware splits and point to the discussion section which…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:34:29.800Z",
-      "text": "**Structure-aware Tsuboyama agent done**: job **33370590** queued. 100% of 30k rows resolve to AF2 PDBs. ESM-IF and SaProt ready to score.\n\nNow rebuilding the paper PDF with the leakage-inflated rows removed:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:34:06.205Z",
-      "text": "Now update the table caption + the paragraph that discusses these rows:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:29:36.293Z",
-      "text": "**Paper updated — 12 pages, honest headline.**\n\n## Master comparison table ρ (condensed)\n\n| Dataset | n | ESM2 zs | ESM1v | SaProt | StaB-ddG | UN | DPL-frozen | **DPL-LoRA** | **Ensemble** |\n|---|---|---|---|---|---|---|---|---|---|\n| SKEMPI loose OOF | 7826 | −0.145 | −0.103 | +0.182 | +0.525 | +0.351 | +0.436 | **+0.453** | +0.592 |\n| **SKEMPI cluster-aware** | 7698 | −0.145 | −0.103 | +0.182 | +0.559 | — | — | **+0.377** | **+0.573** |\n| SKEMPI ∩ StaB test | 1410 | — | — | — | +0.525 | — | — | +0.510 | +0.592 |\n| FireProt curated | 4998 | −0.272 | −0.168 | +0.151 | — | +0.465 | **+0.365** | — | — |\n| FireProt homologue-free | 350 | −0.220 | +0.087 | — | — | +0.295 | +0.234 | — | — |\n| **Tsuboyama K50** | 29902 | — | — | — | — | +0.682 | **+0.691** | — | — |\n| S1131 | 1131 | — | — | — | — | +0.470 | +0.317 | +0.306 | — |\n| BindingGym LOAEO | 27820 | — | — | +0.090 | — | +0.294 | — | +…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:23:00.628Z",
-      "text": "**ThermoMPNN is set up and running** (job **33370196**). Critical findings from the agent's smoke test:\n\n- **Smoke test on 20 rows**: **Pearson = −0.834, Spearman = −0.792** — that's a MASSIVE correlation magnitude, just with a sign flip (ThermoMPNN uses destabilizing-positive, ours uses negative; easy post-hoc flip).\n- **If this holds on the full 27,345 matched rows, ThermoMPNN will land around |ρ| ≈ +0.79** on Tsuboyama — substantially above our ΔPL +0.69 and LoRA DPL ~+0.73.\n\n**That means ThermoMPNN beats our ΔPL on Tsuboyama stability.** Which makes sense: ThermoMPNN is a supervised structural stability model specifically trained for this task. The honest paper claim is **we're within ~0.10 ρ of ThermoMPNN on stability, tied with StaB-ddG category methods on binding, and win on sample efficiency at small k≤2 multi-site mutations**.\n\n**Coverage**: 27,345 / 30,000 Tsuboyama rows match…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:19:41.356Z",
-      "text": "## 30-min update\n\n**Tsuboyama LoRA is actually improving over frozen!**\n\n| fold/seed | ep | DPL ρ |\n|---|---|---|\n| tsub_f0s0 | 3/5 | **+0.7492** ↑ |\n| tsub_f2s2 | 2/5 | +0.6841 |\n| tsub_f4s2 | 3/5 | +0.7189 |\n\nStill climbing at ep 3. **Pooled will likely settle around +0.72-0.75** — meaningfully higher than the frozen +0.6906. **LoRA helps on Tsuboyama** (unlike the earlier 8k partial run where DPL ≈ UN ≈ +0.60). This is the first positive LoRA signal on stability since FireProt (where LoRA gave +0.34 vs frozen +0.23).\n\nIf this holds, the story becomes: **LoRA lifts DPL on BOTH stability benchmarks** (FireProt +0.10, Tsuboyama +0.05), which is a real LoRA contribution to report.\n\n**ProteinGym pgm2 still crawling** — ep 1-2/3 for most. CP2C9 at +0.388 (best), ACE2 at +0.193 (worst). Per-epoch ~65 min, will just squeak in 3 epochs before wall clock.\n\n**Tsuboyama zero-shot baselines (33370…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:15:22.966Z",
-      "text": "Paper-update agent dispatched. It will:\n\n1. **Aggregate** every (model, dataset) Spearman from `results/` into a master CSV — covering all 12 datasets and ~11 models\n2. **Remove** the non-essential figures (stratification, cycle violation, synthetic, crossover, UMAP, per-dataset bars, sample-size curve), keeping only the Gemini schematic\n3. **Replace** the separate tables and figures with ONE comprehensive benchmark table\n4. **Update abstract + discussion** with the honest **cluster-aware +0.564 ensemble** number (not the leaky +0.592) and the DPL scope claim (wins on PPI binding, ties on diverse stability, hurts on dense stability)\n5. **Rebuild the PDF** and report the final page count\n\nShould take ~10-15 min. While it runs, 23 SLURM jobs continue in parallel, including the Tsuboyama zero-shot baseline blitz (pending) and the 15 full-Tsuboyama LoRA jobs (ep 2/5).",
-      "tags": [
-        "result",
-        "model",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:13:26.844Z",
-      "text": "**Agent A done**: job **33370078** queued (PD). `zeroshot_seq_tsuboyama.py` will score all 30k Tsuboyama rows with ESM-2 650M, ESM-1v, and ProtBert (masked-marginal log ratio). Incremental summary.json writes so a late crash preserves earlier model results. Once it runs we'll have the first apples-to-apples sequence-zero-shot numbers on the same 30k subsample we trained on. ETA ~2-3h.",
-      "tags": [
-        "error",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:12:25.511Z",
-      "text": "**3 Tsuboyama baseline agents dispatched:**\n\n1. **Agent A** — ESM-2 / ESM-1v / ProtBert zero-shot on Tsuboyama (sequence-only, uses the `sequence` column in the CSV)\n2. **Agent B** — ESM-IF + SaProt on Tsuboyama (downloads ~14 MB AlphaFold PDBs from Zenodo, uses structure + foldseek)\n3. **Agent C** — ThermoMPNN install + run (the published SOTA supervised stability model; the one number that would be most informative for \"are we ≥ SOTA on monomer stability\")\n\n**22 SLURM jobs still running** — 15 full-Tsuboyama LoRA at ep 1-2/5, 5 pgm2 ProteinGym LoRA, FireProt LoRA, S1131 LoRA, SAbDab-v2 LoRA, AbBiBench LoRA, 2 ESM-IF CPU holdouts.\n\nWhen all 3 agent jobs land (~3-6h), I'll rerun `ensemble_all_models_vs_stab.py` variant for stability — for each (model, dataset) we'll have:\n\n| Dataset | DPL frozen | DPL LoRA | UN frozen | UN LoRA | ESM-2 zs | ESM-1v zs | ProtBert zs | ESM-IF | SaProt | The…",
-      "tags": [
-        "dataset",
-        "model",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:11:25.208Z",
-      "text": "Launching 3 agents to run baselines on Tsuboyama in parallel.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T21:10:43.925Z",
-      "text": "**Honest answer: we're NOT beating other models on Tsuboyama.** We're proving a *scope* claim, not a *superiority* claim. Let me be precise.\n\n## What Tsuboyama K50 is\n\n- Tsuboyama et al. 2023 Nature paper — **monomeric protein folding stability** from cDNA-display proteolysis. Not binding, not PPI, just \"how stable is this mutant compared to its WT fold\".\n- ~850k mutations in the full dataset, 30k in our filtered subset (362 diverse proteins).\n\n## What we're actually proving with it\n\n**Narrative**: \"DPL doesn't *hurt* on large, diverse stability data — unlike FireProt where DPL lost to UN because 5 dominant DMS scans created dense per-protein contexts.\"\n\n| Dataset | DPL | UN | Result |\n|---|---|---|---|\n| FireProt (dense, 5 DMS scans dominate) | +0.234 | +0.295 | DPL LOSES by 0.06 |\n| **Tsuboyama (diverse, 362 proteins)** | **+0.6906** | **+0.6820** | **DPL ≈ UN (tie, +0.009)** |\n\n**This…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T20:38:48.609Z",
-      "text": "## 30-min update\n\n**Tsuboyama full 30k LoRA strong after ep 2:**\n\n| fold/seed | ep | DPL ρ |\n|---|---|---|\n| tsub_f0s0 | 2 | **+0.7342** ↑ (from +0.6837 ep 1) |\n| tsub_f1s1 | 1 | +0.5820 |\n| tsub_f2s0 | 1 | +0.6411 |\n| tsub_f4s1 | 2 | +0.6972 |\n\n**Trending toward pooled ρ ≈ +0.70** across the 15 full-Tsuboyama LoRA jobs — consistent with the frozen-feature DPL +0.6906. LoRA isn't meaningfully improving Tsuboyama (consistent with other stability findings). Still 3 more epochs + UN head to go per job. Each epoch ~2300-2900s (~45 min). ETA ~5-6h.\n\n**ProteinGym pgm2 LoRA still at ep 1/3** after 1:30h — ~70 min/epoch × 3 epochs × 2 heads = ~7h. 8h walltime tight but fits. 4-5 of the 5 resubmits should land clean results.\n\n**24 jobs running.** No action needed — just monitoring.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T20:07:19.394Z",
-      "text": "## 30-min update\n\n**New jobs finished:**\n\n| Job | Result |\n|---|---|\n| `deltapot_atlas_lora` (33359429) | **COMPLETED** in 4:37h — full 5 seeds × 5 folds DPL+UN on ATLAS |\n| `stabddg_atlas` (33369181) | COMPLETED in 7:48, **873 predictions written** (but residue-renumbering collision drops join to 25 matched rows → suspicious ρ=+0.74 on the matched subset) |\n| `zs_saprot_atlas` (33369180) | **FAILED** again after the env fix — a different error. Need to diagnose. |\n| `mhc_baselines` (33369182) | **ran a previous version** and wrote `ESM-1v.csv`/`ESM-2-650M.csv`/`ProtBert.csv` for the 96-mutation MHC-only subset |\n\n## Clean numbers on ATLAS MHC-only (n=96)\n\n| Model | ρ (zero-shot) |\n|---|---|\n| **ESM-1v** | **+0.021** |\n| **ESM-2-650M** | **−0.131** |\n| **ProtBert** | **−0.159** |\n\n**All effectively zero on the HLA heavy-chain mutation subset.** Confirms that pre-trained sequence LMs carr…",
-      "tags": [
-        "error",
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:48:26.528Z",
-      "text": "**79 pair rows / 283 per-site rows synthesized** at `data/hla3db_iedb_benchmark{.csv, _sites.csv}`. Small but structured:\n\n- 24 unique allele pairs, 36 peptides, 42 WT PDBs\n- **Mutation-site distribution: 52 of 79 pairs have k≥2 sites** (exactly the theorem's strong regime: k=3→21, k=5→8, k=9→4, k=10→3)\n- ΔΔG range [−1.7, +4.8] kcal/mol, mean +0.77\n- Dominated by A2 subfamily (A\\*02:01 ↔ A\\*02:03 / A\\*02:06 / A\\*02:07) and B35→B53\n\n**The bottleneck is HLA3DB's coverage**: 1,086,595 of 1,087,408 IEDB rows dropped because the (peptide, allele_a) WT wasn't in HLA3DB's 393 structures. You simply can't get more out of this pilot without expanding HLA3DB.\n\n## This is small but it's the first multi-site structural ΔΔG benchmark we can score\n\n**Use #1 (quick win): zero-shot transfer test.** Score our already-trained models on these 79 pairs without any fine-tuning:\n- LoRA ΔPL (cluster-aware SKEM…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:46:32.888Z",
-      "text": "**HLA3DB staged**: 393 structures, 54 unique alleles (A\\*02:01 dominates with 159), cached at `data/hla3db/hla3db_records.json`. Chain A = HLA heavy (180aa trimmed), chain B = peptide (8–10aa). Metadata + PDBs + FASTA all in place.\n\nBoth inputs for Agent 3 are now ready:\n- **HLA3DB**: 393 structures, 54 alleles\n- **IEDB pairs**: 1.09M allele-pair rows across 3,798 distinct HLA pairs\n\nAgent 3 is polling for these (up to 15 min wait) — should now run the join and synthesize the benchmark.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:45:49.351Z",
-      "text": "**IEDB processing done** — massive numbers:\n- **17,988 unique peptides** measured against ≥2 HLA alleles each (median 5 alleles/peptide, max 46)\n- **1,087,408 allele-pair rows** covering 3,798 distinct HLA pairs\n- Top pairs are exactly the A2-family / A3-A11 polymorphisms we want (HLA-A\\*02:01 vs A\\*02:03/06/68:02 etc, each 5-6k peptides)\n- Conversion to kcal/mol: `ΔΔG = (score_a − score_b) × 6.416`, range [−6.4, +6.4], std 1.78\n\n**Key filters the agent recommended for Agent 3:** `n_alleles_for_peptide ≥ 3` AND `|pseudo_ddG| ≥ 0.5` to avoid the 653k near-zero \"both non-binders\" rows. **After that, expect tens of thousands of informative multi-site ΔΔG rows.**\n\nOutputs:\n- `data/mhc/iedb_allele_pairs.csv` — 1.09M rows\n- `data/mhc/iedb_peptide_alleles.json` — peptide → allele list\n- `data/mhc/process_iedb_pairs.py` — the processing script\n\nWaiting on Agent 1 (HLA3DB download) and Agent 3 (s…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:44:03.244Z",
-      "text": "**3 HLA3DB × IEDB pilot agents dispatched:**\n\n1. **Agent 1**: Download HLA3DB structures (~400 pHLA PDBs) + parse → allele-annotated records JSON\n2. **Agent 2**: Process IEDB 186k-row binding data → find peptides measured against multiple alleles → compute pseudo-ΔΔG pairs\n3. **Agent 3**: Wait for both, then synthesize the benchmark — for each (peptide, allele_a, allele_b) pair, identify the polymorphic positions between the two HLA heavy chains and emit a multi-site mutation row with the IEDB log-Kd difference as the pseudo-ΔΔG label\n\nThe key insight: **allele polymorphism = multi-site mutation**. HLA-A\\*02:01 vs HLA-A\\*02:06 differ at a few specific residues; peptide P binding those two alleles differently gives us a ΔΔG label on those multi-site \"mutations\". This produces a novel benchmark where the theorem's k≥2 sample-complexity advantage should shine (allele pairs typically differ…",
-      "tags": [
-        "note"
       ]
     }
   ]
