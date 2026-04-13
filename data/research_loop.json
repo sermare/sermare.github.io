@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T12:52:25Z",
+  "generated_at": "2026-04-13T13:22:28Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2302,
-    "assistant_turns": 3427,
+    "user_turns": 2308,
+    "assistant_turns": 3436,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T12:35:09.400Z"
+    "last_ts": "2026-04-13T13:07:06.009Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,15 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T13:06:58.379Z",
+      "text": "## 30-min update\n\n**S1131 cluster-aware LoRA TIMED OUT** at 4h with 11 of 15 fold/seeds done.\n\nDPL per-fold (cluster-aware, mean across 2 seeds where available):\n\n| fold | DPL ρ |\n|---|---|\n| 0 | +0.25 |\n| 1 | +0.41 |\n| 2 | +0.26 |\n| 3 | **−0.17** ← genuinely hard cluster |\n| 4 | +0.54 |\n\n**Mean ≈ +0.25** with massive variance. The cluster-aware version is _worse_ than the PDB-GKF version (frozen DPL +0.317) — same pattern as SKEMPI: removing leakage exposes the limited transfer.\n\n**Tsuboyama LoRA on 8k subsample** is making slower-than-expected progress (~13 min/epoch):\n- seed 0 fold 0 DPL: ρ = **+0.5922**\n- seed 0 fold 0 UN: ρ = **+0.6047**\n- seed 0 fold 1 DPL: ep 2/5 ρ=+0.5278\n\n**LoRA Tsuboyama**: similar to frozen Tsuboyama (DPL +0.690 / UN +0.682) but slightly lower because we're on the 8k subsample, not the full 30k. **DPL ≈ UN here** — same near-tie pattern.\n\nETA: tsuboyama_lora_8…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T12:35:02.454Z",
       "text": "**StaB-ddG on BindingGym (zero-shot inference):** Mean |ρ| = **0.20** across 10 assays. All anti-correlated (sign expected — their predictions are ΔΔG, BindingGym scores are fitness). Per-assay range 0.05-0.36.\n\n| Model on BindingGym (LOAEO across 16 assays) | mean |ρ| |\n|---|---|\n| StaB-ddG (zero-shot, all 10 assays) | **0.20** |\n| ESM-2 zero-shot | ~0.22 (from earlier blitz) |\n| ESM-1v zero-shot | ~0.22 |\n| ProtBert zero-shot | ~0.21 |\n| **DPL LoRA (trained per fold)** | **0.276** |\n| **UN LoRA (trained per fold)** | **0.294** |\n\nOur LoRA-trained models edge out StaB-ddG zero-shot on BindingGym, but the comparison is unfair (StaB-ddG didn't get to train on the other 15 BindingGym assays).\n\n## Other completions\n\n**stab_lora (FireProt LoRA) TIMED OUT** at 5h. Got 2 of 3 seeds done:\n- Seed 0 best ρ ≈ +0.34\n- Seed 1 best ρ ≈ +0.357 at ep 12 (still climbing)\n- Mean (2 seeds): ~+0.35 — beats…",
@@ -391,14 +400,6 @@
       "text": "Will send the next update in 30 min. Continuing to set up the ATLAS trainer and StaB-ddG inference while jobs run.",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:48:45.299Z",
-      "text": "**30 jobs running.** 17 new from the mega-blitz (ESM-IF × 8 datasets + SaProt × 8 datasets + ESM-1v SKEMPI), on top of the 13 already running.\n\nNow scheduling a 30-min update cycle and then writing the ATLAS LoRA trainer while the jobs run.",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
