@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T10:22:13Z",
+  "generated_at": "2026-04-13T10:52:15Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2272,
-    "assistant_turns": 3376,
+    "user_turns": 2278,
+    "assistant_turns": 3387,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T09:53:34.032Z"
+    "last_ts": "2026-04-13T10:26:10.050Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,30 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T10:26:09.968Z",
+      "text": "Wake scheduled. Continuing to watch the cluster-aware LoRA jobs land — those are the experiment you asked for, and the honest leakage-free ΔPL SKEMPI number.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T10:26:02.429Z",
+      "text": "**Update summary — cluster-aware LoRA making progress, fine-tuning consistently helps, but cluster-aware split is brutal:**\n\n## Cluster-aware SKEMPI LoRA at ep 9-10/15 (6 sample folds):\n\n| fold/seed | ep | ρ | category |\n|---|---|---|---|\n| tpc_f0s0 | 9 | +0.129 | hard |\n| tpc_f1s1 | 10 | +0.467 | easy |\n| tpc_f2s0 | 9 | +0.283 | medium |\n| tpc_f3s0 | 10 | +0.114 | hard |\n| tpc_f3s2 | 10 | +0.110 | hard |\n| tpc_f4s1 | 10 | +0.507 | easy |\n\n**Mean ≈ +0.27** — massive variance. ETA ~1h to completion. When they finish I assemble the pooled cluster-aware OOF. This will be the **definitive cluster-free LoRA ΔPL SKEMPI number**.\n\n## FireProt LoRA at seed 2/3\n\nBest: **seed 1 ρ=+0.3434**, seed 2 ep 3 ρ=+0.3322. Final mean will land around **ρ=+0.33**. Compare: Frozen DPL +0.234, Frozen UN +0.295. **LoRA DPL wins on FireProt** (+0.33 > UN +0.30).\n\n## Tsuboyama LoRA — rescaled\n\nOriginal 30k-row ru…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T10:24:48.671Z",
+      "text": "Key finding: **Tsuboyama LoRA is on track to timeout.** Seed 0 fold 0 ep 1 took **48 minutes**, so 10 epochs × 5 folds × 3 seeds = 120 hours vs the 8h walltime. Cancelling and resubmitting with reduced scope.",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T09:53:24.157Z",
       "text": "## Update — key numbers this round\n\n**BindingGym LoRA LOAEO DONE** (33358280, 2:04 wall clock, 16 assays, 4 excluded for SKEMPI PDB overlap):\n\n| Head | Mean ρ across 16 assays |\n|---|---|\n| **DPL LoRA** | **+0.2761 ± 0.181** |\n| **UN LoRA** | **+0.2943 ± 0.217** |\n\nDPL and UN statistically tied on BindingGym (UN slightly ahead). Big per-assay variance (one assay `hYAP65_peptide` has DPL at −0.008, another has +0.60). On multi-protein DMS fitness with leave-one-protein-out, the cycle-consistency prior provides no edge. **Same pattern as FireProt stability: when each context has many mutations measured, DPL's additive constraint doesn't help.**\n\n**Cluster-aware SKEMPI LoRA** — running, ep 6-8/15 across 15 folds. Sample fold ρ values:\n\n| fold/seed | ep | ρ |\n|---|---|---|\n| tpc_f0s0 | 7 | **+0.054** (genuinely hard fold) |\n| tpc_f1s1 | 7 | +0.474 |\n| tpc_f2s0 | 7 | +0.210 |\n| tpc_f3s2 | 8 |…",
@@ -372,30 +396,6 @@
       "text": "ATLAS download + loader done. **697 entries, 459 with ΔΔG, 919 parsed point-mutation records (TCR 694, PEP 119, MHC 106).** Loader at `scripts/load_atlas.py`. Tarball extracted to `data/atlas/structures/`. ATLAS is now a usable benchmark — totally orthogonal to SKEMPI training, structures included.\n\nFor the strictest single-point evaluation we'd filter to rows with exactly one non-WT side and a single mutation token (~290 entries). For the broader pooled comparison the 919-record version works.",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:36:57.905Z",
-      "text": "ESM-IF script ready (`scripts/zeroshot_esm_if.py`, 545 lines, all 8 datasets). One blocker: needs `pip install torch_geometric` in the tttppi env. Will install once another agent confirms it doesn't break the env.\n\nThe README.md being opened is noted — happy to update it with the current experimental state if you want, just say the word.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:34:52.696Z",
-      "text": "**Second wave: 6 agents launched in parallel for the comprehensive comparison.**\n\n| Agent | Task |\n|---|---|\n| StaB-ddG env+launch | Set up the cloned StaB-ddG env, test inference, write launch script for PPB-Affinity / S1131 / BindingGym |\n| ESM-IF zero-shot | Write `zeroshot_esm_if.py` covering all 8 datasets via PDB lookup |\n| SaProt zero-shot | Install foldseek, write SaProt scoring across all datasets |\n| PPB-Affinity LoRA DPL | Schema-inspect PPB-Affinity.csv, write LoRA-DPL trainer for the ~3.4k non-SKEMPI rows |\n| ATLAS download+loader | Download 4 ATLAS files + tarball, write loader, test parsing |\n| Tsuboyama download+loader | Download Zenodo 7992926 zip (1 GB), write loader joining sequences to FireProt megascale ddG |\n\n13 SLURM jobs running concurrently:\n- 7 ProtAttBA fold-jobs (S1131 baseline numbers in parallel)\n- 3 just-launched LoRA jobs (pgym/bgym/s1131)\n- 2 frozen LOAEO…",
-      "tags": [
-        "dataset",
-        "model",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:33:00.584Z",
-      "text": "## Conversation file path\n\n**Yes** — your full Claude Code conversation history is at:\n```\n/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl\n```\n\nIt's a JSONL file (one message per line), grows as the conversation continues. The same directory holds the persistent memory at `memory/` (MEMORY.md + the individual files I write there).\n\n## \"Benchmark all models on same datasets, LoRA no-leakage\"\n\nOK. The clean target is a single matrix:\n\n| Dataset (cluster-aware split) | StaB-ddG | GearBind | ESM-IF | SaProt | MIF-ST | ESM-2 zs | ESM-1v zs | Tranception zs | **ΔPL+LoRA (ours)** | **UN+LoRA** |\n|---|---|---|---|---|---|---|---|---|---|---|\n| SKEMPI cluster-split (StaB protocol) | ✓ | ✓ | ? | ? | ? | ✓ | ? | ? | matched-cluster +0.376 | matched-cluster ~+0.41 |\n| FireProt homologue-free | n/a | n/a | ? | ? | ? | ✓…",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
