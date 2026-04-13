@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T19:53:19Z",
+  "generated_at": "2026-04-13T20:23:24Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2403,
-    "assistant_turns": 3578,
+    "user_turns": 2412,
+    "assistant_turns": 3590,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T19:48:26.632Z"
+    "last_ts": "2026-04-13T20:07:30.793Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,16 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T20:07:19.394Z",
+      "text": "## 30-min update\n\n**New jobs finished:**\n\n| Job | Result |\n|---|---|\n| `deltapot_atlas_lora` (33359429) | **COMPLETED** in 4:37h — full 5 seeds × 5 folds DPL+UN on ATLAS |\n| `stabddg_atlas` (33369181) | COMPLETED in 7:48, **873 predictions written** (but residue-renumbering collision drops join to 25 matched rows → suspicious ρ=+0.74 on the matched subset) |\n| `zs_saprot_atlas` (33369180) | **FAILED** again after the env fix — a different error. Need to diagnose. |\n| `mhc_baselines` (33369182) | **ran a previous version** and wrote `ESM-1v.csv`/`ESM-2-650M.csv`/`ProtBert.csv` for the 96-mutation MHC-only subset |\n\n## Clean numbers on ATLAS MHC-only (n=96)\n\n| Model | ρ (zero-shot) |\n|---|---|\n| **ESM-1v** | **+0.021** |\n| **ESM-2-650M** | **−0.131** |\n| **ProtBert** | **−0.159** |\n\n**All effectively zero on the HLA heavy-chain mutation subset.** Confirms that pre-trained sequence LMs carr…",
+      "tags": [
+        "error",
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T19:48:26.528Z",
       "text": "**79 pair rows / 283 per-site rows synthesized** at `data/hla3db_iedb_benchmark{.csv, _sites.csv}`. Small but structured:\n\n- 24 unique allele pairs, 36 peptides, 42 WT PDBs\n- **Mutation-site distribution: 52 of 79 pairs have k≥2 sites** (exactly the theorem's strong regime: k=3→21, k=5→8, k=9→4, k=10→3)\n- ΔΔG range [−1.7, +4.8] kcal/mol, mean +0.77\n- Dominated by A2 subfamily (A\\*02:01 ↔ A\\*02:03 / A\\*02:06 / A\\*02:07) and B35→B53\n\n**The bottleneck is HLA3DB's coverage**: 1,086,595 of 1,087,408 IEDB rows dropped because the (peptide, allele_a) WT wasn't in HLA3DB's 393 structures. You simply can't get more out of this pilot without expanding HLA3DB.\n\n## This is small but it's the first multi-site structural ΔΔG benchmark we can score\n\n**Use #1 (quick win): zero-shot transfer test.** Score our already-trained models on these 79 pairs without any fine-tuning:\n- LoRA ΔPL (cluster-aware SKEM…",
@@ -384,13 +394,6 @@
       "text": "## First control comparison (3 models so far)\n\n| Model | n | alone ρ | StaB alone | Best blend | α* | Δρ vs StaB | p |\n|---|---|---|---|---|---|---|---|\n| **ΔPL LoRA cluster-aware** | 1433 | +0.310 | +0.542 | **+0.564** | 0.2 | **+0.022** | <10⁻⁴ |\n| ΔPL LoRA loose-OOF (leaky) | 1410 | +0.510 | +0.525 | +0.592 | 0.5 | +0.066 | <10⁻⁴ |\n| **ESM-2 zero-shot** | 1491 | −0.004 | +0.531 | +0.531 | **0.0** | **0.000** | 1.0 |\n\n**Control 1: ESM-2 zero-shot adds ZERO when ensembled with StaB-ddG.** The optimal weight is α=0 (pure StaB). So the +0.022 lift from our cluster-aware ΔPL is **NOT a generic \"any sequence model helps\" effect**. ESM-2 alone has no signal on SKEMPI binding (ρ≈0), and the blend correctly assigns it zero weight. **Our ΔPL contributes something real that ESM-2 zero-shot does not.**\n\nWhen ESM-1v / ProtBert / Tranception / SaProt SKEMPI / ESM-2-3B / GearBind land from the agent…",
       "tags": [
         "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T14:58:08.500Z",
-      "text": "Exactly the right control. Writing the multi-model ensemble comparator now — for each sequence model X, computes StaB+X blend and reports Δρ over StaB alone. We can run it on what we have now (ESM-2, SaProt, our LoRA) and re-run when ESM-1v / ProtBert / Tranception / ESM-2-3B / GearBind land.",
-      "tags": [
         "model"
       ]
     }
