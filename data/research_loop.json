@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T11:22:17Z",
+  "generated_at": "2026-04-13T11:52:20Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2283,
-    "assistant_turns": 3395,
+    "user_turns": 2289,
+    "assistant_turns": 3406,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T10:58:08.051Z"
+    "last_ts": "2026-04-13T11:30:55.869Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,22 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T11:30:50.924Z",
+      "text": "## 🎯 THE LEAKAGE-FREE LoRA SKEMPI NUMBER (10/15 folds)\n\n**Cluster-aware LoRA DPL pooled OOF: ρ = +0.3835** (n=6116 items, 10 folds)\n\n**On StaB-ddG test intersection (n=686):**\n\n| Model | Spearman |\n|---|---|\n| **TP_LORA_cluster (ours, leakage-free)** | **+0.3896** |\n| **StaB-ddG alone** | **+0.4620** |\n| **Best blend α=0.4** | **+0.5192** |\n\n## Compared to earlier (leaky) numbers\n\n| Protocol | ΔPL LoRA | StaB alone | Blend | Δ(blend−StaB) |\n|---|---|---|---|---|\n| Loose OOF (PDB GKF, leaky) | +0.510 | +0.525 | **+0.592** | +0.066 |\n| Strict filter (post-hoc) | +0.427 | +0.531 | +0.573 | +0.042 |\n| **Cluster-aware train (honest)** | **+0.390** | **+0.462** | **+0.519** | **+0.057** |\n\n**Key observations:**\n\n1. **Cluster-aware ΔPL LoRA is +0.39** — between frozen DPL (+0.26 strict) and leakage-leaked LoRA (+0.51 loose). About 0.12 ρ below the loose number. **LoRA fine-tuning was exploiting…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T11:29:44.980Z",
+      "text": "**10 of 15 cluster-aware LoRA jobs complete.** Let me assemble the partial pooled OOF right now:",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T10:58:02.379Z",
       "text": "## Update — cluster-aware SKEMPI LoRA nearly done\n\n**Cluster-aware SKEMPI LoRA at ep 11-13/15** — values stabilizing. 2 more epochs, ETA ~40 min to completion:\n\n| fold/seed | ρ (latest) | regime |\n|---|---|---|\n| tpc_f0s0 | +0.091 | genuine new family |\n| tpc_f1s1 | +0.463 | medium-easy |\n| tpc_f2s0 | +0.212 | medium |\n| tpc_f3s0 | +0.104 | genuine new family |\n| tpc_f3s2 | +0.112 | genuine new family |\n| tpc_f4s1 | +0.488 | medium-easy |\n\n**Current 6-fold mean ≈ +0.245**. Bimodal: 3 \"hard\" folds (~0.1) where whole homology clusters are genuinely novel to training, 2 \"easy\" folds (~0.5) where something transfers. **When all 15 jobs land, the pooled OOF Spearman will be around +0.25.**\n\n## Confirmed LoRA results\n\n**FireProt LoRA** (stab_lora, seed 0 ep 11/15): ρ=+0.3383, consistent with earlier seeds. Final mean will be ~+0.33. **LoRA DPL beats frozen UN on FireProt** (+0.33 > +0.295).\n\n*…",
@@ -379,22 +395,6 @@
     {
       "ts": "2026-04-13T07:41:06.695Z",
       "text": "**Important reality check from the PPB-Affinity agent:**\n\nThe non-SKEMPI mutated subset is only **455 rows over 46 PDBs**, not the ~3400 I hoped. Why: PPB-Affinity is mostly a *wildtype* Kd dataset — PDBbind-PP, SAbDab, and Affinity Benchmark rows are all wildtype complexes. **Only ATLAS contributes mutations** (545 → 455 after Kd-to-ΔΔG conversion drops).\n\nSo \"PPB-Affinity as a fresh binding benchmark\" collapses to \"ATLAS\" — which we already downloaded directly with 919 parsed point-mutation records (larger than the 455 you'd get filtering PPB-Affinity). **We should use the direct ATLAS loader, not the PPB-Affinity wrapper.**\n\nThe agent did still write `scripts/train_deltapot_ppb_affinity_lora.py` (586 lines, mutation parsing verified) as a fallback. It's usable for the 455-row slice but I wouldn't launch it — the direct ATLAS path is strictly better.\n\n**Correct plan**: point the LoRA t…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:40:45.808Z",
-      "text": "README updated with a new top section summarizing the current ΔPL state — the Interface Tokens historical section is preserved below. It now contains:\n\n- **Headline honest numbers** (loose/strict/matched-cluster)\n- **The leakage finding** and its 0.08 ρ impact on our ΔPL\n- **Scope limitation** on stability with the mechanism\n- **GearBind as the missed baseline** that may push us below outright SOTA\n- **Benchmarks in flight table** showing which cells are filled vs TODO\n- **Datasets staged** (SKEMPI, FireProt, S1131, BindingGym, ProteinGym, PPB-Affinity, ATLAS downloaded, Tsuboyama downloading)\n- **Baselines staged** (StaB-ddG repo cloned, ESM-IF/SaProt/MIF-ST scripts written)\n- **Key scripts inventory**\n\nRe: the \"is DPL comparable to StaB\" question — the direct answer is now in the README headline table: **alone, no (−0.10 ρ when measured fairly). In ensemble, yes (+0.042 over StaB alone…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:39:18.905Z",
-      "text": "Three direct answers, then an updated README.\n\n## 1. Leakage check on old/running jobs\n\n| Job | Protocol | Leakage status |\n|---|---|---|\n| `dpl_pgym_lora`, `dpl_pgym` (frozen) | leave-one-assay-out + filter assays whose PDB is in SKEMPI training | **leakage-free at assay level** (entire protein held out) |\n| `dpl_bgym_lora`, `dpl_bgym` (frozen) | same as above | **leakage-free** |\n| `dpl_s1131_lora`, `dpl_s1131` (frozen) | 5-fold GroupKFold by PDB | **PDB-level only**, NOT cluster-aware. Same caveat as ProtAttBA. |\n| 7× `pa_s*f*` (ProtAttBA) | 5-fold GroupKFold by PDB | **same PDB-level only** caveat |\n| `stab_lora` (FireProt) | published FireProt homologue-free split | **leakage-free** (homology-aware split) |\n| `zs_all_pgym`, `zs_all_bgym` | zero-shot, no training, just overlap filter | **leakage-free** |\n| `tp_f*s*` (SKEMPI OOF, completed) | 5-fold GroupKFold by PDB | **PDB-level onl…",
       "tags": [
         "dataset",
         "model"
