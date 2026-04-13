@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T14:52:35Z",
+  "generated_at": "2026-04-13T15:22:38Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2316,
-    "assistant_turns": 3449,
+    "user_turns": 2328,
+    "assistant_turns": 3463,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T14:51:49.844Z"
+    "last_ts": "2026-04-13T14:59:54.408Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,36 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T14:59:54.246Z",
+      "text": "## First control comparison (3 models so far)\n\n| Model | n | alone ρ | StaB alone | Best blend | α* | Δρ vs StaB | p |\n|---|---|---|---|---|---|---|---|\n| **ΔPL LoRA cluster-aware** | 1433 | +0.310 | +0.542 | **+0.564** | 0.2 | **+0.022** | <10⁻⁴ |\n| ΔPL LoRA loose-OOF (leaky) | 1410 | +0.510 | +0.525 | +0.592 | 0.5 | +0.066 | <10⁻⁴ |\n| **ESM-2 zero-shot** | 1491 | −0.004 | +0.531 | +0.531 | **0.0** | **0.000** | 1.0 |\n\n**Control 1: ESM-2 zero-shot adds ZERO when ensembled with StaB-ddG.** The optimal weight is α=0 (pure StaB). So the +0.022 lift from our cluster-aware ΔPL is **NOT a generic \"any sequence model helps\" effect**. ESM-2 alone has no signal on SKEMPI binding (ρ≈0), and the blend correctly assigns it zero weight. **Our ΔPL contributes something real that ESM-2 zero-shot does not.**\n\nWhen ESM-1v / ProtBert / Tranception / SaProt SKEMPI / ESM-2-3B / GearBind land from the agent…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T14:58:08.500Z",
+      "text": "Exactly the right control. Writing the multi-model ensemble comparator now — for each sequence model X, computes StaB+X blend and reports Δρ over StaB alone. We can run it on what we have now (ESM-2, SaProt, our LoRA) and re-run when ESM-1v / ProtBert / Tranception / ESM-2-3B / GearBind land.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T14:55:22.575Z",
+      "text": "**5 agents dispatched in parallel:**\n\n| # | Agent | Task |\n|---|---|---|\n| 1 | GearBind setup + run | Clone repo, install, write wrapper, run on SKEMPI/S1131/BindingGym |\n| 2 | More sequence baselines | ESM-1v + ProtBert + Tranception + ESM-2-3B + SaProt all on SKEMPI |\n| 3 | ATLAS + SAbDab v2 + AbBiBench LoRA | New LoRA DPL trainers for 3 untouched datasets |\n| 4 | Fix ESM-IF biotite bug | Diagnose + fix + resubmit on all 8 datasets |\n| 5 | Resubmit timed-out jobs | stab_lora, dpl_pgym_lora, S1131 LoRA versions, stabddg_ppb |\n\n**Currently 1 job running** (`tsuboyama_lora_8k`, 4:08 elapsed). The agents will push that count up dramatically in the next 5-10 minutes as they each submit 3-13 jobs.\n\nQuick correction on your GearBind question: **No, we never ran GearBind.** We only have its **literature-reported** number (+0.643 on their own split). The agent will set it up properly and run it…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T14:53:50.109Z",
+      "text": "5 agents on it, plus direct resubmits. Going aggressive.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-13T14:51:49.771Z",
       "text": "Yeah — the honest cluster-aware number (+0.310) is rough. But I want to push back on \"we perform bad\" with three honest perspectives:\n\n## 1. We perform **honestly**, which is different from bad\n\nOur loose +0.510 wasn't fake skill — the model was learning real binding patterns. It just also got to learn \"I've seen a similar PDB before, here's a hint.\" The cluster-aware split removes that hint and we're left with what the model can do **on truly novel protein families**. That's a much harder task and almost everyone drops a lot when you do it. StaB-ddG only avoided the drop because they did cluster-aware training from the start (that's literally why their paper is good — they were honest about leakage when most others weren't).\n\n## 2. The ensemble still wins, even honestly\n\n| | Strict cluster-aware (n=1433) |\n|---|---|\n| StaB-ddG alone | +0.5419 |\n| **Ensemble (α=0.2)** | **+0.5641** |\n| Δ…",
@@ -371,34 +401,6 @@
       "text": "Launcher for the cluster-aware LoRA OOF — 15 parallel jobs, each with `--cluster-file`, dependent on the clustering job finishing:",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T08:01:49.314Z",
-      "text": "While clustering runs, modifying `train_twophase_lora.py` to accept a `--cluster-file` flag:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T08:01:36.675Z",
-      "text": "mmseqs is crashing with SIGILL on the login node (same AVX2 issue that broke foldseek — Ivy Bridge CPU). Pushing the clustering job to a compute node:",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-13T08:00:30.553Z",
-      "text": "On it. Writing the clustering script + the trainer modification, then launching 15 jobs.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:55:06.885Z",
-      "text": "Let me explain this carefully, step by step. This is the most important thing to get right.\n\n## What's going on — the data setup\n\n**Everyone is training on SKEMPI v2.** It's THE protein-protein binding ΔΔG dataset. Both us and StaB-ddG use it. That's not cheating — it's just the standard dataset.\n\n## The two ways to split SKEMPI into train/test\n\nSKEMPI has ~350 protein complexes (PDBs). To train a model and report test numbers, you need to hold some out. Two ways:\n\n**(1) \"Split by PDB\" (our approach)** — What we did in our 5-fold GroupKFold:\n- Each PDB gets assigned to exactly one of 5 folds.\n- When fold 0 is the test fold, the 4 other folds are training. None of the exact same PDBs appear in both.\n- **This is leakage-free at the PDB level.** Model never literally saw the exact PDB it's predicting.\n\n**(2) \"Split by homology cluster\" (StaB-ddG's approach)** — What StaB-ddG did:\n- First ru…",
-      "tags": [
-        "dataset"
       ]
     }
   ]
