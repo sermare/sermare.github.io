@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T22:24:13Z",
+  "generated_at": "2026-04-13T22:54:21Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2468,
-    "assistant_turns": 3666,
+    "user_turns": 2508,
+    "assistant_turns": 3717,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T22:00:48.419Z"
+    "last_ts": "2026-04-13T22:54:02.501Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,57 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T22:53:43.407Z",
+      "text": "Good, I have a clean template. Let me write the embedding sbatch script and resubmit while dispatching baseline agents in parallel.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:53:16.675Z",
+      "text": "Now I'll dispatch the 4 retrain agents in parallel and simultaneously resubmit the embedding analysis job.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:42:50.950Z",
+      "text": "Audit agent dispatched. Will return with:\n\n- Training data used (SKEMPI v2 / S1131 / Luo split / custom)\n- Exact split protocol (random K-fold, leave-one-complex, mmseqs cluster at what threshold)\n- Whether they used homology clustering at all\n- Reported ρ on which split\n- 1-5 priority score for \"should we actually run this on our 15-fold cluster-aware split\"\n\n**Expected answer**: most of these probably used either (a) random mutation-level K-fold (worst, full homology leakage) or (b) leave-one-complex-out at the PDB level (our old protocol, moderate leakage). **Very few will have used actual mmseqs cluster-aware splits** — that's StaB-ddG's contribution and one reason their paper stood out.\n\nOnce the audit lands, I'll spawn execution agents for the 2-3 highest-priority models and spam low-priority parallel jobs. The honest paper story will then be **\"We evaluate on a 30%-identity cluste…",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:38:30.089Z",
+      "text": "Embedding analysis submitted (job **33376055**). Now your question about supervised sequence-based baselines.\n\n## **You're right — we're missing supervised sequence-only comparisons.**\n\nThe current SKEMPI comparison column set is:\n- **Zero-shot sequence**: ESM-2, ESM-1v, ProtBert, Tranception, SaProt — these are all pretrained LMs scored via log P ratios, NO task-specific training\n- **Supervised structural**: StaB-ddG, GearBind (literature), ThermoMPNN (for stability) — all use 3D coordinates\n- **Supervised sequence**: **UN (unconstrained MLP on frozen ESM-2)** — that's our ablation, not a strong baseline\n- **Our model**: ΔPL frozen / ΔPL LoRA\n\n**What's missing: a supervised sequence-only ΔΔG predictor from the literature**, evaluated on our cluster-aware SKEMPI split.\n\nReal candidates we should add:\n\n| Model | Year | Arch | Training |\n|---|---|---|---|\n| **ProtAttBA** | 2024 Bioinf. | E…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:37:05.984Z",
+      "text": "Launching all 4 embedding analyses in parallel via a single sbatch job.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:36:44.096Z",
+      "text": "## 30-min update — **first full-Tsuboyama LoRA DPL fold complete**\n\n**tsub_f0s0 DPL ep 5/5: ρ = +0.7635** (best yet). UN head now training. **Final DPL pooled should land ~+0.73-0.76.**\n\n| fold/seed | DPL final ρ |\n|---|---|\n| tsub_f0s0 | **+0.7635** ✓ done |\n| tsub_f4s2 | **+0.7348** ✓ done |\n| tsub_f2s0 | +0.7205 (ep 4/5) |\n\n**Tsuboyama K50 comparison table (current):**\n\n| Model | ρ |\n|---|---|\n| ProtBert zs | 0.269 |\n| ESM-1v zs | 0.271 |\n| ESM-2 650M zs | 0.389 |\n| ΔPL frozen | 0.691 |\n| UN frozen | 0.682 |\n| **ΔPL LoRA** | **~0.75** (3 folds done, climbing) |\n| ThermoMPNN (supervised structural) | **0.835** |\n\n**The honest narrative**: ΔPL LoRA beats all zero-shot sequence LMs by +0.36, the unconstrained MLP by +0.06, and lands ~0.08 below ThermoMPNN. **Best sequence-only stability predictor, second to a specialized supervised structural model.**\n\n## ProteinGym LoRA finally producin…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T22:35:49.558Z",
+      "text": "**You nailed the exact problem with the UMAP analysis.** Single-residue ESM-2 embeddings at mutated positions cluster primarily by **protein identity** — because the ESM-2 context vector at position i in protein X is drawn from a very different region of ESM-2's 1280-dim space than position j in protein Y, regardless of whether they're at binding interfaces.\n\nThe binding ΔΔG signal is **first-order dominated** by:\n1. Which protein (massive variance)\n2. Which local structural environment (large variance — core vs surface vs interface)\n3. Which substitution (small variance — the thing we actually care about)\n\nIf you UMAP the raw embedding, you see the protein clusters, not the binding effect.\n\n## What to do instead (ordered by scientific defensibility)\n\n**Option A — Mt−Wt perturbation embeddings (my recommendation)**\nFor each mutation, compute:\n```\ndelta_emb_i = ESM-2(mt_seq)[pos_i] − ESM-…",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T22:00:41.576Z",
       "text": "## 30-min update — huge Tsuboyama results\n\n**ThermoMPNN on Tsuboyama (27,247 rows): |ρ| = 0.8354** — **this is SOTA stability.** It beats us by ~0.14.\n\n**Zero-shot LMs on Tsuboyama (full 29,902 rows):**\n\n| Model | |ρ| |\n|---|---|\n| ESM-2 650M | **0.389** |\n| ESM-1v | 0.271 |\n| ProtBert | 0.269 |\n\n**ΔPL LoRA Tsuboyama at ep 4/5** (still climbing):\n- tsub_f0s0: +0.7599\n- tsub_f2s0: +0.7166 (ep 3)\n- tsub_f4s2: +0.7402\n\nPooled LoRA will land around **+0.74-0.75**.\n\n## Tsuboyama K50 comparison table (so far)\n\n| Model | ρ | Note |\n|---|---|---|\n| ProtBert zs | 0.269 | worst |\n| ESM-1v zs | 0.271 | |\n| ESM-2 650M zs | 0.389 | |\n| **ΔPL frozen** | **0.691** | ours |\n| **UN frozen** | **0.682** | tied with DPL |\n| **ΔPL LoRA** | ~**0.745** | ours (ep 4, climbing) |\n| **ThermoMPNN** | **0.835** | SOTA supervised structural |\n\n**Honest read**: On monomer stability ΔΔG (the largest public benchmark)…",
@@ -341,61 +392,6 @@
       "text": "**3 HLA3DB × IEDB pilot agents dispatched:**\n\n1. **Agent 1**: Download HLA3DB structures (~400 pHLA PDBs) + parse → allele-annotated records JSON\n2. **Agent 2**: Process IEDB 186k-row binding data → find peptides measured against multiple alleles → compute pseudo-ΔΔG pairs\n3. **Agent 3**: Wait for both, then synthesize the benchmark — for each (peptide, allele_a, allele_b) pair, identify the polymorphic positions between the two HLA heavy chains and emit a multi-site mutation row with the IEDB log-Kd difference as the pseudo-ΔΔG label\n\nThe key insight: **allele polymorphism = multi-site mutation**. HLA-A\\*02:01 vs HLA-A\\*02:06 differ at a few specific residues; peptide P binding those two alleles differently gives us a ΔΔG label on those multi-site \"mutations\". This produces a novel benchmark where the theorem's k≥2 sample-complexity advantage should shine (allele pairs typically differ…",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:43:06.098Z",
-      "text": "Launching 3 agents to construct an HLA3DB × IEDB pseudo-ΔΔG pilot benchmark.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:34:36.101Z",
-      "text": "**31 jobs running.** Cluster stays busy. Will check back in 30 min.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:34:24.591Z",
-      "text": "**3 fixed jobs resubmitted** (SaProt ATLAS, StaB-ddG ATLAS, MHC baselines). **28 jobs running** total.\n\n**Also noteworthy from this round:**\n\n- **Tsuboyama LoRA jobs (`tsub_f*s*`)** — 3 of them got PREEMPTED (jobs 33368998/99/33369000). Savio_lowprio QoS. Need to resubmit those 3 (f3s1, f3s2, f4s0). Others still running.\n- **ESM-IF ATLAS**: ρ = −0.111 (n=917) — weak structural signal, in the \"near chance\" zone for TCR-pMHC, matching the sequence-LM observation\n- **ESM-IF FireProt**: ρ = +0.314 (n=282) — decent stability signal, confirming ESM-IF works well on monomer stability (structure-aware helps for folding)\n\nResubmitting the 3 preempted Tsuboyama folds:",
-      "tags": [
-        "dataset",
-        "model",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:33:53.949Z",
-      "text": "## Progress update\n\n**ESM-IF CPU round 3 — finally works on 2/8 datasets:**\n\n| Dataset | n | ρ |\n|---|---|---|\n| **ATLAS** | 917 | **−0.111** |\n| **FireProt** | 282 | **+0.314** |\n| skempi, s1131, bindinggym, proteingym, ppb_affinity, sabdab_v2 | 0 | loader issue |\n\n**ESM-1v SKEMPI** (with truncation fix): ρ = **−0.1028** (n=7876). Essentially zero, same as ESM-2. Confirmed: **no vanilla sequence LM carries SKEMPI binding signal.**\n\n**Failures from env_setup.sh strict-mode bug:**\n- `zs_saprot_atlas`, `stabddg_atlas` (job 33369035), `mhc_baselines` (33369039) — all died with `LD_LIBRARY_PATH: unbound variable`\n- The `:$LD_LIBRARY_PATH` expansion fails under `set -u`\n\nFixing env_setup.sh and resubmitting:",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:13:12.792Z",
-      "text": "**MHC-only baseline suite submitted**: job **33369039** runs ESM-2 650M + ESM-1v + ProtBert + ProstT5 + MHCflurry reference on the 96-mutation cleaned pMHC subset (86 class-I + 10 class-II across 11 PDBs; ddG range −2.2 to +4.0 kcal/mol).\n\nCached cleaned subset at `data/atlas/mhc_only.csv` so we don't re-do the PDB validation.\n\nThe agent flagged an important methodology note: **1AO7 alone contributes 44/96 mutations**, so per-PDB clustering will dominate overall Spearman. Any final number needs to be reported **both pooled and per-PDB** to avoid \"one PDB wins the benchmark\" artifacts. I'll make sure the ATLAS MHC-only analysis in `scripts/atlas_mhc_subset.py` breaks out per-PDB correlations when the new CSVs land.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:11:30.724Z",
-      "text": "**Verdict from the MHC survey:** **ATLAS is the only game in town for pMHC structural ΔΔG.** There's no public IEDB/NetMHCpan/HLA3DB-derived mutant-vs-WT ΔΔG benchmark with PDB anchors. HLA3DB (~400 pHLA structures) + IEDB binding could be *synthesized* into an allele-polymorphism pseudo-ΔΔG set, but that's a new benchmark-construction project, not a download.\n\n**Early ATLAS results from the sequence-only baselines on MHC-only (n=106):**\n\n| Model | MHC-only ρ |\n|---|---|\n| ESM-1v | +0.088 |\n| ESM-2 650M | −0.028 |\n| ProtBert | −0.171 |\n\nAll zero-shot sequence models are **at chance** on pMHC mutations (|ρ|<0.2). The conclusion the script auto-wrote is correct: **PPI pre-training does not transfer to pMHC mutations** — the HLA peptide-groove chemistry is unlike SKEMPI interfaces.\n\n**Structural predictions (ESM-IF, SaProt, StaB-ddG, our LoRA DPL) haven't landed yet** on ATLAS — the script…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T19:10:13.628Z",
-      "text": "StaB-ddG on ATLAS prepped and submitted (**job 33369035, PD**). 873 clean mutations after renumbering and chain remapping (TCR 664, PEP 113, MHC 96 across 39 PDBs). Chain-partner strategy documented: TCR→`DE_AC`, peptide→`C_DEA`, MHC→`A_DEC`. Should run cleanly on TCR-pMHC since StaB-ddG already saw SKEMPI's 1AO7/1MI5 TCR-pMHC entries during training — they're in-distribution for it.",
-      "tags": [
-        "dataset"
       ]
     }
   ]
