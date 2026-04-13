@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T09:52:06Z",
+  "generated_at": "2026-04-13T10:22:13Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2268,
-    "assistant_turns": 3369,
+    "user_turns": 2272,
+    "assistant_turns": 3376,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T09:52:00.966Z"
+    "last_ts": "2026-04-13T09:53:34.032Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,14 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T09:53:24.157Z",
+      "text": "## Update — key numbers this round\n\n**BindingGym LoRA LOAEO DONE** (33358280, 2:04 wall clock, 16 assays, 4 excluded for SKEMPI PDB overlap):\n\n| Head | Mean ρ across 16 assays |\n|---|---|\n| **DPL LoRA** | **+0.2761 ± 0.181** |\n| **UN LoRA** | **+0.2943 ± 0.217** |\n\nDPL and UN statistically tied on BindingGym (UN slightly ahead). Big per-assay variance (one assay `hYAP65_peptide` has DPL at −0.008, another has +0.60). On multi-protein DMS fitness with leave-one-protein-out, the cycle-consistency prior provides no edge. **Same pattern as FireProt stability: when each context has many mutations measured, DPL's additive constraint doesn't help.**\n\n**Cluster-aware SKEMPI LoRA** — running, ep 6-8/15 across 15 folds. Sample fold ρ values:\n\n| fold/seed | ep | ρ |\n|---|---|---|\n| tpc_f0s0 | 7 | **+0.054** (genuinely hard fold) |\n| tpc_f1s1 | 7 | +0.474 |\n| tpc_f2s0 | 7 | +0.210 |\n| tpc_f3s2 | 8 |…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T09:21:55.800Z",
       "text": "## 30-min update\n\n**Cluster-aware SKEMPI LoRA (the big one)** — at **ep 5/15** for all 15 jobs:\n\n| Fold/seed | ep 5 ρ |\n|---|---|\n| tpc_f0s0 | +0.086 |\n| tpc_f2s1 | +0.161 |\n| tpc_f4s2 | +0.438 |\n\n**Per-fold variance is huge** as expected — cluster-aware folds hold out whole homology families, some \"hard\" (fold 0 seed 0 ~0.09) and some \"easy\" (fold 4 seed 2 ~0.44). Peak numbers usually come at ep 9-12, still 10 epochs to go. ETA ~2h. When these land the pooled OOF will tell us the honest cluster-aware ΔPL SKEMPI number.\n\n**FireProt LoRA** (`stab_lora`, 2:13 elapsed) — seed 0 and 1 done, seed 2 at ep 2/15\n- **Best so far: seed 1 ρ=+0.3434** (vs frozen DPL +0.234, UN +0.295)\n- **LoRA closes the DPL<UN gap on FireProt!** +0.34 > UN +0.29. LoRA genuinely helps even on stability once context is contextual enough.\n\n**ProteinGym LOAEO LoRA** (`dpl_pgym_lora`, 1:53 elapsed)\n- First fold `ACE2_HU…",
@@ -388,13 +396,6 @@
       "tags": [
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:32:21.426Z",
-      "text": "SAbDab pair extractor v2 done — **633 pairs across 97 antigens** (vs 88 in v1). Output at `data/sabdab_pairs_v2.csv`. ddG mean −0.13, range [−6.4, +5.9] kcal/mol.\n\nThe agent flagged the right caveat: median pair has 94 mutations, so it's more \"antibody A vs antibody B against same antigen\" than point-mutation ΔΔG. Recommends two evaluation regimes:\n- **Tight subset** (n_mut ≤10, 89 pairs) — true point-mutation\n- **Full set** (633 pairs) — antibody-vs-antibody\n\nBoth are usable for ΔPL since cycle-consistency holds regardless of mutation count, but the tight subset is the cleaner head-to-head with SKEMPI/AB-Bind. We'd report both with separate splits.",
-      "tags": [
-        "dataset"
       ]
     }
   ]
