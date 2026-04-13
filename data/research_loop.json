@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T08:21:58Z",
+  "generated_at": "2026-04-13T08:52:01Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2243,
-    "assistant_turns": 3326,
+    "user_turns": 2258,
+    "assistant_turns": 3354,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T08:12:04.504Z"
+    "last_ts": "2026-04-13T08:50:56.228Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,38 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T08:50:49.876Z",
+      "text": "## Update (30 min in)\n\n**Compute landed:**\n\n**Tsuboyama K50 stability — flipping the negative result**\n- **DPL +0.6906 ± 0.014** vs **UN +0.6820 ± 0.018** on 30k mutations / 362 groups / 5-fold × 3-seed GKF\n- DPL finally wins on stability — by a hair (+0.009), but consistent across all 15 folds\n- Mechanism confirmed: Tsuboyama has 362 diverse mini-proteins (vs FireProt's 125 with 5 dominant DMS scans). Sparse contexts → DPL's additive prior works. The agent's hypothesis was right.\n\n**SaProt zero-shot (3 datasets working, 5 failed with empty loaders)**\n| Dataset | n | ρ |\n|---|---|---|\n| SKEMPI | 4956 | **+0.1824** |\n| FireProt test | 347 | +0.1511 |\n| BindingGym | 35116 | −0.0895 (anti) |\n| ATLAS, PPB-Affinity, ProteinGym, S1131, SAbDab-v2 | — | empty (loader bug) |\n\n**ESM-IF: all 8 runs wrote 0 predictions.** biotite PDB parser failing silently. Needs debugging.\n\n**StaB-ddG on S1131**\n-…",
+      "tags": [
+        "error",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T08:35:14.141Z",
+      "text": "## MAJOR FINDING — Tsuboyama K50 stability\n\n**DPL ρ = +0.6906 ± 0.014** on the Tsuboyama K50 stability dataset (30k mutations, 362 protein groups, 5-fold × 3-seed GroupKFold).\n\nCompare:\n- FireProt curated: DPL +0.365\n- FireProt homologue-free: DPL +0.234\n- **Tsuboyama K50: DPL +0.6906** ← nearly 2× higher\n\nAnd critically: **DPL ρ=+0.6906 vs UN ρ=+0.6820 — DPL WINS by +0.009, finally!** Very small margin but in the right direction and consistent across all 15 folds (DPL std 0.014, UN std 0.018, DPL slightly lower variance).\n\n**This flips the \"DPL hurts on stability\" story.** What's different:\n- Tsuboyama has **362 groups** (vs FireProt's 125, most of which are 5 dominant DMS scans)\n- 30k mutations spread more evenly across contexts → each context has *fewer* mutations per protein\n- Designed mini-proteins are structurally simpler, additive assumption holds better\n- This is exactly the mech…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T08:34:38.190Z",
+      "text": "**SaProt SKEMPI zero-shot: ρ = +0.1824 on 4956 mutations.** First real structure-aware zero-shot baseline on SKEMPI that's correlated in the right direction. Between zero-shot ESM (~0) and supervised methods.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-13T08:33:26.778Z",
+      "text": "**Clustering done: 349 PDBs → 129 clusters** (top-5 cluster sizes: 30/23/21/17/15, 80 singletons). All 15 `tpc_*` cluster-aware LoRA jobs started on schedule.",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T08:12:04.412Z",
       "text": "torch_geometric/scatter/sparse/cluster stack is in. Resubmitted all 8 ESM-IF zero-shot jobs (33358372-79). **30 jobs running total.** Queue includes:\n\n- 15 cluster-aware LoRA OOF (pending clustering completion)\n- 8 ESM-IF zero-shot (resubmitted)\n- 8 SaProt zero-shot (still running from the first blitz)\n- 4 StaB-ddG inference (S1131, PPB-Affinity, BindingGym, ... + dependencies)\n- 3 LoRA DPL (S1131/pgym/bgym)\n- 7 ProtAttBA folds\n- Tsuboyama stability run\n- Clustering job (running)\n- stab_lora (FireProt LoRA)\n- zs_all_pgym / zs_all_bgym (3-model zero-shot blitz)",
@@ -363,36 +395,6 @@
       "tags": [
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:28:13.657Z",
-      "text": "LoRA jobs launched: pgym/bgym/s1131. Plus the k-stratification agent confirms the theorem still holds for LoRA-DPL: gap from k=1 to k=2 is +0.095 → +0.135 (smaller than frozen +0.076 → +0.188 but same direction). All 13 jobs running. 6 agents still working.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:27:54.819Z",
-      "text": "**LEAKAGE-CORRECTED RESULT — important news:**\n\n| Slice | n | TP_LORA alone | StaB alone | Best ensemble |\n|---|---|---|---|---|\n| **LOOSE OOF** (current paper) | 1410 | **+0.510** | +0.525 | **+0.592** (α=0.5) |\n| **STRICT cluster-free** | **230** | **+0.427** | **+0.531** | **+0.573** (α=0.3) |\n| Leaky-only slice | 1180 | +0.521 | +0.520 | +0.593 |\n\n**Two key reads:**\n\n1. **Our ΔPL was riding cluster leakage by ~0.08 ρ** (drop from +0.510 to +0.427 on the leakage-free slice). StaB-ddG drops by essentially zero (+0.525 → +0.531) because their training split is already cluster-aware.\n2. **The ensemble still beats StaB alone in the strict slice** (+0.573 vs +0.531, Δρ = +0.042). The advantage shrinks from +0.066 to +0.042 but doesn't vanish.\n3. The strict slice is only **n=230** items though, so the bootstrap CI on +0.042 will be wider. The **strict +0.573 is the honest paper number**, wi…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:27:14.776Z",
-      "text": "7 more agents finished with deliverables. Running the most critical one — the leakage-aware ensemble — and launching the LoRA jobs that are ready.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:26:55.672Z",
-      "text": "Direct answers to both questions, then status of the agents/jobs.\n\n## 1. StaB-ddG: did they train on the data we're testing on?\n\n**Yes — and here's the exact scope of the leakage:**\n\n- **StaB-ddG was trained on SKEMPI.** They split SKEMPI into 119 train PDBs + 81 test PDBs using **interface-homology clustering** (homologous structures stay together). Their 1491-item published test set comes from those 81 test PDBs.\n- **Our 5-fold GroupKFold is by individual PDB, not by cluster.** For our OOF predictions, the model that predicted item X had never seen X's exact PDB in training. **PDB-level: leakage-free.**\n- **BUT** — leakage audit just confirmed at 30% identity: **100% of StaB-ddG's 81 test PDBs have at least one homolog in our training data.** So our OOF predictions on the StaB test slice are NOT cluster-leakage-free. The model could be picking up on homologous training PDBs.\n\n**You wer…",
-      "tags": [
-        "dataset"
       ]
     }
   ]
