@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T13:22:28Z",
+  "generated_at": "2026-04-13T13:52:30Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2308,
-    "assistant_turns": 3436,
+    "user_turns": 2312,
+    "assistant_turns": 3442,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T13:07:06.009Z"
+    "last_ts": "2026-04-13T13:49:01.020Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,14 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T13:48:54.430Z",
+      "text": "## Update — almost done\n\n**Only 1 job left**: `tsuboyama_lora_8k` at 3:22 elapsed.\n\n**dpl_pgym_lora TIMED OUT** at 6h having barely finished the ACE2 held-out assay. ProteinGym LOAEO LoRA is fundamentally too slow at this dataset/architecture combo — abandoning the LoRA pgym track. We have the zero-shot ESM-2/1v/ProtBert numbers from earlier and the frozen DPL LOAEO is still running on a different track.\n\n**Tsuboyama LoRA on 8k subsample** has 3 fold-results so far:\n- seed 0 fold 0 DPL: +0.5922 / UN: +0.6047\n- seed 0 fold 1 DPL: +0.6033 / UN: in progress\n- ~25-30 min per fold-pair → expect ~5-6 fold-seeds done before walltime (6h)\n\n**Lockable findings as of now:**\n\n| Dataset | Frozen DPL | Frozen UN | LoRA DPL | LoRA UN | Notes |\n|---|---|---|---|---|---|\n| **SKEMPI loose OOF** | +0.459 | +0.351 | +0.510 | — | leaky |\n| **SKEMPI cluster-aware** | n/a | n/a | **+0.310** | — | honest |\n| *…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T13:06:58.379Z",
       "text": "## 30-min update\n\n**S1131 cluster-aware LoRA TIMED OUT** at 4h with 11 of 15 fold/seeds done.\n\nDPL per-fold (cluster-aware, mean across 2 seeds where available):\n\n| fold | DPL ρ |\n|---|---|\n| 0 | +0.25 |\n| 1 | +0.41 |\n| 2 | +0.26 |\n| 3 | **−0.17** ← genuinely hard cluster |\n| 4 | +0.54 |\n\n**Mean ≈ +0.25** with massive variance. The cluster-aware version is _worse_ than the PDB-GKF version (frozen DPL +0.317) — same pattern as SKEMPI: removing leakage exposes the limited transfer.\n\n**Tsuboyama LoRA on 8k subsample** is making slower-than-expected progress (~13 min/epoch):\n- seed 0 fold 0 DPL: ρ = **+0.5922**\n- seed 0 fold 0 UN: ρ = **+0.6047**\n- seed 0 fold 1 DPL: ep 2/5 ρ=+0.5278\n\n**LoRA Tsuboyama**: similar to frozen Tsuboyama (DPL +0.690 / UN +0.682) but slightly lower because we're on the 8k subsample, not the full 30k. **DPL ≈ UN here** — same near-tie pattern.\n\nETA: tsuboyama_lora_8…",
@@ -393,13 +401,6 @@
       "tags": [
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:49:29.065Z",
-      "text": "Will send the next update in 30 min. Continuing to set up the ATLAS trainer and StaB-ddG inference while jobs run.",
-      "tags": [
-        "dataset"
       ]
     }
   ]
