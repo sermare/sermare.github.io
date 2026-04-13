@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T11:52:20Z",
+  "generated_at": "2026-04-13T12:22:22Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2289,
-    "assistant_turns": 3406,
+    "user_turns": 2294,
+    "assistant_turns": 3416,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T11:30:55.869Z"
+    "last_ts": "2026-04-13T12:02:50.378Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,22 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T12:02:43.816Z",
+      "text": "## 🎯 THE FINAL HONEST HEADLINE\n\n**15-of-15 cluster-aware LoRA SKEMPI OOF complete. This is the leakage-free number.**\n\n```\nCluster-aware 15-fold LoRA OOF (n=7677)\n  ΔPL LoRA (cluster-aware training)  ρ = +0.3405\n  \nIntersection with StaB-ddG test (n=1433)\n  ΔPL LoRA (honest)                  ρ = +0.3100\n  StaB-ddG alone                     ρ = +0.5419\n  \nBest blend α=0.2                     ρ = +0.5641  ← NEW HEADLINE\n  Δρ vs StaB alone: +0.0222 [+0.011, +0.033]  p < 10⁻⁴\n```\n\n## The full three-column protocol comparison\n\n| Protocol | ΔPL alone | StaB alone | Ensemble | α* | Δρ over StaB |\n|---|---|---|---|---|---|\n| Loose OOF (PDB GKF, leaky) | +0.510 | +0.525 | **+0.592** | 0.5 | **+0.066** |\n| Strict post-hoc filter | +0.427 | +0.531 | +0.573 | 0.3 | +0.042 |\n| **15-fold cluster-aware (honest)** | **+0.310** | **+0.542** | **+0.5641** | **0.2** | **+0.022** |\n\n**The honest leakage-fre…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T12:01:26.956Z",
+      "text": "**All 15 cluster-aware SKEMPI LoRA jobs DONE.** Re-assembling the full cluster-aware OOF ensemble with all 15 folds:",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T11:30:50.924Z",
       "text": "## 🎯 THE LEAKAGE-FREE LoRA SKEMPI NUMBER (10/15 folds)\n\n**Cluster-aware LoRA DPL pooled OOF: ρ = +0.3835** (n=6116 items, 10 folds)\n\n**On StaB-ddG test intersection (n=686):**\n\n| Model | Spearman |\n|---|---|\n| **TP_LORA_cluster (ours, leakage-free)** | **+0.3896** |\n| **StaB-ddG alone** | **+0.4620** |\n| **Best blend α=0.4** | **+0.5192** |\n\n## Compared to earlier (leaky) numbers\n\n| Protocol | ΔPL LoRA | StaB alone | Blend | Δ(blend−StaB) |\n|---|---|---|---|---|\n| Loose OOF (PDB GKF, leaky) | +0.510 | +0.525 | **+0.592** | +0.066 |\n| Strict filter (post-hoc) | +0.427 | +0.531 | +0.573 | +0.042 |\n| **Cluster-aware train (honest)** | **+0.390** | **+0.462** | **+0.519** | **+0.057** |\n\n**Key observations:**\n\n1. **Cluster-aware ΔPL LoRA is +0.39** — between frozen DPL (+0.26 strict) and leakage-leaked LoRA (+0.51 loose). About 0.12 ρ below the loose number. **LoRA fine-tuning was exploiting…",
@@ -382,22 +398,6 @@
       "text": "Going aggressive. Installing torch_geometric first (needed for ESM-IF), then launching ~20+ zero-shot jobs across all models × all datasets.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:41:16.997Z",
-      "text": "SaProt script done: `scripts/zeroshot_saprot.py`, 700 lines, all 8 datasets. **Foldseek SSE4.1 build installed and working** at `~/foldseek/bin/foldseek` (AVX2 crashes on login node due to old Ivy Bridge CPU, but the SSE4.1 build is fine and compute nodes can use either). Per-(PDB,chain) forward-pass cache so many mutations on the same chain cost one model call. Ready to run; first invocation will pull the 2.5 GB SaProt weights from HF. We can now run SaProt zero-shot on SKEMPI / S1131 / BindingGym / ProteinGym / ATLAS / FireProt / SAbDab in parallel.",
-      "tags": [
-        "error",
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:41:06.695Z",
-      "text": "**Important reality check from the PPB-Affinity agent:**\n\nThe non-SKEMPI mutated subset is only **455 rows over 46 PDBs**, not the ~3400 I hoped. Why: PPB-Affinity is mostly a *wildtype* Kd dataset — PDBbind-PP, SAbDab, and Affinity Benchmark rows are all wildtype complexes. **Only ATLAS contributes mutations** (545 → 455 after Kd-to-ΔΔG conversion drops).\n\nSo \"PPB-Affinity as a fresh binding benchmark\" collapses to \"ATLAS\" — which we already downloaded directly with 919 parsed point-mutation records (larger than the 455 you'd get filtering PPB-Affinity). **We should use the direct ATLAS loader, not the PPB-Affinity wrapper.**\n\nThe agent did still write `scripts/train_deltapot_ppb_affinity_lora.py` (586 lines, mutation parsing verified) as a fallback. It's usable for the 455-row slice but I wouldn't launch it — the direct ATLAS path is strictly better.\n\n**Correct plan**: point the LoRA t…",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
