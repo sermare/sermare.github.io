@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T14:22:32Z",
+  "generated_at": "2026-04-13T14:52:35Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2312,
-    "assistant_turns": 3442,
+    "user_turns": 2316,
+    "assistant_turns": 3449,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T13:49:01.020Z"
+    "last_ts": "2026-04-13T14:51:49.844Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,20 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T14:51:49.771Z",
+      "text": "Yeah — the honest cluster-aware number (+0.310) is rough. But I want to push back on \"we perform bad\" with three honest perspectives:\n\n## 1. We perform **honestly**, which is different from bad\n\nOur loose +0.510 wasn't fake skill — the model was learning real binding patterns. It just also got to learn \"I've seen a similar PDB before, here's a hint.\" The cluster-aware split removes that hint and we're left with what the model can do **on truly novel protein families**. That's a much harder task and almost everyone drops a lot when you do it. StaB-ddG only avoided the drop because they did cluster-aware training from the start (that's literally why their paper is good — they were honest about leakage when most others weren't).\n\n## 2. The ensemble still wins, even honestly\n\n| | Strict cluster-aware (n=1433) |\n|---|---|\n| StaB-ddG alone | +0.5419 |\n| **Ensemble (α=0.2)** | **+0.5641** |\n| Δ…",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-13T14:34:18.394Z",
+      "text": "tsuboyama_lora_8k still slowly chugging. 3 results landed, ~5 more in the next 90 min before walltime. No action needed.",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-13T13:48:54.430Z",
       "text": "## Update — almost done\n\n**Only 1 job left**: `tsuboyama_lora_8k` at 3:22 elapsed.\n\n**dpl_pgym_lora TIMED OUT** at 6h having barely finished the ACE2 held-out assay. ProteinGym LOAEO LoRA is fundamentally too slow at this dataset/architecture combo — abandoning the LoRA pgym track. We have the zero-shot ESM-2/1v/ProtBert numbers from earlier and the frozen DPL LOAEO is still running on a different track.\n\n**Tsuboyama LoRA on 8k subsample** has 3 fold-results so far:\n- seed 0 fold 0 DPL: +0.5922 / UN: +0.6047\n- seed 0 fold 1 DPL: +0.6033 / UN: in progress\n- ~25-30 min per fold-pair → expect ~5-6 fold-seeds done before walltime (6h)\n\n**Lockable findings as of now:**\n\n| Dataset | Frozen DPL | Frozen UN | LoRA DPL | LoRA UN | Notes |\n|---|---|---|---|---|---|\n| **SKEMPI loose OOF** | +0.459 | +0.351 | +0.510 | — | leaky |\n| **SKEMPI cluster-aware** | n/a | n/a | **+0.310** | — | honest |\n| *…",
@@ -385,22 +399,6 @@
       "text": "Let me explain this carefully, step by step. This is the most important thing to get right.\n\n## What's going on — the data setup\n\n**Everyone is training on SKEMPI v2.** It's THE protein-protein binding ΔΔG dataset. Both us and StaB-ddG use it. That's not cheating — it's just the standard dataset.\n\n## The two ways to split SKEMPI into train/test\n\nSKEMPI has ~350 protein complexes (PDBs). To train a model and report test numbers, you need to hold some out. Two ways:\n\n**(1) \"Split by PDB\" (our approach)** — What we did in our 5-fold GroupKFold:\n- Each PDB gets assigned to exactly one of 5 folds.\n- When fold 0 is the test fold, the 4 other folds are training. None of the exact same PDBs appear in both.\n- **This is leakage-free at the PDB level.** Model never literally saw the exact PDB it's predicting.\n\n**(2) \"Split by homology cluster\" (StaB-ddG's approach)** — What StaB-ddG did:\n- First ru…",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:51:40.169Z",
-      "text": "StaB-ddG is ready. Launching StaB-ddG on 3 datasets + Tsuboyama LoRA DPL simultaneously:",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:51:08.124Z",
-      "text": "**Tsuboyama K50 unlocked.** Downloaded + joined + sanity-checked:\n- 389,068 single mutations, 412 WT proteins, all with sequences\n- Joined FireProt megascale file → **390k rows with `aa_seq` column** at `data/stability/fireprotdb_megascale_ddg_with_seq.csv` (96.2% coverage)\n- **CAUTION: sign flipped.** Tsuboyama `ddG_ML` is `dG_mutant − dG_wt` (destabilizing = negative), opposite of FireProt DDG. Handle when scoring.\n\nThis is the biggest stability benchmark available. 390k vs our 5k FireProt curated. Launching a LoRA ΔPL run on it now (subsampled to 20k for tractability, 5 seeds, leave-protein-out GKF):",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
