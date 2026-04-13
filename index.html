@@ -68,6 +68,7 @@
       <button class="tab-btn" onclick="switchTab('blog')">Blog</button>
       <button class="tab-btn" onclick="switchTab('reading')">Reading</button>
       <button class="tab-btn" onclick="switchTab('hobbies')">Hobbies</button>
+      <button class="tab-btn" onclick="switchTab('research-loop')">Research Loop</button>
       <a href="journal-club.html" class="tab-btn" style="text-decoration:none;">Solo-Journal Club</a>
       <a href="gpu-monitor.html" class="tab-btn" style="text-decoration:none;">GPU Monitor</a>
       <a href="protein-design.html" class="tab-btn" style="text-decoration:none;">Protein Design</a>
@@ -750,6 +751,78 @@
 
     </div>
 
+    <!-- ===== Research Loop Tab ===== -->
+    <div id="tab-research-loop" class="tab-content">
+      <div class="rl-header">
+        <div class="rl-title">Autonomous /loop Research Tracker</div>
+        <div class="rl-subtitle">
+          Live summary parsed from a Claude Code <code>/loop</code> session running on
+          UC Berkeley Savio. Refreshes every 30 minutes.
+        </div>
+        <div class="rl-meta">
+          <span>Generated: <span id="rl-generated">—</span></span>
+          <span>Last message: <span id="rl-last-ts">—</span></span>
+          <span>Assistant turns: <span id="rl-asst-turns">—</span></span>
+          <span>User turns: <span id="rl-user-turns">—</span></span>
+        </div>
+      </div>
+
+      <div class="rl-subtabs">
+        <button class="rl-sub-btn active" onclick="switchRLSub('overview')">Overview</button>
+        <button class="rl-sub-btn" onclick="switchRLSub('model')">Model</button>
+        <button class="rl-sub-btn" onclick="switchRLSub('datasets')">Datasets</button>
+        <button class="rl-sub-btn" onclick="switchRLSub('results')">Results</button>
+        <button class="rl-sub-btn" onclick="switchRLSub('insights')">Insights</button>
+        <button class="rl-sub-btn" onclick="switchRLSub('updates')">Recent Updates</button>
+      </div>
+
+      <div id="rl-sub-overview" class="rl-sub active">
+        <h3 id="rl-project-title">Loading…</h3>
+        <p id="rl-project-goal"></p>
+        <h4>Algorithm</h4>
+        <p id="rl-project-algorithm"></p>
+        <h4>Current Status</h4>
+        <p id="rl-project-status"></p>
+      </div>
+
+      <div id="rl-sub-model" class="rl-sub">
+        <h3>Model Architecture</h3>
+        <dl class="rl-dl" id="rl-model-dl"></dl>
+        <h4>Variants</h4>
+        <ul id="rl-model-variants"></ul>
+        <h4>Ablations</h4>
+        <ul id="rl-model-ablations"></ul>
+      </div>
+
+      <div id="rl-sub-datasets" class="rl-sub">
+        <h3>Datasets</h3>
+        <table class="rl-table">
+          <thead>
+            <tr><th>Dataset</th><th>Size</th><th>Role</th></tr>
+          </thead>
+          <tbody id="rl-datasets-body"></tbody>
+        </table>
+      </div>
+
+      <div id="rl-sub-results" class="rl-sub">
+        <h3>Most Recent Results</h3>
+        <div id="rl-results-container"></div>
+      </div>
+
+      <div id="rl-sub-insights" class="rl-sub">
+        <h3>Key Findings</h3>
+        <ol id="rl-insights-list"></ol>
+      </div>
+
+      <div id="rl-sub-updates" class="rl-sub">
+        <h3>Recent Assistant Updates</h3>
+        <div class="rl-subtitle">
+          Most recent assistant messages from the /loop conversation, newest first.
+        </div>
+        <div id="rl-updates-list"></div>
+      </div>
+    </div>
+
     <!-- ===== Hobbies Tab ===== -->
     <div id="tab-hobbies" class="tab-content">
 
@@ -827,6 +900,125 @@
         document.getElementById('themeBtn').textContent = '☀️';
       }
     })();
+
+    // ===== Research Loop tab =====
+    function switchRLSub(name) {
+      document.querySelectorAll('.rl-sub').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.rl-sub-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('rl-sub-' + name).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function rlEscape(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function rlFmtTs(ts) {
+      if (!ts) return '—';
+      try { return new Date(ts).toLocaleString(); } catch (e) { return ts; }
+    }
+
+    function rlRenderResults(results) {
+      const c = document.getElementById('rl-results-container');
+      c.innerHTML = '';
+      results.forEach(r => {
+        const card = document.createElement('div');
+        card.className = 'rl-result-card';
+        let rows = '';
+        (r.rows || []).forEach(row => {
+          const v = (typeof row.value === 'number') ? row.value.toFixed(4).replace(/\.?0+$/, '') : row.value;
+          rows += `<tr><td>${rlEscape(row.method)}</td><td class="rl-num">${rlEscape(v)}</td></tr>`;
+        });
+        card.innerHTML = `
+          <div class="rl-result-title">${rlEscape(r.title)}</div>
+          <table class="rl-table">
+            <thead><tr><th>Method</th><th>${rlEscape(r.metric || 'Metric')}</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          ${r.note ? `<div class="rl-note">${rlEscape(r.note)}</div>` : ''}
+        `;
+        c.appendChild(card);
+      });
+    }
+
+    function rlRenderUpdates(updates) {
+      const c = document.getElementById('rl-updates-list');
+      c.innerHTML = '';
+      if (!updates || updates.length === 0) {
+        c.innerHTML = '<p><em>No updates parsed yet.</em></p>';
+        return;
+      }
+      updates.forEach(u => {
+        const div = document.createElement('div');
+        div.className = 'rl-update';
+        const tags = (u.tags || []).map(t => `<span class="rl-tag rl-tag-${t}">${rlEscape(t)}</span>`).join('');
+        div.innerHTML = `
+          <div class="rl-update-head">
+            <span class="rl-update-ts">${rlFmtTs(u.ts)}</span>
+            <span class="rl-update-tags">${tags}</span>
+          </div>
+          <pre class="rl-update-text">${rlEscape(u.text)}</pre>
+        `;
+        c.appendChild(div);
+      });
+    }
+
+    function rlRenderPayload(d) {
+      document.getElementById('rl-generated').textContent = rlFmtTs(d.generated_at);
+      document.getElementById('rl-last-ts').textContent = rlFmtTs(d.stats && d.stats.last_ts);
+      document.getElementById('rl-asst-turns').textContent = d.stats ? d.stats.assistant_turns : '—';
+      document.getElementById('rl-user-turns').textContent = d.stats ? d.stats.user_turns : '—';
+
+      document.getElementById('rl-project-title').textContent = d.project.title;
+      document.getElementById('rl-project-goal').textContent = d.project.goal;
+      document.getElementById('rl-project-algorithm').textContent = d.project.algorithm;
+      document.getElementById('rl-project-status').textContent = d.project.status;
+
+      const dl = document.getElementById('rl-model-dl');
+      dl.innerHTML = '';
+      const fields = [
+        ['Name', d.model.name],
+        ['Backbone', d.model.backbone],
+        ['Total params', d.model.params_total],
+        ['Trainable params', d.model.params_trainable],
+        ['Context dim', d.model.context_dim],
+        ['Token dim', d.model.token_dim],
+      ];
+      fields.forEach(([k, v]) => {
+        dl.innerHTML += `<dt>${rlEscape(k)}</dt><dd>${rlEscape(v)}</dd>`;
+      });
+      document.getElementById('rl-model-variants').innerHTML =
+        (d.model.variants || []).map(v => `<li>${rlEscape(v)}</li>`).join('');
+      document.getElementById('rl-model-ablations').innerHTML =
+        (d.model.ablations || []).map(v => `<li>${rlEscape(v)}</li>`).join('');
+
+      const tb = document.getElementById('rl-datasets-body');
+      tb.innerHTML = '';
+      (d.datasets || []).forEach(ds => {
+        tb.innerHTML += `<tr><td>${rlEscape(ds.name)}</td><td>${rlEscape(ds.size)}</td><td>${rlEscape(ds.role)}</td></tr>`;
+      });
+
+      rlRenderResults(d.results || []);
+
+      document.getElementById('rl-insights-list').innerHTML =
+        (d.insights || []).map(v => `<li>${rlEscape(v)}</li>`).join('');
+
+      rlRenderUpdates(d.recent_updates || []);
+    }
+
+    function rlLoad() {
+      fetch('data/research_loop.json?cb=' + Date.now())
+        .then(r => r.json())
+        .then(rlRenderPayload)
+        .catch(err => {
+          document.getElementById('rl-project-title').textContent =
+            'Could not load research_loop.json';
+          console.error(err);
+        });
+    }
+    rlLoad();
+    setInterval(rlLoad, 5 * 60 * 1000); // refresh UI every 5 min
   </script>
 
 </body>
