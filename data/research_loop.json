@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T07:51:55Z",
+  "generated_at": "2026-04-13T08:21:58Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2227,
-    "assistant_turns": 3300,
+    "user_turns": 2243,
+    "assistant_turns": 3326,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T07:51:53.481Z"
+    "last_ts": "2026-04-13T08:12:04.504Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,58 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-13T08:12:04.412Z",
+      "text": "torch_geometric/scatter/sparse/cluster stack is in. Resubmitted all 8 ESM-IF zero-shot jobs (33358372-79). **30 jobs running total.** Queue includes:\n\n- 15 cluster-aware LoRA OOF (pending clustering completion)\n- 8 ESM-IF zero-shot (resubmitted)\n- 8 SaProt zero-shot (still running from the first blitz)\n- 4 StaB-ddG inference (S1131, PPB-Affinity, BindingGym, ... + dependencies)\n- 3 LoRA DPL (S1131/pgym/bgym)\n- 7 ProtAttBA folds\n- Tsuboyama stability run\n- Clustering job (running)\n- stab_lora (FireProt LoRA)\n- zs_all_pgym / zs_all_bgym (3-model zero-shot blitz)",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T08:02:45.371Z",
+      "text": "**15 cluster-aware LoRA jobs queued**, waiting on the clustering job (33358347) via SLURM `--dependency=afterok`. As soon as the cluster map lands, all 15 start in parallel.\n\nPipeline:\n1. **33358347** (clustering, ~5 min on compute node) → produces `data/pdb_cluster_map.json`\n2. **33358348-62** (`tpc_f{0..4}s{0..2}`) wait for step 1, then start training with `--cluster-file` — so SKEMPI's 5-fold split becomes **cluster-aware instead of PDB-aware**, eliminating the homology leakage.\n3. After ~3.5h: 15 fold/seed npz files land in `results/twophase_oof_cluster/`\n4. I'll then run `assemble_twophase_oof_ensemble.py` on that directory → **the truly fair cluster-aware LoRA OOF ensemble number**\n\nThis is the exact experiment that answers \"what's our real SOTA claim without any leakage\".",
+      "tags": [
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-13T08:02:15.033Z",
+      "text": "Launcher for the cluster-aware LoRA OOF — 15 parallel jobs, each with `--cluster-file`, dependent on the clustering job finishing:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T08:01:49.314Z",
+      "text": "While clustering runs, modifying `train_twophase_lora.py` to accept a `--cluster-file` flag:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T08:01:36.675Z",
+      "text": "mmseqs is crashing with SIGILL on the login node (same AVX2 issue that broke foldseek — Ivy Bridge CPU). Pushing the clustering job to a compute node:",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-13T08:00:30.553Z",
+      "text": "On it. Writing the clustering script + the trainer modification, then launching 15 jobs.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-13T07:55:06.885Z",
+      "text": "Let me explain this carefully, step by step. This is the most important thing to get right.\n\n## What's going on — the data setup\n\n**Everyone is training on SKEMPI v2.** It's THE protein-protein binding ΔΔG dataset. Both us and StaB-ddG use it. That's not cheating — it's just the standard dataset.\n\n## The two ways to split SKEMPI into train/test\n\nSKEMPI has ~350 protein complexes (PDBs). To train a model and report test numbers, you need to hold some out. Two ways:\n\n**(1) \"Split by PDB\" (our approach)** — What we did in our 5-fold GroupKFold:\n- Each PDB gets assigned to exactly one of 5 folds.\n- When fold 0 is the test fold, the 4 other folds are training. None of the exact same PDBs appear in both.\n- **This is leakage-free at the PDB level.** Model never literally saw the exact PDB it's predicting.\n\n**(2) \"Split by homology cluster\" (StaB-ddG's approach)** — What StaB-ddG did:\n- First ru…",
+      "tags": [
+        "dataset"
+      ]
+    },
     {
       "ts": "2026-04-13T07:51:40.169Z",
       "text": "StaB-ddG is ready. Launching StaB-ddG on 3 datasets + Tsuboyama LoRA DPL simultaneously:",
@@ -341,59 +393,6 @@
       "text": "Direct answers to both questions, then status of the agents/jobs.\n\n## 1. StaB-ddG: did they train on the data we're testing on?\n\n**Yes — and here's the exact scope of the leakage:**\n\n- **StaB-ddG was trained on SKEMPI.** They split SKEMPI into 119 train PDBs + 81 test PDBs using **interface-homology clustering** (homologous structures stay together). Their 1491-item published test set comes from those 81 test PDBs.\n- **Our 5-fold GroupKFold is by individual PDB, not by cluster.** For our OOF predictions, the model that predicted item X had never seen X's exact PDB in training. **PDB-level: leakage-free.**\n- **BUT** — leakage audit just confirmed at 30% identity: **100% of StaB-ddG's 81 test PDBs have at least one homolog in our training data.** So our OOF predictions on the StaB test slice are NOT cluster-leakage-free. The model could be picking up on homologous training PDBs.\n\n**You wer…",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:22:39.957Z",
-      "text": "Spawning 20 agents in parallel across research, code-writing, and analysis tasks.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:18:06.259Z",
-      "text": "## Status — comprehensive answer to your push\n\n**1. The leakage finding (CRITICAL)** — at 30% identity, our SKEMPI training set has homologous PDBs to **100% of StaB-ddG test PDBs**. The +0.5918 ensemble headline is leakage-affected. The leakage-free comparison is the matched-cluster ΔPL +0.376 vs StaB +0.531 — a much smaller gap. **The paper's headline ensemble number is inflated.** I'll re-run audit at 50%/70% identity to characterize, and recompute the ensemble using the matched-cluster ΔPL number.\n\n**2. LoRA inconsistency (you're right)** — fixing:\n\n| Dataset | Frozen DPL run | LoRA DPL run |\n|---|---|---|\n| SKEMPI binding | ✓ headline +0.485 | ✓ TP_LORA OOF +0.5098 |\n| FireProt stability | ✓ +0.234 | **🔄 33358216 (running)** |\n| S1131 (ProtAttBA) | ✓ +0.317 | not yet — will launch |\n| ProteinGym binding | 🔄 33358214 (running, frozen) | not yet |\n| BindingGym | 🔄 33358215 (running, f…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:16:48.851Z",
-      "text": "Let me write the comprehensive zero-shot baseline scripts for ProteinGym and BindingGym binding subsets, and a LoRA version for S1131.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:15:46.181Z",
-      "text": "**CRITICAL FINDING from the leakage audit — you need to know this first:**\n\n```\nvs_stabddg:    68 mixed clusters, 222/222 test entries (100.0%) share a cluster with training\nvs_bindinggym: 8 mixed clusters,    9/9 test entries (100.0%) share a cluster with training\n```\n\n**At 30% identity, every single StaB-ddG test PDB has a homologous PDB in our SKEMPI training set.** Our 5-fold GroupKFold-by-PDB only excludes the *exact* PDB, not its homologs. So when we report ΔPL OOF = +0.510 on the StaB intersection, the model that made those predictions had cluster-homologous neighbors in training. That's leakage at the homology level, even though it's leakage-free at the PDB level.\n\n**This affects the headline ensemble +0.5918.** The loose OOF gives +0.510 for ΔPL. The strict matched-cluster split (which IS leakage-free, because StaB-ddG's split is cluster-based) gives ΔPL = +0.376 — a 0.13 ρ drop…",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:14:43.680Z",
-      "text": "You're right and the frustration is valid. Let me address each point.\n\n## 1. We're inconsistent about LoRA — fixing now\n\nYou caught a real inconsistency. The headline SKEMPI ensemble (+0.5918) uses **LoRA-fine-tuned ΔPL**. But everything else I launched on FireProt, S1131, ProteinGym, BindingGym uses **frozen ESM features**. That's an apples-to-oranges mix. Going to fix it.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:09:31.563Z",
-      "text": "Both are real, fair questions. Let me give the honest mechanistic answer.\n\n## 1. Why DPL \"sucks\" vs Unconstrained on stability\n\nThe DPL model parameterizes $f(c, a, b) = \\sum_i [h_\\theta(b_i, c_i) - h_\\theta(a_i, c_i)]$. This is **additive across sites** and **anti-symmetric in (wt, mt)**. The sample-complexity advantage comes from this being a much smaller hypothesis class. But that prior is only a free lunch when the underlying physics actually has that structure. Here's what's different about FireProt vs SKEMPI:\n\n| | SKEMPI binding | FireProt stability |\n|---|---|---|\n| Mutations live at | a protein-protein **interface** | the **monomeric core** |\n| Number of unique proteins | 297 | **125** (much fewer) |\n| Mutations per protein | ~26 | **~40** |\n| Context $c_i$ varies across | many different complexes | mostly the same fold |\n| Dominant signal | which interface contact does this brea…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T07:08:12.576Z",
-      "text": "Stability+LoRA submitted as 33358216. Now your figure critique.\n\n## Re: Figure 1\n\n**Yes, I agree completely.** Here's my honest read:\n\n**What works in the current Gemini Figure 1:**\n- The \"problem & constraints\" panel on the left — visually clear that R1/R2/R3 are graph identities, and the mutation cycle motivation is intuitive\n- The ΔPL architectural-constraint and CCT loss-based-regularizer center panels — this is the load-bearing schematic content\n- It establishes the \"two complementary learners\" framing on one page\n\n**What's wrong with it:**\n1. **Right column is redundant theatre.** The \"Theoretical Sample-Complexity Advantage\" plot duplicates Figure \\ref{fig:sample_size}, and the \"Empirical Validation\" bar chart duplicates Figure \\ref{fig:per_dataset}. Putting results in Figure 1 is bad form — the figure is supposed to *introduce* the method, not pre-spoil the experiments.\n2. **\"Key…",
-      "tags": [
-        "model"
       ]
     }
   ]
