@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T12:28:13Z",
+  "generated_at": "2026-04-14T12:58:22Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2915,
-    "assistant_turns": 4367,
+    "user_turns": 2926,
+    "assistant_turns": 4382,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T11:57:53.757Z"
+    "last_ts": "2026-04-14T12:49:41.672Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,14 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T12:49:41.615Z",
+      "text": "Tick:\n- **SAbDab v2 row now filled**: ESM-2 +0.040, ESM-1v +0.081, ProtBert +0.080, ESM-IF +0.005 (noise). All zero-shot models essentially fail on multi-mutation antibody pairs — expected.\n- **FireProt row updated**: ESM-IF +0.314 (already had), SaProt +0.151 added.\n- **Bias job**: 6.5/15 cells done. Running steady.\n- **DPL S1131 fixed FINAL** (yesterday's 33377353): +0.384 DPL, +0.472 UN.\n- **PDF rebuilt**: 12 pages, master table clean.\n\nSleeping 50min.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-14T11:57:48.010Z",
       "text": "Bias head seed 0 full results (vs no-bias):\n\n| Fold | No-bias | +bias | Δ |\n|---|---|---|---|\n| 0 | 0.379 | 0.381 | +0.002 |\n| 1 | 0.733 | 0.753 | +0.020 |\n| 2 | 0.505 | 0.521 | +0.016 |\n| 3 | 0.178 | 0.222 | **+0.044** |\n| 4 | 0.113 | 0.117 | +0.004 |\n| **mean** | **0.382** | **0.399** | **+0.017** |\n\nBigger than the agent predicted (+0.01–0.03 expected, getting +0.017 mean with +0.044 on hardest fold). Still far below PPAC +0.610 and UN +0.472, but it's a real, positive gauge-fix ablation. Seed 1 fold 0 just landed at +0.425 (vs +0.395 no-bias, Δ +0.030) — same pattern reproducing.",
@@ -376,13 +384,6 @@
       "tags": [
         "model",
         "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:48:32.776Z",
-      "text": "Spawning 5 per-model agents in parallel — one for each zero-shot model. Each agent owns one model and runs it across every missing dataset.",
-      "tags": [
-        "note"
       ]
     }
   ]
