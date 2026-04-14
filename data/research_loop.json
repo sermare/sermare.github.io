@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T14:28:50Z",
+  "generated_at": "2026-04-14T14:58:58Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2952,
-    "assistant_turns": 4415,
+    "user_turns": 2965,
+    "assistant_turns": 4433,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T14:28:48.443Z"
+    "last_ts": "2026-04-14T14:57:25.566Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,70 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T14:43:54.015Z",
+      "text": "12th agent complete: **GAP 1 — Explicit pair term**. Smoke test passed (ρ=+0.314 on fold 0, 1 epoch). Head params 0.5M → 1.26M. **15 full-sweep jobs queued (33384671–33384685)**.\n\nHonest prediction: **+0.04 to +0.07 (max +0.09)** — closes 30-50% of the DPL→RDE gap but not all of it. k-distribution ceiling (~65-70% of SKEMPI is single mutations where pair term = 0). ESM context already captures local epistasis implicitly. Most of RDE's edge is explicit 3D geometry, not pair-interaction signal. Follow-up: pair-term gated by contact distances. 3 more agents running.",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:36:05.619Z",
+      "text": "11th agent complete: **GAP 4 — ESM-2 3B backbone swap**. Smoke test stable, `hidden_size=2560` auto-detected, LoRA params 5.9M (5× bump), fits on A40. **15 Phase-2 jobs queued** (33383907–927) with dependency on Phase-1 pretrain (33383906) since 3B Phase-1 adapter dims differ from 650M.\n\nHonest prediction: **+0.015–0.035** on SKEMPI cluster-aware (below the +0.02–0.05 upper bound). Published ESM-2 scaling curves show diminishing returns past 650M on mutation-effect tasks. 3-seed reads in this range should NOT be treated as wins (min-5-seeds rule — signs have flipped before). 4 more agents running.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:32:24.784Z",
+      "text": "10th agent complete: **DPL+RDE ensemble on full cluster-aware SKEMPI** (n=5694):\n\n| Model | ρ |\n|---|---|\n| DPL alone | +0.386 |\n| RDE alone | +0.490 |\n| **Best blend (α=0.8 RDE)** | **+0.500** |\n\n**Δρ over RDE alone: +0.010 (95% CI [+0.005, +0.015], p<0.001)** — significant but tiny. DPL carries small orthogonal signal to RDE. 5 more agents running.\n\nThis is the first real \"our ensemble beats a structural baseline\" number on the full cluster-aware pool. Not as dramatic as the StaB-ddG ensemble on n=230 (+0.014), but it's on a much larger sample (5694 vs 230).",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:31:56.270Z",
+      "text": "Tick:\n- **21 jobs running!** (vs 1 before spawning the 15 agents) — massive parallelism\n- Notable: **pair term smoke test (GAP 1) is loading** — arch works, 1.26M head params vs 0.47M plain, at the \"unique (pdb, chain): 467\" init stage\n- **15 Tsuboyama ProtAttBA** running in parallel\n- **Bias head**: 9/15 cells\n- Multiple zero-shot + training jobs from the 15 agents all alive\n\nSleeping 30min.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:31:04.712Z",
+      "text": "9th agent complete: **ProtT5 zero-shot** — jobs 33383615 (SKEMPI) + 33383616 (S1131). Uses span-reconstruction scoring with `<extra_id_0>` masking, slow T5Tokenizer (sentencepiece), space-prefixed AA token lookup, fp16 on A40. 6 more agents running.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:29:57.007Z",
+      "text": "8th agent complete: **SAbDab v2 DPL LoRA** — job 33383613. Built a greedy k-mer Jaccard cluster on H+L concatenated sequences (232 clusters from 327 PDBs). 317/633 rows kept after filter. Prediction: UN wins by 0.03-0.08, both in +0.10-0.25 range. 7 more agents running.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:29:47.405Z",
+      "text": "7th agent complete: **BindingGym ProtBert + ESM-IF**:\n- ProtBert BindingGym **fixed NaN**: ρ=**+0.161** (20/24 valid assays). Below ESM-2 (.286) and ESM-1v (.228).\n- ESM-IF BindingGym: PDBs exist, job 33383612 queued (CPU, 12h).\n- ESM-IF ProteinGym binding: **N/A** (no PDBs per assay).\n\nUpdating the master table with the ProtBert BindingGym number.",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:29:07.265Z",
+      "text": "6th agent complete: **ATLAS MHC-only DPL LoRA** — job 33383609. Honest prediction: **mostly noise** at 96 rows × 8 alleles × 5-fold split. Fold 0 leaves out HLA-A*02:01 (51/96 rows) meaning training on 45 and testing on 51 — pure extrapolation. Error bars will overlap zero. Treat as consistency check, not headline claim. 9 more agents running.",
+      "tags": [
+        "error",
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-14T14:28:48.443Z",
       "text": "5th agent complete: **DPL+StaB-ddG full-pool ensemble**. Agent discovered StaB-ddG only publishes 1491 rows of predictions (their own test set), so a \"full 7592\" ensemble is structurally impossible — the max blendable pool is **n=1433**.\n\n- n=1433: DPL alone +0.310, StaB alone +0.542, **best blend α=0.75: ρ=+0.565**\n- Compare to existing table's n=230 cluster-disjoint: +0.573\n\nThe cluster-disjoint n=230 number is slightly higher because it's the stricter subset where StaB-ddG performs best. 10 more agents running.",
@@ -327,64 +391,6 @@
       "tags": [
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T08:05:13.493Z",
-      "text": "Implementation agent dispatched. Will:\n1. Extend `PotentialHead` with optional `n_proteins` + `protein_bias` embedding (zero-init, gauge-fix interpretation)\n2. Wire `--per-protein-bias` flag into `train_deltapot_s1131_lora.py`\n3. Honest cluster-disjoint eval: held-out proteins get bias=0 (no cheating)\n4. Smoke test → submit full 5-fold × 3-seed cluster-aware S1131 job (14h walltime)\n5. Report diffs + sanity checks + honest prediction\n\nCritical detail: the bias term is **0 for unseen proteins at test time** (the held-out cluster has no learned bias) — this is the honest evaluation. We're not predicting test-set means, just letting ΔPL collapse back to its symmetric form when out-of-domain.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T08:04:15.878Z",
-      "text": "Both scorers in. Consensus: **per-protein bias head** is in both top 3s. The reviewer scorer also strongly favored the LOPO diagnostic and the CCT-in-LoRA gap-fix.\n\n## Cross-tab\n\n| Idea | ROI rank | Reviewer rank | Both? |\n|---|---|---|---|\n| **Per-protein bias head** | #2 (40) | #3 (43) | ✅ |\n| Strict LOPO rerun of S1131 | tied #1 (38, diag) | #1 (47) | ✅ |\n| CCT inside LoRA workhorse | mid (low impact) | #2 (45) | ½ |\n| DPL+UN cluster-gated ensemble | #1 (~4h) | mid | ½ |\n| Explicit pair term g(bᵢ,bⱼ,c) | #3 | mid | ½ |\n\nThe reviewer scorer also nailed the **CCT inconsistency** by reading the actual code — the App A.6 negative result is one fold on one dataset, while the abstract's \"CCT closes the gap\" claim is propped up by the v2 frozen-feature pipeline, not LoRA. A NeurIPS reviewer will find this.\n\n**Picking the per-protein bias head** — both scorers ranked it top 3, it directly att…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T08:02:51.212Z",
-      "text": "ROI scorer done. Top picks ranked by ROI:\n\n1. **DPL+UN cluster-gated ensemble** (~4 GPU-h, no retraining)\n2. **Per-protein bias head** (~16 GPU-h, S1131 fix)\n3. **Explicit pair term `g(bᵢ,bⱼ,c)`** (preserves cycle structure, addresses epistasis)\n\n**Bonus diagnostic at score 38** (tied for #1): **strict LOPO rerun of S1131** — could dissolve the entire \"we lose to PPAC\" story without any modeling work.\n\n**CCT disagreement reconciled**: App A.6 collapse was for CCT-on-DPL-head. The architecture brief's proposal is CCT-on-UN-head only — different experiment, low impact (2/5) but high diagnostic value (5/5).\n\nWaiting on the reviewer-defensibility scorer for cross-validation before picking the implementation target.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T08:01:12.204Z",
-      "text": "2 scoring agents launched in parallel:\n\n1. **ROI scorer** — scores each idea on impact per GPU-hour. Weights: impact (×3), cost (×2), risk (×2), diagnostic value, stackability. Output → `notes/scoring_roi.md`.\n2. **Reviewer-defensibility scorer** — scores each idea on how much it hardens the NeurIPS submission against anticipated reviewer attacks (cycle-novelty, S1131 loss, additivity, backbone choice, leakage, CCT-was-never-tested-in-LoRA). Weights: defends concern (×3), strengthens headline (×3), airtightness (×2). Output → `notes/scoring_reviewer.md`.\n\nBoth will explicitly reconcile the **CCT-inside-LoRA disagreement** between the architecture agent and the literature agent (the literature agent says App A.6 already shows CCT collapses; the architecture agent says CCT was never tested in the LoRA workhorse — these can't both be true).\n\nOnce both come back, I'll pick the consensus winn…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:59:50.748Z",
-      "text": "## Big update — zero-shot table is now ~80% filled\n\n**Master table state (cells now filled):**\n\n| Dataset | n | ESM2 | ESM1v | PBert | IF | SaProt | StaB | PPAC | PAttBA | UN | DPLfr | DPL LoRA | +Stab |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| **SKEMPI cluster-aware** | 7592 | .145 | .103 | .118 | **.135** | .182 | **.559**† | .281 | — | — | — | .377 | **.573**† |\n| **S1131 cluster-aware (full)** | 1129 | **.430** | .348 | .313 | (job) | .205 | — | **.610** | .478 | .466§ | — | .382§ | — |\n| BindingGym LOAEO | 27820 | .286 | .228 | (job) | — | .090 | — | — | — | **.294** | — | .276 | — |\n| ProteinGym binding | 5 | .385 | .333 | (job) | — | — | — | — | — | **.385** | — | .293 | — |\n| ATLAS TCR-pMHC | 459 | .022 | .039 | .053 | .111 | .215 | — | — | — | −.010 | — | .088 | — |\n| ATLAS MHC-only | 96 | .131 | .021 | .148 | — | — | — | — | — | — | — | — | — |\n| **Tsuboyama…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:59:00.994Z",
-      "text": "The omnibus agent harvested 17 new cells. Updating the master table.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:56:51.468Z",
-      "text": "## All 3 brainstorm agents complete — synthesis\n\n### 🚨 Agent #2 (Architecture critique) found a real bug\n**Every \"ΔPL LoRA\" number in the master table was trained with plain MSE** — the CCT cycle-closure loss in `src/interface_tokens/cyclepot.py` is **never** combined with the LoRA workhorse (`scripts/train_twophase_lora.py:626`). Only the older `train_cct.py` v2 frozen-feature pipeline uses it. **We have no answer to the paper's most interesting question (loss vs architecture).** This is a real oversight to fix before NeurIPS.\n\n### Top 5 ranked next experiments (synthesizing all 3 agents)\n\n| # | Experiment | Cost | Why |\n|---|---|---|---|\n| 1 | **Per-protein bias / shrinkage head** (PPAC-style) | ~10 GPU-h | The single biggest fix for S1131/FireProt/ProteinGym. ΔPL's symmetric h(σ,c)−h(σ',c) parameterization throws away the per-protein offset that UN exploits. Add a learned/random per-p…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:56:04.636Z",
-      "text": "All 3 brainstorming agents complete. Plus the ProtBert agent. Critical findings below.",
-      "tags": [
-        "note"
       ]
     }
   ]
