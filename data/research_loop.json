@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T09:57:44Z",
+  "generated_at": "2026-04-14T10:27:51Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2892,
-    "assistant_turns": 4325,
+    "user_turns": 2902,
+    "assistant_turns": 4345,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T09:41:36.100Z"
+    "last_ts": "2026-04-14T10:24:09.538Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,36 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T10:24:09.458Z",
+      "text": "Tick complete:\n- **🎯 RDE-Network DONE**: pooled OOF +0.497, mean +0.471 ± 0.097. Beats DPL LoRA (+0.377) by +0.12. Beats PPAC (+0.281) by +0.22. New \"RDE\" column added to master table.\n- **DPL S1131 fixed**: 12.5/15 cells. Almost done.\n- **Bias head 33381454**: 3/15 cells. Mean +0.011 nudge.\n- **Updated SKEMPI cluster-aware row**: now shows StaB +0.559 / RDE +0.497 / PPAC +0.281 / DPL LoRA +0.377 — both supervised structural baselines beat us, supervised seq we beat.\n\nSleeping 45min.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T10:23:58.414Z",
+      "text": "PDF rebuilt — 12 pages, master table no longer overfull. **RDE-Network column added** to the supervised structural group with +0.497 on SKEMPI cluster-aware (15-cell pooled OOF).",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-14T10:23:01.209Z",
+      "text": "RDE-Network pooled OOF: **ρ = +0.4965** (n=6706, 5 folds × 3 seeds averaged then concatenated). Best structural-supervised baseline on the full cluster-aware SKEMPI pool. Beats our DPL LoRA (+0.377) by **+0.12**, beats PPAC (+0.281) by +0.22.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T10:22:42.760Z",
+      "text": "**RDE-Network cluster-aware FINAL (15/15 cells): ρ = +0.4714 ± 0.097**\n\nThat's a major number. Let me get the pooled OOF and update.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-14T09:41:25.067Z",
       "text": "**Bias head head-to-head (seed 0):**\n\n| Fold | DPL no-bias | DPL +bias | Δ |\n|---|---|---|---|\n| 0 | +0.3786 | +0.3806 | +0.002 |\n| 1 | +0.7330 | +0.7530 | **+0.020** |\n\nMean +0.011. Modest, matches the agent's honest prediction. UN heads identical (bypassed).\n\n- **DPL fixed (no-bias)**: 25/30 finish lines (12.5/15 fold-seed)\n- **Bias job**: 4/30 lines (2/15 done)\n- **RDE**: iter 28169/30000 (94%) — first folds about to land!",
@@ -353,35 +383,6 @@
       "text": "Now add a new footnote `$^{\\S}$` for the seed-0-only S1131 fixed numbers and rebuild the PDF.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:44:14.478Z",
-      "text": "Right — they're only in the footnote prose, not as columns. Let me add a \"sup. seq.\" column group to the actual table with PPAC and ProtAttBA cells.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:42:26.677Z",
-      "text": "## How we stack up vs the field — full picture\n\n### ✅ Where we **win** (DPL ≥ all comparable baselines)\n\n| Dataset | Us (DPL LoRA) | Best baseline | Margin |\n|---|---|---|---|\n| **SKEMPI cluster-aware** (n=7592) | **+0.377** | PPAC supervised seq +0.281 | **+0.096** ✅ |\n| **Tsuboyama K50** (n=30k, 362 proteins) | **+0.745** | UN +0.719, ESM-IF +0.544 | **+0.026** vs UN ✅ |\n| **ATLAS TCR-pMHC** (n=459) | **+0.088** | UN −0.010 | +0.098 ✅ (but ESM-IF zero-shot +0.111 still beats us) |\n| **SKEMPI ⊕ StaB-ddG ensemble** (n=230 intersection) | **+0.573** | StaB-ddG alone +0.559 | +0.014 ✅ |\n\n### ❌ Where we **lose** to other models\n\n| Dataset | Us | Winner | Margin |\n|---|---|---|---|\n| **S1131 cluster-aware** (n=1129) | DPL +0.382 (seed 0) | **PPAC +0.610**, ProtAttBA +0.478 | **−0.228 vs PPAC** ❌ — both supervised seq baselines crush us. Even our own UN baseline (+0.466) beats DPL here. |\n| *…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:19:30.123Z",
-      "text": "Tick:\n- **DPL S1131 fixed**: 9.5/15 done. Seed 1 fold 4 DPL just finished. Per-seed mean DPL ≈ 0.38, UN ≈ 0.49 — UN consistently winning.\n- **RDE-Network**: iter 18543/30000 (62%), ~3h more.\n- 16 jobs running, all on track.\n\nSleeping 45min.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T06:33:37.097Z",
-      "text": "Tick:\n- **DPL S1131 fixed**: 8/15 fold-seed combos done (seed 0 complete + seed 1 fold 0/1/2). Seed 1 fold 2 is the **first DPL win** (DPL +.557, UN +.511). Combined mean (8 cells): DPL +0.451, UN +0.528 — UN still leads by +0.077.\n- **RDE-Network**: iter 15422/30000 (51%), ~3.5h to go.\n\nSleeping 45min.",
-      "tags": [
-        "model"
       ]
     }
   ]
