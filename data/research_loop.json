@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T07:27:03Z",
+  "generated_at": "2026-04-14T07:57:08Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2810,
-    "assistant_turns": 4203,
+    "user_turns": 2855,
+    "assistant_turns": 4269,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T07:19:30.211Z"
+    "last_ts": "2026-04-14T07:56:51.569Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,124 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-14T07:56:51.468Z",
+      "text": "## All 3 brainstorm agents complete — synthesis\n\n### 🚨 Agent #2 (Architecture critique) found a real bug\n**Every \"ΔPL LoRA\" number in the master table was trained with plain MSE** — the CCT cycle-closure loss in `src/interface_tokens/cyclepot.py` is **never** combined with the LoRA workhorse (`scripts/train_twophase_lora.py:626`). Only the older `train_cct.py` v2 frozen-feature pipeline uses it. **We have no answer to the paper's most interesting question (loss vs architecture).** This is a real oversight to fix before NeurIPS.\n\n### Top 5 ranked next experiments (synthesizing all 3 agents)\n\n| # | Experiment | Cost | Why |\n|---|---|---|---|\n| 1 | **Per-protein bias / shrinkage head** (PPAC-style) | ~10 GPU-h | The single biggest fix for S1131/FireProt/ProteinGym. ΔPL's symmetric h(σ,c)−h(σ',c) parameterization throws away the per-protein offset that UN exploits. Add a learned/random per-p…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:56:04.636Z",
+      "text": "All 3 brainstorming agents complete. Plus the ProtBert agent. Critical findings below.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:55:51.221Z",
+      "text": "Brainstorm agent #1 (literature) done. Key findings:\n\n**Most actionable improvements:**\n1. **Add an explicit pair term `g(bᵢ, bⱼ, c)`** — preserves cycle structure but lifts the strict additivity assumption that's breaking on dense-DMS datasets (FireProt, ProteinGym). Top recommendation.\n2. **Temperature-conditional ΔPL** — Tsuboyama K50 + ProThermDB are the cleanest white space; nobody has done this.\n3. Add ProtT5 + structural features to the context vector.\n\n**Honest warnings:**\n- Don't push CCT-on-top-of-ΔPL — already collapses per Appendix A.6.\n- **S1131's 42-cluster split may itself be leaky** — PPAC's +0.610 might be exploiting cluster-internal homology. Need to rerun S1131 with stricter LOPO (leave-one-PDB-out) before declaring \"PPAC crushes us\" in the paper.\n- DDGun, ACDC-NN, ProstaProt all use anti-symmetry — we need to cite them in related work to defuse \"you reinvented this\" r…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:55:08.436Z",
+      "text": "Tick: 3 of the 5 zero-shot agents complete. Master table now has many newly-harvested zero-shot cells (existing on disk but never used). Awaiting:\n- ProtBert agent\n- SaProt jobs to finish (S1131, ATLAS, Tsub)\n- ESM-IF jobs to finish (S1131, SAbDab v2)\n- ESM-2 new jobs (S1131, SAbDab v2)\n- ESM-1v new jobs (S1131, SAbDab v2)\n- DPL S1131 fixed full rerun\n- 15 RDE-Network cluster-aware jobs\n\nPlus the 3 brainstorming agents (literature, architecture critique, white space).",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:54:20.399Z",
+      "text": "ESM-IF agent done. SKEMPI cluster-aware zero-shot **|ρ|=+0.135** (n=4944 single-mut subset) — found from existing run. S1131 + SAbDab v2 jobs submitted. Updating master table and fixing my ProteinGym bold mistake.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:53:50.237Z",
+      "text": "ESM-2 agent done. Most cells already had results on disk — only 2 new jobs needed (S1131 + SAbDab v2). Pulling in the existing ESM-2 numbers we hadn't harvested.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:53:04.459Z",
+      "text": "3 brainstorming agents launched in parallel:\n\n1. **Thermodynamic-ML literature deep-dive** — surveys cycle consistency, free-energy decomposition, reversibility, statistical-physics-inspired losses, MD/Boltzmann generators. Output → `notes/research_brief_thermodynamic.md`\n2. **ΔPL architecture critique** — reads our actual code (`train_twophase_lora.py`, `train_deltapot_stability.py`), diagnoses each failure mode, proposes ≥8 ranked concrete improvements with cost/impact estimates. Output → `notes/architecture_critique_dpl.md`\n3. **New-model white space** — landscape scan for the model nobody has built yet, brittleness analysis of every existing SOTA, one fully-fleshed novel architecture, plus 3 ranked next-paper hypotheses. Output → `notes/whitespace_new_models.md`\n\nWill report when they complete. Meanwhile the 5 zero-shot agents from earlier are still working on filling table cells.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:50:54.166Z",
+      "text": "Spawning 3 brainstorming agents in parallel — each with a different angle.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:50:45.327Z",
+      "text": "5 zero-shot agents dispatched in parallel + the earlier omnibus agent — one per model (ESM-2, ESM-1v, ProtBert, ESM-IF, SaProt). Each owns its column and submits sbatch jobs across all missing dataset cells in parallel. Will report as they complete.",
+      "tags": [
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:48:32.776Z",
+      "text": "Spawning 5 per-model agents in parallel — one for each zero-shot model. Each agent owns one model and runs it across every missing dataset.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:47:37.036Z",
+      "text": "Dispatching an agent to spam zero-shot baselines across every (model × dataset) cell that's still empty.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:46:01.224Z",
+      "text": "Master table overfull is gone. PDF rebuilt — 12 pages, 1.69 MB. The supervised sequence baselines now appear as actual columns:\n\n**New column layout:**\n```\nzero-shot (6) | struct (StaB) | sup. seq. (PPAC, PAttBA) | ours (UN, DPL fr, DPL LoRA) | +Stab\n```\n\n**Cells filled in:**\n- **SKEMPI cluster-aware row**: PPAC = .281, PAttBA = — (PAttBA only run on S1131)\n- **S1131 cluster-aware row** (new \"full\" version, n=1129): PPAC = **.610** (bold winner), PAttBA = .478, UN = .466§, DPL LoRA = .382§ (§ = seed-0 only, fixed-loader rerun in flight)\n\nThe S1131 row now clearly shows both supervised sequence baselines beating us. SKEMPI row shows we beat PPAC by +0.10. Rerun PDF location: `/global/scratch/users/sergiomar10/loop/paper/main.pdf` (12 pages).",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:45:31.592Z",
+      "text": "Built — 12 pages, 1.69MB. Overfull hbox by 28pt at the master table. Tightening tabcolsep.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:44:40.219Z",
+      "text": "Now add a new footnote `$^{\\S}$` for the seed-0-only S1131 fixed numbers and rebuild the PDF.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:44:14.478Z",
+      "text": "Right — they're only in the footnote prose, not as columns. Let me add a \"sup. seq.\" column group to the actual table with PPAC and ProtAttBA cells.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:42:26.677Z",
+      "text": "## How we stack up vs the field — full picture\n\n### ✅ Where we **win** (DPL ≥ all comparable baselines)\n\n| Dataset | Us (DPL LoRA) | Best baseline | Margin |\n|---|---|---|---|\n| **SKEMPI cluster-aware** (n=7592) | **+0.377** | PPAC supervised seq +0.281 | **+0.096** ✅ |\n| **Tsuboyama K50** (n=30k, 362 proteins) | **+0.745** | UN +0.719, ESM-IF +0.544 | **+0.026** vs UN ✅ |\n| **ATLAS TCR-pMHC** (n=459) | **+0.088** | UN −0.010 | +0.098 ✅ (but ESM-IF zero-shot +0.111 still beats us) |\n| **SKEMPI ⊕ StaB-ddG ensemble** (n=230 intersection) | **+0.573** | StaB-ddG alone +0.559 | +0.014 ✅ |\n\n### ❌ Where we **lose** to other models\n\n| Dataset | Us | Winner | Margin |\n|---|---|---|---|\n| **S1131 cluster-aware** (n=1129) | DPL +0.382 (seed 0) | **PPAC +0.610**, ProtAttBA +0.478 | **−0.228 vs PPAC** ❌ — both supervised seq baselines crush us. Even our own UN baseline (+0.466) beats DPL here. |\n| *…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
       "ts": "2026-04-14T07:19:30.123Z",
       "text": "Tick:\n- **DPL S1131 fixed**: 9.5/15 done. Seed 1 fold 4 DPL just finished. Per-seed mean DPL ≈ 0.38, UN ≈ 0.49 — UN consistently winning.\n- **RDE-Network**: iter 18543/30000 (62%), ~3h more.\n- 16 jobs running, all on track.\n\nSleeping 45min.",
       "tags": [
@@ -267,129 +385,6 @@
       "text": "Tick complete:\n- **ProtAttBA cluster-aware S1131 FINAL**: 15/15 cells, **pooled ρ=+0.478** (n=3387). Per-fold: f0=.612, f1=.819, f2=.473, f3=.175, f4=.193. Trails PPAC (+0.610) on the same data.\n- **ProteinGym LoRA LOAEO COMPLETE 5/5**: DPL +0.293, **UN +0.338** (UN +0.045). Negative result for ΔPL on dense per-protein DMS — added to paper.\n- **DPL S1131 fixed**: seed 0 fold 0/1/2 done; UN winning 2 of 3 folds so far.\n- **RDE-Network**: all 15 jobs running on A40 (~7h each).\n- Master table + paper updated.\n\nSleeping 30min.",
       "tags": [
         "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T03:12:18.547Z",
-      "text": "All 15 RDE jobs running on A40. Each will take ~7h (30k iters × 0.86s).",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T03:11:47.103Z",
-      "text": "**ProteinGym LoRA LOAEO COMPLETE (5/5):** DPL +0.293, **UN +0.338** (UN wins by +0.045).",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T03:11:11.647Z",
-      "text": "15/15 ProtAttBA done. All RDE jobs running on A40 now.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T02:45:42.360Z",
-      "text": "Tick:\n- **ProtAttBA**: 14/15 done, mean +0.477, **pooled OOF +0.506** (n=3161). PPAC still leads at +0.610.\n- **DPL S1131 fixed**: seed 0 fold 2 DPL +0.505, mid-flight\n- **Tsub UN**: still 4/15\n- **RDE-Network**: 15 jobs moved from jammed 1080ti → A40 (33378728–42)\n- **ProteinGym**: 4/5 done, UN beats DPL by +0.040 mean (negative result)\n\nSleeping 25min.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T02:45:31.735Z",
-      "text": "15 RDE jobs resubmitted to A40 (33378728–42).",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T02:45:17.161Z",
-      "text": "Moving the RDE jobs to A40 too — 1080ti has 4 nodes drained, only 4 active and other users running.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T02:44:43.176Z",
-      "text": "ProtAttBA pooled cluster-aware S1131: **ρ=+0.506** (14/15 folds, n=3161). PPAC still leads at +0.610. Both crush the buggy DPL +0.255.",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T02:18:33.185Z",
-      "text": "Tick summary:\n- **Tsuboyama K50 ESM-IF zero-shot**: |ρ|=+0.544 (n=29902) — added to master table & paper\n- **ProtAttBA cluster-aware**: 9/15 done, mean +0.605 (folds 0/1/2 done, fold 4 has 1 seed)\n- **Tsub UN**: 4/15 done, ρ=+0.725 (DPL +0.745 leads by +0.020)\n- **DPL S1131 fixed**: seed 0 fold 0 done (DPL .379, UN .612), fold 1 done (DPL .733, UN .721), fold 2 in progress\n- **ProteinGym LoRA**: 4/5 assays done — UN beats DPL by +0.040 mean (negative result for ΔPL on dense per-protein DMS)\n\nSleeping 25 min.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T02:18:20.708Z",
-      "text": "**ProteinGym LoRA LOAEO — 4/5 assays done:** DPL mean +0.278, **UN +0.318** (UN wins by +0.040). DPL wins only on CCR5; UN wins on ACE2, CP2C9, SPIKE. RASK still running.\n\nThis is a negative result for ΔPL on ProteinGym binding LOAEO — same regime as FireProt (dense per-protein, additivity assumption weaker).",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T02:17:51.098Z",
-      "text": "9/15 ProtAttBA done — mean ρ +0.605 (folds 0-2 seeds done, fold 3 not started, fold 4 has 1 seed). Hard folds 3/4 likely pull average down ~0.55-0.60, matching PPAC.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T02:16:46.680Z",
-      "text": "ESM-IF on Tsuboyama K50: **|ρ|=+0.544** (n=29902). Solid zero-shot structural baseline. SaProt failed silently (n=0).",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-14T01:45:14.031Z",
-      "text": "Tick summary:\n- **Tsuboyama LoRA**: 2/15 UN done (avg ρ +0.729 — DPL still leading by +0.016)\n- **DPL S1131 fixed**: fold 0 DPL **+0.379** (vs buggy +0.193), fold 1 DPL hitting **+0.718** mid-training. Bug-fix nearly doubles the number.\n- **ProtAttBA fold 2-4**: 9 jobs on A40, ~32 min in, ~30 min to go\n- **ESM-IF Tsub**: 26000/29902 (87%)\n- **PPAC SKEMPI cluster-aware FINAL**: ρ=+0.281 (we win by +0.096 on headline)\n\nSleeping 30 min.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T01:44:58.080Z",
-      "text": "DPL S1131 fixed is much stronger than buggy version: fold 0 DPL **+0.379** (was +0.193), fold 0 UN **+0.612** (was +0.520), fold 1 DPL hitting **+0.718** at ep 7. The data IS the signal.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T01:14:00.448Z",
-      "text": "Progress snapshot:\n- **PPAC SKEMPI cluster-aware**: ρ=+0.281±0.013 (complete). We win by +0.096 on the headline row. Paper prose updated.\n- **ProtAttBA**: 6/15 folds done (fold 0 avg 0.612, fold 1 avg 0.819). 9 more moved back to A40, running now.\n- **Tsub LoRA UN**: mid-ep 4/5, near finish.\n- **DPL S1131 fixed**: 33377353 running, 14h walltime, fold 0 DPL complete +0.379.\n- **ESM-IF zsstruct on Tsub**: 13500/29902 done (~45%).\n- **ProteinGym LoRA**: ACE2 DPL +0.199 / UN +0.195 so far; other 4 still running.\n\nSleeping 30 min.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T01:13:20.789Z",
-      "text": "Now update the paper master table to add PPAC as a supervised sequence baseline column.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T01:13:08.093Z",
-      "text": "**PPAC SKEMPI cluster-aware complete: ρ = +0.281 ± 0.013** (n=7592, 5-fold × 5-seed). Our ΔPL LoRA beats it by +0.096 on the headline dataset.",
-      "tags": [
         "dataset",
         "model"
       ]
