@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T18:00:04Z",
+  "generated_at": "2026-04-14T18:30:30Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3016,
-    "assistant_turns": 4509,
+    "user_turns": 3023,
+    "assistant_turns": 4518,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T17:49:13.148Z"
+    "last_ts": "2026-04-14T18:26:13.842Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,39 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T18:26:13.842Z",
+      "text": "PILOT B1 dispatched:\n- **Job 33396614** running on n0215. SKEMPI fold 0 seed 0, 10 epochs, ~2.5h.\n- Smoke test passed: CCT loss went 2.77 → 0.43 (6.5× drop) ep1→ep2, no NaN.\n- Interesting finding: **CCT is non-zero on pure DPL** because head dropout breaks strict cycle-closure per step. So CCT doubles as a **dropout-consistency regularizer** beyond just the pair-term/struct-fusion/cluster-cond non-linearities.\n\n**Honest prediction: Δρ ≈ +0.01 to +0.02**, likely within noise. CCT on pure DPL is structurally close to a no-op because DPL's form is already reflexive by construction. The +0.12 gap to RDE comes from structural information, not from the loss function. **But this pilot fixes the paper's internal inconsistency** — every \"ΔPL LoRA\" headline number was plain MSE, the CCT claim was propped up by the v2 frozen-feature pipeline. Now CCT actually exists in the LoRA workhorse.\n\nAll 3 ro…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T18:14:55.842Z",
+      "text": "## State of the world\n\n### 🆕 New avenues (7 pilot experiments running)\n\n**Round 1 gap pilots** (the first 4 architectural changes — single fold 0 seed 0):\n\n| Pilot | Current epoch | Val ρ | Baseline fold 0 | Δ | Status |\n|---|---|---|---|---|---|\n| **tpcs struct fusion** | 14/15 | **+0.390** | ~0.38 | **~0** | **flat vs baseline** (no lift from AF2 pLDDT/φψ/SASA/contact/iface-z features) |\n| **tpp pair term** g(bᵢ,bⱼ,c) | 5/10 | **+0.364** | ~0.38 | ~0 | flat-to-slightly-worse mid-train |\n| **tpcd RDE distill** | 4/15 | **+0.058** | ~0.38 | **−0.32** | **broken/collapsing** — distill term overwhelming main loss at this λ |\n| **tpcc cluster-cond** | 14/15 | **+0.138** | ~0.38 | **−0.24** | **collapsed** — cluster embedding hurts when test rows get OOV |\n\n**Round 2 pilots** (from the 6-brainstorm top 3 I just dispatched):\n\n| Pilot | Current epoch | Val ρ | Notes |\n|---|---|---|---|\n| **tpc…",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T18:10:04.500Z",
+      "text": "PILOT E1 dispatched:\n- **Pilot job 33396572** running on A40. Fold 0 seed 0, 10 epochs, 12h walltime.\n- **Residual target has 36% less variance** than raw y (2.30 vs 3.25 MSE) — room exists for DPL to contribute.\n- 85.4% of train rows have RDE signal, 922 unmatched rows dropped (15%).\n- Epoch 1: `resid_mse=2.30, final_rho=+0.088` (early, DPL noise dominating).\n\n**Honest prediction:** **+0.505 to +0.515** final Spearman on fold 0 — right at the +0.510 success threshold. The residual structure exists but DPL and RDE errors are largely collinear on SKEMPI, so the boost buys at most +0.01-0.02 over RDE alone. ETA ~100 min.\n\nFailure modes flagged:\n1. DPL noise may not converge — need lower head LR\n2. Error modes may be redundant (null hypothesis)\n3. RDE cluster splits vs DPL cluster splits could mismatch → evaluation optimism\n4. Dropping 922 unmatched rows shrinks training set by 15%\n\nWaiting…",
+      "tags": [
+        "error",
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T18:01:03.548Z",
+      "text": "PILOT C1 dispatched. Key results:\n- **Smoke test (33396569)**: running on n0210/A40, smoke on 8k subset\n- **Full pilot (33396570)**: running on n0211/A40, 30k Tsub Phase 1 + 10 ep SKEMPI cluster-aware Phase 2, 14h walltime\n- Backwards-compat: `--phase1-data {mhc,tsuboyama}`, default `mhc`\n\n**Honest prediction:** Δρ ≈ 0 to +0.015, mostly within noise. Tsuboyama's 362 mini-proteins are far from SKEMPI's antibody/cytokine interfaces; intra-monomer stability signal may not transfer to interfacial packing. **P(meet +0.02 criterion) ≈ 25-30%.** Even if it's neutral, it's a useful diagnostic — tells us whether stability→binding transfer works at all.\n\nWaiting on B1 (LoRA-CCT) and E1 (BoostΔPL) agents.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-14T17:49:13.066Z",
       "text": "3 implementation agents launched in parallel. Each will read the existing code, add a flag, smoke test, and submit a single fold 0 seed 0 pilot (not 15 jobs).\n\n- **B1**: LoRA-internal CCT loss (fixes the paper inconsistency)\n- **E1**: BoostΔPL on RDE residuals (success = fold 0 Spearman > 0.51)\n- **C1**: Tsuboyama→SKEMPI transfer (success = fold 0 Spearman > 0.40)\n\nWill report as they come back. Meanwhile the existing 4 gap pilots (tpp, tpcc, tpcs, tpcd) are still running.",
@@ -365,40 +398,6 @@
       "text": "9th agent complete: **ProtT5 zero-shot** — jobs 33383615 (SKEMPI) + 33383616 (S1131). Uses span-reconstruction scoring with `<extra_id_0>` masking, slow T5Tokenizer (sentencepiece), space-prefixed AA token lookup, fp16 on A40. 6 more agents running.",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:29:57.007Z",
-      "text": "8th agent complete: **SAbDab v2 DPL LoRA** — job 33383613. Built a greedy k-mer Jaccard cluster on H+L concatenated sequences (232 clusters from 327 PDBs). 317/633 rows kept after filter. Prediction: UN wins by 0.03-0.08, both in +0.10-0.25 range. 7 more agents running.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:29:47.405Z",
-      "text": "7th agent complete: **BindingGym ProtBert + ESM-IF**:\n- ProtBert BindingGym **fixed NaN**: ρ=**+0.161** (20/24 valid assays). Below ESM-2 (.286) and ESM-1v (.228).\n- ESM-IF BindingGym: PDBs exist, job 33383612 queued (CPU, 12h).\n- ESM-IF ProteinGym binding: **N/A** (no PDBs per assay).\n\nUpdating the master table with the ProtBert BindingGym number.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:29:07.265Z",
-      "text": "6th agent complete: **ATLAS MHC-only DPL LoRA** — job 33383609. Honest prediction: **mostly noise** at 96 rows × 8 alleles × 5-fold split. Fold 0 leaves out HLA-A*02:01 (51/96 rows) meaning training on 45 and testing on 51 — pure extrapolation. Error bars will overlap zero. Treat as consistency check, not headline claim. 9 more agents running.",
-      "tags": [
-        "error",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:28:48.443Z",
-      "text": "5th agent complete: **DPL+StaB-ddG full-pool ensemble**. Agent discovered StaB-ddG only publishes 1491 rows of predictions (their own test set), so a \"full 7592\" ensemble is structurally impossible — the max blendable pool is **n=1433**.\n\n- n=1433: DPL alone +0.310, StaB alone +0.542, **best blend α=0.75: ρ=+0.565**\n- Compare to existing table's n=230 cluster-disjoint: +0.573\n\nThe cluster-disjoint n=230 number is slightly higher because it's the stricter subset where StaB-ddG performs best. 10 more agents running.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
       ]
     }
   ]
