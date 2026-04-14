@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T13:58:42Z",
+  "generated_at": "2026-04-14T14:28:50Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2930,
-    "assistant_turns": 4389,
+    "user_turns": 2952,
+    "assistant_turns": 4415,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T13:40:33.653Z"
+    "last_ts": "2026-04-14T14:28:48.443Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,52 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T14:28:48.443Z",
+      "text": "5th agent complete: **DPL+StaB-ddG full-pool ensemble**. Agent discovered StaB-ddG only publishes 1491 rows of predictions (their own test set), so a \"full 7592\" ensemble is structurally impossible — the max blendable pool is **n=1433**.\n\n- n=1433: DPL alone +0.310, StaB alone +0.542, **best blend α=0.75: ρ=+0.565**\n- Compare to existing table's n=230 cluster-disjoint: +0.573\n\nThe cluster-disjoint n=230 number is slightly higher because it's the stricter subset where StaB-ddG performs best. 10 more agents running.",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:28:31.695Z",
+      "text": "4th agent complete: **Tsuboyama PPAC** — job 33383607 queued. Extracts ESM-2 650M delta features (~20-25 min) then runs PPAC MLP 5-fold × 5-seed GroupKFold by uniprot (~5-10 min). Total ~35 min wall. 11 more agents running.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:28:25.964Z",
+      "text": "3rd agent complete: **FireProt DPL LoRA** — job 33383606 queued. Prior data on the same split gives DPL 0.337 / UN 0.360 (both beat frozen DPL 0.234, UN still ahead by +0.023). Confirms dense-per-protein pattern. 12 more agents running.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:28:20.188Z",
+      "text": "2nd agent complete: **Tsuboyama ProtAttBA** — 15 jobs queued (33383591–33383605). Agent's honest prediction: ProtAttBA will land at **0.55–0.65** (below DPL LoRA +0.745), because ProtAttBA's core inductive bias is cross-chain attention which degenerates to self-attention on single-chain stability. 13 more agents running.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:27:47.486Z",
+      "text": "First of 15 agents complete: **ESM-2 3B zero-shot** jobs queued (33383583 SKEMPI, 33383584 S1131). 3B weights already cached at `loop/torch_cache/hub/checkpoints/esm2_t36_3B_UR50D.pt` for the SKEMPI one — no download needed. Waiting on the other 14.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T14:24:43.109Z",
+      "text": "Dispatching 10 fill agents + 5 critical-gap agents in parallel.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-14T13:40:27.265Z",
       "text": "Bias job: 8/15 cells done. Seed 1 pattern continuing — DPL with bias averaging **+0.023** over no-bias across 3 folds (consistent with seed 0's +0.017).",
@@ -337,50 +383,6 @@
     {
       "ts": "2026-04-14T07:56:04.636Z",
       "text": "All 3 brainstorming agents complete. Plus the ProtBert agent. Critical findings below.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:55:51.221Z",
-      "text": "Brainstorm agent #1 (literature) done. Key findings:\n\n**Most actionable improvements:**\n1. **Add an explicit pair term `g(bᵢ, bⱼ, c)`** — preserves cycle structure but lifts the strict additivity assumption that's breaking on dense-DMS datasets (FireProt, ProteinGym). Top recommendation.\n2. **Temperature-conditional ΔPL** — Tsuboyama K50 + ProThermDB are the cleanest white space; nobody has done this.\n3. Add ProtT5 + structural features to the context vector.\n\n**Honest warnings:**\n- Don't push CCT-on-top-of-ΔPL — already collapses per Appendix A.6.\n- **S1131's 42-cluster split may itself be leaky** — PPAC's +0.610 might be exploiting cluster-internal homology. Need to rerun S1131 with stricter LOPO (leave-one-PDB-out) before declaring \"PPAC crushes us\" in the paper.\n- DDGun, ACDC-NN, ProstaProt all use anti-symmetry — we need to cite them in related work to defuse \"you reinvented this\" r…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:55:08.436Z",
-      "text": "Tick: 3 of the 5 zero-shot agents complete. Master table now has many newly-harvested zero-shot cells (existing on disk but never used). Awaiting:\n- ProtBert agent\n- SaProt jobs to finish (S1131, ATLAS, Tsub)\n- ESM-IF jobs to finish (S1131, SAbDab v2)\n- ESM-2 new jobs (S1131, SAbDab v2)\n- ESM-1v new jobs (S1131, SAbDab v2)\n- DPL S1131 fixed full rerun\n- 15 RDE-Network cluster-aware jobs\n\nPlus the 3 brainstorming agents (literature, architecture critique, white space).",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:54:20.399Z",
-      "text": "ESM-IF agent done. SKEMPI cluster-aware zero-shot **|ρ|=+0.135** (n=4944 single-mut subset) — found from existing run. S1131 + SAbDab v2 jobs submitted. Updating master table and fixing my ProteinGym bold mistake.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:53:50.237Z",
-      "text": "ESM-2 agent done. Most cells already had results on disk — only 2 new jobs needed (S1131 + SAbDab v2). Pulling in the existing ESM-2 numbers we hadn't harvested.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:53:04.459Z",
-      "text": "3 brainstorming agents launched in parallel:\n\n1. **Thermodynamic-ML literature deep-dive** — surveys cycle consistency, free-energy decomposition, reversibility, statistical-physics-inspired losses, MD/Boltzmann generators. Output → `notes/research_brief_thermodynamic.md`\n2. **ΔPL architecture critique** — reads our actual code (`train_twophase_lora.py`, `train_deltapot_stability.py`), diagnoses each failure mode, proposes ≥8 ranked concrete improvements with cost/impact estimates. Output → `notes/architecture_critique_dpl.md`\n3. **New-model white space** — landscape scan for the model nobody has built yet, brittleness analysis of every existing SOTA, one fully-fleshed novel architecture, plus 3 ranked next-paper hypotheses. Output → `notes/whitespace_new_models.md`\n\nWill report when they complete. Meanwhile the 5 zero-shot agents from earlier are still working on filling table cells.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:50:54.166Z",
-      "text": "Spawning 3 brainstorming agents in parallel — each with a different angle.",
       "tags": [
         "note"
       ]
