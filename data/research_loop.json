@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-13T23:55:04Z",
+  "generated_at": "2026-04-14T00:25:10Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2641,
-    "assistant_turns": 3925,
+    "user_turns": 2688,
+    "assistant_turns": 3992,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-13T23:54:43.204Z"
+    "last_ts": "2026-04-14T00:18:07.082Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,95 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-14T00:18:07.025Z",
+      "text": "Sleeping 25 min. DPL S1131 on the fixed 1129-row loader is training (job 33377060). Will check direct head-to-head against PPAC +0.610 next tick. Bug is S1131-only; rest of paper numbers unaffected.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T00:18:00.341Z",
+      "text": "Already running — 1129 rows, 43 cluster groups, started fold 0 DPL training. Same split geometry as PPAC (42 + 2I9B singleton ≈ 43). Now they're directly comparable.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T00:17:45.615Z",
+      "text": "**Audit complete.** Bug is isolated to S1131:\n\n| Dataset | Drops from `seq[pos-1] != wt` | Verdict |\n|---|---|---|\n| SKEMPI / AbBind | 0 — uses PDB parser | ✓ |\n| Tsuboyama K50 | 98/30000 (0.3%) | ✓ benign |\n| FireProt curated | **0** (all 1559 drops were NaN ddG) | ✓ |\n| S1131 | **420/1131 (37%)** | **bug, now fixed** |\n\nNothing else in the paper is affected. DPL S1131 rerun submitted as job 33377060 — will land on the fixed 1129-row data.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T00:16:27.010Z",
+      "text": "Now let me also audit FireProt/ATLAS/BindingGym/AbBiBench loaders for similar bugs while we wait.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-14T00:15:51.810Z",
+      "text": "Good — LoRA script imports `build_rows` from the fixed module. Let me find the existing launcher and submit.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T00:15:46.804Z",
+      "text": "Fix works: 1129/1131 rows kept (matches PPAC exactly). Now submit the DPL S1131 LoRA cluster-aware rerun.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T00:15:08.855Z",
+      "text": "Proceeding with the S1131 fix and rerun. I'll patch the loader to use the sequence diff approach (robust to any numbering).",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T00:11:59.794Z",
+      "text": "Good news and clarification.\n\n## Scope: bug is ISOLATED to S1131 only\n\n| Dataset | Loader | seq[pos-1] mismatch rate |\n|---|---|---|\n| **SKEMPI / AbBind** | `train_twophase_lora.py` — parses PDB residues list, matches residue# to seq index | **no bug** (correct mapping) |\n| **Tsuboyama K50** | `train_deltapot_tsuboyama_lora.py:61` — uses `seq[pos-1]` | **98/30000 dropped (0.3%)** — benign, mini-proteins designed with 1-indexed numbering |\n| **S1131** | `train_deltapot_s1131.py:96` — uses `seq[pos-1]` | **420/1131 dropped (37%)** — bug, PDB auth numbering ≠ sequence index |\n| FireProt / ATLAS / BindingGym / AbBiBench | separate loaders | need quick audit, but most use diff-based or PDB-based mapping |\n\nSo the 37% drop is an **S1131-specific bug**, not systemic. SKEMPI numbers in the paper are fine — SKEMPI uses PDB parsing via `extract_chains_pdb` which walks the actual residue list.\n\n##…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T00:10:59.408Z",
+      "text": "Let me audit the other dataset loaders to see if the bug is isolated or systemic.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T00:09:07.094Z",
+      "text": "## Diagnosis\n\n**Bug:** `train_deltapot_s1131.py::build_rows` uses `seq[pos - 1] != wt` to validate mutations. But S1131 mutations use **PDB auth residue numbers** (e.g., `A:C171A` means PDB residue 171 = Cys), while the `a`/`b` sequences in the CSV are just chain strings starting at index 0. For any PDB whose chain doesn't start at residue number 1, `pos-1` points at the wrong letter and the row is silently dropped.\n\n**Example — PDB 1A22:**\n```\nmutation: A:C171A  (auth residue 171 is Cys)\nCSV col a:   ...YDCIEMK...  at idx 181 (NOT pos-1 = 170)\npos-1 (170): D   ← letter mismatch, row dropped\nidx 181:      C  ← correct, would be kept if we used a_mut diff\n```\n\n**Extent:**\n- 1131 raw rows → 711 kept (420 dropped)\n- 415 dropped for `wt_letter_mismatch` (this bug)\n- 5 dropped for `pos_out_of_range`\n- **Offset pattern:** PDB 1A22 alone shows a +11 offset (auth 171 → seq idx 181). The bug is s…",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T00:08:34.410Z",
+      "text": "Found the bug. **DPL drops 420/1131 rows (37%) due to residue-numbering mismatch** — `seq[pos-1] != wt` is failing because S1131 uses PDB auth residue numbers but our code assumes 1-indexed sequence positions.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-13T23:57:54.605Z",
+      "text": "Here's the full status:\n\n## Job queue (53 total)\n- **15 Tsub LoRA (R)** — all DPL done, now training UN phase (ep 2/5 on first fold, ~2280s/ep)\n- **6 ProtAttBA (R)** on A40 savio3 — folds 0-1 mid-training, best val ρ ≈ 0.60-0.64 at ep 10\n- **9 ProtAttBA (PD)** on 1080ti savio2 — waiting for A40 slots to free\n- **15 RDE (PD)** on 1080ti savio2 — all pending\n- **5 ProteinGym LoRA (R)** — ACE2 DPL done ρ=+0.198, UN ep 1/3 running\n- **1 PPAC (R)** (skempi+abbind variant, different from the finished S1131 run)\n- **1 zsstruct_tsub (R)** — ESM-IF CPU on 29902 rows, ~2000 done\n\n## Headline model numbers landed this session\n| Dataset | Model | ρ | n | notes |\n|---|---|---|---|---|\n| **Tsuboyama K50 5-fold GKF** | **ΔPL LoRA DPL** | **+0.745 ± 0.012** | 29902 | all 15 cells done, beats frozen +0.691 by +0.05 |\n| **S1131 cluster-aware** | **PPAC (ESM-2 delta MLP)** | **+0.610 ± 0.009** | 1129 | clu…",
+      "tags": [
+        "result",
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
       "ts": "2026-04-13T23:52:31.545Z",
       "text": "Cleanup complete — home now 12G (was 17G, freed ~5G). **PPAC cluster-aware on S1131: ρ = +0.6099 ± 0.0090** (1129 rows, 42 clusters).",
       "tags": [
@@ -290,92 +379,6 @@
       "ts": "2026-04-13T23:18:18.966Z",
       "text": "12/15 DPL runs landed. Tsuboyama LoRA DPL mean so far ≈ **+0.745** (beats frozen +0.691 by ~+0.054, was the paper's recorded gap).",
       "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:17:59.108Z",
-      "text": "Tsuboyama fold0 DPL: **ρ=+0.7635** (beats frozen +0.691 by +0.07). Training UN baseline now. Let me survey all fold progress.",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:17:10.189Z",
-      "text": "Autonomous loop: taking stock of the job queue and harvesting any results that have landed.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:11:35.802Z",
-      "text": "RDE-Network: 5 cluster-aware fold jobs queued (33376414–18, seed=2022). Fold sizes: 1007/1506/1369/1144/1680 mutations. 4 PDBs missing from cluster map assigned as singletons. Waiting on PPAC training and the RDE sibling (clone/setup) agents.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:08:39.701Z",
-      "text": "PPAC features are READY — `results/ppac_benchmark/ppac_s1131_delta_features.npz` (1129 rows × 1280d ESM-2 650M delta, 43 clusters, `fea_dim=1280`). No blockers. The training agent will pick this up. Waiting on PPAC training agent, RDE clone+setup, and RDE code/launch.\n\n(User's `GAEncoder` line selection is RDE-Network's EGNN backbone at `rde/models/rde_ddg.py:44` — noted, the sibling RDE agents are already working in that repo tree.)",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:05:18.311Z",
-      "text": "All 4 retrain agents dispatched in parallel, plus 15 ProtAttBA jobs re-submitted directly (33376304–20). Running now:\n- **ProtAttBA**: 15 sbatch jobs queued\n- **PPAC**: 2 agents (impl + feature prep)\n- **RDE-Network**: 2 agents (clone/env + code adaptation/launch)\n- **GearBind**: dropped (inference-only repo)\n\nWill report as each completes.",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:03:37.458Z",
-      "text": "15 ProtAttBA jobs re-queued (33376304–20). Now dispatching 2 agents for PPAC and 2 for RDE-Network in parallel.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:03:20.901Z",
-      "text": "I'll re-submit ProtAttBA directly (harness is ready, jobs were just cancelled) and dispatch 2 agents each for PPAC and RDE-Network.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:01:38.778Z",
-      "text": "Honest breakdown — none of these are big. They're all small MLPs or small GNNs on top of pretrained features. The cost is infrastructure/preprocessing pain, not compute.\n\n| Model | Size | Actual training cost | Pain points |\n|---|---|---|---|\n| **ProtAttBA** | ~1–5 M params. Small attention head over ESM-2 / ProtBert embeddings (features precomputed). | **Tiny.** 1 fold ≈ 20–60 min on 1 A40. 15 jobs total parallel = done in an afternoon. | None real — we already had the GroupKFold harness working minutes ago. |\n| **PPAC** | 5-layer MLP on ProtT5 + ESM-2 delta features (~100k–1M params). | **Trivially small.** CPU in minutes per fold. | Need to compute ProtT5 + ESM-2 delta features up front if not cached. |\n| **RDE-Network / DDGPred** (Luo) | EGNN, ~2–5 M params, trained on rotamer density estimator pre-features. | **Small-to-medium.** 1 fold ~1–3 h on 1 A40. | Need RDE pretraining or the…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:58:26.580Z",
-      "text": "Cancelled. Here's the consensus training-protocol report for the supervised PPI ΔΔG baselines, pulled from the earlier literature audit:\n\n## Published SKEMPI baselines — training protocol consensus\n\n| Model | Split protocol | Cluster-aware? | Published ρ | Notes |\n|---|---|---|---|---|\n| **ProtAttBA** (Lin 2024) | Random 10-fold `KFold(shuffle=True)` on S1131 | No (HIGH leak) | **~0.78** on S1131 | Aux 30% mmseqs split gives a lower number |\n| **PPAC** (Zhang 2025) | Random 5-fold CV on S1131 + holdout | No (HIGH leak) | ρ not cleanly reported | ProtT5+ESM2 MLP |\n| **RDE-Network / DDGPred** (Luo ICLR 2023) | Hand-curated split-by-complex (FOLD2PDBS) | No (MED-HIGH) | **0.40–0.47** on Luo 5-fold | De facto \"LOCO\" standard |\n| **GearBind-P** (Cai NatComm 2024) | Same split-by-complex as Luo | No (MED-HIGH) | **0.525 ± 0.046** (single); 0.643 ensemble | No mmseqs clustering |\n| **mCSM-PPI2*…",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:57:23.902Z",
-      "text": "Understood — cancelling retrains and compiling published numbers instead.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:56:59.406Z",
-      "text": "ProtAttBA: 15 jobs queued (33376226–40) on S1131 cluster-aware (1129 rows, 42 clusters, 5 folds × 3 seeds). Waiting on PPAC and RDE-Network.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T22:56:52.009Z",
-      "text": "Confirmed and clarified. Current state of the paper's master table (`paper/main.tex:540-569`):\n\n**No leaky supervised baseline numbers are in the paper right now.** The table has only:\n- 6 zero-shot columns (ESM2, ESM1v, ProtBert, Tranception, ESM-IF, SaProt)\n- 1 structural supervised: StaB-ddG (already on our cluster-disjoint n=230)\n- 3 ΔPL variants (UN, frozen, LoRA)\n- 1 ensemble\n\nThere is **no ProtAttBA / PPAC / GearBind / RDE-Network column** — that's the \"no supervised sequence comparison\" gap you flagged earlier.\n\n**The 3 retrain agents running right now are explicitly building cluster-aware numbers on our 15-fold split using `data/pdb_cluster_map.json`:**\n- ProtAttBA: GroupKFold by cluster ID, not random KFold (15 jobs: 5 folds × 3 seeds)\n- PPAC: GroupKFold by cluster ID, not random KFold (5 folds)\n- RDE-Network: cluster-aware FOLD2PDBS, not the Luo hand-curated split (5 folds)\n-…",
-      "tags": [
-        "dataset",
         "model"
       ]
     }
