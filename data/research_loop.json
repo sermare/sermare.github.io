@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T01:55:31Z",
+  "generated_at": "2026-04-14T02:25:47Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2733,
-    "assistant_turns": 4068,
+    "user_turns": 2747,
+    "assistant_turns": 4093,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T01:45:14.120Z"
+    "last_ts": "2026-04-14T02:18:33.266Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,37 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T02:18:33.185Z",
+      "text": "Tick summary:\n- **Tsuboyama K50 ESM-IF zero-shot**: |ρ|=+0.544 (n=29902) — added to master table & paper\n- **ProtAttBA cluster-aware**: 9/15 done, mean +0.605 (folds 0/1/2 done, fold 4 has 1 seed)\n- **Tsub UN**: 4/15 done, ρ=+0.725 (DPL +0.745 leads by +0.020)\n- **DPL S1131 fixed**: seed 0 fold 0 done (DPL .379, UN .612), fold 1 done (DPL .733, UN .721), fold 2 in progress\n- **ProteinGym LoRA**: 4/5 assays done — UN beats DPL by +0.040 mean (negative result for ΔPL on dense per-protein DMS)\n\nSleeping 25 min.",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T02:18:20.708Z",
+      "text": "**ProteinGym LoRA LOAEO — 4/5 assays done:** DPL mean +0.278, **UN +0.318** (UN wins by +0.040). DPL wins only on CCR5; UN wins on ACE2, CP2C9, SPIKE. RASK still running.\n\nThis is a negative result for ΔPL on ProteinGym binding LOAEO — same regime as FireProt (dense per-protein, additivity assumption weaker).",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T02:17:51.098Z",
+      "text": "9/15 ProtAttBA done — mean ρ +0.605 (folds 0-2 seeds done, fold 3 not started, fold 4 has 1 seed). Hard folds 3/4 likely pull average down ~0.55-0.60, matching PPAC.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T02:16:46.680Z",
+      "text": "ESM-IF on Tsuboyama K50: **|ρ|=+0.544** (n=29902). Solid zero-shot structural baseline. SaProt failed silently (n=0).",
+      "tags": [
+        "error"
+      ]
+    },
     {
       "ts": "2026-04-14T01:45:14.031Z",
       "text": "Tick summary:\n- **Tsuboyama LoRA**: 2/15 UN done (avg ρ +0.729 — DPL still leading by +0.016)\n- **DPL S1131 fixed**: fold 0 DPL **+0.379** (vs buggy +0.193), fold 1 DPL hitting **+0.718** mid-training. Bug-fix nearly doubles the number.\n- **ProtAttBA fold 2-4**: 9 jobs on A40, ~32 min in, ~30 min to go\n- **ESM-IF Tsub**: 26000/29902 (87%)\n- **PPAC SKEMPI cluster-aware FINAL**: ρ=+0.281 (we win by +0.096 on headline)\n\nSleeping 30 min.",
@@ -356,34 +387,6 @@
       "text": "ProtAttBA f0s0 at epoch 10: val ρ=0.5714 (best 0.5849). Cluster-aware training works.",
       "tags": [
         "result"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:46:26.690Z",
-      "text": "Proceeding with safe cleanups and patching env_setup.sh to prevent HF xet leaks.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:46:21.093Z",
-      "text": "Here's the audit. Some things *did* land in `/global/home` despite `env_setup.sh`:\n\n**Total home usage: ~17 GB.** Breakdown:\n\n| Path | Size | Origin | Safe to delete? |\n|---|---|---|---|\n| `~/.boltz` | **7.5 GB** | Old boltz2 model weights (pre-sprint) | Ask — unrelated to ΔPL project |\n| `~/.local/share/mhcflurry` | **2.3 GB** | MHCFlurry model weights (BindingGym pretrain control) | Ask — may still need for ΔPL |\n| `~/.local/lib` | 1.6 GB | `pip --user` installs (accumulated) | Ask — some may be in PATH |\n| `~/.local/share/code-server` | 1.3 GB | VS Code remote server | **Keep** — IDE in use |\n| `~/.cache/pip` | 1.1 GB | pip download cache | **Safe to purge** |\n| `~/.local/share/claude` | 891 MB | Claude Code data | **Keep** |\n| `~/.cache/jedi` | 190 MB | Python autocomplete cache | **Safe to purge** |\n| `~/.local/share/Trash` | 81 MB | Trash folder | **Safe to purge** |\n| `~/.cache/hu…",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:39:43.228Z",
-      "text": "Done — 9 ProtAttBA (folds 2–4 × 3 seeds) and 15 RDE jobs now on savio2_1080ti lowprio. Folds 0–1 ProtAttBA keep running on A40s where they already got slots. RDE-Network is small enough to fit 1080ti's 11GB easily.",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:32:35.814Z",
-      "text": "Good catch. Let me check the savio2_1080ti config and move the pending RDE + ProtAttBA jobs there.",
-      "tags": [
-        "infra"
       ]
     }
   ]
