@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T16:29:32Z",
+  "generated_at": "2026-04-14T16:59:46Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2980,
-    "assistant_turns": 4456,
+    "user_turns": 2988,
+    "assistant_turns": 4469,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T15:49:05.627Z"
+    "last_ts": "2026-04-14T16:40:13.969Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,23 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T16:40:13.911Z",
+      "text": "Tick:\n- **ATLAS MHC-only DPL LoRA**: DPL -0.141, UN +0.018. Noise as predicted. Not worth a table cell.\n- **Bias job (33381454)**: 12.5/15 cells. Currently at seed 2 fold 2 DPL. ~2h to finish.\n- **Queue: 93 jobs** (39 R, 54 PD). Gap experiments still running (tpp/tpcc/tpcs/tp3b/tpcd all need ~12h).\n\nSleeping 50min.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T16:39:56.180Z",
+      "text": "**ATLAS MHC-only DPL LoRA (96 rows)**: DPL ρ=-0.141, UN ρ=+0.018. Both essentially noise as the agent predicted. Not informative.",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-14T15:49:05.571Z",
       "text": "Tick:\n- **ESM-2 3B zero-shot**: SKEMPI |ρ|=0.128 (slightly WORSE than 650M +0.145), S1131 |ρ|=0.417 (nearly identical to 650M +0.430). **Confirms diminishing returns at scale for zero-shot** — bigger backbone ≠ better mutation sensitivity.\n- **PPAC Tsuboyama: +0.676** — we beat it with DPL LoRA +0.745 (+0.069 gap). Tsuboyama is clearly our regime.\n- **Queue: 94 jobs** (39 running). Gap experiments running — nothing imminent.\n\nSleeping 50min.",
@@ -378,21 +395,6 @@
       "text": "PDF rebuilt — 12 pages, master table no longer overfull. **RDE-Network column added** to the supervised structural group with +0.497 on SKEMPI cluster-aware (15-cell pooled OOF).",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-14T10:23:01.209Z",
-      "text": "RDE-Network pooled OOF: **ρ = +0.4965** (n=6706, 5 folds × 3 seeds averaged then concatenated). Best structural-supervised baseline on the full cluster-aware SKEMPI pool. Beats our DPL LoRA (+0.377) by **+0.12**, beats PPAC (+0.281) by +0.22.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T10:22:42.760Z",
-      "text": "**RDE-Network cluster-aware FINAL (15/15 cells): ρ = +0.4714 ± 0.097**\n\nThat's a major number. Let me get the pooled OOF and update.",
-      "tags": [
-        "note"
       ]
     }
   ]
