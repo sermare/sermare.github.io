@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T17:29:55Z",
+  "generated_at": "2026-04-14T18:00:04Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2997,
-    "assistant_turns": 4487,
+    "user_turns": 3016,
+    "assistant_turns": 4509,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T17:04:21.256Z"
+    "last_ts": "2026-04-14T17:49:13.148Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,71 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T17:49:13.066Z",
+      "text": "3 implementation agents launched in parallel. Each will read the existing code, add a flag, smoke test, and submit a single fold 0 seed 0 pilot (not 15 jobs).\n\n- **B1**: LoRA-internal CCT loss (fixes the paper inconsistency)\n- **E1**: BoostΔPL on RDE residuals (success = fold 0 Spearman > 0.51)\n- **C1**: Tsuboyama→SKEMPI transfer (success = fold 0 Spearman > 0.40)\n\nWill report as they come back. Meanwhile the existing 4 gap pilots (tpp, tpcc, tpcs, tpcd) are still running.",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T17:48:07.532Z",
+      "text": "Dispatching 3 implementation agents for B1, E1, C1 in parallel.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T17:48:00.971Z",
+      "text": "All 6 brainstorm agents back. Here's the aggregated top 12:\n\n| # | Agent | Idea | Self Δρ | Cost | Notes |\n|---|---|---|---|---|---|\n| A1 | Arch | **AntiSymTwin** `g(c,a,b)−g(c,b,a)` | high | ~50 LOC | Adjudicates \"why constrain DPL at all?\" |\n| A2 | Arch | **InterfacePot** cross-chain interface pair term | high | medium | Stacks on AntiSymTwin |\n| B1 | Loss | **LoRA-internal CCT** | 5/5 | half day | Fixes the architecture-critique bug |\n| B2 | Loss | **ListMLE per-complex** | 5/5 | 1 day | Listwise rank loss matches Spearman objective |\n| C1 | Data | **Tsuboyama→SKEMPI transfer** | 5/5 | low | 776k labels, reuses existing loop |\n| C2 | Data | **Cycle-triple consistency** | high | low | (A→B, B→C, A→C) regularizer |\n| D1 | Phys | **TCDH Temperature-Conditioned Dual Head** (ΔH, ΔS) | high | medium | Joint SKEMPI + Tsuboyama + ProThermDB |\n| D2 | Phys | **RRAT Rosetta REF15 aux targets** |…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T17:47:31.706Z",
+      "text": "**E — Ensemble/Distill** back:\n\n1. **BoostΔPL**: fit DPL on RDE's residuals (boosting). Directly stress-tests whether DPL is complementary vs redundant to RDE. Best expected Δρ/complexity ratio.\n2. **CycleDistill**: distill the 5-model stacked ensemble (DPL + RDE + StaB + PPAC + ProtAttBA) into a sequence-only ESM-2 650M student using ~1M AlphaFold-DB synthetic mutations, then fine-tune on SKEMPI. Sidesteps the \"needs a PDB\" reviewer objection. Second headline contribution.\n\nOther ideas: StackPL, MoE-Gate, VarWeight, TTA-Cluster.\n\n1 more agent running (F training dynamics).",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T17:47:25.272Z",
+      "text": "**D — Physics/Thermo** back:\n\n1. **TCDH (Temperature-Conditioned Dual Head)**: predict (ΔH, ΔS) separately, combine as ΔH − T·ΔS. Unlocks joint training across SKEMPI/Tsuboyama/ProThermDB at heterogeneous temperatures. Extends the multi-site identifiability theorem to two latent potentials.\n2. **RRAT (REF15-Residual Aux Targets)**: multi-task auxiliary regression on Rosetta REF15's 8 decomposed energy terms. Highest expected Δρ + a publishable \"which component carries the signal\" ablation.\n\nAlso mentioned (not top picks): EAS anti-symmetry loss, BEMED Boltzmann-ensemble matching, MBLP Markov-blanket locality, FEPD FEP-distillation pretraining.\n\n2 more agents running (E ensemble, F training).",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T17:47:17.079Z",
+      "text": "3 brainstorm agents back (A, B, C). Top picks so far:\n\n- **A — Architecture**:\n  1. **AntiSymTwin**: `f(c,a,b) = g(c,a,b) − g(c,b,a)` with shared-weight twin, no internal structural constraint. ~50-line change, directly adjudicates \"why constrain ΔPL at all?\".\n  2. **InterfacePot**: cross-chain pair term gated by ESM cross-attention, restricted to interface residues only. Orthogonal to AntiSymTwin.\n\n- **B — Loss**:\n  1. **LoRA-internal CCT**: finally apply the cycle-closure loss inside the LoRA workhorse (the architecture-critique agent's headline finding). Δρ=5/5, half-day implementation.\n  2. **ListMLE per-complex**: listwise rank loss optimizing the exact Spearman objective the benchmark measures. Δρ=5/5, ~1 day.\n\n- **C — Data**:\n  1. **Tsuboyama→SKEMPI transfer**: pre-train ΔPL on 776k Tsuboyama stability labels, fine-tune on SKEMPI binding. Label-noise risk 1/5, reuses existing ΔPL…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T17:47:06.244Z",
+      "text": "6 brainstorm agents launched in parallel. Each covers a distinct angle with ≥6 ideas + self-scoring:\n- **A** — architecture (contrastive, RDE feature channel, attention pairs, ranking loss…)\n- **B** — loss functions (rank/Spearman, Huber, calibration, focal, sign-aware…)\n- **C** — data/augmentation (Rosetta-synthetic, anti-symmetry labels, synthetic 3-cycles, transfer from Tsuboyama…)\n- **D** — physics/thermo (temperature conditioning, FEP distillation, REF15 decomposition, Boltzmann matching…)\n- **E** — ensemble/distillation (multi-teacher, MoE, boosting residuals on RDE, stacked meta-model…)\n- **F** — training dynamics (LoRA rank per dataset, SWA, EMA, layer-wise LR, meta-learning…)\n\nEach writes to `notes/brainstorm_{A–F}.md`. Once all 6 return, I aggregate the 12 top picks (2 per agent) and pick the **3 best for pilot runs**.\n\nMeanwhile pilot snapshot:\n- **tpcs struct fusion**: ep 12/…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T17:45:26.741Z",
+      "text": "Addressing immediately — dispatching 6 brainstorm agents in parallel, each with a distinct angle.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-14T17:04:05.909Z",
       "text": "**Early pilot signal (epoch 9/15):**\n- **tpcs_f0s0 struct fusion**: val ρ ≈ **+0.40** — strong, in baseline range  \n- **tpcc_f0s0 cluster-cond**: val ρ ≈ **+0.07** — weak, may be a hard fold or model struggling\n- **tpp_f0s0 pair term**: still initializing (just loaded)\n- **tpcd_f0s0 RDE distill**: still initializing",
@@ -334,65 +399,6 @@
         "result",
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:28:31.695Z",
-      "text": "4th agent complete: **Tsuboyama PPAC** — job 33383607 queued. Extracts ESM-2 650M delta features (~20-25 min) then runs PPAC MLP 5-fold × 5-seed GroupKFold by uniprot (~5-10 min). Total ~35 min wall. 11 more agents running.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:28:25.964Z",
-      "text": "3rd agent complete: **FireProt DPL LoRA** — job 33383606 queued. Prior data on the same split gives DPL 0.337 / UN 0.360 (both beat frozen DPL 0.234, UN still ahead by +0.023). Confirms dense-per-protein pattern. 12 more agents running.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:28:20.188Z",
-      "text": "2nd agent complete: **Tsuboyama ProtAttBA** — 15 jobs queued (33383591–33383605). Agent's honest prediction: ProtAttBA will land at **0.55–0.65** (below DPL LoRA +0.745), because ProtAttBA's core inductive bias is cross-chain attention which degenerates to self-attention on single-chain stability. 13 more agents running.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:27:47.486Z",
-      "text": "First of 15 agents complete: **ESM-2 3B zero-shot** jobs queued (33383583 SKEMPI, 33383584 S1131). 3B weights already cached at `loop/torch_cache/hub/checkpoints/esm2_t36_3B_UR50D.pt` for the SKEMPI one — no download needed. Waiting on the other 14.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:24:43.109Z",
-      "text": "Dispatching 10 fill agents + 5 critical-gap agents in parallel.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T13:40:27.265Z",
-      "text": "Bias job: 8/15 cells done. Seed 1 pattern continuing — DPL with bias averaging **+0.023** over no-bias across 3 folds (consistent with seed 0's +0.017).",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T12:49:41.615Z",
-      "text": "Tick:\n- **SAbDab v2 row now filled**: ESM-2 +0.040, ESM-1v +0.081, ProtBert +0.080, ESM-IF +0.005 (noise). All zero-shot models essentially fail on multi-mutation antibody pairs — expected.\n- **FireProt row updated**: ESM-IF +0.314 (already had), SaProt +0.151 added.\n- **Bias job**: 6.5/15 cells done. Running steady.\n- **DPL S1131 fixed FINAL** (yesterday's 33377353): +0.384 DPL, +0.472 UN.\n- **PDF rebuilt**: 12 pages, master table clean.\n\nSleeping 50min.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T11:57:48.010Z",
-      "text": "Bias head seed 0 full results (vs no-bias):\n\n| Fold | No-bias | +bias | Δ |\n|---|---|---|---|\n| 0 | 0.379 | 0.381 | +0.002 |\n| 1 | 0.733 | 0.753 | +0.020 |\n| 2 | 0.505 | 0.521 | +0.016 |\n| 3 | 0.178 | 0.222 | **+0.044** |\n| 4 | 0.113 | 0.117 | +0.004 |\n| **mean** | **0.382** | **0.399** | **+0.017** |\n\nBigger than the agent predicted (+0.01–0.03 expected, getting +0.017 mean with +0.044 on hardest fold). Still far below PPAC +0.610 and UN +0.472, but it's a real, positive gauge-fix ablation. Seed 1 fold 0 just landed at +0.425 (vs +0.395 no-bias, Δ +0.030) — same pattern reproducing.",
-      "tags": [
-        "note"
       ]
     }
   ]
