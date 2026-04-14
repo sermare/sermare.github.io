@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T01:25:23Z",
+  "generated_at": "2026-04-14T01:55:31Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2724,
-    "assistant_turns": 4052,
+    "user_turns": 2733,
+    "assistant_turns": 4068,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T01:14:00.520Z"
+    "last_ts": "2026-04-14T01:45:14.120Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,22 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T01:45:14.031Z",
+      "text": "Tick summary:\n- **Tsuboyama LoRA**: 2/15 UN done (avg ρ +0.729 — DPL still leading by +0.016)\n- **DPL S1131 fixed**: fold 0 DPL **+0.379** (vs buggy +0.193), fold 1 DPL hitting **+0.718** mid-training. Bug-fix nearly doubles the number.\n- **ProtAttBA fold 2-4**: 9 jobs on A40, ~32 min in, ~30 min to go\n- **ESM-IF Tsub**: 26000/29902 (87%)\n- **PPAC SKEMPI cluster-aware FINAL**: ρ=+0.281 (we win by +0.096 on headline)\n\nSleeping 30 min.",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T01:44:58.080Z",
+      "text": "DPL S1131 fixed is much stronger than buggy version: fold 0 DPL **+0.379** (was +0.193), fold 0 UN **+0.612** (was +0.520), fold 1 DPL hitting **+0.718** at ep 7. The data IS the signal.",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-14T01:14:00.448Z",
       "text": "Progress snapshot:\n- **PPAC SKEMPI cluster-aware**: ρ=+0.281±0.013 (complete). We win by +0.096 on the headline row. Paper prose updated.\n- **ProtAttBA**: 6/15 folds done (fold 0 avg 0.612, fold 1 avg 0.819). 9 more moved back to A40, running now.\n- **Tsub LoRA UN**: mid-ep 4/5, near finish.\n- **DPL S1131 fixed**: 33377353 running, 14h walltime, fold 0 DPL complete +0.379.\n- **ESM-IF zsstruct on Tsub**: 13500/29902 done (~45%).\n- **ProteinGym LoRA**: ACE2 DPL +0.199 / UN +0.195 so far; other 4 still running.\n\nSleeping 30 min.",
@@ -368,20 +384,6 @@
       "text": "Good catch. Let me check the savio2_1080ti config and move the pending RDE + ProtAttBA jobs there.",
       "tags": [
         "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:31:34.698Z",
-      "text": "All 15 RDE jobs pending in savio_lowprio. They'll dequeue as A40 slots open. Nothing further to do on RDE — matches our 5-fold × 3-seed cluster-aware protocol exactly.",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:31:28.815Z",
-      "text": "Confirmed — our ΔPL protocol is 5 folds × 3 seeds = 15 (fold, seed) cells (see `results/twophase_oof_cluster/fold0..4_seed0..2/`). The 15 RDE jobs I already queued (33376488–33376503, skipping 502) are exactly that: 5 folds × 3 seeds (2022/2023/2024). No change needed — they're pending low-prio now.",
-      "tags": [
-        "note"
       ]
     }
   ]
