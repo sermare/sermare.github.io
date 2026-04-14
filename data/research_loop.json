@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T07:57:08Z",
+  "generated_at": "2026-04-14T08:27:16Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2855,
-    "assistant_turns": 4269,
+    "user_turns": 2882,
+    "assistant_turns": 4310,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T07:56:51.569Z"
+    "last_ts": "2026-04-14T08:09:14.810Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,78 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-14T08:09:14.756Z",
+      "text": "Sleeping 45 min. Per-protein bias head implemented + queued (job 33381454, 14h walltime). Will compare directly against the no-bias rerun (33377353) once both finish.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T08:08:59.475Z",
+      "text": "33377353 is still running (7h23 elapsed, agent was wrong about it being gone). 21 finish lines = 10.5/15 fold-seed combos done. ~3 more hours to complete. Job 33381454 (with bias head) will run alongside it for direct head-to-head comparison.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T08:08:43.234Z",
+      "text": "Implementation complete. Job 33381454 queued.\n\n**Honest agent take:** ~60/40 on no-effect-or-worse for the cluster-aware S1131 case, because every test protein is in an unseen cluster → β forced to 0 at eval → the bias only acts as a training-time regularizer (~+0.01-0.03 typical effect, not the +0.2 we'd need to close the PPAC gap).\n\nThe agent's correct point: in cluster-aware mode, the per-protein bias can't help test-time generalization to unseen proteins — that requires a **cluster-conditioned context** (learned cluster embedding) or **structure-conditioned ctx**, not a per-protein scalar. The bias is theoretically defensible (gauge fix) and zero-downside but probably not the architectural breakthrough we need.\n\nLet me also check on the original DPL S1131 fixed run (33377353).",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T08:06:40.627Z",
+      "text": "Tick:\n- **Per-protein bias agent**: already started — `PotentialHead` extended with `n_proteins` + `protein_bias` + `bias_for()` (zero-init, gauge-fix). Smoke test pending.\n- **DPL S1131 fixed**: 10.5/15 fold-seed combos, on seed 2 fold 0 DPL.\n- **RDE-Network**: iter 21689/30000 (72%), ~2-2.5h to go.\n- **Zero-shot harvested**: ESM-IF S1131 +0.229, ESM-IF SAbDab v2 +0.005 (essentially noise — multi-mut antibody pairs too far from inverse folding's domain), ProtBert ProteinGym +0.204. Master table updated.\n\nSleeping 40 min.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T08:05:13.493Z",
+      "text": "Implementation agent dispatched. Will:\n1. Extend `PotentialHead` with optional `n_proteins` + `protein_bias` embedding (zero-init, gauge-fix interpretation)\n2. Wire `--per-protein-bias` flag into `train_deltapot_s1131_lora.py`\n3. Honest cluster-disjoint eval: held-out proteins get bias=0 (no cheating)\n4. Smoke test → submit full 5-fold × 3-seed cluster-aware S1131 job (14h walltime)\n5. Report diffs + sanity checks + honest prediction\n\nCritical detail: the bias term is **0 for unseen proteins at test time** (the held-out cluster has no learned bias) — this is the honest evaluation. We're not predicting test-set means, just letting ΔPL collapse back to its symmetric form when out-of-domain.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T08:04:15.878Z",
+      "text": "Both scorers in. Consensus: **per-protein bias head** is in both top 3s. The reviewer scorer also strongly favored the LOPO diagnostic and the CCT-in-LoRA gap-fix.\n\n## Cross-tab\n\n| Idea | ROI rank | Reviewer rank | Both? |\n|---|---|---|---|\n| **Per-protein bias head** | #2 (40) | #3 (43) | ✅ |\n| Strict LOPO rerun of S1131 | tied #1 (38, diag) | #1 (47) | ✅ |\n| CCT inside LoRA workhorse | mid (low impact) | #2 (45) | ½ |\n| DPL+UN cluster-gated ensemble | #1 (~4h) | mid | ½ |\n| Explicit pair term g(bᵢ,bⱼ,c) | #3 | mid | ½ |\n\nThe reviewer scorer also nailed the **CCT inconsistency** by reading the actual code — the App A.6 negative result is one fold on one dataset, while the abstract's \"CCT closes the gap\" claim is propped up by the v2 frozen-feature pipeline, not LoRA. A NeurIPS reviewer will find this.\n\n**Picking the per-protein bias head** — both scorers ranked it top 3, it directly att…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T08:02:51.212Z",
+      "text": "ROI scorer done. Top picks ranked by ROI:\n\n1. **DPL+UN cluster-gated ensemble** (~4 GPU-h, no retraining)\n2. **Per-protein bias head** (~16 GPU-h, S1131 fix)\n3. **Explicit pair term `g(bᵢ,bⱼ,c)`** (preserves cycle structure, addresses epistasis)\n\n**Bonus diagnostic at score 38** (tied for #1): **strict LOPO rerun of S1131** — could dissolve the entire \"we lose to PPAC\" story without any modeling work.\n\n**CCT disagreement reconciled**: App A.6 collapse was for CCT-on-DPL-head. The architecture brief's proposal is CCT-on-UN-head only — different experiment, low impact (2/5) but high diagnostic value (5/5).\n\nWaiting on the reviewer-defensibility scorer for cross-validation before picking the implementation target.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T08:01:12.204Z",
+      "text": "2 scoring agents launched in parallel:\n\n1. **ROI scorer** — scores each idea on impact per GPU-hour. Weights: impact (×3), cost (×2), risk (×2), diagnostic value, stackability. Output → `notes/scoring_roi.md`.\n2. **Reviewer-defensibility scorer** — scores each idea on how much it hardens the NeurIPS submission against anticipated reviewer attacks (cycle-novelty, S1131 loss, additivity, backbone choice, leakage, CCT-was-never-tested-in-LoRA). Weights: defends concern (×3), strengthens headline (×3), airtightness (×2). Output → `notes/scoring_reviewer.md`.\n\nBoth will explicitly reconcile the **CCT-inside-LoRA disagreement** between the architecture agent and the literature agent (the literature agent says App A.6 already shows CCT collapses; the architecture agent says CCT was never tested in the LoRA workhorse — these can't both be true).\n\nOnce both come back, I'll pick the consensus winn…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:59:50.748Z",
+      "text": "## Big update — zero-shot table is now ~80% filled\n\n**Master table state (cells now filled):**\n\n| Dataset | n | ESM2 | ESM1v | PBert | IF | SaProt | StaB | PPAC | PAttBA | UN | DPLfr | DPL LoRA | +Stab |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| **SKEMPI cluster-aware** | 7592 | .145 | .103 | .118 | **.135** | .182 | **.559**† | .281 | — | — | — | .377 | **.573**† |\n| **S1131 cluster-aware (full)** | 1129 | **.430** | .348 | .313 | (job) | .205 | — | **.610** | .478 | .466§ | — | .382§ | — |\n| BindingGym LOAEO | 27820 | .286 | .228 | (job) | — | .090 | — | — | — | **.294** | — | .276 | — |\n| ProteinGym binding | 5 | .385 | .333 | (job) | — | — | — | — | — | **.385** | — | .293 | — |\n| ATLAS TCR-pMHC | 459 | .022 | .039 | .053 | .111 | .215 | — | — | — | −.010 | — | .088 | — |\n| ATLAS MHC-only | 96 | .131 | .021 | .148 | — | — | — | — | — | — | — | — | — |\n| **Tsuboyama…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T07:59:00.994Z",
+      "text": "The omnibus agent harvested 17 new cells. Updating the master table.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
       "ts": "2026-04-14T07:56:51.468Z",
       "text": "## All 3 brainstorm agents complete — synthesis\n\n### 🚨 Agent #2 (Architecture critique) found a real bug\n**Every \"ΔPL LoRA\" number in the master table was trained with plain MSE** — the CCT cycle-closure loss in `src/interface_tokens/cyclepot.py` is **never** combined with the LoRA workhorse (`scripts/train_twophase_lora.py:626`). Only the older `train_cct.py` v2 frozen-feature pipeline uses it. **We have no answer to the paper's most interesting question (loss vs architecture).** This is a real oversight to fix before NeurIPS.\n\n### Top 5 ranked next experiments (synthesizing all 3 agents)\n\n| # | Experiment | Cost | Why |\n|---|---|---|---|\n| 1 | **Per-protein bias / shrinkage head** (PPAC-style) | ~10 GPU-h | The single biggest fix for S1131/FireProt/ProteinGym. ΔPL's symmetric h(σ,c)−h(σ',c) parameterization throws away the per-protein offset that UN exploits. Add a learned/random per-p…",
       "tags": [
@@ -309,84 +381,6 @@
       "text": "Fixing the abstract for consistency, then checking job progress.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T05:24:41.989Z",
-      "text": "Paper updated. Summary of agent changes:\n\n- **Tsuboyama footnote ‡**: now reports DPL +0.745±0.012 (n=15), UN +0.719±0.012 (n=10/15), gap +0.026\n- **Supervised baselines footnote**: added ProtAttBA pooled +0.478 + PPAC +0.610 on cluster-aware S1131 (1129 rows, 42 clusters); noted RDE retrains in flight\n- **New `\\paragraph{S1131 loader caveat.}`**: the residue-numbering bug, 711/1131 biased subsample, fixed-rerun preliminary numbers (DPL +0.382 / UN +0.466). Confirms SKEMPI/Tsuboyama/FireProt loaders unaffected\n- **Scope-of-the-method paragraph**: replaced \"ties .691 vs .682\" with the LoRA-scale marginal win; expanded dense-per-protein list to 4 datasets\n- **Three-regime discussion**: regime 2 → \"marginal +0.026 DPL win\", regime 3 → 4 datasets with the dense-per-protein story\n\n**Flagged but not changed**: the **abstract** (lines 80-83) still says \"ties on large diverse stability corpora\"…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T05:23:01.340Z",
-      "text": "Paper-update agent dispatched. Will fold in:\n- Tsuboyama LoRA UN (+0.719) replacing frozen UN (.682)\n- ProteinGym 5/5 row (UN +.338 / DPL +.293)\n- ProtAttBA cluster-aware S1131 +0.478 in baselines footnote\n- S1131 loader bug caveat (preliminary fixed seed-0 numbers: DPL +.382, UN +.466)\n- Updated three-regime discussion (4 datasets now in \"dense per-protein UN wins\" regime, not 1)\n\nWill report when agent completes.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T05:22:13.200Z",
-      "text": "## Status\n\n### Wins\n- **Tsuboyama LoRA FINAL** (15/15 DPL, 10/15 UN): DPL **+0.745 ± 0.012**, UN +0.719 ± 0.012 — DPL beats UN by +0.026 on 30k diverse mini-proteins.\n- **ESM-IF zero-shot Tsuboyama**: |ρ|=+0.544 (n=29902) — solid structural zero-shot baseline.\n- **PPAC on SKEMPI cluster-aware**: ρ=+0.281 — **our DPL LoRA +0.377 beats PPAC by +0.096** on the headline PPI dataset.\n- ProtAttBA cluster-aware S1131 done: pooled ρ=+0.478 (PPAC still leads at +0.610).\n\n### Bad news\n- **S1131 loader bug found**: `train_deltapot_s1131.py::build_rows` dropped **420/1131 rows (37%)** due to PDB auth residue numbering vs sequence index mismatch. Bug isolated to S1131 — SKEMPI / Tsuboyama / FireProt all use correct loaders. Fix submitted, rerun in progress (job 33377353, ~12h to complete all 15 fold-seed combos).\n- **DPL S1131 fixed seed 0**: DPL +0.382, UN +0.466. **UN wins by +0.084.** Even on the…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T05:06:08.709Z",
-      "text": "Tick:\n- **Tsub LoRA FINAL**: DPL +0.745 ± 0.012, UN +0.719 ± 0.012 (DPL +0.026 win). Master table + paper updated with LoRA UN number.\n- **DPL S1131 fixed**: 6/15 fold-seed combos done (seed 0 complete + seed 1 fold 0). UN winning by ~+0.08 mean so far.\n- **RDE-Network**: 31% through training (iter 9452/30000), ~5h more, fits in 8h walltime.\n\nSleeping 40min.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T05:05:46.523Z",
-      "text": "**Tsuboyama LoRA FINAL:** DPL +0.745 ± 0.012 (n=15), UN +0.719 ± 0.012 (n=10). DPL beats UN by **+0.026** — a small but consistent positive result on this dataset.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T04:24:55.447Z",
-      "text": "Tick:\n- **DPL S1131 fixed**: seed 0 fully done. DPL +0.382 mean, UN +0.466 mean. UN wins by +0.084. Same dense-per-protein pattern.\n- **Tsub LoRA**: DPL +0.745 ± 0.012 (15/15), UN +0.719 ± 0.012 (10/15). DPL still leads.\n- **RDE-Network**: 22% through training (iter 6681/30000).\n- 16 jobs running. Sleeping 40min.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T04:24:34.080Z",
-      "text": "DPL S1131 fixed seed 0 fully done. Mean DPL +0.382, UN +0.466 — UN wins by +0.084 on seed 0.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T03:43:57.977Z",
-      "text": "Tick:\n- **Tsub LoRA**: 14/15 jobs done (some hit 8h walltime mid-UN). DPL +0.745, UN +0.720 (+0.025 gap). \n- **DPL S1131 fixed**: seed 0 4/5 folds done. DPL mean +0.449, UN mean +0.538. **UN wins by +0.089** — same dense-per-protein pattern.\n- **RDE-Network**: iter 3922/30000 (13%) on first fold, ~6h more.\n- **ProteinGym 5/5**: complete, UN +0.338 vs DPL +0.293.\n- **ProtAttBA 15/15**: complete, pooled +0.478 (PPAC still leads at +0.610).\n\nSleeping 40 min — nothing imminent.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T03:43:41.864Z",
-      "text": "DPL S1131 fixed seed 0 (4 folds): DPL mean +0.449, UN mean +0.538. **UN +0.089 ahead** — same pattern as ProteinGym, FireProt, BindingGym (dense per-protein regime, additivity hurts).",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T03:12:30.527Z",
-      "text": "Tick complete:\n- **ProtAttBA cluster-aware S1131 FINAL**: 15/15 cells, **pooled ρ=+0.478** (n=3387). Per-fold: f0=.612, f1=.819, f2=.473, f3=.175, f4=.193. Trails PPAC (+0.610) on the same data.\n- **ProteinGym LoRA LOAEO COMPLETE 5/5**: DPL +0.293, **UN +0.338** (UN +0.045). Negative result for ΔPL on dense per-protein DMS — added to paper.\n- **DPL S1131 fixed**: seed 0 fold 0/1/2 done; UN winning 2 of 3 folds so far.\n- **RDE-Network**: all 15 jobs running on A40 (~7h each).\n- Master table + paper updated.\n\nSleeping 30min.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
       ]
     }
   ]
