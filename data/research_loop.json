@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T15:29:12Z",
+  "generated_at": "2026-04-14T15:59:21Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2973,
-    "assistant_turns": 4445,
+    "user_turns": 2980,
+    "assistant_turns": 4456,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T15:16:06.226Z"
+    "last_ts": "2026-04-14T15:49:05.627Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,21 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T15:49:05.571Z",
+      "text": "Tick:\n- **ESM-2 3B zero-shot**: SKEMPI |ρ|=0.128 (slightly WORSE than 650M +0.145), S1131 |ρ|=0.417 (nearly identical to 650M +0.430). **Confirms diminishing returns at scale for zero-shot** — bigger backbone ≠ better mutation sensitivity.\n- **PPAC Tsuboyama: +0.676** — we beat it with DPL LoRA +0.745 (+0.069 gap). Tsuboyama is clearly our regime.\n- **Queue: 94 jobs** (39 running). Gap experiments running — nothing imminent.\n\nSleeping 50min.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T15:48:45.663Z",
+      "text": "**PPAC on Tsuboyama: ρ = +0.676** — we still beat it with DPL LoRA +0.745 (by +0.069). UN LoRA +0.719 also ahead.",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-14T15:16:06.226Z",
       "text": "15th (final) agent complete: **GAP 3 — structural context fusion**. Feature extraction ran in 68s over 345 SKEMPI PDBs. 8-d per-residue vector: `conf, phi_sin/cos, psi_sin/cos, sasa, contact_count, iface_z`. Head dim 1280 → 1288. Smoke test ran successfully. **15 full jobs queued (33384140–33384160)**.\n\nHonest prediction: **+0.04 to +0.08** on SKEMPI cluster-aware. The genuinely new signal is `iface_z` (PPI-specific interface proximity — unrecoverable from sequence alone) and pLDDT confidence. RDE's +0.12 lead comes from full 3D rotamer graphs; we're getting cheap per-residue summaries, so expect ~½ the gap closable.\n\n## Complete synthesis: all 15 agents + predictions\n\n| Experiment | Queued jobs | Agent prediction |\n|---|---|---|\n| **GAP 1 pair term** (tpp_) | 15 | +0.04 to +0.07 on SKEMPI |\n| **GAP 2 cluster-cond** (tpcc_) | 15 | +0.02 to +0.04 (central +0.03) |\n| **GAP 3 struct fusion*…",
@@ -378,21 +393,6 @@
       "text": "**RDE-Network cluster-aware FINAL (15/15 cells): ρ = +0.4714 ± 0.097**\n\nThat's a major number. Let me get the pooled OOF and update.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T09:41:25.067Z",
-      "text": "**Bias head head-to-head (seed 0):**\n\n| Fold | DPL no-bias | DPL +bias | Δ |\n|---|---|---|---|\n| 0 | +0.3786 | +0.3806 | +0.002 |\n| 1 | +0.7330 | +0.7530 | **+0.020** |\n\nMean +0.011. Modest, matches the agent's honest prediction. UN heads identical (bypassed).\n\n- **DPL fixed (no-bias)**: 25/30 finish lines (12.5/15 fold-seed)\n- **Bias job**: 4/30 lines (2/15 done)\n- **RDE**: iter 28169/30000 (94%) — first folds about to land!",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T08:55:49.531Z",
-      "text": "Tick:\n- **Bias head job 33381454**: fold 0 DPL ρ=+0.3806 (vs no-bias +0.3786 — only **+0.002 nudge**). Sanity prints confirm: bias table (112,1) zero-init, val rows correctly get β=0 (unseen, cluster-disjoint). The honest 60/40 prediction is being borne out — bias is mostly a training-time regularizer in cluster-aware mode.\n- **DPL S1131 fixed (no-bias)**: 23 finish lines = 11.5/15. Seed 2 fold 1 DPL = +0.7642 (matches the easy fold pattern).\n- **RDE-Network**: iter 25051/30000 (83.5%), ~1.5h to go.\n\nSleeping 45min.",
-      "tags": [
-        "result",
-        "model"
       ]
     }
   ]
