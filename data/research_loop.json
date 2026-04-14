@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T00:55:15Z",
+  "generated_at": "2026-04-14T01:25:23Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2702,
-    "assistant_turns": 4016,
+    "user_turns": 2724,
+    "assistant_turns": 4052,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T00:46:05.948Z"
+    "last_ts": "2026-04-14T01:14:00.520Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,37 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T01:14:00.448Z",
+      "text": "Progress snapshot:\n- **PPAC SKEMPI cluster-aware**: ρ=+0.281±0.013 (complete). We win by +0.096 on the headline row. Paper prose updated.\n- **ProtAttBA**: 6/15 folds done (fold 0 avg 0.612, fold 1 avg 0.819). 9 more moved back to A40, running now.\n- **Tsub LoRA UN**: mid-ep 4/5, near finish.\n- **DPL S1131 fixed**: 33377353 running, 14h walltime, fold 0 DPL complete +0.379.\n- **ESM-IF zsstruct on Tsub**: 13500/29902 done (~45%).\n- **ProteinGym LoRA**: ACE2 DPL +0.199 / UN +0.195 so far; other 4 still running.\n\nSleeping 30 min.",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T01:13:20.789Z",
+      "text": "Now update the paper master table to add PPAC as a supervised sequence baseline column.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T01:13:08.093Z",
+      "text": "**PPAC SKEMPI cluster-aware complete: ρ = +0.281 ± 0.013** (n=7592, 5-fold × 5-seed). Our ΔPL LoRA beats it by +0.096 on the headline dataset.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T01:12:36.425Z",
+      "text": "1080ti is jammed. Moving ProtAttBA folds 2-4 back to A40 where there are idle slots.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-14T00:46:05.891Z",
       "text": "Status:\n- **ProtAttBA**: 5/15 folds done (fold 0 avg 0.612, fold 1 avg 0.820 — 2/5 folds)\n- **Tsub UN**: f0s0 at ep 4/5 (~1h from finish)\n- **DPL S1131 fixed**: resubmitted 33377353 with 14h walltime; initial fold 0 DPL result was 0.378 (vs buggy 0.193), UN at 0.563 at ep 2\n- **PPAC SKEMPI+abbind**: running ~0.29 weak on full cluster-aware SKEMPI (we win here: our DPL +0.377)\n- **zsstruct ESM-IF Tsub**: 13500/29902 done (~45%)\n- **ProteinGym ACE2**: DPL done +0.199, UN ep 2 +0.195\n\nSleeping 25 min for next tick.",
@@ -351,35 +382,6 @@
       "text": "Confirmed — our ΔPL protocol is 5 folds × 3 seeds = 15 (fold, seed) cells (see `results/twophase_oof_cluster/fold0..4_seed0..2/`). The 15 RDE jobs I already queued (33376488–33376503, skipping 502) are exactly that: 5 folds × 3 seeds (2022/2023/2024). No change needed — they're pending low-prio now.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:30:34.713Z",
-      "text": "RDE setup agent done — environment, checkpoints, and SKEMPI cache all verified. Cluster split validated (val sizes 1007/1506/1369/1144/1680 match the sibling's submission). Both RDE agents now complete. Waiting on PPAC training agent + scheduled wake-up.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:23:10.833Z",
-      "text": "Sleeping 20 min. Current state: master table + paper prose updated with Tsuboyama DPL LoRA +0.744; 51 jobs in queue; 2 agents still running (PPAC impl, RDE clone/setup).",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:23:03.821Z",
-      "text": "Paper prose updated with new Tsuboyama LoRA number. Now I'll sleep until the next natural checkpoint — PPAC agent should be close (CPU-fast), and the first ProtAttBA jobs (currently running ~15min) should have some epoch telemetry.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:22:33.799Z",
-      "text": "Queue state: 15 tsub LoRA (R), 15 RDE cluster (PD), 15 ProtAttBA cluster (PD+R), 5 ProteinGym (R), 1 zsstruct resubmit = 51 jobs.",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
