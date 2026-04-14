@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T10:57:54Z",
+  "generated_at": "2026-04-14T11:27:58Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2902,
-    "assistant_turns": 4345,
+    "user_turns": 2911,
+    "assistant_turns": 4359,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T10:24:09.538Z"
+    "last_ts": "2026-04-14T11:11:22.405Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,28 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T11:11:22.316Z",
+      "text": "Tick:\n- **🎯 DPL S1131 fixed FINAL** (15/15 cells, n=3387):\n  - DPL: ρ=+0.384 ± 0.242\n  - UN: ρ=+0.472 ± 0.206\n  - **UN beats DPL by +0.088** consistently. Confirms the dense-per-protein failure mode at full sample size. § footnote removed; numbers are now publication-ready.\n- **PDF rebuilt** with the final S1131 numbers.\n- **Bias head 33381454**: 3/15 cells, ~10h more.\n\nSleeping 45min.",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T11:10:30.069Z",
+      "text": "**DPL S1131 fixed FINAL (all 15 fold-seed cells):**\n- **DPL: +0.384 ± 0.242**\n- **UN: +0.472 ± 0.206**\n- UN wins by **+0.088** consistently across all seeds",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T11:10:18.450Z",
+      "text": "**DPL S1131 fixed COMPLETE!** Let me get the final number.",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-14T10:24:09.458Z",
       "text": "Tick complete:\n- **🎯 RDE-Network DONE**: pooled OOF +0.497, mean +0.471 ± 0.097. Beats DPL LoRA (+0.377) by +0.12. Beats PPAC (+0.281) by +0.22. New \"RDE\" column added to master table.\n- **DPL S1131 fixed**: 12.5/15 cells. Almost done.\n- **Bias head 33381454**: 3/15 cells. Mean +0.011 nudge.\n- **Updated SKEMPI cluster-aware row**: now shows StaB +0.559 / RDE +0.497 / PPAC +0.281 / DPL LoRA +0.377 — both supervised structural baselines beat us, supervised seq we beat.\n\nSleeping 45min.",
@@ -359,28 +381,6 @@
     {
       "ts": "2026-04-14T07:47:37.036Z",
       "text": "Dispatching an agent to spam zero-shot baselines across every (model × dataset) cell that's still empty.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:46:01.224Z",
-      "text": "Master table overfull is gone. PDF rebuilt — 12 pages, 1.69 MB. The supervised sequence baselines now appear as actual columns:\n\n**New column layout:**\n```\nzero-shot (6) | struct (StaB) | sup. seq. (PPAC, PAttBA) | ours (UN, DPL fr, DPL LoRA) | +Stab\n```\n\n**Cells filled in:**\n- **SKEMPI cluster-aware row**: PPAC = .281, PAttBA = — (PAttBA only run on S1131)\n- **S1131 cluster-aware row** (new \"full\" version, n=1129): PPAC = **.610** (bold winner), PAttBA = .478, UN = .466§, DPL LoRA = .382§ (§ = seed-0 only, fixed-loader rerun in flight)\n\nThe S1131 row now clearly shows both supervised sequence baselines beating us. SKEMPI row shows we beat PPAC by +0.10. Rerun PDF location: `/global/scratch/users/sergiomar10/loop/paper/main.pdf` (12 pages).",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:45:31.592Z",
-      "text": "Built — 12 pages, 1.69MB. Overfull hbox by 28pt at the master table. Tightening tabcolsep.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:44:40.219Z",
-      "text": "Now add a new footnote `$^{\\S}$` for the seed-0-only S1131 fixed numbers and rebuild the PDF.",
       "tags": [
         "note"
       ]
