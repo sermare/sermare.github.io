@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T02:25:47Z",
+  "generated_at": "2026-04-14T02:55:51Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2747,
-    "assistant_turns": 4093,
+    "user_turns": 2758,
+    "assistant_turns": 4114,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T02:18:33.266Z"
+    "last_ts": "2026-04-14T02:45:42.432Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,36 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T02:45:42.360Z",
+      "text": "Tick:\n- **ProtAttBA**: 14/15 done, mean +0.477, **pooled OOF +0.506** (n=3161). PPAC still leads at +0.610.\n- **DPL S1131 fixed**: seed 0 fold 2 DPL +0.505, mid-flight\n- **Tsub UN**: still 4/15\n- **RDE-Network**: 15 jobs moved from jammed 1080ti → A40 (33378728–42)\n- **ProteinGym**: 4/5 done, UN beats DPL by +0.040 mean (negative result)\n\nSleeping 25min.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T02:45:31.735Z",
+      "text": "15 RDE jobs resubmitted to A40 (33378728–42).",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T02:45:17.161Z",
+      "text": "Moving the RDE jobs to A40 too — 1080ti has 4 nodes drained, only 4 active and other users running.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-14T02:44:43.176Z",
+      "text": "ProtAttBA pooled cluster-aware S1131: **ρ=+0.506** (14/15 folds, n=3161). PPAC still leads at +0.610. Both crush the buggy DPL +0.255.",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-14T02:18:33.185Z",
       "text": "Tick summary:\n- **Tsuboyama K50 ESM-IF zero-shot**: |ρ|=+0.544 (n=29902) — added to master table & paper\n- **ProtAttBA cluster-aware**: 9/15 done, mean +0.605 (folds 0/1/2 done, fold 4 has 1 seed)\n- **Tsub UN**: 4/15 done, ρ=+0.725 (DPL +0.745 leads by +0.020)\n- **DPL S1131 fixed**: seed 0 fold 0 done (DPL .379, UN .612), fold 1 done (DPL .733, UN .721), fold 2 in progress\n- **ProteinGym LoRA**: 4/5 assays done — UN beats DPL by +0.040 mean (negative result for ΔPL on dense per-protein DMS)\n\nSleeping 25 min.",
@@ -359,34 +389,6 @@
         "dataset",
         "model",
         "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:52:31.545Z",
-      "text": "Cleanup complete — home now 12G (was 17G, freed ~5G). **PPAC cluster-aware on S1131: ρ = +0.6099 ± 0.0090** (1129 rows, 42 clusters).",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:50:24.384Z",
-      "text": "No `from mhcflurry` imports in our code — the 2.3 GB in `~/.local/share/mhcflurry` is unused package-installed weights. Both .boltz and mhcflurry are safe to delete.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:49:36.303Z",
-      "text": "**Tsuboyama K50 LoRA DPL complete: ρ = +0.7447 ± 0.0122 (all 15/15 cells)**. Final number; paper footnote can be updated from \"12 completed\" to \"all 15\".",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-13T23:48:42.593Z",
-      "text": "ProtAttBA f0s0 at epoch 10: val ρ=0.5714 (best 0.5849). Cluster-aware training works.",
-      "tags": [
-        "result"
       ]
     }
   ]
