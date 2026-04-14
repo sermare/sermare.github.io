@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T14:58:58Z",
+  "generated_at": "2026-04-14T15:29:12Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2965,
-    "assistant_turns": 4433,
+    "user_turns": 2973,
+    "assistant_turns": 4445,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T14:57:25.566Z"
+    "last_ts": "2026-04-14T15:16:06.226Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,37 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T15:16:06.226Z",
+      "text": "15th (final) agent complete: **GAP 3 — structural context fusion**. Feature extraction ran in 68s over 345 SKEMPI PDBs. 8-d per-residue vector: `conf, phi_sin/cos, psi_sin/cos, sasa, contact_count, iface_z`. Head dim 1280 → 1288. Smoke test ran successfully. **15 full jobs queued (33384140–33384160)**.\n\nHonest prediction: **+0.04 to +0.08** on SKEMPI cluster-aware. The genuinely new signal is `iface_z` (PPI-specific interface proximity — unrecoverable from sequence alone) and pLDDT confidence. RDE's +0.12 lead comes from full 3D rotamer graphs; we're getting cheap per-residue summaries, so expect ~½ the gap closable.\n\n## Complete synthesis: all 15 agents + predictions\n\n| Experiment | Queued jobs | Agent prediction |\n|---|---|---|\n| **GAP 1 pair term** (tpp_) | 15 | +0.04 to +0.07 on SKEMPI |\n| **GAP 2 cluster-cond** (tpcc_) | 15 | +0.02 to +0.04 (central +0.03) |\n| **GAP 3 struct fusion*…",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-14T15:07:12.081Z",
+      "text": "14th agent complete: **GAP 5 — RDE distillation**. Smoke test working (distill loss 1.62 alongside train 3.90). 15 full-run jobs queued (33385324–44). RDE OOF lookup has 5820 entries; coverage 82-88% per DPL fold. No leakage (each (pdb,mut) key is held out in exactly one RDE fold).\n\nHonest prediction: **+0.41 to +0.44** on SKEMPI cluster-aware (baseline +0.377). **Δρ target: at least +0.03, plausible +0.06–0.08.** Can't exceed RDE's +0.497 because only ESM features are available at test time. 1 more agent running (GAP 3 structural fusion).",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T15:02:41.416Z",
+      "text": "**Queue: 100 jobs total** (37 R + 62 PD). All 5 gap agents submitted their 15-job sweeps:\n- **tpp_** (15): GAP 1 pair term\n- **tpcc_** (15): GAP 2 cluster-conditioned context\n- **tpcs_** (15): GAP 3 structural fusion (sbatch submitted, agent report pending)\n- **tpcd_** (15): GAP 5 RDE distillation (sbatch submitted, agent report pending)\n- **tp3b_** (15+1 pretrain): GAP 4 ESM-2 3B\n- Plus 14 Tsuboyama ProtAttBA, Tsub PPAC, SAbDab DPL, S1131 bias, ATLAS MHC, FireProt LoRA, zero-shot models, ESM-IF BindingGym\n\nAll 15 agents from the \"fill 10 + gap 5\" batch have effectively submitted work. 2 agent reports still pending.",
+      "tags": [
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-14T15:00:02.803Z",
+      "text": "13th agent complete: **GAP 2 — cluster-conditioned context**. Smoke test validates: train loss drops, val RMSE drops under zero-init OOV embedding. **15 full-run jobs running (33383621–35)**.\n\nHonest prediction: **+0.02 to +0.04 (central estimate +0.03)** on the SKEMPI cluster-aware pool — ~¼ of the +0.12 gap to RDE-Network. The mechanism is training-time regularization (freeing `h` to fit within-cluster residual), not test-time cluster info (val rows always get OOV token by construction). Same limitation as the per-protein bias but operates at the cluster level. 2 more agents running.",
+      "tags": [
+        "dataset"
+      ]
+    },
     {
       "ts": "2026-04-14T14:43:54.015Z",
       "text": "12th agent complete: **GAP 1 — Explicit pair term**. Smoke test passed (ρ=+0.314 on fold 0, 1 epoch). Head params 0.5M → 1.26M. **15 full-sweep jobs queued (33384671–33384685)**.\n\nHonest prediction: **+0.04 to +0.07 (max +0.09)** — closes 30-50% of the DPL→RDE gap but not all of it. k-distribution ceiling (~65-70% of SKEMPI is single mutations where pair term = 0). ESM context already captures local epistasis implicitly. Most of RDE's edge is explicit 3D geometry, not pair-interaction signal. Follow-up: pair-term gated by contact distances. 3 more agents running.",
@@ -361,35 +392,6 @@
       "text": "Tick:\n- **Bias head job 33381454**: fold 0 DPL ρ=+0.3806 (vs no-bias +0.3786 — only **+0.002 nudge**). Sanity prints confirm: bias table (112,1) zero-init, val rows correctly get β=0 (unseen, cluster-disjoint). The honest 60/40 prediction is being borne out — bias is mostly a training-time regularizer in cluster-aware mode.\n- **DPL S1131 fixed (no-bias)**: 23 finish lines = 11.5/15. Seed 2 fold 1 DPL = +0.7642 (matches the easy fold pattern).\n- **RDE-Network**: iter 25051/30000 (83.5%), ~1.5h to go.\n\nSleeping 45min.",
       "tags": [
         "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T08:09:14.756Z",
-      "text": "Sleeping 45 min. Per-protein bias head implemented + queued (job 33381454, 14h walltime). Will compare directly against the no-bias rerun (33377353) once both finish.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T08:08:59.475Z",
-      "text": "33377353 is still running (7h23 elapsed, agent was wrong about it being gone). 21 finish lines = 10.5/15 fold-seed combos done. ~3 more hours to complete. Job 33381454 (with bias head) will run alongside it for direct head-to-head comparison.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T08:08:43.234Z",
-      "text": "Implementation complete. Job 33381454 queued.\n\n**Honest agent take:** ~60/40 on no-effect-or-worse for the cluster-aware S1131 case, because every test protein is in an unseen cluster → β forced to 0 at eval → the bias only acts as a training-time regularizer (~+0.01-0.03 typical effect, not the +0.2 we'd need to close the PPAC gap).\n\nThe agent's correct point: in cluster-aware mode, the per-protein bias can't help test-time generalization to unseen proteins — that requires a **cluster-conditioned context** (learned cluster embedding) or **structure-conditioned ctx**, not a per-protein scalar. The bias is theoretically defensible (gauge fix) and zero-downside but probably not the architectural breakthrough we need.\n\nLet me also check on the original DPL S1131 fixed run (33377353).",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T08:06:40.627Z",
-      "text": "Tick:\n- **Per-protein bias agent**: already started — `PotentialHead` extended with `n_proteins` + `protein_bias` + `bias_for()` (zero-init, gauge-fix). Smoke test pending.\n- **DPL S1131 fixed**: 10.5/15 fold-seed combos, on seed 2 fold 0 DPL.\n- **RDE-Network**: iter 21689/30000 (72%), ~2-2.5h to go.\n- **Zero-shot harvested**: ESM-IF S1131 +0.229, ESM-IF SAbDab v2 +0.005 (essentially noise — multi-mut antibody pairs too far from inverse folding's domain), ProtBert ProteinGym +0.204. Master table updated.\n\nSleeping 40 min.",
-      "tags": [
-        "dataset",
         "model"
       ]
     }
