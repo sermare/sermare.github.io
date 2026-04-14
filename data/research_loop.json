@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T11:27:58Z",
+  "generated_at": "2026-04-14T11:58:04Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2911,
-    "assistant_turns": 4359,
+    "user_turns": 2915,
+    "assistant_turns": 4367,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T11:11:22.405Z"
+    "last_ts": "2026-04-14T11:57:53.757Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T11:57:48.010Z",
+      "text": "Bias head seed 0 full results (vs no-bias):\n\n| Fold | No-bias | +bias | Δ |\n|---|---|---|---|\n| 0 | 0.379 | 0.381 | +0.002 |\n| 1 | 0.733 | 0.753 | +0.020 |\n| 2 | 0.505 | 0.521 | +0.016 |\n| 3 | 0.178 | 0.222 | **+0.044** |\n| 4 | 0.113 | 0.117 | +0.004 |\n| **mean** | **0.382** | **0.399** | **+0.017** |\n\nBigger than the agent predicted (+0.01–0.03 expected, getting +0.017 mean with +0.044 on hardest fold). Still far below PPAC +0.610 and UN +0.472, but it's a real, positive gauge-fix ablation. Seed 1 fold 0 just landed at +0.425 (vs +0.395 no-bias, Δ +0.030) — same pattern reproducing.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-14T11:11:22.316Z",
       "text": "Tick:\n- **🎯 DPL S1131 fixed FINAL** (15/15 cells, n=3387):\n  - DPL: ρ=+0.384 ± 0.242\n  - UN: ρ=+0.472 ± 0.206\n  - **UN beats DPL by +0.088** consistently. Confirms the dense-per-protein failure mode at full sample size. § footnote removed; numbers are now publication-ready.\n- **PDF rebuilt** with the final S1131 numbers.\n- **Bias head 33381454**: 3/15 cells, ~10h more.\n\nSleeping 45min.",
@@ -374,13 +381,6 @@
     {
       "ts": "2026-04-14T07:48:32.776Z",
       "text": "Spawning 5 per-model agents in parallel — one for each zero-shot model. Each agent owns one model and runs it across every missing dataset.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T07:47:37.036Z",
-      "text": "Dispatching an agent to spam zero-shot baselines across every (model × dataset) cell that's still empty.",
       "tags": [
         "note"
       ]
