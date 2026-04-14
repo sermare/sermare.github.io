@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-14T04:56:22Z",
+  "generated_at": "2026-04-14T05:26:29Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 2784,
-    "assistant_turns": 4160,
+    "user_turns": 2796,
+    "assistant_turns": 4179,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T04:24:55.525Z"
+    "last_ts": "2026-04-14T05:24:41.989Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,45 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-14T05:24:41.989Z",
+      "text": "Paper updated. Summary of agent changes:\n\n- **Tsuboyama footnote ‡**: now reports DPL +0.745±0.012 (n=15), UN +0.719±0.012 (n=10/15), gap +0.026\n- **Supervised baselines footnote**: added ProtAttBA pooled +0.478 + PPAC +0.610 on cluster-aware S1131 (1129 rows, 42 clusters); noted RDE retrains in flight\n- **New `\\paragraph{S1131 loader caveat.}`**: the residue-numbering bug, 711/1131 biased subsample, fixed-rerun preliminary numbers (DPL +0.382 / UN +0.466). Confirms SKEMPI/Tsuboyama/FireProt loaders unaffected\n- **Scope-of-the-method paragraph**: replaced \"ties .691 vs .682\" with the LoRA-scale marginal win; expanded dense-per-protein list to 4 datasets\n- **Three-regime discussion**: regime 2 → \"marginal +0.026 DPL win\", regime 3 → 4 datasets with the dense-per-protein story\n\n**Flagged but not changed**: the **abstract** (lines 80-83) still says \"ties on large diverse stability corpora\"…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T05:23:01.340Z",
+      "text": "Paper-update agent dispatched. Will fold in:\n- Tsuboyama LoRA UN (+0.719) replacing frozen UN (.682)\n- ProteinGym 5/5 row (UN +.338 / DPL +.293)\n- ProtAttBA cluster-aware S1131 +0.478 in baselines footnote\n- S1131 loader bug caveat (preliminary fixed seed-0 numbers: DPL +.382, UN +.466)\n- Updated three-regime discussion (4 datasets now in \"dense per-protein UN wins\" regime, not 1)\n\nWill report when agent completes.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T05:22:13.200Z",
+      "text": "## Status\n\n### Wins\n- **Tsuboyama LoRA FINAL** (15/15 DPL, 10/15 UN): DPL **+0.745 ± 0.012**, UN +0.719 ± 0.012 — DPL beats UN by +0.026 on 30k diverse mini-proteins.\n- **ESM-IF zero-shot Tsuboyama**: |ρ|=+0.544 (n=29902) — solid structural zero-shot baseline.\n- **PPAC on SKEMPI cluster-aware**: ρ=+0.281 — **our DPL LoRA +0.377 beats PPAC by +0.096** on the headline PPI dataset.\n- ProtAttBA cluster-aware S1131 done: pooled ρ=+0.478 (PPAC still leads at +0.610).\n\n### Bad news\n- **S1131 loader bug found**: `train_deltapot_s1131.py::build_rows` dropped **420/1131 rows (37%)** due to PDB auth residue numbering vs sequence index mismatch. Bug isolated to S1131 — SKEMPI / Tsuboyama / FireProt all use correct loaders. Fix submitted, rerun in progress (job 33377353, ~12h to complete all 15 fold-seed combos).\n- **DPL S1131 fixed seed 0**: DPL +0.382, UN +0.466. **UN wins by +0.084.** Even on the…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T05:06:08.709Z",
+      "text": "Tick:\n- **Tsub LoRA FINAL**: DPL +0.745 ± 0.012, UN +0.719 ± 0.012 (DPL +0.026 win). Master table + paper updated with LoRA UN number.\n- **DPL S1131 fixed**: 6/15 fold-seed combos done (seed 0 complete + seed 1 fold 0). UN winning by ~+0.08 mean so far.\n- **RDE-Network**: 31% through training (iter 9452/30000), ~5h more, fits in 8h walltime.\n\nSleeping 40min.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-14T05:05:46.523Z",
+      "text": "**Tsuboyama LoRA FINAL:** DPL +0.745 ± 0.012 (n=15), UN +0.719 ± 0.012 (n=10). DPL beats UN by **+0.026** — a small but consistent positive result on this dataset.",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-14T04:24:55.447Z",
       "text": "Tick:\n- **DPL S1131 fixed**: seed 0 fully done. DPL +0.382 mean, UN +0.466 mean. UN wins by +0.084. Same dense-per-protein pattern.\n- **Tsub LoRA**: DPL +0.745 ± 0.012 (15/15), UN +0.719 ± 0.012 (10/15). DPL still leads.\n- **RDE-Network**: 22% through training (iter 6681/30000).\n- 16 jobs running. Sleeping 40min.",
@@ -354,42 +393,6 @@
       "text": "Resubmitted with 14h walltime (33377353). Now check progress on other key jobs.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T00:44:30.803Z",
-      "text": "Walltime will overrun (est ~11h total for 15 runs, walltime was 4h). Cancelling and resubmitting with 14h.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T00:18:07.025Z",
-      "text": "Sleeping 25 min. DPL S1131 on the fixed 1129-row loader is training (job 33377060). Will check direct head-to-head against PPAC +0.610 next tick. Bug is S1131-only; rest of paper numbers unaffected.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T00:18:00.341Z",
-      "text": "Already running — 1129 rows, 43 cluster groups, started fold 0 DPL training. Same split geometry as PPAC (42 + 2I9B singleton ≈ 43). Now they're directly comparable.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T00:17:45.615Z",
-      "text": "**Audit complete.** Bug is isolated to S1131:\n\n| Dataset | Drops from `seq[pos-1] != wt` | Verdict |\n|---|---|---|\n| SKEMPI / AbBind | 0 — uses PDB parser | ✓ |\n| Tsuboyama K50 | 98/30000 (0.3%) | ✓ benign |\n| FireProt curated | **0** (all 1559 drops were NaN ddG) | ✓ |\n| S1131 | **420/1131 (37%)** | **bug, now fixed** |\n\nNothing else in the paper is affected. DPL S1131 rerun submitted as job 33377060 — will land on the fixed 1129-row data.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T00:16:27.010Z",
-      "text": "Now let me also audit FireProt/ATLAS/BindingGym/AbBiBench loaders for similar bugs while we wait.",
-      "tags": [
-        "dataset"
       ]
     }
   ]
