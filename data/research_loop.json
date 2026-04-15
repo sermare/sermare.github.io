@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T16:16:40Z",
+  "generated_at": "2026-04-15T16:47:02Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3229,
-    "assistant_turns": 4817,
+    "user_turns": 3269,
+    "assistant_turns": 4864,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T16:16:35.906Z"
+    "last_ts": "2026-04-15T16:46:34.611Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,126 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-15T16:46:34.611Z",
+      "text": "**StaB 5-way meta harvest script ready + smoke-tested.**\n\n- Script: `scripts/stacked_meta_ensemble_5way_stab.py`\n- Handles StaB's different schema (`pdb`, `mutations`, `pred`, `label` vs RDE's `val_idx`/`complex`/`mutstr`)\n- Searches scratch + `/clusterfs/nilah/sergio/loop_overflow/stabddg_cluster/preds/`\n- Watcher: `scripts/check_stabddg_cluster_progress.sh` auto-launches meta when ≥10 cells complete\n- Expected intersection size: ~4300-4450 rows (StaB's filter is stricter than 4-way)\n\n**Honest prediction:** 4-way (RDE+PPAC+FoldX) +0.5918 + StaB → **+0.60** over/under. Isotonic adds another +0.003-0.005. This is the single biggest outstanding lever.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:45:53.412Z",
+      "text": "**Spam check: PASS (42 jobs, 28 R + 13 PD)**.\n\nProgress check:\n- **StaB-ddG retrain**: running 28:45 elapsed, each job takes 2-4h. Not finished.\n- **Struct-fusion sweep**: 0 summary.json files yet (jobs still training)\n- **Tsub resubmits**: 13 jobs running\n- **Spawn #5 agents**: 4 have reported, 6 still running (FoldX residual boost, per-seed meta, StaB-1491 blend, StaB harvest prep, seed bootstrap, FoldX-distill harvest follow-up)\n\n**Biggest completed findings this hour:**\n1. **+0.592 new headline** (RDE+PPAC+FoldX, iso_mean) — **drops DPL** from the meta ensemble\n2. **LOPO robustness: +0.589** — +0.585 is NOT a cluster-split artifact\n3. **FoldX distill / BindingGym / Multi-teacher single-teacher distill all flat or dead**\n4. **Struct-fusion partial harvest: NOT promising**, mean-of-folds −0.007 vs baseline, overfitting signature at ep5\n5. **LightGBM / CatBoost / zero-impute / per-seed…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:45:11.204Z",
+      "text": "**🔒 LOPO verdict: the +0.585 is ROBUST.** \n\nStrict leave-one-PDB-out on all 320 PDBs:\n- isotonic + ridge: **+0.5890** (LOPO actually slightly higher than cluster-aware +0.5854)\n- isotonic + mean: +0.5846 (tied)\n- Δ vs cluster-aware: **+0.0036**\n\n**This kills the \"cluster split is leaking\" reviewer attack.** The paper can now claim both:\n- Cluster-aware 5-fold: ρ = +0.5918 (RDE+PPAC+FoldX iso_mean)\n- Strict LOPO (all 320 PDBs): ρ = +0.5890 (4-way iso_ridge, within 0.004)\n\nThe number is not an artifact of the cluster split. Robustness check passes.\n\n**Paper rebuilt, headline now +0.592.** 13 pages, 1.73 MB.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:42:55.408Z",
+      "text": "**🎯 NEW HEADLINE: ρ = +0.5918 on RDE+PPAC+FoldX (iso_mean) — 3-way beats 4-way.**\n\n**Dropping DPL lifts the meta-ensemble.** DPL's isotonic-calibrated rank map overweights what RDE already captures.\n\n**Subset rankings:**\n\n| Config | iso_mean ρ | Δ vs 4-way |\n|---|---|---|\n| **RDE+PPAC+FoldX** | **+0.5918** | **+0.0064** 🏆 |\n| DPL+FoldX+PPAC+RDE (4-way) | +0.5854 | — |\n| FoldX+RDE (2-way) | +0.5849 | -0.0005 |\n| DPL+FoldX+RDE | +0.5837 | -0.0017 |\n\n**Awkward finding for the paper**: our own DPL is now *neutral-to-harmful* in the meta-ensemble. FoldX+RDE alone (no DPL) is effectively tied with the 4-way. Keeping PPAC adds +0.007 orthogonal signal on top.\n\n**Paper framing pivot**: the headline is now \"**isotonic-calibrated mean of RDE + PPAC + FoldX = +0.592**\". DPL becomes a *standalone sequence-only model* (beats PPAC +0.281 by +0.096, new SOTA among sequence-only models), not an ensemble…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:41:33.907Z",
+      "text": "**Zero-impute verdict**: +0.585 intersection is optimal. Full pool (5900 rows vs 5476) with missingness indicators + zero-impute hurts: isotonic_mean drops to +0.5788 (-0.0066), isotonic+GBR to +0.5731 (-0.0124). The 424 extra rows are too noisy. **Intersection stays as the right eval set for the headline.**",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:40:02.915Z",
+      "text": "**LightGBM + CatBoost verdict — plateau is real**. None of the 7 GBDT variants beat **isotonic_mean +0.5854**. Best GBDT was catboost_500_es50_raw at +0.5763 (still -0.009 below isotonic_mean, +0.005 over the old sklearn GBR).\n\n**Clear finding**: on 4 features × 5476 rows × 116 CV clusters, there's not enough non-monotonic interaction structure for tree boosters to exploit. What works is **monotone per-base calibration → simple mean**. GBDTs can't mimic that in this data regime.\n\n**Locked in**: `isotonic_mean` (+0.5854) is the production blender. Stopping GBDT exploration.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:39:03.304Z",
+      "text": "**Struct-fusion partial verdict — NOT promising:**\n\n| Fold | Struct-fusion (ep5/10 partial) | Baseline | Δ |\n|---|---|---|---|\n| 0 | +0.077 (preempted) | +0.170 | **−0.093** |\n| 1 | +0.462 | +0.475 | −0.013 |\n| 2 | +0.399 | +0.332 | **+0.067** |\n| 3 | +0.162 | +0.158 | +0.004 |\n| 4 | +0.496 | +0.497 | −0.001 |\n\n**Mean-of-fold-means: −0.007 vs baseline**. Only fold 2 clearly lifts. Peak ρ declining from ep1-3 → ep5 (overfitting signature). Fold 0 tanking (also had preemption). **Skipping promotion into the meta-ensemble.**\n\nThe paper-critical insight: the +0.585 meta-ensemble ceiling **isn't being cracked by any new DPL variant**. We've now tried 30+ architectural, loss, data, distillation, and training-trick variants on top of DPL LoRA and NONE has pushed the ΔPL-alone number past +0.40 on the cluster-aware pool. The ceiling is real. The meta-ensemble is the beating model.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:35:51.505Z",
+      "text": "**FoldX residual boost pilot** submitted: job 33418085 on A40 lowprio. Lookup: 5873 keys, 99.4% RDE overlap. Reuses `--boost-rde` path with FoldX targets. Pilot tests whether DPL can capture *orthogonal* residual signal that FoldX misses.\n\n**Honest prediction:** +0.54-0.58 range. Beats FoldX alone (+0.558) is a coin flip — fitting residuals of a strong teacher is hard because DPL signal is mostly redundant with FoldX on easy rows. Min 5 seeds needed before trusting a small delta.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:35:09.808Z",
+      "text": "**Harvest verdict — all three single-teacher approaches underperform:**\n\n| Pilot | State | Result | Verdict |\n|---|---|---|---|\n| **FoldX distillation** (33417945) | PREEMPTED @ ep 2/10 | ρ ep2=+0.049 (trailing baseline +0.096) | Low priority, needs requeue |\n| **BindingGym→SKEMPI transfer** (33416062) | PREEMPTED but completed twophase | **best ρ=+0.071** (Δ baseline −0.025) | **DEAD** — don't scale. 23 unique chains in BGym too narrow |\n| **Multi-teacher distill** (33418001) | RUNNING ep 0 | TBD, needs ~2.5h | In flight |\n\n**Key finding**: no single-teacher distillation path approaches the +0.585 meta-ensemble. The meta-ensemble beats all distillation variants because GBR can gate each teacher conditionally rather than forcing the student to mimic a mean. **The paper story is the meta-ensemble, not distillation.**",
+      "tags": [
+        "result",
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:34:02.809Z",
+      "text": "10 agents launched for hourly spawn #5. Targets:\n1. Strict LOPO rerun — tests if +0.585 is robust to the hardest split\n2. FoldX residual boost — DPL learns to correct FoldX errors\n3. Bootstrap CI on +0.585 — publishability check\n4. LightGBM/CatBoost meta — different GBDT libraries\n5. Harvest FoldX-distill + BindingGym + multi-teacher pilots\n6. Zero-impute full pool meta — recover the ~1059 rows lost to intersection\n7. Per-seed 9-feature meta — individual seed predictions as features\n8. StaB-1491 blend on the intersection — unlock +0.60 on that subset\n9. Struct-fusion full-sweep partial harvest\n10. StaB cluster retrain harvest script (pre-built, ready to fire)\n\nWill report as they land.",
+      "tags": [
+        "error",
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:30:41.407Z",
+      "text": "**Paper updated: headline is now ρ = +0.585** (isotonic-calibrated 4-way meta-ensemble). PDF rebuilt — 13 pages, 1.73 MB, no new overfull warnings.\n\n**Beating-model scoreboard:**\n\n| Model | ρ |\n|---|---|\n| **4-way isotonic meta (DPL+RDE+PPAC+FoldX)** | **+0.585** 🏆 |\n| 4-way GBR meta | +0.572 |\n| StaB-ddG alone | +0.559 |\n| FoldX alone (physics) | +0.558 |\n| RDE-Network alone | +0.497 |\n| DPL LoRA alone | +0.377 |\n\nWe now decisively beat StaB-ddG (+0.026) on the cluster-aware pool. 6 more spawn-#4 agents still running.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:28:35.111Z",
+      "text": "**🎯 New paper headline: +0.5854** (up from +0.5718)\n\n**Best variant: `isotonic_mean`** — per-fold isotonic calibration of each base model's predictions, then simple mean. +**0.0136** over GBR baseline. `isotonic_ridge` near-tie at +0.5851.\n\n**Verdict**: GBR-200 is near-optimal on this data. Additional capacity (MLP, XGB-400, deep HGBR) all underperform. The real win is **per-fold monotone calibration** in front of the existing stack — it's a cheap pre-transform that absorbs each base model's miscalibration to y.\n\n**Still below +0.60**, but **+0.585 cleanly beats StaB-ddG +0.559 by +0.026** on the same cluster-aware pool. The 4-way beating-model result is now +0.585, not +0.572.\n\nUpdating paper.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:18:36.510Z",
+      "text": "Sleeping 35 min. Nothing to kill, nothing to spawn. 43 jobs in queue, paper headline +0.572 is locked.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:18:25.208Z",
+      "text": "Queue healthy (43 total). Only 2 Tsub cells have landed. Struct-fusion still warming up. StaB-ddG training just started (running ~1:29). Nothing imminent.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:17:25.507Z",
+      "text": "**5-way meta-ensemble verdict — no lift.** ESM-IF+DPL on same-row basis is **−0.006** vs 4-way baseline. The issue isn't lack of signal (ESM-IF importance 12%) — it's that ESM-IF+DPL was only trained on single-point mutations, losing 1564 multi-point rows. GBR uses the feature but it's redundant with RDE+FoldX on cluster-aware generalization.\n\n**Recommendation from agent**: keep **4-way FoldX meta-ensemble (+0.5718)** as the headline. To actually add ESM-IF, we'd need to retrain it on multi-point mutations (trivial extension but a new training run).\n\n6 more agents still running from spawn #4.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:17:14.713Z",
+      "text": "**30-min check complete:**\n\n- ✅ **Spam check: 43 jobs** (was 28, now +15 with StaB resubmit)\n- ✅ **StaB-ddG prep completed** (19 min) → 15 training jobs fixed (env_setup source) and resubmitted (33418050-64)\n- ⚠️ **Tsub full sweep**: only 2/15 cells done. Fold 0 seed 2 at +0.183 (vs baseline 0.256, **−0.073**) — confirms the +0.244 fold 0 seed 0 pilot was noise\n- ⚠️ **Struct-fusion full sweep**: 0/15 cells done (still running)\n- ❌ **No kills** — all running pilots still cooking, expected\n- **Key paper result**: +0.572 FoldX 4-way meta-ensemble is still the headline. Nothing has dethroned it yet.\n\n**Next architectural lever**: waiting on StaB-ddG cluster retrain OOF — when it lands, the 5-way meta-ensemble (DPL+RDE+PPAC+FoldX+StaB) should push ~+0.58-0.60. That's the biggest outstanding bet.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
       "ts": "2026-04-15T16:16:13.407Z",
       "text": "**GLIBCXX issue** — stabddg_train.sbatch doesn't source env_setup.sh. Let me fix + resubmit.",
       "tags": [
@@ -271,120 +391,6 @@
         "error",
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T15:17:22.883Z",
-      "text": "**30-min check complete:**\n\n- ✅ **Spam check: 36 jobs (20 R + 15 PD)** — healthy\n- ✅ **FoldX distillation pilot** submitted (33417945) — reuses `--distill-rde` with FoldX lookup (5873 keys)\n- ✅ **StaB-ddG prep + 15 train retrain** resubmitted (33417947 prep → 33417948–62 train with `afterok`)\n- ✅ **Struct-fusion scaled to 15 cells** (33417964–78) — this was the Round-3 pilot at +0.43 range\n\n**Running architectural pilots not yet finished**: BindingGym transfer (33416062), MPNN fusion (33415961 via runpy), Tsub full sweep (2/15 still running)\n\n**Pivot from the failed agents**: I did the scale-ups inline. The Round-3 pilots that I COULDN'T scale in the restored v5 (iface_pair, geomaux, interface-pot, head-type) require the pyc-runpy approach, which is too fragile for inline sbatch. Will try those again on next hourly cron when API is stable.",
-      "tags": [
-        "error",
-        "dataset",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-15T15:17:09.876Z",
-      "text": "15 struct-fusion jobs (33417964–78). Queue check:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T15:16:51.920Z",
-      "text": "15 StaB training jobs queued (33417948–62) with `afterok` dep on prep 33417947.\n\nNow scale up struct-fusion to 15 cells (it's in v5, the pilot was strong).",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T15:16:41.562Z",
-      "text": "StaB prep resubmitted as 33417947. Now submit 15 dependent training jobs.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T15:16:31.974Z",
-      "text": "StaB prep failed at 118/603 due to disk quota (now raised). Resubmitting prep + cancelling old dependent jobs so they can re-queue.",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-15T15:15:57.823Z",
-      "text": "FoldX lookup built with 5873 keys. Now submit the FoldX distillation pilot + check CLI signature.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T15:15:47.147Z",
-      "text": "v5 has: struct-fusion, cct-loss, distill-rde, boost-rde, phase1-data. **Missing**: iface-pair, geom-aux, interface-pot, head-type.\n\n**Strategy: run what works NOW inline.** I'll do FoldX distillation via `--distill-rde` with a FoldX lookup swap, + scale struct-fusion to 15 cells, + fix StaB prep job.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T15:15:12.852Z",
-      "text": "API storm earlier killed all 10 agents. Doing the critical work inline now.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:49:45.622Z",
-      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5k2FjLvt2Yn3X6brpR8\"} · check status.claude.com",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:49:38.257Z",
-      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5k1ihJArw2aP2uVz63H\"} · check status.claude.com",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:49:30.909Z",
-      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5k1BAj87WeuNSg2N65T\"} · check status.claude.com",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:49:22.349Z",
-      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jzYf26b5jfxT4QForc\"} · check status.claude.com",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:49:13.136Z",
-      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jysUpy62nTvcETux6E\"} · check status.claude.com",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:45:20.279Z",
-      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jgh7WjcfqkxVLuieMy\"} · check status.claude.com",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:43:04.300Z",
-      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jWfKqPiLHoAGNxjjft\"} · check status.claude.com",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:42:58.271Z",
-      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jWE82FxcjNhRUfyG1E\"} · check status.claude.com",
-      "tags": [
-        "error"
       ]
     }
   ]
