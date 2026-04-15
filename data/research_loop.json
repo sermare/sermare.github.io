@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T14:46:07Z",
+  "generated_at": "2026-04-15T15:16:14Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3177,
-    "assistant_turns": 4743,
+    "user_turns": 3189,
+    "assistant_turns": 4759,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T14:45:20.279Z"
+    "last_ts": "2026-04-15T15:16:10.743Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,62 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-15T15:15:57.823Z",
+      "text": "FoldX lookup built with 5873 keys. Now submit the FoldX distillation pilot + check CLI signature.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T15:15:47.147Z",
+      "text": "v5 has: struct-fusion, cct-loss, distill-rde, boost-rde, phase1-data. **Missing**: iface-pair, geom-aux, interface-pot, head-type.\n\n**Strategy: run what works NOW inline.** I'll do FoldX distillation via `--distill-rde` with a FoldX lookup swap, + scale struct-fusion to 15 cells, + fix StaB prep job.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T15:15:12.852Z",
+      "text": "API storm earlier killed all 10 agents. Doing the critical work inline now.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:49:45.622Z",
+      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5k2FjLvt2Yn3X6brpR8\"} · check status.claude.com",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:49:38.257Z",
+      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5k1ihJArw2aP2uVz63H\"} · check status.claude.com",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:49:30.909Z",
+      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5k1BAj87WeuNSg2N65T\"} · check status.claude.com",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:49:22.349Z",
+      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jzYf26b5jfxT4QForc\"} · check status.claude.com",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:49:13.136Z",
+      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jysUpy62nTvcETux6E\"} · check status.claude.com",
+      "tags": [
+        "error"
+      ]
+    },
+    {
       "ts": "2026-04-15T14:45:20.279Z",
       "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jgh7WjcfqkxVLuieMy\"} · check status.claude.com",
       "tags": [
@@ -323,63 +379,6 @@
     {
       "ts": "2026-04-15T09:45:20.715Z",
       "text": "**Spam check PASS: 43 jobs (25 R + 17 PD)**. Well above threshold.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:43:30.133Z",
-      "text": "AlphaMissense: **BLOCKED** — data not on disk, ~5 GB Zenodo release not downloaded per instructions. Additionally, SKEMPI is mostly non-human (viral/designed), so coverage would be patchy even if downloaded. Not worth pursuing.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:43:09.384Z",
-      "text": "DPL preds lack (pdb, mut) identifiers — need to reconstruct via manifest. Dispatching a focused agent to run the 4-way stacked ensemble with FoldX.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:38:16.511Z",
-      "text": "Disk quota error confirmed despite `lfs quota` showing 0 limit — likely OST-specific. Let me find and clean up large unused outputs in the loop subtree.",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:38:06.033Z",
-      "text": "Scratch is fine — 75% global, no quotas. Agent hit a transient Lustre OST-full condition. User quota is only 510 GB used. Moving FoldX lookup back to scratch and running the FoldX blend inline.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:37:47.048Z",
-      "text": "**🎯 MAJOR BREAKTHROUGH**: **FoldX alone hits ρ = +0.5576 on our cluster-aware SKEMPI pool** (5753/5786 rows, 99.4% coverage) — **matches StaB-ddG (+0.559)** and **beats RDE (+0.497)**. Already on disk in `baselines/gearbind_repo/data/skempi_v2_with_all_results_0415.csv`.\n\n**⚠️ CRITICAL BLOCKER**: `/global/scratch` is **100% full cluster-wide** — agent confirmed via `df -h`. All writes failing. Output persistence broken across the project.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:34:30.874Z",
-      "text": "11 agents dispatched for hourly spawn #2. Orthogonal-signal heavy since the meta-ensemble ceiling finding ruled out more ESM-2 variants:\n\n| # | Agent | Type | Target |\n|---|---|---|---|\n| 1 | **BindingGym→SKEMPI transfer** | Data/transfer | Analogue to Tsub, 27k binding rows |\n| 2 | **ESM-IF + DPL head fine-tune** | Structural backbone | Orthogonal to ESM-2 |\n| 3 | **Multi-teacher RDE+PPAC distill** | Ensemble/distill | Fixes single-teacher collapse, λ=0.05 |\n| 4 | **StaB 1491 distill** | Ensemble/distill | Uses existing StaB preds NOW |\n| 5 | **Emb_diff concat** `(emb[mt]-emb[wt], ctx)` | Feature | Direct mutation signal |\n| 6 | **PDB-stratified sampler for ListMLE** | Training fix | Addresses known failure mode |\n| 7 | **ESM-2 multi-layer pooling** (30-33) | Feature | Intermediate layer signal |\n| 8 | **AlphaMissense feature fusion** | Orthogonal signal | If on disk |\n| 9 | **k-NN retr…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:31:57.292Z",
-      "text": "Firing the hourly 10-agent spawn. Selection rationale: 1 scaled-up, 4 orthogonal-signal experiments (the meta-ensemble ceiling finding), 3 training-dynamics fixes, 2 cheap fills.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:30:13.605Z",
-      "text": "Sleeping 35 min. Next cron check will hit alongside.",
       "tags": [
         "note"
       ]
