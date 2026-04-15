@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T18:48:37Z",
+  "generated_at": "2026-04-15T19:19:18Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3446,
-    "assistant_turns": 5140,
+    "user_turns": 3452,
+    "assistant_turns": 5153,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T18:46:05.114Z"
+    "last_ts": "2026-04-15T19:16:09.013Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,36 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-15T19:16:09.008Z",
+      "text": "**Cron check — identical state to last tick. Holding.**\n\n**(1) Beating-model**: Queue **132** jobs, 0 new result files in the last 35 min. All paper-critical experiments (ProtAttBA SKEMPI 15-job sweep, S1131 parity, LoRA rank/epoch sweeps, DPL LoRA FireProt, DPL LoRA ATLAS/SAbDab, Tranception, ProtAttBA BG/PG LOAEO, 30 ProtAttBA FireProt on 1080Ti) are running or queued behind savio3_gpu priority. Long-running jobs (6-14h walltime each) dominate — they won't produce summaries until late afternoon/evening. **No new pilot this tick** — the cron target (\"beat RDE +0.497\") is off-framing for the sequence-only paper, and there's no compute headroom anyway.\n\n**(2) Spam**: 132 >> 15. Fully saturated. **Nothing to fire.**\n\nWatchdog last logged at 12:12:57 (20 min gap) — same pattern as the earlier silent interval; driver process confirmed alive last tick. False-alarm stale detection on `patt_fpc…",
+      "tags": [
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:10:08.513Z",
+      "text": "Sleeping 25 min. Nothing actionable this tick.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:10:00.507Z",
+      "text": "False alarm — job `33418868` is healthy: 36 min R, .out modified at 12:09, running fold 1/5 epoch 1 at val_spearman=+0.369 (fresh best, patience 0/8). Watchdog's stale threshold is too tight for ProtAttBA's ~3-min-per-epoch cadence at chunk granularity. Letting it run.\n\nQueue unchanged, 0 new results in the 30-min window. Scheduling next wakeup — still waiting on the same set of paper-critical experiments.",
+      "tags": [
+        "result"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:09:42.611Z",
+      "text": "Watchdog flagged `33418868` (`patt_fpc_f0s0`) as stale — 34 min no writes. Could be legitimate (ESM-2 cache warmup takes ~10+ min before per-epoch logs) or a silent hang. Quick check.",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-15T18:46:05.109Z",
       "text": "**Watchdog is alive** — driver process (PID 2584066) still running `driver.sh`; agent (PID 2677319) is waiting for `poll #15` to appear. The log gap is just because polls skip log entries when nothing changes.\n\n**30-min check verdict — no new work this tick**:\n\n**(1) Beating-model lever**: 140-job queue is saturated across both partitions (savio3_gpu 76 PD, savio2_1080ti 30 PD). Firing another pilot right now would put it at the back. All paper-critical experiments still in flight: ProtAttBA SKEMPI 15-job sweep, S1131 parity (DPL 33418232 still pending, PPAC fair 33418780 R on 1080ti, 15 ProtAttBA S1131 pending), LoRA rank sweep (33418290-93), LoRA epoch sweep (33418906-908), Tranception, DPL LoRA FireProt HOF/curated, DPL LoRA ATLAS/SAbDab 5-seed, ProtAttBA BG/PG LOAEO. Zero new architectural levers would fit the paper pivot — the \"beat RDE structural\" targets are off-framing.\n\n**(2) Sp…",
@@ -360,37 +390,6 @@
       "text": "Per-seed meta-ensemble null: best variant `ridge_iso10 = +0.5856` (tied with 3-feat isotonic-mean baseline `+0.5854`, Δ = +0.0001). GBR overfits on 10 features; per-seed expansion adds no signal over the 3-feat baseline. Recommendation to stick with 3-feat isotonic-mean. Off-framing for the post-pivot paper anyway, but useful to note the stacked-ensemble ceiling is genuinely at `+0.585-0.592` — no more headroom there.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:53:34.107Z",
-      "text": "Tranception zero-shot job `33418404` queued (Medium model, no-mirror, 12h walltime). Will land at `results/zeroshot_tranception/{skempi,s1131}/`. Fills the `Trancept` column for SKEMPI loose OOF, SKEMPI cluster-aware headline, and S1131 rows. Nothing actionable until job runs.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:49:41.411Z",
-      "text": "PPAC FireProt curated job `33418391` queued. Agent flagged an important methodology finding: DPL/UN FireProt curated numbers are on 3438 valid ddG rows (not 4998 raw), so PPAC will be apples-to-apples with the DPL/UN row I just updated to fold-mean `+0.369/+0.477`. No action needed until `summary.json` lands.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:48:56.813Z",
-      "text": "5 ProtAttBA ProteinGym LOAEO jobs queued (`33418375-379`, one per held-out assay × 3 seeds each). Aggregator at `scripts/sbatch_protattba_proteingym_binding_loaeo/aggregate.py` will run post-completion. Nothing actionable until jobs run.",
-      "tags": [
-        "dataset",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:47:36.705Z",
-      "text": "**30-min check outcome**:\n\n**(1) Beating-model lever**: No new architectural pilot this tick. Rationale: the paper has pivoted to sequence-only SOTA framing, and the most headline-critical experiment (ProtAttBA-on-SKEMPI cluster-aware, 15 jobs `33418302-316`) is already in flight and may *beat* DPL LoRA. Spawning more architectural variants chasing \"beat RDE +0.497\" is off-framing and would compete for compute with the experiments that actually determine the paper's central claim. The rank-ablation pilot (r∈{8,16,32,64}) from the prior tick is the one architectural probe in flight — enough.\n\n**(2) Cluster spam**: 76 jobs (27 R, 49 PD) — **5× above the 15-job floor**. No new jobs needed for compute-saturation reasons. Filling cells is the only on-framing reason to spawn more, and 10 fill agents are already dispatched.\n\n**Fresh results harvested this tick**:\n- **UN FireProt curated** (5-se…",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
