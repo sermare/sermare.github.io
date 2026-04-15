@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T07:44:21Z",
+  "generated_at": "2026-04-15T08:14:35Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3024,
-    "assistant_turns": 4520,
+    "user_turns": 3036,
+    "assistant_turns": 4538,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T05:37:29.125Z"
+    "last_ts": "2026-04-15T08:14:14.334Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,34 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-15T08:14:14.260Z",
+      "text": "6 beating-model pilots dispatched in parallel. Each implements one top-untried idea, smoke-tests, then submits a single fold 0 seed 0 × 10 epochs pilot (~2-3h):\n\n| Pilot | Idea | Agent | Target ρ |\n|---|---|---|---|\n| **A1** | **AntiSymTwin** `g(c,a,b)−g(c,b,a)` | a33c2b03bf340eb48 | >0.40 |\n| **A2** | **InterfacePot** cross-chain pair term gated by soft contact | adadec6fd15f37ba4 | >0.41 |\n| **B2** | **ListMLE** listwise rank loss per complex | a73b3c04dfed0b789 | >0.40 |\n| **C2** | **Cycle-triple consistency** regularizer | a88b8354a61a59250 | >0.40 |\n| **D2** | **RRAT** Rosetta REF15 aux targets | aebeb3df17f4baede | >0.40 |\n| **F1** | **Layer-wise LR decay** + freeze lower ESM-2 layers | a8acc3bd78e68fca0 | >0.40 |\n\n**Cron state:**\n- `85e9d307` (7,37 * * * *) — every 30 min: beating-model review + cluster-spam check\n- `465ca2e6` (23 * * * *) — every hour: 10-agent spawn directive\n\nB…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T08:12:02.401Z",
+      "text": "Both crons set. Now spawning the first wave of 6 beating-model pilots — the top untried ideas from the 12 top picks.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T08:11:41.849Z",
+      "text": "Setting up both crons + spawning the first wave of beating-model pilots right now.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T08:11:20.544Z",
+      "text": "**Committing to Path B.** Setting up the 30-min / 1-hour cron reminders and spawning the first wave now.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-15T05:34:22.785Z",
       "text": "## What you missed (compact)\n\n### 7 pilots running — early reads\n\n| Pilot | ep | val ρ | vs baseline (~0.38) | Verdict |\n|---|---|---|---|---|\n| **tpcs struct fusion** (8-d AF2 features) | 14/15 | +0.39 | ~0 | **flat** |\n| **tpp pair term** g(bᵢ,bⱼ) | 5/10 | +0.36 | ~0 | flat-to-slightly-worse |\n| **tpcc cluster-cond** | 14/15 | +0.14 | **−0.24** | **broke catastrophically** |\n| **tpcd RDE distill** | 4/15 | +0.06 | **−0.32** | **broke catastrophically** (λ too high) |\n| **tpcb BoostΔPL on RDE residuals** | 1/10 | +0.09 (early) | — | starting; agent predicts +0.51 final |\n| **tpts Tsub→SKEMPI transfer** | Phase 1 | — | — | starting; agent predicts +0 to +0.015 |\n| **tpcct LoRA-internal CCT** | starting | — | — | agent predicts +0.01 to +0.02 |\n\n**4 of 7 pilots are flat or broken.** Best survivor (struct fusion) is essentially baseline.\n\n### Other state\n- **Bias head**: 13/15 cells, +0.01…",
@@ -367,38 +395,6 @@
       "text": "13th agent complete: **GAP 2 — cluster-conditioned context**. Smoke test validates: train loss drops, val RMSE drops under zero-init OOV embedding. **15 full-run jobs running (33383621–35)**.\n\nHonest prediction: **+0.02 to +0.04 (central estimate +0.03)** on the SKEMPI cluster-aware pool — ~¼ of the +0.12 gap to RDE-Network. The mechanism is training-time regularization (freeing `h` to fit within-cluster residual), not test-time cluster info (val rows always get OOV token by construction). Same limitation as the per-protein bias but operates at the cluster level. 2 more agents running.",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:43:54.015Z",
-      "text": "12th agent complete: **GAP 1 — Explicit pair term**. Smoke test passed (ρ=+0.314 on fold 0, 1 epoch). Head params 0.5M → 1.26M. **15 full-sweep jobs queued (33384671–33384685)**.\n\nHonest prediction: **+0.04 to +0.07 (max +0.09)** — closes 30-50% of the DPL→RDE gap but not all of it. k-distribution ceiling (~65-70% of SKEMPI is single mutations where pair term = 0). ESM context already captures local epistasis implicitly. Most of RDE's edge is explicit 3D geometry, not pair-interaction signal. Follow-up: pair-term gated by contact distances. 3 more agents running.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:36:05.619Z",
-      "text": "11th agent complete: **GAP 4 — ESM-2 3B backbone swap**. Smoke test stable, `hidden_size=2560` auto-detected, LoRA params 5.9M (5× bump), fits on A40. **15 Phase-2 jobs queued** (33383907–927) with dependency on Phase-1 pretrain (33383906) since 3B Phase-1 adapter dims differ from 650M.\n\nHonest prediction: **+0.015–0.035** on SKEMPI cluster-aware (below the +0.02–0.05 upper bound). Published ESM-2 scaling curves show diminishing returns past 650M on mutation-effect tasks. 3-seed reads in this range should NOT be treated as wins (min-5-seeds rule — signs have flipped before). 4 more agents running.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:32:24.784Z",
-      "text": "10th agent complete: **DPL+RDE ensemble on full cluster-aware SKEMPI** (n=5694):\n\n| Model | ρ |\n|---|---|\n| DPL alone | +0.386 |\n| RDE alone | +0.490 |\n| **Best blend (α=0.8 RDE)** | **+0.500** |\n\n**Δρ over RDE alone: +0.010 (95% CI [+0.005, +0.015], p<0.001)** — significant but tiny. DPL carries small orthogonal signal to RDE. 5 more agents running.\n\nThis is the first real \"our ensemble beats a structural baseline\" number on the full cluster-aware pool. Not as dramatic as the StaB-ddG ensemble on n=230 (+0.014), but it's on a much larger sample (5694 vs 230).",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:31:56.270Z",
-      "text": "Tick:\n- **21 jobs running!** (vs 1 before spawning the 15 agents) — massive parallelism\n- Notable: **pair term smoke test (GAP 1) is loading** — arch works, 1.26M head params vs 0.47M plain, at the \"unique (pdb, chain): 467\" init stage\n- **15 Tsuboyama ProtAttBA** running in parallel\n- **Bias head**: 9/15 cells\n- Multiple zero-shot + training jobs from the 15 agents all alive\n\nSleeping 30min.",
-      "tags": [
-        "note"
       ]
     }
   ]
