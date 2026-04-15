@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T15:46:28Z",
+  "generated_at": "2026-04-15T16:16:40Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3216,
-    "assistant_turns": 4795,
+    "user_turns": 3229,
+    "assistant_turns": 4817,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T15:46:19.417Z"
+    "last_ts": "2026-04-15T16:16:35.906Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,68 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-15T16:16:13.407Z",
+      "text": "**GLIBCXX issue** — stabddg_train.sbatch doesn't source env_setup.sh. Let me fix + resubmit.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:03:56.003Z",
+      "text": "**Queue is clean** — zero ESM-3 / ESM-2 3B / large-model jobs. 28 total jobs, all ESM-2 650M LoRA or smaller.\n\n**Going forward**: I will NOT:\n- Submit ESM-3 (1.4B)\n- Submit ESM-2 3B (already killed earlier per your directive)\n- Submit any model >650M parameters\n- Spawn agents that suggest large-model experiments\n\n**Sticking to**: ESM-2 650M LoRA (our workhorse), FoldX (physics, no training), existing cached features, RDE-Network (small EGNN), PPAC (tiny MLP), StaB-ddG retrain (structural but small).\n\nThe ESM-3 brainstorm from the earlier agent is filed under \"reject\". Won't be followed up.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T16:03:27.914Z",
+      "text": "Confirmed — **nothing large is running**. I never submitted ESM-3; the agent only did a feasibility check and reported it would need a separate GPU job. Let me verify the queue is clean of all large-model jobs.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T15:52:43.219Z",
+      "text": "**pyc verdict — partial fallback**:\n\n**✅ Works via runpy shim** (142 CLI flags available):\n- `--geom-aux` (confirmed reaches training, row coverage 6695/6798)\n- `--head-type antisym-twin`, `--pair-term`, `--mpnn-fusion`, `--struct-fusion`, `--phase1-data {tsuboyama,bindinggym}`, `--cct-loss`, `--triangle-loss`, `--listmle-loss`, `--antisym-aug`, `--swa-start-epoch`, `--huber-loss`, `--emb-diff`, `--layer-pool`, `--distill-rde`, `--boost-rde`\n\n**❌ Missing class bodies** (bytecode incomplete — crash at head construction):\n- `--iface-pair` → `NameError: InterfacePairHead`\n- `--interface-pot` → `NameError: InterfacePotHead`\n- `--tcdh` → `NameError: TCDHHead`\n\nThe pyc was compiled from an intermediate source that already had these as name references but no class bodies. **Those three Round-3 winners (iface_pair +0.400, interface +0.359) are unreachable without re-authoring the class bodies fr…",
+      "tags": [
+        "error",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T15:50:02.910Z",
+      "text": "**ESM-3 feasibility**: confirmed loadable in existing `ESMC2` env (esm 3.1.3, Py 3.10, `EvolutionaryScale/esm3-sm-open-v1` = 1.4B params, already HF-authed). Not blocked by API — blocked by needing a GPU sbatch submission + a new `zeroshot_esm3_skempi.py` script (different API than ESM-2). Agent recommends a follow-up 20-40 min A40 job using the `ESMC2` conda env.\n\nWorth it since ESM-3 is structure-aware even in pure-sequence mode — orthogonal to everything we have. Will queue on next cron cycle if API is stable.",
+      "tags": [
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T15:49:49.405Z",
+      "text": "**FireProt ProtBert filled**: |ρ|=+0.054 on homologue-free test (n=346) — essentially random, below ESM-2 (.220). ESM-IF (.314) and SaProt (.151) also backfilled in MASTER_TABLE.csv. Paper table row complete for FireProt zero-shots.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T15:47:02.804Z",
+      "text": "Sleeping 30 min. Next cron will fire on schedule. Key pilots to watch:\n- StaB prep 33417947 → 15 training jobs 33417948–62\n- Struct-fusion 15-cell sweep 33417964–78\n- Multi-teacher distill 33418001\n- FoldX distillation 33417945\n- Remaining 13 Tsub resubmits",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T15:46:45.404Z",
+      "text": "**Tsub full sweep (2/15 finished):**\n- **fold 0 seed 2**: +0.183 (vs baseline +0.256, **Δ = −0.073** ❌)\n- **fold 2 seed 0**: +0.415 (vs baseline +0.415? need to verify, maybe small positive Δ)\n\n**Confirms the harvest agent's fear: the fold 0 seed 0 +0.244 pilot lift appears to have been a noise artifact.** Tsub transfer is NOT reliably beating baseline. The paper should NOT rely on this pilot; fortunately the +0.572 FoldX meta-ensemble is the headline, not Tsub.\n\n**30-min actions**:\n- ✅ Spam check: 32 jobs (28 R + 3 PD)\n- ✅ Paper updated with +0.572 headline\n- ❌ No new kills needed — running pilots include Tsub resubmits (13), struct-fusion sweep (15), StaB retrain+prep, FoldX distill pilot, multi-teacher distill pilot\n- 🎯 **Next architectural lever**: none critical. StaB retrain is the biggest outstanding bet (adds a real structural teacher to the meta-ensemble).",
+      "tags": [
+        "note"
+      ]
+    },
+    {
       "ts": "2026-04-15T15:45:23.110Z",
       "text": "**Spam check: 32 jobs (28 R + 3 PD)** — healthy, well above 15. All Tsub resubmits + struct-fusion sweep + StaB prep+retrain + various pilots running.",
       "tags": [
@@ -323,68 +385,6 @@
       "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jWE82FxcjNhRUfyG1E\"} · check status.claude.com",
       "tags": [
         "error"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:42:51.874Z",
-      "text": "Addressing the user's message first.\n\n**Thanks — glad you like the scale-up + pilot results.** Quick status:\n\n**6 of 10 agents from this spawn are hitting Anthropic API 500 errors** (iface_pair scale-up, interface-pot scale-up, FoldX distill, multi-teacher distill, StaB 1491 distill, meta-ensemble 5-way). Not my fault — transient Anthropic backend issue. The other 4 agents (Tsub harvest, geomaux scale-up, paper update, triple combo, FoldX feature, BindingGym monitor) are still running.\n\n## Headline state (what's real and locked in)\n\n| Result | ρ | Notes |\n|---|---|---|\n| **4-way meta-ensemble (DPL+RDE+PPAC+FoldX)** | **+0.5718** | **The beating model.** GBR on z-scored features, n=5476, cluster-aware |\n| FoldX alone (physics) | +0.5576 | Pure force field, no training, 99.4% coverage |\n| StaB-ddG alone | +0.559 | Structural supervised (on their test) |\n| RDE-Network alone | +0.497 | Struc…",
-      "tags": [
-        "error",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:39:38.535Z",
-      "text": "**🎯 MASSIVE pilot results!** Top 4 on fold 0 seed 0 (vs baseline +0.096):\n\n| Pilot | ρ | Δ |\n|---|---|---|\n| **iface_pair** (contact-gated) | **+0.400** | **+0.304** 🔥 |\n| **geomaux** (struct aux targets) | **+0.365** | +0.270 |\n| **interface** (soft-gate pair term) | **+0.359** | +0.264 |\n| **tsub** (Phase 1 transfer) | +0.340 | +0.244 |\n\nFlat/failed: huber, ema, boost, cct, bighead, listmle, swa, contrast. Killing these, scaling the winners.",
-      "tags": [
-        "error",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:38:43.212Z",
-      "text": "**Disk fixed!** Project quota bumped to 5P / used 4.076P — ~1P headroom. Writes should work again.\n\n**Queue low**: 19 jobs (3 R + 15 PD), only 3 actually running. Need to fire more.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:38:22.829Z",
-      "text": "Good morning. Here's what happened overnight:\n\n## Big picture\n\n### 🏆 **We found a beating model**: FoldX 4-way meta-ensemble hits **ρ = +0.5718** on cluster-aware SKEMPI (pool n=5476). Beats RDE alone (+0.497), beats FoldX alone (+0.558), beats the 3-way stacked (+0.499) that was our ceiling yesterday. GBR importances: FoldX 37%, RDE 31%, PPAC 10%, DPL 8%, interactions 13%.\n\nThe paper story is now: **\"sequence (DPL) + structural learning (RDE/PPAC) + orthogonal physics (FoldX) > any single teacher.\"**\n\n### 💥 **Disaster: `train_twophase_lora.py` was destroyed multiple times**\n- Root cause: **`ucb` project group quota is over soft limit** (4.079P / 3.977P soft, grace=none). All writes to `/global/scratch` either fail with EDQUOT or silently truncate files to 0 bytes at the 65KB Lustre block boundary.\n- ~5 concurrent agents were editing the same file + the Lustre metadata pool was failing m…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T14:37:47.510Z",
-      "text": "Massive agent batch landed. Synthesizing:\n\n## Current state after this wave\n\n### ✅ **Recovery progress**: I just restored `train_twophase_lora.py` from the `~/.claude/file-history/...v5` backup (81 KB, **parses cleanly**). Pre-dates the latest ~5 agent additions (emb-diff, mpnn-fusion, layer-pool, bindinggym phase-1, pdb-stratified) but has Huber, EMA, SWA, tsub-phase-1, antisym-twin, pair-term, cluster-cond, struct-fusion, geom-aux, CCT, distill-rde, boost-rde. Good enough to run new jobs.\n\n### 🎯 **New results this batch**:\n\n| Experiment | Result | Verdict |\n|---|---|---|\n| **ESM-IF + DPL full 15-cell** | pooled ρ = **+0.300** | Orthogonal structural signal, new 5th meta-ensemble column |\n| k-NN retrieval baseline (k=5) | pooled ρ = +0.208 | Nice paper anchor: \"DPL LoRA nearly doubles retrieval\" |\n| StaB 1491 distill | **blocked at launch** | Lookup ready with sign flip `ρ=+0.533` |\n| M…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T10:05:48.535Z",
-      "text": "**v5 backup is VALID PYTHON** (81345 bytes, parses cleanly, from Apr 14 11:13 — pre-corruption). Attempting restore:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T10:05:21.994Z",
-      "text": "**🎯 Critical finding: There's a file-history backup at `/global/home/users/sergiomar10/.claude/file-history/...v5` (81345 bytes, Apr 14)!**\n\nLet me check it.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T10:04:56.110Z",
-      "text": "## 🚨 The file is now **0 bytes** (was 1297 last time I checked)\n\nThe Lustre issue is **still actively corrupting the file**. It keeps getting progressively destroyed — first truncated at 65536, now zero. No decompiler works for Python 3.9 MAP_ADD. The recovery agent saved symbol table + disasm as rebuild aids in `/global/home/users/sergiomar10/recovered/` (137 KB + 1 MB).\n\n**Game theory:** chasing recovery is a dead end.",
-      "tags": [
-        "note"
       ]
     }
   ]
