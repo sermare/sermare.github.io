@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T23:22:16Z",
+  "generated_at": "2026-04-15T23:52:29Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3728,
-    "assistant_turns": 5624,
+    "user_turns": 3751,
+    "assistant_turns": 5654,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T23:20:47.739Z"
+    "last_ts": "2026-04-15T23:41:48.658Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,110 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-15T23:40:23.417Z",
+      "text": "Section 6 hedge complete. 11 `% DRAFT` markers + 3 `\\textbf{TBD}` inline values + a section-level Draft-status block with the feasibility audit acknowledgment. PDF rebuilds clean at **16 pages** (Section 6 insertion from an earlier agent already added a page; page count is consistent). Two new cosmetic underfull hbox warnings in the draft block text — not errors.\n\nAll section 6 numbers are:\n- **DPL LoRA per-dataset headlines** (`.558/.384/.744`): correct, sourced from master table\n- **Sequence-only baselines** (`.281/.567/.676`): correct\n- **Zero-shot OOD cells**: all marked `\\textbf{TBD}` with `% DRAFT` comments\n- **Deployment feasibility warning** acknowledged in section-level block\n\nThe section is now reviewer-honest: every deployment claim is explicitly marked pending measured OOD numbers. When the headline-update poller + OOD poller land the real data in the next 2-4h, the `% DRAFT`…",
+      "tags": [
+        "error",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:39:07.604Z",
+      "text": "All 8 DPL LoRA training scripts now patched with `phase2_ckpt` save blocks. Any **future** run of these scripts produces bundled checkpoints ready for OOD inference — not just the SKEMPI path.\n\nCritical note: the **currently-running** fc_nilah jobs for these scripts (`dpl_s1131_fair`, `dpl_fireprot_curated_lora_a40`, `bglora5s`, `tsub_lora_smoke`) loaded their scripts into memory BEFORE the patch was applied, so they'll finish without saving ckpts. They'll still produce per-row val_preds (which is what MASTER_TABLE needs). Future resubmissions — if we ever need them — will save ckpts automatically.\n\n**Two flagged review points**:\n1. `train_deltapot_stability_lora.py` (FireProt HOF): no folds, evaluates on test split (not val). The saved ckpt's `val_rho`/`val_rmse` in meta actually reflect test-split metrics. OOD loaders relying on `val_*` semantics need to know this.\n2. `dpl_bindinggym_l…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:38:54.474Z",
+      "text": "Headline-update poller active (PID 2010253). Flags a critical caveat I need to track: **line 660 of main.tex** says `\"FoldX +0.558, RDE +0.497, ΔPL +0.377, PPAC +0.281\"` — those numbers are on the **n=5476 4-teacher intersection**, NOT the full n=7592 pool. The poller will substitute `+0.377` with the new full-pool value, but the intersection-restricted DPL number is technically a different quantity. If the rerun's pooled value materially differs, line 660 will need a separate intersection-restricted computation.\n\nSafety rails wired:\n- length-mismatch in any cell → exit without edits (save-fix broken)\n- `|new - 0.377| > 0.05` → exit without edits (too big a change, needs user review)\n- 12h timeout → exit without edits\n\nAutonomous pipeline is now **fully wired end-to-end**. When the 15 dplrr cells finish training:\n1. Aggregator computes pooled ρ\n2. Headline updater edits main.tex + MASTER…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:38:31.052Z",
+      "text": "Paper status snapshot landed at `paper/results/paper_status_snapshot.md` (~1,800 words). This is the single reference file to check before any major decision.\n\n**Key points it surfaces**:\n\n1. **P0 risk**: `+0.377` headline is unverifiable. Current dplrr rerun resolves it (~2-4h for first wave).\n2. **Both headline numbers are 3-seed** (SKEMPI +0.377 and Tsuboyama +0.744). Tsuboyama is covered by `tpts_*` already 5-seed, but SKEMPI is NOT queued for 5-seed upgrade.\n3. **Deployment Section 6 NOT supported** by existing numbers — 0 friendly benchmarks under pessimistic scenario.\n4. **13 stale prose numbers** fixable without compute.\n5. **Go/no-go table** covers 11 conditions keyed to in-flight results.\n6. Recommended next action: **read `logs/dplrr_f*s*_*.out` in 4-8h** — that single number unblocks downstream decisions.\n\nNote the minor path discrepancy: agent wrote to `paper/results/paper_s…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:38:18.796Z",
+      "text": "**No no no — training is NOT done. We're only at epoch 1 of 10.** Let me clear up the confusion:\n\n## What the verified ckpt actually is\n\nThe `phase2_ckpt_fold0_seed0.pt` file exists because **the save block fires at every best-val epoch**, and **epoch 1 IS the \"best\" seen so far** (because `best_val_rmse` starts at infinity). So the script saves:\n\n- Epoch 1: val_rho = **+0.0037** (essentially zero — model is barely trained) → saves ckpt\n- Epoch 2: will probably be better → **overwrites** the same file\n- Epoch 3: likely better → **overwrites** again\n- ...\n- Epoch N: final best checkpoint at the end of training\n\nSo when you look at the current file on disk, you're looking at the **worst** checkpoint (epoch 1 baseline). The file path is the SAME for every save — later saves replace earlier ones. **This is by design**: the Phase-2 save block uses `{_p2_path} = {cond}_fold{F}_seed{S}.pt`, no…",
+      "tags": [
+        "result"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:37:21.112Z",
+      "text": "Master table autosync live. Script `scripts/master_table_autosync.py` + 10-min loop PID 1992184. Writes shadow `results/MASTER_TABLE_LIVE.csv` (byte-identical to original now, will overlay as live harvester reports new values). Original untouched. Smoke-tested with synthetic bullets — correctly updates the `DPLLoRA` cells for SKEMPI and BindingGym when fake \"ρ=+0.381\" bullets are fed in. Stop with `kill 1992184`.",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:37:05.329Z",
+      "text": "**Save-fix verified: 9/9 structural checks PASS** ✅\n\n- 12.14 MB ckpt, loads in 0.25s\n- 132 LoRA keys + 8 head keys (464,897 params) + meta dict\n- `head_type == 'dpl'`, `lora_r == 16`\n- **Phase-2 IS updating the adapter** (Frobenius diff 0.20-0.33 across 8 sampled keys vs Phase-1 init — confirmed different weights)\n\n**Important caveat flagged by the agent**: the verified ckpt from `fold0_seed0` has `meta['val_rho'] = 0.0037` at `epoch=1`. That's the first-epoch checkpoint (ρ essentially zero). This is NORMAL and expected — the save-fix fires on **every** best-val epoch, so epoch 1 gets saved first because `best_val_rmse = inf` initially. As training progresses, later epochs with lower RMSE will overwrite the bundled ckpt at the same path. Looking at earlier log output for `dplrr_f1s0` (f1 cells typically train to ρ ~0.45+), the final saved ckpt should reach ~0.40-0.50 val ρ after 10 epoch…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:36:49.935Z",
+      "text": "ProtAttBA SKEMPI resubmission scheduler active (PID 1982709). It polls every 5 min for both `dplrr_*` and `unrr_*` to finish, then auto-fires 15 pattsk cells back to fc_nilah. The `unrr_ever_seen > 0` latch prevents premature triggering before the UN cells have been submitted by the UN auto-resubmit watchdog (dispatched earlier this tick). 12h timeout, cancel-detection exit, log at `results/pattsk_resubmit_log.txt`. Note: 15 cells not 14 — includes the `f4s2` cell that was still running on lowprio earlier; scheduler will submit the full 5×3 grid.\n\nPipeline is now fully autonomous:\n1. **dplrr** running (first ckpts already landing) → produces +0.377 replacement + deployment ckpts\n2. **OOD poller** PID 1262649 → auto-fires inference on first ckpt\n3. **UN auto-resubmit watchdog** PID 1945537 → fires UN when dplrr slots free\n4. **pattsk scheduler** PID 1982709 → fires ProtAttBA SKEMPI when b…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:36:33.856Z",
+      "text": "Sleeping 25 min. Save-fix verified working — major unlock. Deployment story should land real numbers in the next 30-60 min.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:36:27.750Z",
+      "text": "## 🎉 THE SAVE-FIX WORKS — 10 PHASE-2 CHECKPOINTS ALREADY LANDED\n\nCritical milestone reached. At ~22 min into training (just after first best-val epoch):\n\n- **10 `phase2_ckpt_twophase_fold*_seed*.pt` files exist on disk**\n- `dplrr_f0s0` log shows: `[P2/twophase] saved Phase 2 ckpt -> results/dpl_skempi_rerun_pilot/fold0_seed0/phase2_ckpt_twophase_fold0_seed0.pt (ep 1, rho=+0.0037)` — **the save message IS firing**\n- f2/f3 cells started at 18:48 and 10:41 (drained from PD after some cells exited some state) — all 15 cells are now training\n- `dpl_s1131_fair`, `tsub_lora_smoke`, `dpl_multitask_pilot` also running\n\n## Status\n\n- **Fresh Python processes loaded the patched script**: confirmed\n- **Save block fires at best val epochs**: confirmed (10 files in ~22 min)\n- **The OOD poller (PID 1262649) should detect these files on its next 10-min tick** and auto-trigger inference on 8 benchmarks\n-…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:35:51.462Z",
+      "text": "Good news first: the UN watchdog agent reports **11 dplrr cells RUNNING, 4 PENDING** on fc_nilah (up from 9 R earlier). First wave drained a bit.\n\nNow your question — **yes, there are more options I haven't tried for this specific experiment**:\n\n## Option A — Submit dplrr duplicates to lowprio savio3_gpu A40 (recommended)\n\n- A different pool of A40 nodes, different QoS\n- **Not competing** with our fc_nilah jobs — completely separate resource\n- Preemptable, but each cell is ~2h20m and watchdog auto-resubmits preempted ones\n- If I fire 15 more cells with distinct output dirs (e.g., `dpl_skempi_rerun_pilot_lowprio/`), they run in parallel with fc_nilah. **First finish wins**, either pool gives us a clean result\n- Pros: doubles chance of getting a clean result quickly, no cancellation needed\n- Cons: doubles compute usage; if fc_nilah finishes first, the lowprio ones become redundant\n\n## Opti…",
+      "tags": [
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:32:10.160Z",
+      "text": "10 agents incoming — focused on **automation (so work moves forward unattended), paper polish, and filling the ThermoMPNN structural gap**. No new architectural pilots — the cron text is stale relative to the deployment pivot.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T23:26:08.620Z",
+      "text": "**Yes — roughly half the wall time**, but with a real variance tradeoff. Let me break it down:\n\n## 15 cells vs 5 cells — wall time math\n\n### Current protocol (3 seeds × 5 folds = 15 cells)\n- **fc_nilah CPU cap** forces 2 waves (9 cells in wave 1 + 6 cells in wave 2, since other DPL variants are also sharing the cap)\n- Wall time: **~4h40m** (2h20m per wave)\n- Variance: can report `ρ = X ± Y across 3 seeds` — small but nonzero error bar\n\n### 1 seed × 5 folds = 5 cells\n- **All 5 cells fit in one wave** (5 × 8 = 40 CPUs, well under the cap)\n- Wall time: **~2h20m** (one wave)\n- Variance: **zero — single point estimate, no error bar**\n\n### Or: 2 seeds × 5 folds = 10 cells\n- Fits in one wave (10 × 8 = 80 CPUs, plus other DPL variants → over cap by ~24 CPUs → probably fits but tight)\n- Wall time: **~2h20m-2h40m** (one wave, possibly tail cells queued briefly)\n- Variance: tiny 2-seed spread, bett…",
+      "tags": [
+        "error",
+        "model"
+      ]
+    },
+    {
       "ts": "2026-04-15T23:17:29.007Z",
       "text": "**Not exactly \"quickly\" — closer to 2-5 hours total**. Here's the breakdown:\n\n## Timing per dplrr cell\n\nEach cell fine-tunes ESM-2 + LoRA + DPL head on ~6200 SKEMPI training rows for 10 epochs. From the earlier log I read, **each epoch takes ~14 minutes** (around 850 seconds). So:\n- **Per cell**: 10 epochs × ~14 min = **~2h20m**\n- **First best-val save (first phase2_ckpt)**: typically epoch 2-3 = ~30-45 min from now\n\n## Parallelism\n\nfc_nilah QoS has a 128-CPU cap, each dplrr cell uses 8 CPUs → **max 16 concurrent cells**. But we also have `dpl_s1131_fair`, `tsub_lora_smoke`, `dpl_multitask_pilot` sharing the cap (3 cells × 8 = 24 CPUs) plus the 9 dplrr cells already running (72 CPUs) → 96 CPUs used → only 4 more slots free.\n\nSo:\n- **Currently running**: 9 dplrr cells + 3 other DPL variants (12 jobs, 96 CPUs)\n- **PD waiting**: 6 more dplrr cells (`f3s0`-`f4s2`)\n- **First wave (9 cells)**:…",
       "tags": [
@@ -289,101 +393,6 @@
       "ts": "2026-04-15T22:59:39.377Z",
       "text": "**Confirmed: the running jobs will NOT produce phase2 checkpoints.** Here's what happened:\n\n- The patched script imports fine NOW in a fresh Python interpreter (I just tested)\n- But job `33420994` (f1s0) started at ~14:29 — importing the script THEN\n- The patch to add `phase2_ckpt` save was applied at 15:36, ~1 hour AFTER the job started\n- Python loaded the pre-patch version into memory at 14:29, and that version stays frozen for the life of the process\n- **In-memory = unpatched. On disk = patched. The running jobs use the in-memory version.**\n\nSame story for all 30 currently-running jobs (DPL 33420991-33421005 + UN 33421006-33421020). They'll produce clean `val_preds` npz files (via a different save block that WAS in the script before my patch), so the +0.377 headline rerun story is fine. But **zero phase2 checkpoints will be written**.\n\n## Three options for your deployment plan\n\n**Opti…",
       "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:58:18.950Z",
-      "text": "Script has the save code at lines 1753/1780 but nothing's firing. The job started writing at 15:54 (18 min after patch mtime 15:36) — should have loaded patched version. Let me check for pycache:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:57:46.611Z",
-      "text": "Script was patched at **15:36**, job started writing at **15:54** — patched script IS running. So the save block exists in the file but isn't firing. Let me verify the save block is actually reachable — maybe my earlier patch broke indentation or the path isn't being hit:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:57:35.602Z",
-      "text": "**BUG CONFIRMED**: No save message in any log, no `phase2_ckpt_*.pt` files on disk. The save block isn't firing. Let me find out why — probably a Python import cache or the jobs started BEFORE the patch was applied.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:57:21.572Z",
-      "text": "Jobs are running and producing per-epoch output — **but no \"saved Phase 2 ckpt\" message appears in any log**. This means either (a) the save block isn't being reached, or (b) it's silently erroring via the try/except. Checking both possibilities:",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:56:59.544Z",
-      "text": "Verifying by checking if any currently-running fc_nilah job has actually triggered the save message:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:56:46.216Z",
-      "text": "Good — let me verify this definitively before you commit. Checking three things: (1) is the save block actually reachable for `--only-twophase` jobs, (2) are the fc_nilah jobs actually using this patched script, (3) does any already-running fc_nilah job show the save message in its log yet?",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:55:06.317Z",
-      "text": "## Audit is definitive and it's bad news\n\nThe audit agent confirms what I suspected after the file inspection: **we cannot run meaningful inference on the existing 15 `twophase_oof_cluster_tsub_full` adapters because they lack DPL head weights**.\n\n## Honest state of \"saved weights\"\n\n| category | saved? | usable for inference? |\n|---|---|---|\n| **23 LoRA adapter `.pt` files** (all formats) | ✅ loadable via peft | ❌ **NO DPL head anywhere** |\n| **1 DPL head only** (`bg_lora/phase1_head.pt`, 464k params, DPL 4-layer MLP) | ✅ | ⚠️ only pairs with unknown LoRA; not cluster-aware trained |\n| **1 bundled LoRA+head+meta** (`phase2_ckpt_smoke.pt`) | ✅ | ⚠️ smoke test, `val_rho=0.0`, useless for real inference |\n| **0 UN head weights anywhere** | ❌ | ❌ UN ablation OOD is impossible without retraining |\n| **dpl_lora_multitask_pilot** | ❌ | never actually started, dir is empty |\n| **S1131/Tsuboyama/…",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:54:13.835Z",
-      "text": "**Only ONE phase2 checkpoint exists** — and it's a smoke-test artifact. The 15 Tsub→SKEMPI adapters in `twophase_oof_cluster_tsub_full/` were saved BEFORE my save-fix patch added the `phase2_ckpt` save block. **They contain LoRA weights but NO DPL head**.\n\n## The actual state of Tier 1\n\n| adapter set | has LoRA? | has head? | usable for inference? |\n|---|---|---|---|\n| `twophase_oof_cluster_tsub_full/*` (15 cells) — original Tsub→SKEMPI sweep | ✅ | ❌ | **No** — head missing |\n| `dpl_skempi_rerun_pilot/*` (15 cells, fc_nilah, running now) | pending | pending | **Yes once complete** — will save phase2_ckpt |\n| `un_skempi_rerun/*` (15 cells, fc_nilah, running now) | pending | pending | **Yes once complete** — UN head variant |\n\nLet me also check if the head is saved anywhere else (e.g., via a different save path):",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:53:23.686Z",
-      "text": "**Good news — the script DOES save Phase-2 checkpoints with BOTH `lora` + `head` + `meta` as `phase2_ckpt_*.pt`** (lines 1741-1785). The save block is in the `best val epoch` hook inside Phase-2 training. Let me find where those files actually exist:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:52:58.475Z",
-      "text": "**Critical problem found.** The `.pt` file contains **only the LoRA adapter weights** (132 keys, all `lora_A`/`lora_B` matrices) — **no DPL head, no other model state**. The directory contains ONLY this one file. \n\nWithout the DPL head weights, we can't run full inference. Let me check the training script to see if the head is saved somewhere else:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:52:20.809Z",
-      "text": "Before firing the sweep, I need to understand what's actually in each fold dir — the name `phase1_lora_adapter.pt` suggests it might be the Phase-1 init, not the Phase-2 fine-tuned output. If we're going to score these, they need to contain the Phase-2-updated weights AND the DPL head. Fast check:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:50:09.541Z",
-      "text": "Good question — running all 534 is definitely overkill. Let me give you the breakdown of what's worth including:\n\n## Tiering the 534 files\n\n**Tier 1 — Definitely include (flagship family, ~15 adapters):**\n- `twophase_oof_cluster_tsub_full/fold{0..4}_seed{0..2}/phase1_lora_adapter.pt` — **these 15 ARE the 5-fold × 3-seed run of the paper's headline model**. They're the consistency story you want.\n\n**Tier 2 — Also include (~5-7 variants):**\n- `twophase_lora/phase1_lora_adapter.pt` — pure Tsuboyama Phase-1 (no SKEMPI fine-tune)\n- `twophase_oof_cluster_lora32_pilot/fold0_seed0/phase1_lora_adapter.pt` — rank=32 ablation\n- `twophase_oof_cluster_lora64_pilot/fold0_seed0/phase1_lora_adapter.pt` — rank=64 ablation\n- `twophase_lora_tsub_smoke/phase1_lora_adapter.pt` — smoke test reference\n- `bg_lora/phase1_head.pt` — BindingGym-trained head (architectural variant)\n- `zeroshot_dpl_proteingym/dpl_sk…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T22:47:56.417Z",
-      "text": "**I was wrong.** Apologies for the panic. **534 `.pt` files exist in our DPL/twophase/deltapot/predictor dirs.** Key findings in just this first sample:\n\n## Actual DPL LoRA adapters on disk (confirmed):\n\n- `results/twophase_lora/phase1_lora_adapter.pt` — main Phase-1 Tsuboyama adapter\n- **`results/twophase_oof_cluster_tsub_full/fold{0..4}_seed{0..2}/phase1_lora_adapter.pt`** — **15 adapters, one per fold×seed from the Tsub→SKEMPI transfer sweep**\n- `results/twophase_oof_cluster_lora64_pilot/fold0_seed0/phase1_lora_adapter.pt`\n- `results/twophase_oof_cluster_lora32_pilot/fold0_seed0/phase1_lora_adapter.pt`\n- `results/twophase_lora_tsub_smoke/phase1_lora_adapter.pt`\n- `results/bg_lora/phase1_head.pt` — BindingGym head\n- `results/zeroshot_dpl_proteingym/dpl_skempi_all.pt` — ProteinGym zero-shot eval\n- `results/predictor_*/best.pt` — there are DOZENS of `predictor_*` checkpoints (probably ol…",
-      "tags": [
-        "dataset",
         "model"
       ]
     }
