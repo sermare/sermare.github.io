@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T05:13:21Z",
+  "generated_at": "2026-04-15T06:13:32Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3023,
-    "assistant_turns": 4518,
+    "user_turns": 3024,
+    "assistant_turns": 4520,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-14T19:00:55.139Z"
+    "last_ts": "2026-04-15T05:37:29.125Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,14 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-15T05:34:22.785Z",
+      "text": "## What you missed (compact)\n\n### 7 pilots running — early reads\n\n| Pilot | ep | val ρ | vs baseline (~0.38) | Verdict |\n|---|---|---|---|---|\n| **tpcs struct fusion** (8-d AF2 features) | 14/15 | +0.39 | ~0 | **flat** |\n| **tpp pair term** g(bᵢ,bⱼ) | 5/10 | +0.36 | ~0 | flat-to-slightly-worse |\n| **tpcc cluster-cond** | 14/15 | +0.14 | **−0.24** | **broke catastrophically** |\n| **tpcd RDE distill** | 4/15 | +0.06 | **−0.32** | **broke catastrophically** (λ too high) |\n| **tpcb BoostΔPL on RDE residuals** | 1/10 | +0.09 (early) | — | starting; agent predicts +0.51 final |\n| **tpts Tsub→SKEMPI transfer** | Phase 1 | — | — | starting; agent predicts +0 to +0.015 |\n| **tpcct LoRA-internal CCT** | starting | — | — | agent predicts +0.01 to +0.02 |\n\n**4 of 7 pilots are flat or broken.** Best survivor (struct fusion) is essentially baseline.\n\n### Other state\n- **Bias head**: 13/15 cells, +0.01…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-14T18:26:13.842Z",
       "text": "PILOT B1 dispatched:\n- **Job 33396614** running on n0215. SKEMPI fold 0 seed 0, 10 epochs, ~2.5h.\n- Smoke test passed: CCT loss went 2.77 → 0.43 (6.5× drop) ep1→ep2, no NaN.\n- Interesting finding: **CCT is non-zero on pure DPL** because head dropout breaks strict cycle-closure per step. So CCT doubles as a **dropout-consistency regularizer** beyond just the pair-term/struct-fusion/cluster-cond non-linearities.\n\n**Honest prediction: Δρ ≈ +0.01 to +0.02**, likely within noise. CCT on pure DPL is structurally close to a no-op because DPL's form is already reflexive by construction. The +0.12 gap to RDE comes from structural information, not from the loss function. **But this pilot fixes the paper's internal inconsistency** — every \"ΔPL LoRA\" headline number was plain MSE, the CCT claim was propped up by the v2 frozen-feature pipeline. Now CCT actually exists in the LoRA workhorse.\n\nAll 3 ro…",
@@ -391,13 +399,6 @@
       "text": "Tick:\n- **21 jobs running!** (vs 1 before spawning the 15 agents) — massive parallelism\n- Notable: **pair term smoke test (GAP 1) is loading** — arch works, 1.26M head params vs 0.47M plain, at the \"unique (pdb, chain): 467\" init stage\n- **15 Tsuboyama ProtAttBA** running in parallel\n- **Bias head**: 9/15 cells\n- Multiple zero-shot + training jobs from the 15 agents all alive\n\nSleeping 30min.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T14:31:04.712Z",
-      "text": "9th agent complete: **ProtT5 zero-shot** — jobs 33383615 (SKEMPI) + 33383616 (S1131). Uses span-reconstruction scoring with `<extra_id_0>` masking, slow T5Tokenizer (sentencepiece), space-prefixed AA token lookup, fp16 on A40. 6 more agents running.",
-      "tags": [
-        "dataset"
       ]
     }
   ]
