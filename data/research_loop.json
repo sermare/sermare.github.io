@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T20:20:40Z",
+  "generated_at": "2026-04-15T20:51:04Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3541,
-    "assistant_turns": 5317,
+    "user_turns": 3580,
+    "assistant_turns": 5377,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T20:18:30.523Z"
+    "last_ts": "2026-04-15T20:50:15.742Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,170 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-15T20:47:10.006Z",
+      "text": "DPL LoRA × frozen ensemble probe **blocked**: DPL frozen per-row preds on SKEMPI cluster-aware don't exist anywhere. Candidates checked:\n\n- `combined_dpl/results.json` — frozen but aggregate metrics only, no npz saves\n- `dpl_foldx_feat_skempi/` — frozen features but with FoldX channel, not pure\n- `ft_frozen/fold0_seed0.npz` — loose GKF single-cell only, not cluster-aware\n- `harvest_master_table.py::DELTAPOT_BENCH_MAP` has NO SKEMPI entry at all\n\n**DPL LoRA reference computed**: pooled ρ = **+0.3521**, n=7677, CI [+0.333, +0.372] — matches the canonical helper number from the reconciliation doc exactly.\n\n**Confirms paper headline should be +0.352, not +0.377** (within the canonical helper's scope), which is consistent with everything we've computed this session.\n\nTo answer the reviewer-bait question (LoRA + frozen ensemble), we'd need 15 more cells of frozen DPL on SKEMPI cluster-aware —…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:45:17.285Z",
+      "text": "**Cron check — quiet, holding.**\n\n- **(1) Beating-model**: 0 new results in 35 min. Queue 143 saturated. Pilot `33419905` AND the full 14-cell rerun `33420168-82` still PD on priority — the headline-blocking rerun hasn't started yet despite being queued ~40 min. No new pilot to spawn, no flats to kill.\n- **(2) Spam**: 143 >> 15.\n\n**The real issue**: the DPL LoRA headline rerun and UN rerun (30 jobs total) are all buried behind the ~90 pending lowprio jobs that were queued earlier. They won't start for another hour+ at current rate. **Unless we migrate them to `fc_nilah + a40_gpu3_normal`** (confirmed working last tick as `33420369`), which would let them start immediately on normal priority.\n\nI'm not migrating without explicit approval since it changes queue behavior. Pinged you earlier about this — waiting on your call. Meanwhile just holding.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:44:41.512Z",
+      "text": "Wakeup set for 14:10. Nothing actionable this tick.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:44:35.608Z",
+      "text": "Queue 143 (38 R, 105 PD). fc_nilah test job `33420369` finished (gone from squeue) — confirms normal priority is usable. 0 new result files in 25 min.\n\nSleeping 25 min. Still waiting on pilot `33419905` to start and verify the save-fix, headline rerun `33420168-82` + UN rerun `33420346-60` queued behind it, 5 hourly-spawn-#9 agents still in flight (UN rerun already reported, paper polish reported, zero-shot harvester reported, n=230 significance reported, paired bootstrap reported, Tsuboyama bootstrap reported; still pending: LoRA knob harvester, MASTER_TABLE verifier reported, 5-seed audit reported, DPL×frozen ensemble).",
+      "tags": [
+        "result",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:43:39.963Z",
+      "text": "**All-benchmarks paired bootstrap landed** — comprehensive statistical table for the paper. 21 tests, output at `results/all_benchmarks_paired_bootstrap.json` + `paper/appendix_all_paired_bootstrap.md`.\n\n### 🎯 DPL wins (significant)\n\n| benchmark | comparison | Δρ | p |\n|---|---|---|---|\n| SKEMPI cluster-aware | DPL LoRA vs PPAC (row-level, n=6528) | **+0.125** [+0.097, +0.152] | <10⁻³ |\n| SKEMPI cluster-aware | DPL LoRA vs UN (cell) | **+0.097** [+0.057, +0.140] | <10⁻³ |\n| Tsuboyama K50 | DPL LoRA vs PPAC (cell, 15) | **+0.066** [+0.061, +0.072] | <10⁻³ |\n| Tsuboyama K50 | DPL LoRA vs UN LoRA (cell, 10) | +0.025 [+0.021, +0.030] | <10⁻³ |\n| Tsuboyama K50 | DPL frozen vs UN frozen (cell, 15) | +0.009 [+0.005, +0.012] | <10⁻³ |\n\n### 🚨 DPL losses (significant, in PPAC/UN favor)\n\n| benchmark | comparison | Δρ | p |\n|---|---|---|---|\n| **SAbDab v2** | DPL LoRA vs UN (cell) | **−0.273** [−0.3…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:43:21.265Z",
+      "text": "**Tsuboyama matched-backbone bootstrap — good news for the paper story**:\n\n| comparison | Δρ | 95% CI | p | cells |\n|---|---|---|---|---|\n| **C1 — DPL LoRA vs UN LoRA** (current headline, underpowered 10/15) | +0.025 | [+0.021, +0.030] | <10⁻³ | 10 paired |\n| **C2 — DPL LoRA vs UN frozen** (cross-backbone, confounded) | +0.063 | [+0.059, +0.067] | <10⁻³ | 15 |\n| **C3 — DPL frozen vs UN frozen** (matched-backbone, pure constraint) | **+0.009** | [+0.005, +0.012] | **<10⁻³** | **15** |\n\n**All three significant, including the matched-frozen comparison.** C3 is small (+0.009) but the CI excludes zero — **the ΔPL constraint does give a real improvement at the frozen tier independent of LoRA capacity**, so the constraint story survives the fair methodology check.\n\n**Agent's recommendation**: cite C1 (+0.025) as primary (paper's LoRA-matched headline) + footnote C3 (+0.009) as a matched-backbon…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:43:07.579Z",
+      "text": "**`fc_nilah + a40_gpu3_normal` works!** Job `33420369` is PD with reason `(Resources)` — that's normal priority waiting for hardware, NOT `(Priority)` which means lowprio backlog. **Normal-priority A40 jobs via fc_nilah will start as soon as a slot frees, ahead of all our lowprio queue.**\n\nSo the answer to your question: **yes we're maxed on lowprio (144 jobs), and there's an unused fc_nilah normal-priority pool we can spam too**. Requirements:\n- `--account=fc_nilah --qos=a40_gpu3_normal --partition=savio3_gpu`\n- `--cpus-per-task=8` (QoS minimum)\n- `--gres=gpu:A40:1`\n- **Non-preemptable**\n\nWant me to migrate the critical paper-headline-blocking jobs (the 15-cell DPL LoRA SKEMPI rerun, 15-cell UN SKEMPI rerun, 15 ProtAttBA SKEMPI, the S1131 fair jobs) onto `fc_nilah` normal priority? They'd start immediately instead of waiting behind the 113 lowprio pending.\n\n---\n\n**Three more agents comp…",
+      "tags": [
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:42:22.149Z",
+      "text": "`nilah_gpu3_normal` rejects single-GPU jobs (QOSMinGRES). Trying `fc_nilah + a40_gpu3_normal` which memory confirmed works:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:42:05.524Z",
+      "text": "Normal QoS requires more CPUs — memory said `fc_nilah` needs `--cpus-per-task=8`. Retesting with 8:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:41:54.371Z",
+      "text": "Normal QoS test job `33420366` submitted — checking if it's running:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:41:32.432Z",
+      "text": "Interesting — we're **already maxed on lowprio** (144 jobs: 113 savio3_gpu + 31 1080Ti, all `co_nilah + savio_lowprio`). But there are **TWO unused normal-priority QoSes** on A40:\n\n1. **`co_nilah + nilah_gpu3_normal + savio3_gpu`** — same account, **normal priority** (non-preemptable!)\n2. **`fc_nilah + a40_gpu3_normal + savio3_gpu`** — different account, normal priority (memory confirms it works)\n\nLet me test submission on the co_nilah normal QoS to confirm it's alive:",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:40:37.382Z",
+      "text": "Row 4 now has all 6 zero-shot cells filled. Annotations:\n- **ESM2, ESM1v, ProtBert, Trancept**: full coverage (7591/7592) — clean |ρ| values from sign-flipped LLR scores\n- **ESM-IF, SaProt** (asterisk): single-point SKEMPI only (4748-4760 rows, no AB-Bind, no multi-mutants). Marked with `*` for the footnote.\n- **DPL LoRA**: now annotated `+0.377(TBD rerun)` pending the 15-cell rerun aggregator\n\nAll zero-shot values are close to the loose-OOF row (Δ < 0.01) as expected — cluster filtering shifts ρ marginally. Artifact at `results/skempi_cluster_aware_zeroshot_fills.json`.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:40:23.816Z",
+      "text": "Six zero-shot cells harvested for SKEMPI cluster-aware full pool (n=7592). Pasting into MASTER_TABLE row 4:",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:38:51.210Z",
+      "text": "Paper polish agent landed all 6 items:\n\n- **UN SKEMPI +0.269**: TODO markers added at both prose occurrences (lines 763, 812)\n- **FoldX/RDE/kNN**: inline provenance block added to the `^{\\ast\\ast}` table footnote\n- **Tsuboyama tiers**: two-tier reconciliation added — UN frozen `+0.682` (15/15) and UN LoRA `+0.719` (10/15 preliminary), with matched-backbone gap note\n- **StaB-ddG ablation +0.531**: investigated and RESOLVED — it's a legitimately different split (1491-row matched-protocol StaB-ddG intersection, provenance in `results/deltapot_stab/findings.md`), distinct from master's +0.525 (loose) and +0.559 (HEADLINE). Footnote explains why the three coexist. 3-seed → 5-seed TODO added.\n- **LoRA appendix** non-cluster-aware split now annotated in caption\n- **PDF rebuilt**: 14 pages, 1 pre-existing overfull, 1 new underfull (badness 1231, not an error)\n\nTwo pre-existing issues flagged for…",
+      "tags": [
+        "error",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:36:19.588Z",
+      "text": "Knob pilot harvester reports **0/13 pilots landed** — all still running or priority-queued. Only r=32 and r=64 rank-sweep cells are currently R (1h+ into Phase-1 complete, Phase-2 in progress). r=8/r=16 were preempted and resubmitted. Everything else (epoch, d_hidden, cosine, label noise) is PD on priority. Summary stub at `results/lora_knob_pilot_summary.md`. Next poll in ~45 min should start catching r=32/r=64 first. No actionable info yet.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:36:10.406Z",
+      "text": "DPL LoRA SKEMPI rerun submitted: **14 new jobs `33420168-33420182`** + existing pilot `33419905` = 15 cells queued on `savio3_gpu/A40`. All PD on priority. Aggregator script ready at `scripts/aggregate_dpl_skempi_rerun.py` — will compute per-seed pooled, seed-mean, super-pool with bootstrap 95% CI, and print delta vs the paper's `+0.377` claim when all 15 npz files land.\n\nExpected wall: pilot lands first (~2-3h after it starts running), then aggregator verifies the save-fix worked; if it did, the other 14 cells continue and the full aggregate lands shortly after the slowest cell finishes. If the pilot's length-assertion fires, we know the fix didn't work and can debug before burning 14×3h of compute.\n\n9 more agents still in flight (UN rerun, paper polish, zero-shot harvester, ensemble probe, knob harvester, paired bootstrap, MASTER_TABLE verifier, 5-seed audit, n=230 significance, Tsuboy…",
+      "tags": [
+        "result",
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:32:18.655Z",
+      "text": "10 agents incoming. #1 is the **critical headline rerun** (14 DPL LoRA SKEMPI cells to regenerate `+0.377` cleanly via the save-fix) — this is the single blocker for the paper's central claim. The rest are reviewer-critical polish + missing provenance fills.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:31:31.428Z",
+      "text": "**Three-way ProtAttBA S1131 reconciliation**:\n\n| source | pooled ρ | row set | seeds |\n|---|---|---|---|\n| Paper draft (pre-audit) | `+0.478` | unknown | unknown (ghost) |\n| `protattba_cluster/` (earlier retrain, non-row-identical) | `+0.486` | cluster-filtered, ≠ manifest | 3 |\n| **FAIR row-identical (manifest-driven)** | **`+0.464`** (2/5 seeds prelim) | = DPL LoRA manifest | 5 (19/25 done) |\n\nWhen the last 6 cells land and the aggregator runs, we'll have a clean row-identical ProtAttBA-on-S1131 number plus a paired bootstrap DPL-vs-ProtAttBA comparison. The poller is handling it autonomously.",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:31:20.369Z",
+      "text": "ProtAttBA S1131 fair retrain is 19/25 done — **preliminary (2 complete seeds) pooled ρ = +0.464** [95% CI +0.417, +0.510]. Row-identical to DPL via shared manifest. This is a third number lower than both the paper-cited `+0.478` (ghost) and the audit-recomputed `+0.486` (non-row-identical), but still higher than the `+0.454` fold-mean currently in the table.\n\nKey infrastructure the agent built (all automated, no action needed from me):\n- Patched `baselines/protattba/benchmark_groupkfold.py` to accept `--manifest` (consumes shared S1131 fair manifest instead of running its own GroupKFold)\n- `scripts/aggregate_protattba_s1131_fair.py` (computes pooled ρ + 1000-iter bootstrap CI + row-identity check vs DPL LoRA sister dir)\n- Background poller `poll_protattba_s1131_fair.sh` (PID 2662772) — auto-resubmits preempted jobs every 5 min and triggers the aggregator when all 25 preds land\n- 6 of the…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:31:01.974Z",
+      "text": "PDF rebuilt. S1131 table row now shows:\n- **PPAC `.567`** (bold = best sequence-only, replaces old `.610`)\n- **ProtAttBA `.454`** (replaces off-provenance `.478`)\n- **Trancept `.034`** (|ρ|, new from today's Tranception job)\n- **ESM1v `.230`**, **SaProt `.204`** (now properly filled with absolute values)\n- DPL LoRA `.384` (fold-mean, unchanged)\n\n**So to directly answer your question**: yes, both numbers shifted when retrained properly.\n- **PPAC `+0.610` → `+0.567`** is explained by the 2-row asymmetry + 3-seed→5-seed bump. \n- **ProtAttBA `+0.478`** was never a defensible number — the clean retrain gives `+0.486` pooled or `+0.454` fold-mean. I've been using `+0.454` fold-mean in the text since it's the row-matched metric, but the 3-seed caveat still applies (below your 5-seed rule).\n\nBoth are still **worse than the structural/full-subset PPAC in the old draft**, but the story is consiste…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T20:30:18.338Z",
+      "text": "Correct — both numbers shifted when we retrained properly. Precise summary:\n\n## PPAC on S1131 cluster-aware\n\n| run | n_rows | seeds × folds | pooled ρ | fold-mean ρ | notes |\n|---|---|---|---|---|---|\n| **OLD** `results/ppac_cluster_s1131/` | 1129 | 3 × 5 | **+0.610** | +0.545 | row-asymmetric — includes 2 rows DPL rejects (`2AJF:E:T159S`, `1JTG:A:V190A`), drops 2I9B (2 rows) which DPL keeps. 1127/1129 overlap with DPL. Below 5-seed rule. |\n| **FAIR** `results/ppac_s1131_fair_1129_5seed/` (job 33418780, landed today) | 1129 | 5 × 5 | **+0.567 ± 0.025** | ~+0.471 | row-identical to DPL via shared `build_rows` loader. Grand pooled = +0.564. Satisfies 5-seed rule. |\n\nSo `+0.610` → `+0.567` when you (a) fix the 2-row asymmetry, (b) bump seeds from 3 → 5. **Net delta: −0.043.**\n\n## ProtAttBA on S1131 cluster-aware\n\n| run | n_rows | seeds × folds | pooled ρ | fold-mean ρ | notes |\n|---|---|---…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
       "ts": "2026-04-15T20:15:26.328Z",
       "text": "Watchdog log last modified 3.5 min ago — polling fine. Pilot `33419905` still PD. Queue 123.\n\n**Cron verdict — holding, nothing to do.**\n- **(1)** No new pilot results to kill (0 new actionable in 35 min). Queue is saturated, can't fire more. All paper-critical experiments still running.\n- **(2)** 123 >> 15. Not firing.\n\nWaiting on pilot to start (verifies the fold 3 save-fix), then will submit the 14-cell rerun to regenerate the headline SKEMPI cluster-aware numbers cleanly.",
       "tags": [
@@ -227,164 +391,6 @@
     {
       "ts": "2026-04-15T20:10:44.485Z",
       "text": "Now I need to initialize `best_kept_idx` and `best_val_labels` to None before the epoch loop:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:09:49.984Z",
-      "text": "Doing the patch quickly, then answering the PPAC question.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:09:41.071Z",
-      "text": "**Bug located.** `forward_batch` silently drops rows at:\n- Line 1265: `if li >= emb.shape[0]: continue` — out-of-range residue index\n- Line 1293: `if not per_site: continue` — no valid sites → row dropped\n\n`preds` returned by forward_batch can be shorter than `batch_rows`. The eval loop at line 1598 appends the shorter preds to `val_preds` but saves `val_idx=va_idx` and `val_labels=labels_arr[va_idx]` (both full-length) — hence the 1524-vs-1575 mismatch on fold 3.\n\nPatching forward_batch to track kept-row indices via a mutable parameter (safest — doesn't break existing callers):",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:08:59.934Z",
-      "text": "Found the bug at line 1596-1600: when `forward_batch` returns `None` for a batch, those rows are silently skipped in `val_preds` but `va_idx` and `labels_arr[va_idx]` still contain ALL val rows. The save at line 1680 then writes mismatched arrays.\n\nLet me check forward_batch to understand how rows get dropped:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:08:27.688Z",
-      "text": "Investigating the fold-3 corruption first — need to find the bug before we rerun anything.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:07:37.553Z",
-      "text": "Task #100 updated. The statistical story is now actually stronger than the paper currently claims — DPL beats PPAC by +0.126 paired (not +0.096), all p < 0.001, all CIs non-crossing. Just need to revise the numbers in `main.tex` from +0.377 → +0.35 ± 0.01 and update the gap claim. Waiting for user direction on whether to also kick off the 5×5 rerun in the background.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:07:27.528Z",
-      "text": "Bootstrap agent **independently confirms +0.377 can't be reproduced** AND provides publication-ready statistics:\n\n### Paper-savable findings (row-level bootstrap, 1000 iter)\n\n**SKEMPI cluster-aware** (DPL ∩ PPAC = 6528 row intersection):\n- DPL LoRA super-pool ρ = **+0.346** [+0.334, +0.358]\n- PPAC super-pool ρ = **+0.269** [+0.259, +0.278]\n- **Paired DPL − PPAC Δρ = +0.126 [+0.097, +0.152], p < 0.001** ✓\n- **Paired DPL − UN Δρ = +0.097 [+0.057, +0.140], p < 0.001** ✓ (cell-level)\n\n**Tsuboyama K50**:\n- DPL LoRA fold-mean ρ = **+0.7447** [+0.739, +0.751]\n- PPAC row-pool ρ = +0.681 [+0.674, +0.688]\n- **Paired DPL − PPAC Δρ = +0.066 [+0.060, +0.072], p < 0.001** ✓\n- **Paired DPL − UN Δρ = +0.025 [+0.021, +0.030], p < 0.001** ✓\n\n**All four paired comparisons reject H0 at p < 0.001 with non-crossing CIs.** The statistical story holds — DPL beats both baselines cleanly on both benchmarks.\n\n###…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:59:51.697Z",
-      "text": "## 🚨 User decision required\n\n**The paper's central claim — DPL LoRA `+0.377` on SKEMPI cluster-aware, cited 10 times in `main.tex` — cannot be reproduced from any saved artifact.**\n\n### What I found\n- **Fold 3 npz files are corrupted** in both `twophase_oof/` and `twophase_oof_cluster/`: `val_preds=1524` vs `val_labels=1575` across all 3 seeds. Stored `best_rho` for fold 3 doesn't even recompute from the saved preds — something was saved incorrectly during training.\n- **Only 3 seeds** exist in that run — below the 5-seed rule.\n- **All 6 aggregations I tried** give values between `+0.315` and `+0.486`. None equal `+0.377`.\n\nClosest honest cluster-aware numbers:\n- `+0.352` via canonical `assemble_twophase_oof_ensemble.rebuild_rows()` helper (with has_valid mask) \n- `+0.387` via 4-fold pooled seed-mean (skip corrupted fold 3)\n\n### Options (need your call)\n\n**(A) Cite the honest computed num…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:58:51.429Z",
-      "text": "Ran the canonical `assemble_twophase_oof_ensemble.rebuild_rows()` helper on both loose and cluster-aware directories:\n\n| source | n_valid | pooled ρ (3-seed mean) |\n|---|---|---|\n| `twophase_oof/` (LOOSE GKF) | 7106 | **+0.486** |\n| `twophase_oof_cluster/` (cluster-aware) | 7677 | **+0.352** |\n\n**Neither equals the paper's `+0.377`.** All candidate computations:\n\n| source | method | value |\n|---|---|---|\n| twophase_oof_cluster 4-fold pooled | 3 seeds, fold3 dropped | +0.387 |\n| twophase_oof_cluster 5-fold pooled | truncate labels for fold3 | +0.346 |\n| twophase_oof_cluster via helper (has_valid mask) | 3-seed fold-average | +0.352 |\n| twophase_oof_cluster per-cell best_rho mean | stored values 15 cells | +0.315 |\n| twophase_oof (loose) via helper | 3-seed fold-average | +0.486 |\n| twophase_oof (loose) 5-fold pooled | truncated | +0.418 |\n\n**The paper's `+0.377` matches nothing.** It may…",
-      "tags": [
-        "result"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:56:54.154Z",
-      "text": "Critical clue — CKA agent used `assemble_twophase_oof_ensemble.rebuild_rows()` with a `has_valid mask` to get 7826 valid rows from twophase_oof_cluster. That helper might be where the +0.377 number comes from. Checking:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:56:00.532Z",
-      "text": "**Big clue** — the intersection agent says DPL LoRA predictions come from `results/twophase_oof/` (LOOSE OOF, not `twophase_oof_cluster`). The +0.4269 n=230 number matches the paper exactly. Maybe `+0.377` also comes from the loose-OOF directory, not the cluster-aware one. Checking:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:55:09.568Z",
-      "text": "All 5 folds (labels truncated to preds length): **+0.346**. Still not +0.377. Let me create a reconciliation document and flag this to the user — this is the paper's central claim and needs a decision.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:53:22.036Z",
-      "text": "**THIS IS BAD.** Real pooled numbers from existing artifacts:\n- Pooled seed-mean (4 valid folds, n=6302): **+0.387**\n- Fold-mean 15 cells using stored best_rho: **+0.315**\n- Fold-mean 12/15 valid cells: **+0.352**\n- **Paper cites +0.377** — matches NONE of these\n\nFold 3 npz files are also corrupted (preds length 1524 vs labels/idx 1575). Let me check if there's another DPL LoRA SKEMPI cluster-aware results dir that might be the real source.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:52:55.984Z",
-      "text": "Fold 3 has a 51-row mismatch between `val_preds` (1524) and `val_labels/val_idx` (1575) — corrupted/partial output across all 3 seeds. Computing pooled ρ on folds 0,1,2,4 only:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:52:24.701Z",
-      "text": "Per-row preds exist (`val_preds`, `val_idx`, `val_labels` in each npz). Now manually pool across all 15 cells and compute the actual pooled ρ:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:52:06.484Z",
-      "text": "**CRITICAL FINDING from the orphan audit**: The headline DPL LoRA `+0.377` on SKEMPI cluster-aware — cited **10 times** in `main.tex` as the central claim — has no backing JSON artifact within 0.05 of that value. Verifying myself right now.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:48:58.500Z",
-      "text": "Light task-list cleanup. Nothing further actionable — waiting on the remaining hourly-spawn-#8 agents (n=230 intersection, bootstrap, CKA, orphan audit) and the job queue.",
-      "tags": [
-        "result"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:48:53.043Z",
-      "text": "Old FoldX-feature pilot from pre-pivot compaction finally completed (4.3h CPU). **Null result**: DPL head with concatenated FoldX feature = **+0.404**, worse than FoldX alone **+0.468**. The MLP treats FoldX as 1/1321 channels and washes it out. Also noted: FoldX alone pools to +0.468 on this 6769-row manifest subset, not the +0.558 I cited earlier — that earlier number was from a different row pool.\n\n**Not actionable for the paper** — FoldX requires PDB + physics, off-framing for sequence-only. Agent's diagnosis (standardization kills the FoldX signal; would need residual skip `y = foldx + MLP(...)` or last-layer concat) is filed for reference but not a direction to pursue.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:45:47.206Z",
-      "text": "**Cron verdict — identical to last tick. Holding.**\n\n**(1) Beating-model**: Queue 124 (36 R, 88 PD). 0 new actionable results in 35 min (the 5.4-min `ppac_atlas` was already harvested earlier). All paper-critical experiments still running. No new pilot — the architectural probes already in flight (r∈{8,16,32,64}, epochs∈{10,20,30}, d_hidden∈{256,512,1024}, cosine LR, label noise∈{0.1,0.3,0.5}) exhaust the cheap training-knob levers without breaking sequence-only framing.\n\n**(2) Spam**: 124 >> 15. Fully saturated. Not firing.\n\n**Watchdog self-patched twice more this tick** (recognizing `--output_dir` hyphen/underscore variants and fixing `--parsable` sbatch output parsing), and flagged that a prior \"RESUBMIT FAILED 33418777\" report was actually a false alarm — the resubmit succeeded to `33419543`. System is stable and auto-correcting. No action needed.\n\nRemaining 4 hourly-spawn-#8 agents…",
-      "tags": [
-        "error",
-        "dataset",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:44:07.207Z",
-      "text": "PDF rebuilt clean, 14 pages. Paper stale-number fixes applied this tick:\n\n1. **Abstract \"+0.23 gap\" → \"+0.161 (fair 5-seed)\"** + clarifying context\n2. **PPAC S1131 prose cite +0.610 → +0.567** (fair 5-seed)\n3. **ProtAttBA S1131 prose cite +0.478 → +0.454** (fold-mean from master)\n4. **Tsuboyama LoRA +0.745 → +0.744** (5 occurrences)\n5. **Derived gaps**: +0.069 → +0.068, +0.193 → +0.192, $\\Delta\\rho = +0.026$ → +0.025\n\nStill pending from task #99 (not mechanical enough for this tick):\n- UN SKEMPI full-pool +0.269 (lines 760/808) — no backing cell, need either rerun or prose removal\n- Provenance footnotes for 22 orphan numbers (FoldX, RDE, kNN, LoRA appendix non-cluster split)\n- StaB-ddG ablation 3-seed bump to 5\n\nQueue 126 (35 R, 91 PD), 0 new result files in 30-min window (just `ppac_atlas` which I already harvested). Watchdog flagging stale ProtAttBA 1080Ti jobs but they're actually R 1…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:42:58.111Z",
-      "text": "All 5 Tsuboyama +0.745 → +0.744 + derived gaps (+0.069→+0.068, +0.193→+0.192, +0.026→+0.025) fixed. Rebuilding PDF.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T19:42:34.212Z",
-      "text": "5 occurrences to fix. Using replace_all on the exact string:",
       "tags": [
         "note"
       ]
