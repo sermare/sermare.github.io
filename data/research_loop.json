@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T14:15:59Z",
+  "generated_at": "2026-04-15T14:46:07Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3150,
-    "assistant_turns": 4713,
+    "user_turns": 3177,
+    "assistant_turns": 4743,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T11:39:09.414Z"
+    "last_ts": "2026-04-15T14:45:20.279Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,68 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-15T14:45:20.279Z",
+      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jgh7WjcfqkxVLuieMy\"} · check status.claude.com",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:43:04.300Z",
+      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jWfKqPiLHoAGNxjjft\"} · check status.claude.com",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:42:58.271Z",
+      "text": "API Error: 500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"},\"request_id\":\"req_011Ca5jWE82FxcjNhRUfyG1E\"} · check status.claude.com",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:42:51.874Z",
+      "text": "Addressing the user's message first.\n\n**Thanks — glad you like the scale-up + pilot results.** Quick status:\n\n**6 of 10 agents from this spawn are hitting Anthropic API 500 errors** (iface_pair scale-up, interface-pot scale-up, FoldX distill, multi-teacher distill, StaB 1491 distill, meta-ensemble 5-way). Not my fault — transient Anthropic backend issue. The other 4 agents (Tsub harvest, geomaux scale-up, paper update, triple combo, FoldX feature, BindingGym monitor) are still running.\n\n## Headline state (what's real and locked in)\n\n| Result | ρ | Notes |\n|---|---|---|\n| **4-way meta-ensemble (DPL+RDE+PPAC+FoldX)** | **+0.5718** | **The beating model.** GBR on z-scored features, n=5476, cluster-aware |\n| FoldX alone (physics) | +0.5576 | Pure force field, no training, 99.4% coverage |\n| StaB-ddG alone | +0.559 | Structural supervised (on their test) |\n| RDE-Network alone | +0.497 | Struc…",
+      "tags": [
+        "error",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:39:38.535Z",
+      "text": "**🎯 MASSIVE pilot results!** Top 4 on fold 0 seed 0 (vs baseline +0.096):\n\n| Pilot | ρ | Δ |\n|---|---|---|\n| **iface_pair** (contact-gated) | **+0.400** | **+0.304** 🔥 |\n| **geomaux** (struct aux targets) | **+0.365** | +0.270 |\n| **interface** (soft-gate pair term) | **+0.359** | +0.264 |\n| **tsub** (Phase 1 transfer) | +0.340 | +0.244 |\n\nFlat/failed: huber, ema, boost, cct, bighead, listmle, swa, contrast. Killing these, scaling the winners.",
+      "tags": [
+        "error",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:38:43.212Z",
+      "text": "**Disk fixed!** Project quota bumped to 5P / used 4.076P — ~1P headroom. Writes should work again.\n\n**Queue low**: 19 jobs (3 R + 15 PD), only 3 actually running. Need to fire more.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:38:22.829Z",
+      "text": "Good morning. Here's what happened overnight:\n\n## Big picture\n\n### 🏆 **We found a beating model**: FoldX 4-way meta-ensemble hits **ρ = +0.5718** on cluster-aware SKEMPI (pool n=5476). Beats RDE alone (+0.497), beats FoldX alone (+0.558), beats the 3-way stacked (+0.499) that was our ceiling yesterday. GBR importances: FoldX 37%, RDE 31%, PPAC 10%, DPL 8%, interactions 13%.\n\nThe paper story is now: **\"sequence (DPL) + structural learning (RDE/PPAC) + orthogonal physics (FoldX) > any single teacher.\"**\n\n### 💥 **Disaster: `train_twophase_lora.py` was destroyed multiple times**\n- Root cause: **`ucb` project group quota is over soft limit** (4.079P / 3.977P soft, grace=none). All writes to `/global/scratch` either fail with EDQUOT or silently truncate files to 0 bytes at the 65KB Lustre block boundary.\n- ~5 concurrent agents were editing the same file + the Lustre metadata pool was failing m…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T14:37:47.510Z",
+      "text": "Massive agent batch landed. Synthesizing:\n\n## Current state after this wave\n\n### ✅ **Recovery progress**: I just restored `train_twophase_lora.py` from the `~/.claude/file-history/...v5` backup (81 KB, **parses cleanly**). Pre-dates the latest ~5 agent additions (emb-diff, mpnn-fusion, layer-pool, bindinggym phase-1, pdb-stratified) but has Huber, EMA, SWA, tsub-phase-1, antisym-twin, pair-term, cluster-cond, struct-fusion, geom-aux, CCT, distill-rde, boost-rde. Good enough to run new jobs.\n\n### 🎯 **New results this batch**:\n\n| Experiment | Result | Verdict |\n|---|---|---|\n| **ESM-IF + DPL full 15-cell** | pooled ρ = **+0.300** | Orthogonal structural signal, new 5th meta-ensemble column |\n| k-NN retrieval baseline (k=5) | pooled ρ = +0.208 | Nice paper anchor: \"DPL LoRA nearly doubles retrieval\" |\n| StaB 1491 distill | **blocked at launch** | Lookup ready with sign flip `ρ=+0.533` |\n| M…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
       "ts": "2026-04-15T10:05:48.535Z",
       "text": "**v5 backup is VALID PYTHON** (81345 bytes, parses cleanly, from Apr 14 11:13 — pre-corruption). Attempting restore:",
       "tags": [
@@ -318,68 +380,6 @@
     {
       "ts": "2026-04-15T09:30:13.605Z",
       "text": "Sleeping 35 min. Next cron check will hit alongside.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:30:04.706Z",
-      "text": "Background `du` command finished (not urgent — disk is fine at 75%).",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:23:51.130Z",
-      "text": "**ListMLE pilot** dispatched: job 33415441 running.\n- Smoke ep1→3: listmle 1.88→1.52 (−19%), main MSE 3.93→2.38 normal. Real gradient signal confirmed.\n- 146 lines new in `scripts/listmle_loss.py` (stateless `logcumsumexp`-based)\n- λ=0.5, skips PDBs with <3 rows\n\n**Honest prediction:** misses 0.40 bar. Per-PDB groups tiny (~25-36 per batch vs 8-row batch means most batches contribute nothing). Needs PDB-stratified sampler to really shine. Median guess ρ ≈ 0.38-0.40 (within noise). If ≤0.38, that's a sampler problem, not a loss problem.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:20:21.309Z",
-      "text": "**Contrastive pre-training pilot** dispatched: job 33415377 running, 2 contrast ep + 10 supervised ep.\n- Smoke: contrast loss=2.19 (sensible — uniform-softmax floor ~1.95), supervised val ρ +0.046→+0.061 normal warmup\n- Pool: 3241 rows (2847 pos, 394 neg, |ddG|>1.0 filter)\n- InfoNCE, τ=0.1, separate AdamW for Phase 0, gradients flow through LoRA + head trunk\n\n**Honest prediction:** typically +0.01-0.02 at small N. 50/50 clearing 0.40. Risk: 2 contrast epochs move LoRA away from useful init more than it helps. Waiting for full run.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:19:43.875Z",
-      "text": "**Queue state after scale-up:** ~50 jobs (adding 15 Tsub full + 15 StaB retrains + ~15 pilots still running).\n\n**30-min cron actions complete:**\n1. ✅ **Reviewed pilot results**: 3 Round-2 pilots landed. Tsub→SKEMPI transfer shows **+0.244 fold0_seed0 lift** — only clear beating-model signal. Scaled to full 15 jobs.\n2. ✅ **Spam check**: 34 → ~50 jobs queued, way above 15 threshold.\n3. Kept pilots: all Round 3 still mid-flight. BoostΔPL failed (−0.102 residual rho), CCT flat (+0.061) as predicted. No kills needed — they're just finishing.\n\n**Next architectural lever**: if Tsub transfer holds at >+0.05 on pooled OOF, the paper gets a real \"transfer learning from large-scale stability\" story. Waiting for StaB-ddG cluster retrain (biggest meta-ensemble lever) and MPNN feature fusion (orthogonal signal).",
-      "tags": [
-        "error",
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:19:28.866Z",
-      "text": "**15 Tsub→SKEMPI transfer jobs queued (33415704–18)** — full 5-fold × 3-seed sweep to verify the +0.244 fold-0 lift generalizes.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:15:51.879Z",
-      "text": "**🎯 BREAKTHROUGH CANDIDATE: Tsub→SKEMPI transfer pilot**\n\n| Pilot | fold0_seed0 best_rho | Δ vs baseline (0.0955) |\n|---|---|---|\n| **Tsub→SKEMPI transfer** | **+0.340** | **+0.244** 🚨 |\n| LoRA-internal CCT | +0.061 | -0.035 (flat) |\n| BoostΔPL residual | -0.102 (final +0.134) | -0.363 (**failed**) |\n\nBaseline DPL LoRA at fold0_seed0 is only **+0.0955** (this specific cell is the weakest). Tsub transfer hits **+0.340** — a massive apparent lift on the same (fold, seed) pair.\n\n**Immediate action: scale Tsub→SKEMPI transfer to full 15-job sweep to verify the lift generalizes across all 5 folds × 3 seeds.** If it holds, this is a real +0.05-0.10 on pooled ΔPL LoRA on SKEMPI cluster-aware — the first pilot showing genuine beating-model signal.",
-      "tags": [
-        "error",
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:15:02.638Z",
-      "text": "**Spam check PASS: 34 jobs (16 R + 17 PD, includes 15 StaB-ddG retrains queued).**",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T09:10:58.268Z",
-      "text": "Sleeping 40 min; next cron check will trigger on its own. Will report as more pilots land.",
       "tags": [
         "note"
       ]
