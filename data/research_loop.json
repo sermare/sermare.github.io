@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T19:19:18Z",
+  "generated_at": "2026-04-15T19:50:14Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3452,
-    "assistant_turns": 5153,
+    "user_turns": 3493,
+    "assistant_turns": 5222,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T19:16:09.013Z"
+    "last_ts": "2026-04-15T19:48:58.500Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,129 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-15T19:48:58.500Z",
+      "text": "Light task-list cleanup. Nothing further actionable — waiting on the remaining hourly-spawn-#8 agents (n=230 intersection, bootstrap, CKA, orphan audit) and the job queue.",
+      "tags": [
+        "result"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:48:53.043Z",
+      "text": "Old FoldX-feature pilot from pre-pivot compaction finally completed (4.3h CPU). **Null result**: DPL head with concatenated FoldX feature = **+0.404**, worse than FoldX alone **+0.468**. The MLP treats FoldX as 1/1321 channels and washes it out. Also noted: FoldX alone pools to +0.468 on this 6769-row manifest subset, not the +0.558 I cited earlier — that earlier number was from a different row pool.\n\n**Not actionable for the paper** — FoldX requires PDB + physics, off-framing for sequence-only. Agent's diagnosis (standardization kills the FoldX signal; would need residual skip `y = foldx + MLP(...)` or last-layer concat) is filed for reference but not a direction to pursue.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:45:47.206Z",
+      "text": "**Cron verdict — identical to last tick. Holding.**\n\n**(1) Beating-model**: Queue 124 (36 R, 88 PD). 0 new actionable results in 35 min (the 5.4-min `ppac_atlas` was already harvested earlier). All paper-critical experiments still running. No new pilot — the architectural probes already in flight (r∈{8,16,32,64}, epochs∈{10,20,30}, d_hidden∈{256,512,1024}, cosine LR, label noise∈{0.1,0.3,0.5}) exhaust the cheap training-knob levers without breaking sequence-only framing.\n\n**(2) Spam**: 124 >> 15. Fully saturated. Not firing.\n\n**Watchdog self-patched twice more this tick** (recognizing `--output_dir` hyphen/underscore variants and fixing `--parsable` sbatch output parsing), and flagged that a prior \"RESUBMIT FAILED 33418777\" report was actually a false alarm — the resubmit succeeded to `33419543`. System is stable and auto-correcting. No action needed.\n\nRemaining 4 hourly-spawn-#8 agents…",
+      "tags": [
+        "error",
+        "dataset",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:44:07.207Z",
+      "text": "PDF rebuilt clean, 14 pages. Paper stale-number fixes applied this tick:\n\n1. **Abstract \"+0.23 gap\" → \"+0.161 (fair 5-seed)\"** + clarifying context\n2. **PPAC S1131 prose cite +0.610 → +0.567** (fair 5-seed)\n3. **ProtAttBA S1131 prose cite +0.478 → +0.454** (fold-mean from master)\n4. **Tsuboyama LoRA +0.745 → +0.744** (5 occurrences)\n5. **Derived gaps**: +0.069 → +0.068, +0.193 → +0.192, $\\Delta\\rho = +0.026$ → +0.025\n\nStill pending from task #99 (not mechanical enough for this tick):\n- UN SKEMPI full-pool +0.269 (lines 760/808) — no backing cell, need either rerun or prose removal\n- Provenance footnotes for 22 orphan numbers (FoldX, RDE, kNN, LoRA appendix non-cluster split)\n- StaB-ddG ablation 3-seed bump to 5\n\nQueue 126 (35 R, 91 PD), 0 new result files in 30-min window (just `ppac_atlas` which I already harvested). Watchdog flagging stale ProtAttBA 1080Ti jobs but they're actually R 1…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:42:58.111Z",
+      "text": "All 5 Tsuboyama +0.745 → +0.744 + derived gaps (+0.069→+0.068, +0.193→+0.192, +0.026→+0.025) fixed. Rebuilding PDF.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:42:34.212Z",
+      "text": "5 occurrences to fix. Using replace_all on the exact string:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:42:20.503Z",
+      "text": "Now the Tsuboyama +0.745 → +0.744 global sed:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:41:23.905Z",
+      "text": "Jobs are R, log frozen since epoch 1 — ProtAttBA on 1080Ti is slow but not hung (running ~1h, 6h walltime). Watchdog is over-alarming. Moving on.\n\nDoing the high-value paper stale-number fixes this tick. The audit report gives line-by-line targets — just execute.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:39:51.010Z",
+      "text": "BindingGym table row fixed (DPL frozen `+0.378` bolded, DPL LoRA `+0.276` demoted), regime 3 paragraph reverted, PDF rebuilt. Task #99 tracks the remaining 5 critical stale-number fixes + 22 provenance gaps — those need a dedicated fix pass (likely next user conversation, since the audit report is detailed enough to just work through line-by-line). 6 of 10 hourly-spawn-#8 agents now reported back.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:39:35.505Z",
+      "text": "PDF rebuilt clean (14 pages). Two more agents back:\n\n**Cosine LR pilot** (`33419610`): queued, reuses phase-1 adapter, 10 epochs, caveat flagged — baseline was 15 epochs with different LRs, so single-cell comparison will be confounded by epoch-count. Will need judgment on results.\n\n**Stale number audit** — major findings:\n\n1. **Abstract line 93** claims \"PPAC beats LoRA ΔPL by +0.23 on S1131\" — derived from the stale PPAC +0.610 number. Correct fair-comparison gap is **+0.161** (fold-mean) or **+0.18** (pooled fair). **Reviewer-critical.**\n2. **PPAC S1131 +0.610** cited twice in prose (lines 675, 706) — should be `+0.567` (fair 5-seed).\n3. **ProtAttBA S1131 +0.478** cited in line 674 — matches neither master `+0.454` nor `+0.486`. Provenance unclear.\n4. **Tsuboyama +0.745** cited 5× (abstract + 4 places) — master says `+0.744`. Single global sed fix, cascades into 3 derived gap numbers t…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:37:23.105Z",
+      "text": "Also need to fix the table row — line 619 had `\\textbf{.378}` as DPL LoRA but that's actually DPL frozen.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:36:42.207Z",
+      "text": "**Two findings reconciled**:\n\n(1) The DPL frozen BG LOAEO agent was the one that corrected MASTER_TABLE — the numbers are `+0.378` (DPL frozen, dpl_bindinggym_loaeo.py) and `+0.276` (DPL LoRA, dpl_bindinggym_loaeo_lora.py). My earlier tick conflated the two scripts. **BindingGym belongs in regime 3** (LoRA hurts, constraint-matches-ablation pattern), but the paper-text agent moved it to regime 1. Need to revert that edit.\n\n(2) d_hidden pilot jobs submitted: `33419587` (d=512), `33419588` (d=1024). Baseline warning: the existing baseline used `--skempi-epochs 15` but my spec said 10 epochs, so a d=256 @ 10-epoch control is needed before any decision. Will flag.\n\nReverting the BindingGym paragraph edit.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:36:14.007Z",
+      "text": "Two issues to flag:\n\n**(1) BindingGym LOAEO row has changed** — now shows DPL frozen `+0.378` / UN `+0.368` / **DPL LoRA `+0.276`**. DPL LoRA is actually the LOSER on BindingGym, not the winner. My earlier edit conflated `dpl_mean` (frozen head) with \"DPL LoRA\". This means:\n- BindingGym belongs in **regime 3 (dense per-protein)**, NOT regime 1 as the paper text agent rewrote it.\n- Need to revert that paragraph edit.\n\n**(2) Now doing the Tsuboyama UN fix.**",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:35:39.613Z",
+      "text": "**Critical finding** — MASTER_TABLE row 8 has a protocol mismatch: Tsuboyama UN `+0.719` is from a **LoRA-backbone** run that's **only 10/15 cells complete** (below 5-seed bar), while DPL frozen `+0.691` in the same row is frozen. The frozen UN (15/15, 5×3 seeds) is actually `+0.682`.\n\n**Paper risk**: the rewritten three-regime scope says \"DPL LoRA +0.745 > UN +0.719 > PPAC +0.676\" — but that UN number is the underpowered LoRA-UN. For a matched-backbone comparison we should use the frozen UN `+0.682`, in which case the story is: DPL LoRA `+0.744` > UN frozen `+0.682` (Δ = +0.062, \"LoRA helps more than the ΔPL constraint alone on this regime\"). That's still a clean win, just with different framing.\n\nUpdating MASTER_TABLE to show both + flagging for your decision.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:35:06.210Z",
+      "text": "10 agents dispatched (task #98 tracking). Analysis-heavy mix because queue is saturated (132 jobs, 107 PD):\n\n**6 passive analysis agents** (no new SLURM):\n- n=230 intersection harvester (fills 4 empty HEADLINE cells)\n- Bootstrap 95% CIs + paired DPL-vs-PPAC/UN significance\n- Tsuboyama UN discrepancy audit (+0.719 vs +0.682)\n- Paper stale-number scanner vs MASTER_TABLE\n- CKA DPL/PPAC/UN/FoldX representational similarity\n- 38-orphan-cell reproducibility recovery\n\n**3 cheap single-cell pilots** (each: fold 0, seed 0 only, not full 5×5):\n- Cosine LR schedule\n- Label smoothing std∈{0.1, 0.3, 0.5}\n- d_hidden∈{512, 1024}\n\n**1 fill** (possibly passive):\n- DPL frozen BindingGym LOAEO — may already exist in `dpl_bindinggym_loaeo.py`'s output\n\nAll 3 pilots gated by the same \"+0.015 at fold 0 seed 0 triggers full 5×5 rerun\" rule, consistent with the in-flight rank and epoch sweeps. Minimum variance…",
+      "tags": [
+        "result",
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T19:32:18.904Z",
+      "text": "10 agents incoming — heavy on **passive analysis** (no new SLURM, read existing artifacts) since the queue is 132-deep. Goal: lock down reviewer-critical stats (bootstrap CIs, paired significance, n=230 intersection fills) + 3 small pilots that test unexplored training levers + 2 audit/cleanup agents.",
+      "tags": [
+        "result",
+        "infra"
+      ]
+    },
+    {
       "ts": "2026-04-15T19:16:09.008Z",
       "text": "**Cron check — identical state to last tick. Holding.**\n\n**(1) Beating-model**: Queue **132** jobs, 0 new result files in the last 35 min. All paper-critical experiments (ProtAttBA SKEMPI 15-job sweep, S1131 parity, LoRA rank/epoch sweeps, DPL LoRA FireProt, DPL LoRA ATLAS/SAbDab, Tranception, ProtAttBA BG/PG LOAEO, 30 ProtAttBA FireProt on 1080Ti) are running or queued behind savio3_gpu priority. Long-running jobs (6-14h walltime each) dominate — they won't produce summaries until late afternoon/evening. **No new pilot this tick** — the cron target (\"beat RDE +0.497\") is off-framing for the sequence-only paper, and there's no compute headroom anyway.\n\n**(2) Spam**: 132 >> 15. Fully saturated. **Nothing to fire.**\n\nWatchdog last logged at 12:12:57 (20 min gap) — same pattern as the earlier silent interval; driver process confirmed alive last tick. False-alarm stale detection on `patt_fpc…",
       "tags": [
@@ -268,128 +391,6 @@
       "text": "PPAC Tsuboyama cell filled at +0.676. This is the paper's strongest sequence-only head-to-head: on the largest benchmark (29.9k rows, 5×5 cluster-disjoint), **DPL LoRA +0.744 > UN +0.719 > DPL frozen +0.691 > PPAC +0.676 > ProtAttBA +0.552**. Clean +0.068 gap over PPAC on matched ESM-2 650M features.",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:35:39.013Z",
-      "text": "PPAC Tsuboyama K50 already exists: **ρ = 0.676 ± 0.003** (5-seed × 5-fold, 29.9k rows). Strong head-to-head point — on the largest sequence-only benchmark, DPL LoRA beats PPAC by +0.068. Updating MASTER_TABLE.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:35:14.804Z",
-      "text": "Two more agents back:\n\n3. **DPL LoRA FireProt HOF 5-seed** (`33418902`): submitted to A40. Agent patched `train_deltapot_stability_lora.py` to save per-row preds + final-epoch pooled (no test leakage), added `results_final_epoch` + `pooled_final_epoch` fields.\n\n4. **DPL LoRA epoch sweep** (`33418906/907/908`): 3 jobs for 10/20/30 epochs at fold 0 seed 0, independent axis from the in-flight rank sweep. Single-cell noise caveat (~+0.095 baseline, not +0.377 pooled) flagged.\n\n6 more in flight. No action needed until results land.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:35:05.405Z",
-      "text": "**2 agents already reported back**:\n\n1. **ProtAttBA FireProt 1080Ti migration**: all 30 jobs cancelled + resubmitted (new IDs `33418868-33418897`). 1 R on n0229, 29 PD with reason `(None)` — clean, no A40 fallback needed. Expected ~12-18h wall to drain all 30 on the 4 idle 1080Ti GPUs.\n\n2. **DPL LoRA ATLAS+SAbDab 5-seed upgrade**: 3 jobs submitted to A40 (`33418899/900/901`) — all PD on priority queue.\n\n8 more still in flight. Task #96 tracking.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:32:18.504Z",
-      "text": "10 agents incoming. Focus: fill remaining sequence-only head-to-head cells at 5 seeds (paper reviewer fodder), migrate the 30 ProtAttBA FireProt jobs from A40 to the idle 1080Ti, and update the paper text with the new numbers. No new architectural speculation — the paper pivot makes \"beat RDE\" off-framing.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:24:14.604Z",
-      "text": "**3 of the 4 are already RUNNING** on the previously-idle `n0229` 1080Ti within 30 seconds of submission. The 4th (`ppac_s1131_fair_1080`) is queued for resources (waiting for a GPU slot on the same node). Compare to the A40 versions that had been pending for 50+ min behind 103 other jobs.\n\n**Migration summary**:\n| Old A40 job | New 1080Ti job | State |\n|---|---|---|\n| 33418391 `ppac_fp_curated` | `33418776` | R on n0229 |\n| 33418357 `ppac_pg_loaeo` | `33418777` | R on n0229 |\n| 33418340 `un_fireprot_hof_a40` | `33418778` | R on n0229 |\n| 33418332 `ppac_s1131_fair` | `33418780` | PD (queued for GPU slot) |\n\n**What I did NOT migrate and why**:\n- `33418232 dpl_s1131_fair_5seed` — LoRA fine-tuning, unfreezes ESM-2 650M backbone with gradients + optimizer state. Tight on 11GB, risk of OOM. Staying on A40.\n- ProtAttBA SKEMPI 15-job sweep — cross-attention over long chains (300+ aa), agent's e…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:23:05.209Z",
-      "text": "Actually, simpler — I can override partition/gres/mem via sbatch CLI without rewriting the scripts. Cancel the 4 A40 pendings and resubmit to 1080Ti in one shot.",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:22:24.811Z",
-      "text": "4 of these are 1080Ti-safe (frozen-feature PPAC/UN MLP — ~6GB VRAM). The 5th (`dpl_s1131_fair_5seed`) is LoRA fine-tuning — tight on 11GB, leaving on A40. Let me try `scontrol update` to change the partition + gres + exclude n0302 on the 4 safe ones.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:21:57.604Z",
-      "text": "**Great question — they didn't die, they completed.** The 1080Ti fill wave jobs succeeded fast: `ppac_sabdab` done in 1:57, `un_fireprot_curated` done in 5:21. The only one still running is `fill_ppac_bg_loaeo` (33418241, 48 min in — BindingGym has 28k rows × 16 assays, takes longer).\n\n**But**: `n0302.savio2` is flaky — hands out slots where CUDA can't see the GPU (exit code 53, \"No devices were found\"). Multiple jobs died there with 0-second elapsed. That's why agents fell back to A40 after retries.\n\n**Current 1080Ti partition state**:\n- `n0229` — **IDLE, 4 GPUs free** (unused!)\n- `n0302` — flaky, only running 1 job (mix)\n- `n0227/n0299` — allocated to other users\n- `n0228/n0298/n0300/n0301` — `drain*` (won't accept new jobs)\n\nSo `n0229` has **4 idle 1080Tis sitting doing nothing** while my A40 queue is 103 deep.\n\n**Yes — moving pending jobs is a clear win.** Candidates (frozen-feature…",
-      "tags": [
-        "dataset",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:15:54.504Z",
-      "text": "**30-min check — nothing to act on this tick.**\n\n**(1) Beating-model lever**: No new pilot results since last tick. All paper-critical experiments (ProtAttBA SKEMPI 15-job sweep, S1131 parity, LoRA rank, Tranception) are still priority-queued behind the 129-job backlog. Firing another pilot would put it at the back of the queue with the same wait. No new architectural lever to chase — struct-fusion is the one off-framing variant still in flight (`tpsf_*` sweep from earlier, already mostly flat) and I'm not spawning more. **Holding.**\n\n**(2) Spam check**: `squeue` shows **129 total** (26 R, 103 PD) — ~8× the 15-job floor. No need to spawn for compute-saturation reasons.\n\n**Watchdog note**: Caught a dedupe race at 11:15 — resubmitted `tpts_f2s1/f2s2/f3s0` based on a stale squeue snapshot before the original preemption notification cleared, creating duplicate jobs writing to the same output…",
-      "tags": [
-        "dataset",
-        "model",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:08:24.211Z",
-      "text": "Stale pre-pivot tasks cleaned up. Current in_progress: #80 (crons), #83 (tpts sweep), #91 (S1131 parity), #94 (hourly spawn #6), plus pending trackers #92 (watchdog), #93 (1080Ti fill), #95 (ProtAttBA SKEMPI headline blocker). Sleeping until 11:39.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:08:10.813Z",
-      "text": "Wakeup set for 30 min. Cleaning up the obviously stale pre-pivot tasks to make the list less noisy.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:08:03.406Z",
-      "text": "Queue: 101 total (26 R, 75 PD) — saturated. Watchdog auto-resubmitted 3 preempted `tpts_*` jobs with fixed --wrap quoting. No new actionable results since the 10-agent dispatch wave: only off-framing `tpsf_*` struct-fusion fold results landed (not relevant to sequence-only pivot). All paper-critical experiments (ProtAttBA SKEMPI, S1131 parity, LoRA rank, Tranception) are still queued on priority.\n\nScheduling the next wakeup for 30 min — should catch the first ProtAttBA SKEMPI or S1131 job starting to produce summaries.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:06:37.810Z",
-      "text": "ProtAttBA BindingGym LOAEO job `33418609` queued (10h walltime, frozen-backbone fast path with precomputed ESM-2 cache). Handles 3+ chain complexes via linker-joined partner-B to avoid dropping 1N8Z/1FCC/1HE8/1LFD etc. Apples-to-apples with DPL `+0.378` / SaProt `+0.090`. Result lands at `results/protattba_bindinggym_loaeo/summary.json`.\n\nAll 10 hourly-spawn agents now done with dispatch. Remaining work is SLURM-bound: S1131 parity (DPL 33418232 + PPAC 33418332 + 15 ProtAttBA S1131 jobs), ProtAttBA SKEMPI 15-job sweep, ProtAttBA FireProt 30 jobs, ProtAttBA BindingGym/ProteinGym, Tranception, UN FireProt, PPAC FireProt curated, LoRA rank sweep. Watchdog still monitoring.",
-      "tags": [
-        "dataset",
-        "model",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-15T18:03:43.604Z",
-      "text": "ProtAttBA FireProt dispatched: 30 jobs queued (`33418498-33418527`, 25 curated GKF + 5 HOF), aggregator at `scripts/aggregate_protattba_fireprot.py`. Note: the user (or linter) already added `ProtAttBA:TBD(5seed)` markers to MASTER_TABLE rows 6 and 7 — which is consistent with this agent's dispatch. Nothing to revert.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:58:39.915Z",
-      "text": "PPAC S1131 fair job `33418332` queued. Good: agent rebuilt the feature pipeline from scratch using the exact same `build_rows` loader as DPL (not reusing the stale `ppac_s1131_delta_features.npz` which has 2I9B asymmetry). Row-identity verification + finalizer script ready for when both DPL (`33418232`) and PPAC (`33418332`) complete. All four S1131 parity agents now done with setup — everything waiting on SLURM.",
-      "tags": [
-        "model",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:57:44.912Z",
-      "text": "Per-seed meta-ensemble null: best variant `ridge_iso10 = +0.5856` (tied with 3-feat isotonic-mean baseline `+0.5854`, Δ = +0.0001). GBR overfits on 10 features; per-seed expansion adds no signal over the 3-feat baseline. Recommendation to stick with 3-feat isotonic-mean. Off-framing for the post-pivot paper anyway, but useful to note the stacked-ensemble ceiling is genuinely at `+0.585-0.592` — no more headroom there.",
-      "tags": [
-        "note"
       ]
     }
   ]
