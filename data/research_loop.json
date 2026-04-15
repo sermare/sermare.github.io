@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T21:51:36Z",
+  "generated_at": "2026-04-15T22:21:46Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3653,
-    "assistant_turns": 5480,
+    "user_turns": 3661,
+    "assistant_turns": 5495,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T21:48:31.227Z"
+    "last_ts": "2026-04-15T22:19:45.970Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,44 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-15T22:19:45.807Z",
+      "text": "## Current DPL LoRA model catalog\n\n**Each row in the paper is a SEPARATE model trained on its own benchmark's data:**\n\n| Dataset | Training data | Artifact dir | Headline ρ | Notes |\n|---|---|---|---|---|\n| **SKEMPI + AB-Bind cluster-aware** (flagship) | SKEMPI+ABBind 7698 rows | `twophase_oof_cluster/` | `+0.377` cited, `+0.352` computed (fold-3 corruption) | 3 seeds — the +0.377 blocker |\n| SKEMPI + AB-Bind loose GKF | same | `twophase_oof/` | `+0.453` (loose) | older, not cluster-aware |\n| **S1131 1129 cluster-aware** | S1131 1129 rows | `deltapot_s1131_lora_cluster_fixed/` | `+0.384` fold-mean | 3 seeds, trained ONLY on S1131 |\n| S1131 1129 w/ per-protein bias | same | `deltapot_s1131_lora_cluster_bias/` | `+0.395` fold-mean | variant |\n| S1131 1129 fair 5-seed | same, via manifest | `deltapot_s1131_lora_fair_1129_5seed/` | **pending** (job `33421283`) | fc_nilah |\n| **Tsuboyama K50*…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T22:19:14.412Z",
+      "text": "Let me audit all the DPL LoRA training runs that exist. We have **one model per benchmark** — standard cross-validation paradigm, not one universal model:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T22:17:34.997Z",
+      "text": "Good catch — let me be precise. **No, we did NOT train DPL LoRA on SKEMPI and evaluate on S1131**. Two separate experiments, both cross-validated on their own dataset:\n\n## Two independent training runs\n\n| Paper cell | Training data | Evaluation | Script |\n|---|---|---|---|\n| **SKEMPI cluster-aware `+0.377`** (headline) | SKEMPI + AB-Bind 7698 rows, 5-fold GKF by cluster | Held-out SKEMPI+AB-Bind fold | `train_twophase_lora.py` |\n| **S1131 cluster-aware `+0.384`** (fold-mean) | **S1131 only**, 1129 rows, 5-fold GKF by cluster | Held-out S1131 fold | `train_deltapot_s1131_lora.py` |\n\nSo the DPL LoRA S1131 number comes from a **separate training run** using only ~900 S1131 rows per fold as training data. That's the same protocol the fair PPAC retrain uses (job `33418780` → ρ=+0.567) — both methods cross-validated on S1131 directly, row-identical via the shared `data/s1131_fair_manifest.json…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T22:15:17.299Z",
+      "text": "**Cron verdict — holding.**\n\n- **(1)** 37 R (24 lowprio + 13 fc_nilah). 0 new result files in 40 min. fc_nilah cells are ~1-1.5h into 2-3h runtime; expect first summaries landing in next ~1-1.5h. No architectural pilot to spawn on a sequence-only paper with saturated queue.\n- **(2)** 143 >> 15.\n\nTask list cleaner now. Main pending are #100 (headline blocker — automated poller will resolve), #103 (spawn #10 — most reported), #95 (ProtAttBA SKEMPI — now on fc_nilah), #92 (watchdog), #80 (crons).",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T22:02:32.051Z",
+      "text": "40 R total (27 lowprio + 13 fc_nilah). fc_nilah running count +1 vs last tick. No new result files landed. Live harvester still polling.\n\nNothing to act on. Scheduling next wakeup.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-15T21:45:24.876Z",
       "text": "**Progress signal**: **12 fc_nilah jobs are now RUNNING** (up from 0 last tick). The headline reruns have started draining. Expected first summaries in ~2-3h per cell.\n\n**Cron verdict**:\n- **(1)** 0 new result files in 35 min, but fc_nilah cells are mid-training. No new pilot — waiting for the rerun to produce the clean +0.377 replacement is the critical path.\n- **(2)** 143 >> 15. Not firing.\n\nLive harvester confirms all 20 watchlist targets still MISSING (~135 polling minutes in), which is expected since fc_nilah jobs just started running. The polling log is working — ready to catch landings.\n\nHolding.",
@@ -349,44 +387,6 @@
       "tags": [
         "result",
         "dataset",
-        "model",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-15T21:10:50.708Z",
-      "text": "Queue 143, no change. Pilot `33419905` and all 14 rerun cells still PD. 0 new results. Watchdog caught 2 more ProtAttBA SKEMPI preemptions (`pattsk_f2s1`/`f1s2`) and auto-resubmitted — this experiment is getting hammered by preemption but staying alive.\n\nNothing actionable. Sleeping 25 min.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:47:10.006Z",
-      "text": "DPL LoRA × frozen ensemble probe **blocked**: DPL frozen per-row preds on SKEMPI cluster-aware don't exist anywhere. Candidates checked:\n\n- `combined_dpl/results.json` — frozen but aggregate metrics only, no npz saves\n- `dpl_foldx_feat_skempi/` — frozen features but with FoldX channel, not pure\n- `ft_frozen/fold0_seed0.npz` — loose GKF single-cell only, not cluster-aware\n- `harvest_master_table.py::DELTAPOT_BENCH_MAP` has NO SKEMPI entry at all\n\n**DPL LoRA reference computed**: pooled ρ = **+0.3521**, n=7677, CI [+0.333, +0.372] — matches the canonical helper number from the reconciliation doc exactly.\n\n**Confirms paper headline should be +0.352, not +0.377** (within the canonical helper's scope), which is consistent with everything we've computed this session.\n\nTo answer the reviewer-bait question (LoRA + frozen ensemble), we'd need 15 more cells of frozen DPL on SKEMPI cluster-aware —…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:45:17.285Z",
-      "text": "**Cron check — quiet, holding.**\n\n- **(1) Beating-model**: 0 new results in 35 min. Queue 143 saturated. Pilot `33419905` AND the full 14-cell rerun `33420168-82` still PD on priority — the headline-blocking rerun hasn't started yet despite being queued ~40 min. No new pilot to spawn, no flats to kill.\n- **(2) Spam**: 143 >> 15.\n\n**The real issue**: the DPL LoRA headline rerun and UN rerun (30 jobs total) are all buried behind the ~90 pending lowprio jobs that were queued earlier. They won't start for another hour+ at current rate. **Unless we migrate them to `fc_nilah + a40_gpu3_normal`** (confirmed working last tick as `33420369`), which would let them start immediately on normal priority.\n\nI'm not migrating without explicit approval since it changes queue behavior. Pinged you earlier about this — waiting on your call. Meanwhile just holding.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:44:41.512Z",
-      "text": "Wakeup set for 14:10. Nothing actionable this tick.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:44:35.608Z",
-      "text": "Queue 143 (38 R, 105 PD). fc_nilah test job `33420369` finished (gone from squeue) — confirms normal priority is usable. 0 new result files in 25 min.\n\nSleeping 25 min. Still waiting on pilot `33419905` to start and verify the save-fix, headline rerun `33420168-82` + UN rerun `33420346-60` queued behind it, 5 hourly-spawn-#9 agents still in flight (UN rerun already reported, paper polish reported, zero-shot harvester reported, n=230 significance reported, paired bootstrap reported, Tsuboyama bootstrap reported; still pending: LoRA knob harvester, MASTER_TABLE verifier reported, 5-seed audit reported, DPL×frozen ensemble).",
-      "tags": [
-        "result",
         "model",
         "infra"
       ]
