@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T08:14:35Z",
+  "generated_at": "2026-04-15T09:44:52Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3036,
-    "assistant_turns": 4538,
+    "user_turns": 3124,
+    "assistant_turns": 4664,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T08:14:14.334Z"
+    "last_ts": "2026-04-15T09:44:39.705Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,59 +166,86 @@
   ],
   "recent_updates": [
     {
-      "ts": "2026-04-15T08:14:14.260Z",
-      "text": "6 beating-model pilots dispatched in parallel. Each implements one top-untried idea, smoke-tests, then submits a single fold 0 seed 0 × 10 epochs pilot (~2-3h):\n\n| Pilot | Idea | Agent | Target ρ |\n|---|---|---|---|\n| **A1** | **AntiSymTwin** `g(c,a,b)−g(c,b,a)` | a33c2b03bf340eb48 | >0.40 |\n| **A2** | **InterfacePot** cross-chain pair term gated by soft contact | adadec6fd15f37ba4 | >0.41 |\n| **B2** | **ListMLE** listwise rank loss per complex | a73b3c04dfed0b789 | >0.40 |\n| **C2** | **Cycle-triple consistency** regularizer | a88b8354a61a59250 | >0.40 |\n| **D2** | **RRAT** Rosetta REF15 aux targets | aebeb3df17f4baede | >0.40 |\n| **F1** | **Layer-wise LR decay** + freeze lower ESM-2 layers | a8acc3bd78e68fca0 | >0.40 |\n\n**Cron state:**\n- `85e9d307` (7,37 * * * *) — every 30 min: beating-model review + cluster-spam check\n- `465ca2e6` (23 * * * *) — every hour: 10-agent spawn directive\n\nB…",
+      "ts": "2026-04-15T09:43:30.133Z",
+      "text": "AlphaMissense: **BLOCKED** — data not on disk, ~5 GB Zenodo release not downloaded per instructions. Additionally, SKEMPI is mostly non-human (viral/designed), so coverage would be patchy even if downloaded. Not worth pursuing.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:43:09.384Z",
+      "text": "DPL preds lack (pdb, mut) identifiers — need to reconstruct via manifest. Dispatching a focused agent to run the 4-way stacked ensemble with FoldX.",
       "tags": [
         "model"
       ]
     },
     {
-      "ts": "2026-04-15T08:12:02.401Z",
-      "text": "Both crons set. Now spawning the first wave of 6 beating-model pilots — the top untried ideas from the 12 top picks.",
+      "ts": "2026-04-15T09:38:16.511Z",
+      "text": "Disk quota error confirmed despite `lfs quota` showing 0 limit — likely OST-specific. Let me find and clean up large unused outputs in the loop subtree.",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:38:06.033Z",
+      "text": "Scratch is fine — 75% global, no quotas. Agent hit a transient Lustre OST-full condition. User quota is only 510 GB used. Moving FoldX lookup back to scratch and running the FoldX blend inline.",
       "tags": [
         "note"
       ]
     },
     {
-      "ts": "2026-04-15T08:11:41.849Z",
-      "text": "Setting up both crons + spawning the first wave of beating-model pilots right now.",
+      "ts": "2026-04-15T09:37:47.048Z",
+      "text": "**🎯 MAJOR BREAKTHROUGH**: **FoldX alone hits ρ = +0.5576 on our cluster-aware SKEMPI pool** (5753/5786 rows, 99.4% coverage) — **matches StaB-ddG (+0.559)** and **beats RDE (+0.497)**. Already on disk in `baselines/gearbind_repo/data/skempi_v2_with_all_results_0415.csv`.\n\n**⚠️ CRITICAL BLOCKER**: `/global/scratch` is **100% full cluster-wide** — agent confirmed via `df -h`. All writes failing. Output persistence broken across the project.",
       "tags": [
-        "note"
+        "dataset"
       ]
     },
     {
-      "ts": "2026-04-15T08:11:20.544Z",
-      "text": "**Committing to Path B.** Setting up the 30-min / 1-hour cron reminders and spawning the first wave now.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T05:34:22.785Z",
-      "text": "## What you missed (compact)\n\n### 7 pilots running — early reads\n\n| Pilot | ep | val ρ | vs baseline (~0.38) | Verdict |\n|---|---|---|---|---|\n| **tpcs struct fusion** (8-d AF2 features) | 14/15 | +0.39 | ~0 | **flat** |\n| **tpp pair term** g(bᵢ,bⱼ) | 5/10 | +0.36 | ~0 | flat-to-slightly-worse |\n| **tpcc cluster-cond** | 14/15 | +0.14 | **−0.24** | **broke catastrophically** |\n| **tpcd RDE distill** | 4/15 | +0.06 | **−0.32** | **broke catastrophically** (λ too high) |\n| **tpcb BoostΔPL on RDE residuals** | 1/10 | +0.09 (early) | — | starting; agent predicts +0.51 final |\n| **tpts Tsub→SKEMPI transfer** | Phase 1 | — | — | starting; agent predicts +0 to +0.015 |\n| **tpcct LoRA-internal CCT** | starting | — | — | agent predicts +0.01 to +0.02 |\n\n**4 of 7 pilots are flat or broken.** Best survivor (struct fusion) is essentially baseline.\n\n### Other state\n- **Bias head**: 13/15 cells, +0.01…",
+      "ts": "2026-04-15T09:34:30.874Z",
+      "text": "11 agents dispatched for hourly spawn #2. Orthogonal-signal heavy since the meta-ensemble ceiling finding ruled out more ESM-2 variants:\n\n| # | Agent | Type | Target |\n|---|---|---|---|\n| 1 | **BindingGym→SKEMPI transfer** | Data/transfer | Analogue to Tsub, 27k binding rows |\n| 2 | **ESM-IF + DPL head fine-tune** | Structural backbone | Orthogonal to ESM-2 |\n| 3 | **Multi-teacher RDE+PPAC distill** | Ensemble/distill | Fixes single-teacher collapse, λ=0.05 |\n| 4 | **StaB 1491 distill** | Ensemble/distill | Uses existing StaB preds NOW |\n| 5 | **Emb_diff concat** `(emb[mt]-emb[wt], ctx)` | Feature | Direct mutation signal |\n| 6 | **PDB-stratified sampler for ListMLE** | Training fix | Addresses known failure mode |\n| 7 | **ESM-2 multi-layer pooling** (30-33) | Feature | Intermediate layer signal |\n| 8 | **AlphaMissense feature fusion** | Orthogonal signal | If on disk |\n| 9 | **k-NN retr…",
       "tags": [
         "dataset",
         "model"
       ]
     },
     {
-      "ts": "2026-04-14T18:26:13.842Z",
-      "text": "PILOT B1 dispatched:\n- **Job 33396614** running on n0215. SKEMPI fold 0 seed 0, 10 epochs, ~2.5h.\n- Smoke test passed: CCT loss went 2.77 → 0.43 (6.5× drop) ep1→ep2, no NaN.\n- Interesting finding: **CCT is non-zero on pure DPL** because head dropout breaks strict cycle-closure per step. So CCT doubles as a **dropout-consistency regularizer** beyond just the pair-term/struct-fusion/cluster-cond non-linearities.\n\n**Honest prediction: Δρ ≈ +0.01 to +0.02**, likely within noise. CCT on pure DPL is structurally close to a no-op because DPL's form is already reflexive by construction. The +0.12 gap to RDE comes from structural information, not from the loss function. **But this pilot fixes the paper's internal inconsistency** — every \"ΔPL LoRA\" headline number was plain MSE, the CCT claim was propped up by the v2 frozen-feature pipeline. Now CCT actually exists in the LoRA workhorse.\n\nAll 3 ro…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T18:14:55.842Z",
-      "text": "## State of the world\n\n### 🆕 New avenues (7 pilot experiments running)\n\n**Round 1 gap pilots** (the first 4 architectural changes — single fold 0 seed 0):\n\n| Pilot | Current epoch | Val ρ | Baseline fold 0 | Δ | Status |\n|---|---|---|---|---|---|\n| **tpcs struct fusion** | 14/15 | **+0.390** | ~0.38 | **~0** | **flat vs baseline** (no lift from AF2 pLDDT/φψ/SASA/contact/iface-z features) |\n| **tpp pair term** g(bᵢ,bⱼ,c) | 5/10 | **+0.364** | ~0.38 | ~0 | flat-to-slightly-worse mid-train |\n| **tpcd RDE distill** | 4/15 | **+0.058** | ~0.38 | **−0.32** | **broken/collapsing** — distill term overwhelming main loss at this λ |\n| **tpcc cluster-cond** | 14/15 | **+0.138** | ~0.38 | **−0.24** | **collapsed** — cluster embedding hurts when test rows get OOV |\n\n**Round 2 pilots** (from the 6-brainstorm top 3 I just dispatched):\n\n| Pilot | Current epoch | Val ρ | Notes |\n|---|---|---|---|\n| **tpc…",
+      "ts": "2026-04-15T09:31:57.292Z",
+      "text": "Firing the hourly 10-agent spawn. Selection rationale: 1 scaled-up, 4 orthogonal-signal experiments (the meta-ensemble ceiling finding), 3 training-dynamics fixes, 2 cheap fills.",
       "tags": [
         "note"
       ]
     },
     {
-      "ts": "2026-04-14T18:10:04.500Z",
-      "text": "PILOT E1 dispatched:\n- **Pilot job 33396572** running on A40. Fold 0 seed 0, 10 epochs, 12h walltime.\n- **Residual target has 36% less variance** than raw y (2.30 vs 3.25 MSE) — room exists for DPL to contribute.\n- 85.4% of train rows have RDE signal, 922 unmatched rows dropped (15%).\n- Epoch 1: `resid_mse=2.30, final_rho=+0.088` (early, DPL noise dominating).\n\n**Honest prediction:** **+0.505 to +0.515** final Spearman on fold 0 — right at the +0.510 success threshold. The residual structure exists but DPL and RDE errors are largely collinear on SKEMPI, so the boost buys at most +0.01-0.02 over RDE alone. ETA ~100 min.\n\nFailure modes flagged:\n1. DPL noise may not converge — need lower head LR\n2. Error modes may be redundant (null hypothesis)\n3. RDE cluster splits vs DPL cluster splits could mismatch → evaluation optimism\n4. Dropping 922 unmatched rows shrinks training set by 15%\n\nWaiting…",
+      "ts": "2026-04-15T09:30:13.605Z",
+      "text": "Sleeping 35 min. Next cron check will hit alongside.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:30:04.706Z",
+      "text": "Background `du` command finished (not urgent — disk is fine at 75%).",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:23:51.130Z",
+      "text": "**ListMLE pilot** dispatched: job 33415441 running.\n- Smoke ep1→3: listmle 1.88→1.52 (−19%), main MSE 3.93→2.38 normal. Real gradient signal confirmed.\n- 146 lines new in `scripts/listmle_loss.py` (stateless `logcumsumexp`-based)\n- λ=0.5, skips PDBs with <3 rows\n\n**Honest prediction:** misses 0.40 bar. Per-PDB groups tiny (~25-36 per batch vs 8-row batch means most batches contribute nothing). Needs PDB-stratified sampler to really shine. Median guess ρ ≈ 0.38-0.40 (within noise). If ≤0.38, that's a sampler problem, not a loss problem.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:20:21.309Z",
+      "text": "**Contrastive pre-training pilot** dispatched: job 33415377 running, 2 contrast ep + 10 supervised ep.\n- Smoke: contrast loss=2.19 (sensible — uniform-softmax floor ~1.95), supervised val ρ +0.046→+0.061 normal warmup\n- Pool: 3241 rows (2847 pos, 394 neg, |ddG|>1.0 filter)\n- InfoNCE, τ=0.1, separate AdamW for Phase 0, gradients flow through LoRA + head trunk\n\n**Honest prediction:** typically +0.01-0.02 at small N. 50/50 clearing 0.40. Risk: 2 contrast epochs move LoRA away from useful init more than it helps. Waiting for full run.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:19:43.875Z",
+      "text": "**Queue state after scale-up:** ~50 jobs (adding 15 Tsub full + 15 StaB retrains + ~15 pilots still running).\n\n**30-min cron actions complete:**\n1. ✅ **Reviewed pilot results**: 3 Round-2 pilots landed. Tsub→SKEMPI transfer shows **+0.244 fold0_seed0 lift** — only clear beating-model signal. Scaled to full 15 jobs.\n2. ✅ **Spam check**: 34 → ~50 jobs queued, way above 15 threshold.\n3. Kept pilots: all Round 3 still mid-flight. BoostΔPL failed (−0.102 residual rho), CCT flat (+0.061) as predicted. No kills needed — they're just finishing.\n\n**Next architectural lever**: if Tsub transfer holds at >+0.05 on pooled OOF, the paper gets a real \"transfer learning from large-scale stability\" story. Waiting for StaB-ddG cluster retrain (biggest meta-ensemble lever) and MPNN feature fusion (orthogonal signal).",
       "tags": [
         "error",
         "result",
@@ -227,174 +254,141 @@
       ]
     },
     {
-      "ts": "2026-04-14T18:01:03.548Z",
-      "text": "PILOT C1 dispatched. Key results:\n- **Smoke test (33396569)**: running on n0210/A40, smoke on 8k subset\n- **Full pilot (33396570)**: running on n0211/A40, 30k Tsub Phase 1 + 10 ep SKEMPI cluster-aware Phase 2, 14h walltime\n- Backwards-compat: `--phase1-data {mhc,tsuboyama}`, default `mhc`\n\n**Honest prediction:** Δρ ≈ 0 to +0.015, mostly within noise. Tsuboyama's 362 mini-proteins are far from SKEMPI's antibody/cytokine interfaces; intra-monomer stability signal may not transfer to interfacial packing. **P(meet +0.02 criterion) ≈ 25-30%.** Even if it's neutral, it's a useful diagnostic — tells us whether stability→binding transfer works at all.\n\nWaiting on B1 (LoRA-CCT) and E1 (BoostΔPL) agents.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:49:13.066Z",
-      "text": "3 implementation agents launched in parallel. Each will read the existing code, add a flag, smoke test, and submit a single fold 0 seed 0 pilot (not 15 jobs).\n\n- **B1**: LoRA-internal CCT loss (fixes the paper inconsistency)\n- **E1**: BoostΔPL on RDE residuals (success = fold 0 Spearman > 0.51)\n- **C1**: Tsuboyama→SKEMPI transfer (success = fold 0 Spearman > 0.40)\n\nWill report as they come back. Meanwhile the existing 4 gap pilots (tpp, tpcc, tpcs, tpcd) are still running.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:48:07.532Z",
-      "text": "Dispatching 3 implementation agents for B1, E1, C1 in parallel.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:48:00.971Z",
-      "text": "All 6 brainstorm agents back. Here's the aggregated top 12:\n\n| # | Agent | Idea | Self Δρ | Cost | Notes |\n|---|---|---|---|---|---|\n| A1 | Arch | **AntiSymTwin** `g(c,a,b)−g(c,b,a)` | high | ~50 LOC | Adjudicates \"why constrain DPL at all?\" |\n| A2 | Arch | **InterfacePot** cross-chain interface pair term | high | medium | Stacks on AntiSymTwin |\n| B1 | Loss | **LoRA-internal CCT** | 5/5 | half day | Fixes the architecture-critique bug |\n| B2 | Loss | **ListMLE per-complex** | 5/5 | 1 day | Listwise rank loss matches Spearman objective |\n| C1 | Data | **Tsuboyama→SKEMPI transfer** | 5/5 | low | 776k labels, reuses existing loop |\n| C2 | Data | **Cycle-triple consistency** | high | low | (A→B, B→C, A→C) regularizer |\n| D1 | Phys | **TCDH Temperature-Conditioned Dual Head** (ΔH, ΔS) | high | medium | Joint SKEMPI + Tsuboyama + ProThermDB |\n| D2 | Phys | **RRAT Rosetta REF15 aux targets** |…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:47:31.706Z",
-      "text": "**E — Ensemble/Distill** back:\n\n1. **BoostΔPL**: fit DPL on RDE's residuals (boosting). Directly stress-tests whether DPL is complementary vs redundant to RDE. Best expected Δρ/complexity ratio.\n2. **CycleDistill**: distill the 5-model stacked ensemble (DPL + RDE + StaB + PPAC + ProtAttBA) into a sequence-only ESM-2 650M student using ~1M AlphaFold-DB synthetic mutations, then fine-tune on SKEMPI. Sidesteps the \"needs a PDB\" reviewer objection. Second headline contribution.\n\nOther ideas: StackPL, MoE-Gate, VarWeight, TTA-Cluster.\n\n1 more agent running (F training dynamics).",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:47:25.272Z",
-      "text": "**D — Physics/Thermo** back:\n\n1. **TCDH (Temperature-Conditioned Dual Head)**: predict (ΔH, ΔS) separately, combine as ΔH − T·ΔS. Unlocks joint training across SKEMPI/Tsuboyama/ProThermDB at heterogeneous temperatures. Extends the multi-site identifiability theorem to two latent potentials.\n2. **RRAT (REF15-Residual Aux Targets)**: multi-task auxiliary regression on Rosetta REF15's 8 decomposed energy terms. Highest expected Δρ + a publishable \"which component carries the signal\" ablation.\n\nAlso mentioned (not top picks): EAS anti-symmetry loss, BEMED Boltzmann-ensemble matching, MBLP Markov-blanket locality, FEPD FEP-distillation pretraining.\n\n2 more agents running (E ensemble, F training).",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:47:17.079Z",
-      "text": "3 brainstorm agents back (A, B, C). Top picks so far:\n\n- **A — Architecture**:\n  1. **AntiSymTwin**: `f(c,a,b) = g(c,a,b) − g(c,b,a)` with shared-weight twin, no internal structural constraint. ~50-line change, directly adjudicates \"why constrain ΔPL at all?\".\n  2. **InterfacePot**: cross-chain pair term gated by ESM cross-attention, restricted to interface residues only. Orthogonal to AntiSymTwin.\n\n- **B — Loss**:\n  1. **LoRA-internal CCT**: finally apply the cycle-closure loss inside the LoRA workhorse (the architecture-critique agent's headline finding). Δρ=5/5, half-day implementation.\n  2. **ListMLE per-complex**: listwise rank loss optimizing the exact Spearman objective the benchmark measures. Δρ=5/5, ~1 day.\n\n- **C — Data**:\n  1. **Tsuboyama→SKEMPI transfer**: pre-train ΔPL on 776k Tsuboyama stability labels, fine-tune on SKEMPI binding. Label-noise risk 1/5, reuses existing ΔPL…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:47:06.244Z",
-      "text": "6 brainstorm agents launched in parallel. Each covers a distinct angle with ≥6 ideas + self-scoring:\n- **A** — architecture (contrastive, RDE feature channel, attention pairs, ranking loss…)\n- **B** — loss functions (rank/Spearman, Huber, calibration, focal, sign-aware…)\n- **C** — data/augmentation (Rosetta-synthetic, anti-symmetry labels, synthetic 3-cycles, transfer from Tsuboyama…)\n- **D** — physics/thermo (temperature conditioning, FEP distillation, REF15 decomposition, Boltzmann matching…)\n- **E** — ensemble/distillation (multi-teacher, MoE, boosting residuals on RDE, stacked meta-model…)\n- **F** — training dynamics (LoRA rank per dataset, SWA, EMA, layer-wise LR, meta-learning…)\n\nEach writes to `notes/brainstorm_{A–F}.md`. Once all 6 return, I aggregate the 12 top picks (2 per agent) and pick the **3 best for pilot runs**.\n\nMeanwhile pilot snapshot:\n- **tpcs struct fusion**: ep 12/…",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:45:26.741Z",
-      "text": "Addressing immediately — dispatching 6 brainstorm agents in parallel, each with a distinct angle.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:04:05.909Z",
-      "text": "**Early pilot signal (epoch 9/15):**\n- **tpcs_f0s0 struct fusion**: val ρ ≈ **+0.40** — strong, in baseline range  \n- **tpcc_f0s0 cluster-cond**: val ρ ≈ **+0.07** — weak, may be a hard fold or model struggling\n- **tpp_f0s0 pair term**: still initializing (just loaded)\n- **tpcd_f0s0 RDE distill**: still initializing",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:03:47.043Z",
-      "text": "Queue down from 93 → 22. All 71 cancelled jobs were queued full-sweep gap jobs we don't need until pilots show signal. Let me check pilot progress.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:03:36.240Z",
-      "text": "Good — 4 pilot jobs remaining, one per gap experiment (fold 0 seed 0):\n- **tpp_f0s0** (pair term)\n- **tpcc_f0s0** (cluster-cond)\n- **tpcs_f0s0** (struct fusion)\n- **tpcd_f0s0** (RDE distill)\n\nSaved ~56 GPU-jobs worth of compute. If any pilot shows ≥+0.02 lift on fold 0, we relaunch the other 14 for that experiment. All tp3b_ (3B backbone) killed.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:02:58.648Z",
-      "text": "Now consolidate each gap experiment down to a single fold0-seed0 pilot.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T17:02:50.977Z",
-      "text": "Killing 3B stuff + consolidating gap experiments to single-pilot jobs first.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-14T16:40:13.911Z",
-      "text": "Tick:\n- **ATLAS MHC-only DPL LoRA**: DPL -0.141, UN +0.018. Noise as predicted. Not worth a table cell.\n- **Bias job (33381454)**: 12.5/15 cells. Currently at seed 2 fold 2 DPL. ~2h to finish.\n- **Queue: 93 jobs** (39 R, 54 PD). Gap experiments still running (tpp/tpcc/tpcs/tp3b/tpcd all need ~12h).\n\nSleeping 50min.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T16:39:56.180Z",
-      "text": "**ATLAS MHC-only DPL LoRA (96 rows)**: DPL ρ=-0.141, UN ρ=+0.018. Both essentially noise as the agent predicted. Not informative.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T15:49:05.571Z",
-      "text": "Tick:\n- **ESM-2 3B zero-shot**: SKEMPI |ρ|=0.128 (slightly WORSE than 650M +0.145), S1131 |ρ|=0.417 (nearly identical to 650M +0.430). **Confirms diminishing returns at scale for zero-shot** — bigger backbone ≠ better mutation sensitivity.\n- **PPAC Tsuboyama: +0.676** — we beat it with DPL LoRA +0.745 (+0.069 gap). Tsuboyama is clearly our regime.\n- **Queue: 94 jobs** (39 running). Gap experiments running — nothing imminent.\n\nSleeping 50min.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T15:48:45.663Z",
-      "text": "**PPAC on Tsuboyama: ρ = +0.676** — we still beat it with DPL LoRA +0.745 (by +0.069). UN LoRA +0.719 also ahead.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-14T15:16:06.226Z",
-      "text": "15th (final) agent complete: **GAP 3 — structural context fusion**. Feature extraction ran in 68s over 345 SKEMPI PDBs. 8-d per-residue vector: `conf, phi_sin/cos, psi_sin/cos, sasa, contact_count, iface_z`. Head dim 1280 → 1288. Smoke test ran successfully. **15 full jobs queued (33384140–33384160)**.\n\nHonest prediction: **+0.04 to +0.08** on SKEMPI cluster-aware. The genuinely new signal is `iface_z` (PPI-specific interface proximity — unrecoverable from sequence alone) and pLDDT confidence. RDE's +0.12 lead comes from full 3D rotamer graphs; we're getting cheap per-residue summaries, so expect ~½ the gap closable.\n\n## Complete synthesis: all 15 agents + predictions\n\n| Experiment | Queued jobs | Agent prediction |\n|---|---|---|\n| **GAP 1 pair term** (tpp_) | 15 | +0.04 to +0.07 on SKEMPI |\n| **GAP 2 cluster-cond** (tpcc_) | 15 | +0.02 to +0.04 (central +0.03) |\n| **GAP 3 struct fusion*…",
+      "ts": "2026-04-15T09:19:28.866Z",
+      "text": "**15 Tsub→SKEMPI transfer jobs queued (33415704–18)** — full 5-fold × 3-seed sweep to verify the +0.244 fold-0 lift generalizes.",
       "tags": [
         "dataset"
       ]
     },
     {
-      "ts": "2026-04-14T15:07:12.081Z",
-      "text": "14th agent complete: **GAP 5 — RDE distillation**. Smoke test working (distill loss 1.62 alongside train 3.90). 15 full-run jobs queued (33385324–44). RDE OOF lookup has 5820 entries; coverage 82-88% per DPL fold. No leakage (each (pdb,mut) key is held out in exactly one RDE fold).\n\nHonest prediction: **+0.41 to +0.44** on SKEMPI cluster-aware (baseline +0.377). **Δρ target: at least +0.03, plausible +0.06–0.08.** Can't exceed RDE's +0.497 because only ESM features are available at test time. 1 more agent running (GAP 3 structural fusion).",
+      "ts": "2026-04-15T09:15:51.879Z",
+      "text": "**🎯 BREAKTHROUGH CANDIDATE: Tsub→SKEMPI transfer pilot**\n\n| Pilot | fold0_seed0 best_rho | Δ vs baseline (0.0955) |\n|---|---|---|\n| **Tsub→SKEMPI transfer** | **+0.340** | **+0.244** 🚨 |\n| LoRA-internal CCT | +0.061 | -0.035 (flat) |\n| BoostΔPL residual | -0.102 (final +0.134) | -0.363 (**failed**) |\n\nBaseline DPL LoRA at fold0_seed0 is only **+0.0955** (this specific cell is the weakest). Tsub transfer hits **+0.340** — a massive apparent lift on the same (fold, seed) pair.\n\n**Immediate action: scale Tsub→SKEMPI transfer to full 15-job sweep to verify the lift generalizes across all 5 folds × 3 seeds.** If it holds, this is a real +0.05-0.10 on pooled ΔPL LoRA on SKEMPI cluster-aware — the first pilot showing genuine beating-model signal.",
+      "tags": [
+        "error",
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:15:02.638Z",
+      "text": "**Spam check PASS: 34 jobs (16 R + 17 PD, includes 15 StaB-ddG retrains queued).**",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:10:58.268Z",
+      "text": "Sleeping 40 min; next cron check will trigger on its own. Will report as more pilots land.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:10:51.477Z",
+      "text": "Queue: **33 jobs** (16 running, 17 pending including 15 StaB-ddG retrains + tpaug/tptri waiting on smoke deps). **TCDH pilot 33415560 running.** Disk scare was specific-OST Lustre quirk; global scratch at 75%.\n\n**Running pilot fleet** (16):\ntptcdh, tpifpair, tplm (ListMLE), tpga (geom aux), tpatw (AntiSymTwin), tpswa, tpcs, plus the earlier wave (tpp, tpcc, tpcd, tpcb, tpts, tpcct, tpaug_smoke, tptri_smoke, tplrd_smoke) — all still mid-flight.",
       "tags": [
         "dataset",
         "model"
       ]
     },
     {
-      "ts": "2026-04-14T15:02:41.416Z",
-      "text": "**Queue: 100 jobs total** (37 R + 62 PD). All 5 gap agents submitted their 15-job sweeps:\n- **tpp_** (15): GAP 1 pair term\n- **tpcc_** (15): GAP 2 cluster-conditioned context\n- **tpcs_** (15): GAP 3 structural fusion (sbatch submitted, agent report pending)\n- **tpcd_** (15): GAP 5 RDE distillation (sbatch submitted, agent report pending)\n- **tp3b_** (15+1 pretrain): GAP 4 ESM-2 3B\n- Plus 14 Tsuboyama ProtAttBA, Tsub PPAC, SAbDab DPL, S1131 bias, ATLAS MHC, FireProt LoRA, zero-shot models, ESM-IF BindingGym\n\nAll 15 agents from the \"fill 10 + gap 5\" batch have effectively submitted work. 2 agent reports still pending.",
+      "ts": "2026-04-15T09:10:36.207Z",
+      "text": "Filesystem is **75% globally** (8.7P used, 3.1P available) — not 100%. The agent hit a specific Lustre OST-full condition, which the retry+`/tmp` fallback handles. Global scratch is fine.",
       "tags": [
-        "dataset",
-        "model",
-        "infra"
+        "note"
       ]
     },
     {
-      "ts": "2026-04-14T15:00:02.803Z",
-      "text": "13th agent complete: **GAP 2 — cluster-conditioned context**. Smoke test validates: train loss drops, val RMSE drops under zero-init OOV embedding. **15 full-run jobs running (33383621–35)**.\n\nHonest prediction: **+0.02 to +0.04 (central estimate +0.03)** on the SKEMPI cluster-aware pool — ~¼ of the +0.12 gap to RDE-Network. The mechanism is training-time regularization (freeing `h` to fit within-cluster residual), not test-time cluster info (val rows always get OOV token by construction). Same limitation as the per-protein bias but operates at the cluster level. 2 more agents running.",
+      "ts": "2026-04-15T09:08:15.905Z",
+      "text": "**🚨 CRITICAL ENVIRONMENT ISSUE**: `/global/scratch` is at **100% capacity** — the TCDH smoke crashed at adapter save, and all future adapter-writing pilots are at risk.",
+      "tags": [
+        "error",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:06:31.225Z",
+      "text": "**Contact-gated InterfacePair pilot** dispatched:\n- Extended `extract_structural_features_skempi.py` to compute per-residue top-K partner-chain CA-CA contacts (hard 10Å cutoff). 344/345 SKEMPI PDBs re-extracted in 90s.\n- New `InterfacePairHead`: single-site DPL + cross-chain `g(ctx_i, aa_i_oh, ctx_j)` summed over precomputed contacts, zero-init final linear (starts as pure DPL).\n- Head: 0.83M params. Smoke ep 1: mean **2.89 contacts per mutation site**, ρ=0.3521 with pair term at init.\n- **Pilot 33415524** running on n0211, 10 epochs, 12h walltime.\n\n**Honest prediction:** fold 0 ρ in **0.42-0.44** range, 60% CI [+0.03, +0.06]. Hard contacts beat learned soft gates on tight-data regimes like SKEMPI (5.4k rows) — the gate can't learn \"near vs far\" better than a 10Å cutoff already does. **Most PPI-appropriate inductive bias we can add without explicit PDB coordinates at inference time.**",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:02:15.607Z",
+      "text": "**D2b Geometry aux pilot** dispatched:\n- Smoke ep 1→3: aux loss 0.45→0.30→0.25 (−44%), main ΔΔG loss matches baseline. ρ lags by ~0.08 at ep 3 but typical warmup dip\n- Pilot 33415437 running on n0216, 10 ep, 12h walltime\n- Coverage: **6695/6798 rows (98.5%)**, 466/467 unique (pdb, chain) keys resolved struct features\n- Aux head: ~0.07M params\n\n**Honest prediction:** 40/60 odds clearing 0.40. Geometry features (pLDDT, φ/ψ, SASA, contact, iface_z) are physically coarser than REF15 — they tell you \"is this residue buried/flexible/at an interface\" but NOT \"what changes when mutated\". Weaker inductive bias than REF15 would've been. Likely lands +0.42-0.47, Δρ ≥ +0.01 over DPL worth scaling to 5×3 seeds, flat-or-negative means pivot to FoldX decomposed energies as the cheap REF15 stand-in.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T09:01:19.959Z",
+      "text": "**Cycle-triple consistency pilot** dispatched:\n- Smoke 33415365 running (ep 1 done), pilot 33415366 queued with `afterany` dep\n- Pre-computed 641-678 training triangles per fold from double-mutation SKEMPI rows\n- Ep 1: triangle residual = 0.423 (vs label residual 0.890 — model already more additive than labels)\n\n**Critical insight from agent**: The fold 0 CCT pilot peaked at only **0.099**, and BoostRDE DPL sat at **-0.10**. My +0.40 success criteria has been **way too optimistic for fold 0** — the correct baseline is ~0.10, not 0.38.\n\n**This means most Round-3 pilots will \"fail\" my stated criteria even if they're real wins.** Better metric: **+0.02-0.05 lift over the per-pilot baseline on fold 0**, to be verified with 5-seed reruns before claiming anything.\n\nTriangle loss honest prediction: ρ ≈ 0.05-0.12, comparable to CCT ± noise. Main effect is regularization toward smoother additive…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T08:59:56.506Z",
+      "text": "**StaB-ddG cluster-aware retrain** — MASSIVE unlock, 15 jobs queued:\n\n- **Prep job 33415455** running (chain-split cache, ~15 min)\n- **15 training jobs 33415456-33415470** queued with `afterok` dep. StaB-ddG in our `tttppi` env works (pure PyTorch, no PyG).\n- Init from their released `stability_finetuned.pt` — no multi-day re-pretrain needed. 60 epochs Adam 1e-6, ~2-4h per fold-seed.\n- **4541 rows** covered (their stringent quality filter; 3× their published 1491-row test set). Per-fold val sizes: 857/1314/665/614/1091.\n\n**This is THE biggest single lever for the meta-ensemble.** Agent prediction: pooled ρ ≈ **0.48-0.55** on our cluster split, meta-ensemble ceiling near **+0.58-0.60** with StaB added as 4th base model alongside DPL/RDE/PPAC.\n\nWall-clock to OOF availability: **~6-12h** on lowprio queue. When preds land, rerun `stacked_meta_ensemble.py` with StaB as a 4th feature column.…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T08:59:28.032Z",
+      "text": "**Anti-symmetry augmentation pilot** dispatched:\n- Smoke 33415369, pilot 33415370 (`afterany` dep)\n- Train doubles: 6301 → 12602 (val unchanged at 1576)\n- Mirror rows inherit parent cluster groups — leakage-safe by construction\n\n**Honest prediction:** fold 0 ρ ≈ 0.40 ± 0.02, ~45% probability clearing 0.40 on this single seed. DPL head is already architecturally anti-symmetric, so augmentation only constrains the LoRA backbone (~2.7M params minority). Expected win shape: **variance reduction**, not mean jump.\n\n**Concerning**: epoch 1 taking >21 min (vs expected ~10 min for doubled data) — likely filesystem contention from concurrent file writes on the over-edited `train_twophase_lora.py`. Not a code bug.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T08:52:12.304Z",
+      "text": "**InterfacePot pilot** landed: job 33415324, fold 0 seed 0, 10 epochs. Gate learning on track:\n- Init: gate = 0.5 (zero-init last layer)\n- Ep 1: mean=0.190, std=0.064, frac>0.5=0.125 — sharpening toward \"most residues aren't interface\" (realistic ~12.5% interface fraction)\n- Ep 1 val ρ = +0.356 (slightly below baseline, expected warmup dip)\n\nHead size: 1.17M params (vs 0.7M vanilla DPL). 22 min/epoch × 10 = ~3.5h more.\n\n**Honest prediction:** +0.03-0.05 lift possible (0.41-0.43 range), closing ~½ the RDE gap. 50/50 odds of actually hitting >0.41 on fold 0 single seed. Requires ≥5 seeds for any claim.\n\n**Important caveat flagged**: concurrent agents editing `train_twophase_lora.py` grew it from ~1.8k to >3.2k lines. The file has flag explosion (--pair-term, --cluster-cond, --struct-fusion, --antisym-twin, --interface-pot, --huber-loss, --ema-decay, --swa-start-epoch, --head-hidden, --head…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T08:46:26.299Z",
+      "text": "2 orthogonal-signal agents dispatched:\n1. **ProteinMPNN (or ESM-IF1 fallback) logit fusion** — adds structural-model logits as feature channel, target **+0.42** fold 0\n2. **StaB-ddG retrained on our cluster split** — unlocks real meta-ensemble past +0.55 on the full 5506-row pool\n\nBoth target the orthogonal-signal ceiling the meta-ensemble exposed. 30-min check complete.",
       "tags": [
         "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T08:45:42.575Z",
+      "text": "**Spam check: PASS** — 21 jobs (17 R + 3 PD), well above 15 threshold.\n\n**Pilot review** — most Round-3 pilots are still mid-flight. No new results since last tick. The **stacked meta-ensemble finding** from this hour is the key signal: DPL/PPAC are collinear with RDE. **More ESM-2 tweaks won't break the +0.50 ceiling.**\n\n**Next lever = orthogonal-signal experiments.** Dispatching 2 new pilots targeting genuinely different representation families:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T08:41:58.360Z",
+      "text": "**SWA pilot** dispatched: job 33415379 on n0276 as tpswa_f0s0. SWA running mean starts at epoch 5/10. Cleanly coexists with the Huber + EMA flags added by sibling agents.\n\n**Honest prediction:** Won't clear 0.40. SWA over only 6 epochs with no cyclical LR schedule is too short — classical SWA uses 20-50. Typical lift +0.005-0.02 in variance-reduction mode. Expected fold 0 ρ: 0.37-0.40. ≥5-seed rerun needed if it clears.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T08:40:52.902Z",
+      "text": "**Stacked meta-ensemble: disappointing.** Best meta = linear on z-scored base3, pooled ρ = **+0.4992** — **below** equal-mean z-baseline (+0.5006) and **below** the +0.55 target by ~0.05.\n\n**Meta coefficients (z-scored)**: RDE=0.872, PPAC=0.321, **DPL=0.154** (the smallest contributor).\n\n**Critical finding**: DPL and PPAC are **too collinear with RDE's residuals** to give orthogonal signal. Agent's verdict: \"To break past +0.55 you need a base model with genuinely different error structure (e.g., Rosetta physical terms or StaB-ddG on the same pool), **not another head over ESM-2 mean pools**.\"\n\n**This reframes the strategy:**\n- Stop piling more ESM-2 variants — they're collinear\n- Next-model territory = **orthogonal representation families**: Rosetta REF15 (need to compute), StaB-ddG retrained on our split (multi-day), ProteinMPNN likelihoods, AF2 pLDDT/PAE deltas\n\nTempering the whole be…",
+      "tags": [
+        "error",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T08:38:49.813Z",
+      "text": "**EMA pilot** dispatched: job 33415372 on n0275. EMA decay 0.999, shadow over LoRA + DPL head params only.\n\n**Honest prediction:** +0.005 to +0.015 lift, won't clear 0.40. Decay=0.999 × ~780 total steps means the shadow effectively averages the whole training run — shallow. Expected benefit is mostly variance reduction, not a mean Spearman jump.",
+      "tags": [
+        "result",
+        "model"
       ]
     }
   ]
