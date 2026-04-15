@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T17:17:22Z",
+  "generated_at": "2026-04-15T17:47:43Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3320,
-    "assistant_turns": 4937,
+    "user_turns": 3384,
+    "assistant_turns": 5046,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T17:17:21.517Z"
+    "last_ts": "2026-04-15T17:47:38.011Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,210 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-15T17:47:36.705Z",
+      "text": "**30-min check outcome**:\n\n**(1) Beating-model lever**: No new architectural pilot this tick. Rationale: the paper has pivoted to sequence-only SOTA framing, and the most headline-critical experiment (ProtAttBA-on-SKEMPI cluster-aware, 15 jobs `33418302-316`) is already in flight and may *beat* DPL LoRA. Spawning more architectural variants chasing \"beat RDE +0.497\" is off-framing and would compete for compute with the experiments that actually determine the paper's central claim. The rank-ablation pilot (r∈{8,16,32,64}) from the prior tick is the one architectural probe in flight — enough.\n\n**(2) Cluster spam**: 76 jobs (27 R, 49 PD) — **5× above the 15-job floor**. No new jobs needed for compute-saturation reasons. Filling cells is the only on-framing reason to spawn more, and 10 fill agents are already dispatched.\n\n**Fresh results harvested this tick**:\n- **UN FireProt curated** (5-se…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:46:59.209Z",
+      "text": "New results harvested — updating MASTER_TABLE.\n\n**UN FireProt curated** (5 seeds × 5 folds, n=3438): DPL fold-mean `+0.369`, pooled `+0.381`; UN fold-mean `+0.477`, pooled `+0.443`. UN beats DPL by +0.108 fold-mean — confirms the \"dense per-protein hurts DPL\" scope claim with a 5-seed run.\n\n**PPAC ATLAS TCR-pMHC** (n=214): fold-mean `+0.253`, pooled `+0.384` — significantly above DPL LoRA `+0.088` on the same cell. PPAC actually beats DPL LoRA here.\n\n**PPAC SAbDab v2** (n=317): fold-mean `+0.034`, pooled `+0.067` — near noise floor, but beats DPL LoRA `−0.057`.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:45:57.114Z",
+      "text": "**Queue**: 76 total (27 R, 49 PD) — well above 15, no need to spawn. Three fresh results just landed: PPAC on ATLAS (0 min), UN FireProt curated (1 min), PPAC on SAbDab (6 min). Harvesting them.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:43:43.512Z",
+      "text": "PPAC ProteinGym LOAEO job `33418357` queued. Agent built the full pipeline (5 assays, extracted missing SRC_HUMAN CSV, end-to-end feature generation, 5-fold LOAEO × 3 seeds). Result will land at `results/ppac_proteingym_loaeo/summary.json`. Nothing actionable until it runs.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:42:22.613Z",
+      "text": "Wakeup scheduled for 25 min. Task #95 created to track the headline-blocking ProtAttBA SKEMPI sweep. Nothing else actionable until job completions trickle in.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:41:54.719Z",
+      "text": "Paper rebuilt cleanly (14 pages, no new warnings). Key state at end of this tick:\n\n- **Paper headline now honest**: ProtAttBA-on-SKEMPI cluster-aware marked TBD pending 15 jobs (`33418302-316`). DPL LoRA `+0.377` > PPAC `+0.281` stands.\n- **Critical paper risk flagged**: agent estimated ProtAttBA could land at `+0.42-0.50` based on S1131 pattern + 6.9× more rows + cross-attention. If it wins, the sequence-only SOTA headline flips.\n- **MASTER_TABLE updates**: BindingGym LOAEO corrected to DPL `+0.378` / UN `+0.368` (was stale `+0.276/+0.294`); S1131 rows restructured into biased-711 / fair-1129-fold-mean / fair-1129-pooled tiers.\n- **Watchdog self-healed**: patched its own `--wrap` quoting bug mid-flight, caught and resubmitted preempted `tpsf_f4s0`.\n- **Queue**: 86 jobs total (33 R, 53 PD). Mass of pending is the hourly-spawn fills + ProtAttBA SKEMPI + 15 tpfxb/tpts/stabddg. Healthy satu…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:40:48.605Z",
+      "text": "UN FireProt jobs launched (33418334 on 1080Ti already at seed0 fold0 UN ρ=+0.55; 33418340 hof pending on A40). Scripts patched to save per-row preds + pooled ρ. Now rebuild the paper PDF after the ProtAttBA-SKEMPI TBD edits.",
+      "tags": [
+        "result",
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:39:49.709Z",
+      "text": "**CRITICAL**: Agent's honest prediction says ProtAttBA may beat DPL LoRA +0.377 by +0.05 to +0.12 on SKEMPI cluster-aware (based on S1131 pattern + 6.9× more training data + cross-attention expressiveness). The \"DPL LoRA is the best sequence-only\" headline is currently UNVERIFIED pending these 15 jobs (33418302-316). The +0.255 I cited for ProtAttBA in the earlier paper rewrite was the stale biased S1131 number misused as a stand-in — that's wrong.\n\nFixing the paper to honestly mark ProtAttBA-on-SKEMPI as TBD pending the sweep.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:38:41.307Z",
+      "text": "That's the S1131 result (n=226/fold). I still need to find ProtAttBA on the **full SKEMPI cluster-aware 7826-row** split.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:38:11.511Z",
+      "text": "Watchdog healthy (catching preemptions, self-patched its own wrap-quote bug). Queue at 86 total. Now let me verify the ProtAttBA SKEMPI cluster-aware number I cited in the paper rewrite — the summary said that agent was still running.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:37:15.205Z",
+      "text": "UN ATLAS/SAbDab audit confirms all three cells (ATLAS TCR-pMHC `−0.010`, ATLAS MHC `+0.018`, SAbDab `+0.217`) were produced by the canonical DPL LoRA harness with matched splits / backbone / hyperparameters — no rerun needed. Caveats logged: ATLAS MHC and SAbDab at 3 seeds (below the 5-seed bar, mark preliminary if they become headline); ATLAS TCR-pMHC was killed mid-seed-4 (4.2 effective seeds, DPL/UN share the sampling so comparison is still fair). Confirmation note at `results/un_atlas_sabdab_audit.md`. Also: MASTER_TABLE BindingGym LOAEO cell updated to DPL `+0.378` / UN `+0.368` (was `+0.276` / `+0.294` — stale).",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:36:50.212Z",
+      "text": "Confirmed — actual values are DPL=**+0.378**, UN=**+0.368** (both newer than MASTER_TABLE's +0.276/+0.294). Updating.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:36:25.005Z",
+      "text": "Agent reports a discrepancy: `results.json` shows UN BG LOAEO = **+0.3675**, but MASTER_TABLE reports **+0.294**. Let me verify before updating.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:36:11.511Z",
+      "text": "4 LoRA rank sweep jobs queued (`33418290-93`, r∈{8,16,32,64}, fold 0 seed 0, α=2r to hold scaling constant). Agent correctly flagged that single-cell comparison at fold 0/seed 0 is noisy (baseline ρ≈+0.096, not pooled +0.377) — any >+0.015 win triggers full 5×5 rerun before paper change. Watchdog will catch preemptions. 9 of 10 hourly-spawn agents still in flight.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:34:18.115Z",
+      "text": "10 agents dispatched (task #94 tracking). All on sequence-only head-to-head fills supporting the paper pivot. No further text to add beyond the previous dispatch message.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:32:23.513Z",
+      "text": "Dispatching 10 fill/baseline agents — all on-framing for sequence-only SOTA paper, no duplication with the 6 already running. Deliberately avoiding meta-ensemble variants since the paper pivoted away from that headline.\n\n**Selection rationale**: Focus on head-to-head cells that support the three-regime scope picture in the rewritten `main.tex`. Reviewers will check: is DPL vs PPAC vs ProtAttBA vs UN ablation reported on every benchmark? Currently it isn't — several cells are \"—\". Each agent below closes one of those gaps.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:31:24.613Z",
+      "text": "No `SendMessage` available — the running PPAC/ProtAttBA agents can't be nudged. Best path: let them finish their existing protocols, then run a harvester that normalizes all three against the 1127-row intersection and computes both fold-mean and pooled ρ uniformly.\n\n**Status after this tick**:\n- DPL S1131 job `33418232` resubmitted with fixes (canonical cluster map + per-row preds saved per (seed, fold)). Pending on priority.\n- MASTER_TABLE.csv updated with three S1131 rows: the old biased 711-row `+0.255` is now labeled `PRELIM biased-711 loader`, plus two new rows (fold-mean and pooled) showing what's known today:\n  - fold-mean: DPL `+0.384`, UN `+0.472`, PPAC `+0.545`, ProtAttBA `+0.454`\n  - pooled: PPAC `+0.610`, ProtAttBA `+0.486`, DPL TBD (pending 5-seed rerun)\n- 5 background agents still running (audit done; DPL rerun done as a job; PPAC, ProtAttBA, watchdog, 1080Ti fill wave stil…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:30:48.609Z",
+      "text": "Now send messages to the PPAC and ProtAttBA agents — they need to use the canonical manifest + save per-row preds + report both fold-mean and pooled ρ on the 1127-row intersection.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:30:30.309Z",
+      "text": "DPL S1131 fair rerun resubmitted as `33418232` with fixes:\n- ✅ Per-row predictions saved to `preds_seed{S}_fold{F}_{dpl,un}.npz` (for pooled-ρ computation + row-identity verification)\n- ✅ Canonical `data/pdb_cluster_map.json` (not the orphan s1131 map) so folds align with PPAC/ProtAttBA\n- ✅ 5 seeds × 5 folds\n\nNow I also need to update MASTER_TABLE with the known-good +0.384 fold-mean DPL and send a correction to the PPAC/ProtAttBA agents so they also save per-row preds and align on the canonical cluster map + 1127-row intersection.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:29:45.717Z",
+      "text": "Now fix the sbatch script to use the canonical cluster map.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:29:12.411Z",
+      "text": "The script stores `best_preds` but discards it at line 348. I'll patch: (1) capture `best_preds` + `best_labels`, (2) save per-(seed, fold) npz files, (3) fix sbatch cluster file.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:28:26.111Z",
+      "text": "Two bugs in the submitted job. First: wrong cluster file — uses orphan `s1131_cluster_map.json` instead of the canonical `pdb_cluster_map.json` that PPAC/ProtAttBA use. Folds will not be row-identical. Second: need to check whether the script saves per-row predictions.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:28:10.304Z",
+      "text": "Critical findings from the audit — three things to address immediately:\n\n1. **DPL LoRA full-1129 already exists at +0.384 fold-mean** (April 14). The MASTER_TABLE +0.255 is stale — can be updated now without waiting.\n\n2. **PPAC pooled +0.610 vs DPL fold-mean +0.384 is itself an unfair metric comparison.** Pooled ρ > fold-mean ρ when there's between-fold variance in the target. PPAC's fold-mean is actually +0.545, not +0.610. We should compare fold-mean vs fold-mean.\n\n3. **Row asymmetry**: 1127/1129 overlap — PPAC excludes 2I9B (in DPL) and includes 2 rows DPL rejects. Need to intersect to 1127 common rows.\n\nLet me check the new DPL 5-seed rerun job's script and make sure it saves per-row preds so we can recompute pooled uniformly.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:22:30.512Z",
+      "text": "Job `33418181` (`dpl_s1131_fair_5seed`) queued, pending on priority. Output dir `results/deltapot_s1131_lora_fair_1129_5seed/` created and waiting. The watchdog agent will catch it if preempted. Remaining 3 S1131 agents (audit, PPAC, ProtAttBA) still running in the background — they'll coordinate via the shared manifest.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:22:17.113Z",
+      "text": "The agent submitted its SLURM job and exited — the real result will come from the job itself, not the agent. Let me check what job it queued.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:20:28.211Z",
+      "text": "Two more agents dispatched:\n\n1. **Watchdog** (background, long-running) — polls `squeue` every 5 min, detects preemptions/failures, auto-resubmits preempted lowprio jobs, logs to `logs/watchdog.log`. Only resubmits on `PREEMPTED` state — not on code bugs or OOM. Tracks running state across polls to catch \"running <60s for 3 consecutive ticks\" (indicator of repeated preemption).\n\n2. **1080Ti fill wave** — fires PPAC/ProtAttBA/UN sequence-only baseline fills on the underused 1080Ti partition. Targets: PPAC on FireProt-HOF, PPAC on BindingGym LOAEO, ProtAttBA on the missing 3/15 Tsuboyama cells, UN on BindingGym LOAEO. All frozen-feature MLP heads (<1GB VRAM), falls back to A40 if 1080Ti doesn't fit.\n\nCombined picture: 6 background agents in flight — 4 on S1131 parity, 1 watchdog, 1 1080Ti fill wave. Queue running 39 jobs on A40; 1080Ti wave will add more compute in a pool that wasn't being…",
+      "tags": [
+        "dataset",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:18:55.504Z",
+      "text": "Got it — 26 running, 13 pending on A40. I'll spawn a **watchdog agent** polling every 5 min and simultaneously fire **1080Ti fill jobs** for the small-model master-table gaps (PPAC/ProtAttBA/UN ablation fills fit on 11GB).",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T17:18:00.109Z",
+      "text": "**Queue check**: 39 jobs — well above 15, cluster saturated. No need to fire more pilots to fill compute.\n\n**What's running**:\n- 15 StaB-ddG cluster-aware retrains (4 running, 11 pending)\n- 15 Tsub→SKEMPI two-phase transfer sweep (`tpts_f*s*`, partial results already flat; waiting for full confirmation)\n- FoldX residual boost pilot `tpfxb_f0s0` (21 min in)\n- Multi-teacher distillation pilot `tpmt_pilot_f0s0` (45 min in)\n- Plus 4 S1131 parity agents just dispatched (audit + DPL / PPAC / ProtAttBA retrains)\n\n**Beating-model lever, honestly reconsidered**: the paper pivot to **sequence-only SOTA** changes the target. \"Beat +0.497 RDE\" is no longer the central claim — RDE uses crystal structure and is not a sequence-only method, so beating it with a sequence-only model was always going to require structural fusion, which breaks the framing. The current sequence-only SOTA on SKEMPI cluster-aw…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
       "ts": "2026-04-15T17:17:17.603Z",
       "text": "4 agents dispatched in parallel for the S1131 fair-comparison fix:\n\n1. **Audit + canonical manifest** — builds `data/s1131_fair_manifest.json` with all 1129 rows, cluster IDs, and per-seed fold assignments. Verifies the loader fix, checks which of task #69's \"completed\" runs are actually on 1129 vs 711 rows.\n2. **DPL LoRA full-1129 5-seed rerun** — confirms or retrains at `results/deltapot_s1131_lora_fair_1129_5seed/`, reports pooled ρ for DPL head and UN head on the fixed loader.\n3. **PPAC row-identical rerun** — patches `benchmark_ppac_s1131_cluster.py` to consume the manifest, reruns at `results/ppac_s1131_fair_1129_5seed/`, verifies row-identity with DPL LoRA, reports pooled ρ + bootstrap CI.\n4. **ProtAttBA row-identical rerun** — overrides ProtAttBA's native PDB-level GroupKFold with the cluster-id manifest, reruns at `results/protattba_s1131_fair_1129_5seed/`, same row-identity ver…",
       "tags": [
@@ -177,212 +381,6 @@
       "ts": "2026-04-15T17:15:39.710Z",
       "text": "Now spawning 4 agents in parallel: (1) audit + canonical manifest, (2) DPL LoRA full-1129 5-seed rerun, (3) PPAC on manifest, (4) ProtAttBA on manifest.",
       "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:15:23.103Z",
-      "text": "Right — the S1131 parity issue can't stand in the paper. Let me create the task and spawn parallel agents.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:13:38.204Z",
-      "text": "**Q2: S1131 cluster-aware — yes, the training data is currently different, and it's a disadvantage for DPL.**\n\nLooking at `MASTER_TABLE.csv`:\n- **S1131 cluster-aware (711 rows)**: DPL LoRA $+0.255$ — this is the row currently quoted in the paper\n- **S1131 cluster-aware full (1129 rows)**: PPAC $+0.610$, ProtAttBA $+0.478$\n\nDPL LoRA was trained on a biased 711/1131-row subsample due to the residue-numbering loader bug (PDB auth numbering vs zero-indexed chain sequence) mentioned on `main.tex:693`. PPAC and ProtAttBA ran against the full 1129 rows. So on S1131 cluster-aware the head-to-head is **not** fair:\n- PPAC has 1.6$\\times$ more training rows and 1.6$\\times$ more eval rows than DPL's number.\n- The row distributions themselves differ — the 711-row subsample is biased toward PDBs whose chain-sequence happens to align with auth numbering, which is not a random 63% sample.\n\nThe paper ack…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:12:51.508Z",
-      "text": "Answering both questions together.\n\n**Q1: PPAC on SKEMPI cluster-aware — retrained, fair.** PPAC is a faithful re-implementation trained from scratch on our cluster-aware split. `benchmark_ppac.py:68` reimplements their ProteinNet architecture (5 residual blocks, same hidden dims), and the `--cluster-file` flag (line 53) forces GroupKFold groups to be the mmseqs-30% cluster id of each PDB — the same 15-cell protocol DPL LoRA uses. Same ESM-2 650M embeddings, same mmseqs cluster file, same folds, same rows. Not out-of-the-box.\n\nThe only caveat: the real PPAC paper used ESM-2 3B (2560-dim). Ours is scaled down to ESM-2 650M (1280-dim) to match DPL's backbone. That's the *right* control — it isolates the objective (delta-of-mean-pool + MLP vs Δ-potential + MLP) from the backbone — but it means our PPAC number is not the number from the PPAC paper. It's a head-to-head on identical features.…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:08:13.509Z",
-      "text": "Paper rewrite for the sequence-only framing is complete. PDF rebuilt — 14 pages, one pre-existing overfull hbox at line 348 (unrelated to this edit), no errors. \n\nChanges landed:\n- Abstract already reframed earlier (sequence-only SOTA headline with explicit PPAC / ProtAttBA head-to-head numbers).\n- New \"What each benchmark captures and why it matters\" paragraph with 7 regime descriptions.\n- Master table caption restructured with \"Bold = best sequence-only supervised in row\".\n- **Reading the master table** (`main.tex:701`): rewritten around the three findings — (i) $\\Delta$PL is best sequence-only supervised on SKEMPI cluster-aware and Tsuboyama K50 vs PPAC/ProtAttBA trained on the same rows, (ii) the $k$-scaling gap matches Theorem~\\ref{thm:upper}, (iii) sequence-only $\\Delta$PL is complementary to structural models (stacking is now an upper-envelope reference, not the headline).\n- **Sco…",
-      "tags": [
-        "error",
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:06:48.104Z",
-      "text": "PDF built successfully — 14 pages. Let me run pass 2 for refs and mark the paper rewrite task done.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:05:36.218Z",
-      "text": "Now let me check the ProtAttBA agent status and rebuild the PDF in parallel.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:04:17.938Z",
-      "text": "Now let me rewrite the three remaining paragraphs for the sequence-only framing.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:00:50.303Z",
-      "text": "Now update the \"Reading the master table\" / discussion section to reflect the sequence-only framing.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T17:00:08.814Z",
-      "text": "Noted — k-NN + residual landed at +0.246 (ridge stabilizes but damages good folds). Not useful. Continuing with the paper rewrite.\n\nNow add a dedicated **dataset context** subsection explaining what each benchmark captures and why it matters. This is what the user specifically asked for.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:59:24.513Z",
-      "text": "Abstract done. Now the master table caption and the dataset-context section.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:56:50.310Z",
-      "text": "Tick complete:\n- 40 jobs queued, healthy\n- StaB training was configured for 60 epochs but walltime allowed only ~50 — fixed by resubmitting 15 jobs with `EPOCHS=30`. Now fits comfortably in 8h walltime.\n- No other action needed. Paper pivot to sequence-only framing pending user confirmation.\n\nSleeping 40 min.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:56:19.715Z",
-      "text": "15 StaB jobs resubmitted (33418127–41) with 30 epochs (ETA ~4.75h each).",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:55:49.916Z",
-      "text": "**StaB walltime issue**: 60 epochs × 9.5 min/epoch = 9.5h but walltime is 8h. Will timeout. Scancel + resubmit with EPOCHS=30.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:54:30.914Z",
-      "text": "**Honest audit — no, not uniformly. Here's the head-to-head by dataset:**\n\n## ✅ Where DPL IS the best sequence-only supervised (confirmed data)\n\n| Dataset | n | DPL LoRA | PPAC | ProtAttBA | Winner |\n|---|---|---|---|---|---|\n| **SKEMPI cluster-aware** | 7592 | **+0.377** | +0.281 | *in flight* | DPL ✅ (vs PPAC +0.096) |\n| **Tsuboyama K50** | 29902 | **+0.745** | +0.676 | +0.552 | DPL ✅ (vs PPAC +0.069, vs PAttBA +0.193) |\n\n## ❌ Where DPL LOSES to sequence-only supervised\n\n| Dataset | n | DPL LoRA | PPAC | ProtAttBA | Winner |\n|---|---|---|---|---|---|\n| **S1131 cluster-aware** | 1129 | +0.384 | **+0.610** | +0.478 | PPAC ❌ (beats us by **+0.226**) |\n| **FireProt hfree** | 350 | +0.234–0.338 | — | — | UN LoRA (our own ablation, +0.360) |\n| **BindingGym LOAEO** | 27820 | +0.276 | — | — | UN (our ablation, +0.294) |\n| **ProteinGym binding LOAEO** | 5 assays | +0.293 | — | — | UN (+0.338) |…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:53:09.114Z",
-      "text": "Agreed. The head-to-head story requires **ProtAttBA on SKEMPI cluster-aware** (we have it on S1131 only — our flagship dataset is unfilled for ProtAttBA). Let me dispatch the fill agent + do the paper rewrite inline in parallel.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:52:33.708Z",
-      "text": "**Critical bootstrap finding reinforces your sequence-only framing:**\n\n- **Full 5476-row bootstrap**: +0.5854 ± 0.0094, 95% CI [+0.567, +0.604]. Beats StaB +0.559 at 95% confidence **only because of coverage** — StaB has predictions on only 1400 of the 5476 rows.\n- **Joint-subset showdown** (n=1400, where both exist): iso-mean +0.537, StaB alone +0.551. **Δ = −0.014, p=0.57 (null)**. On StaB's home turf, our meta-ensemble is **numerically worse**, not significantly different.\n\n**The meta-ensemble \"beats StaB\" claim was a coverage artifact.** Agent recommends reframing to \"matches StaB where both apply, extends to 4× more rows.\"\n\nThis is the second nail in the coffin for framing the paper around the meta-ensemble. **You are 100% right to pivot to the sequence-only headline.** Want me to rewrite the paper now?",
-      "tags": [
-        "result"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:49:44.006Z",
-      "text": "You're making an important distinction and I agree — let me re-check the data with that lens.\n\n## Honest audit: what's \"sequence-only\" in our benchmark?\n\n| Model | Uses what? | Sequence-only? |\n|---|---|---|\n| **ΔPL LoRA (ours)** | ESM-2 + LoRA fine-tune, difference-head | **✅ YES** |\n| **PPAC** | ESM-2 delta features → MLP | **✅ YES** |\n| **ProtAttBA** | ESM-2 attention head | **✅ YES** |\n| **ESM-2/1v/ProtBert zero-shot** | MLM log-probs | **✅ YES** |\n| **FoldX** | force field over PDB coords | **❌ structure-required** |\n| **RDE-Network** | EGNN over rotamer tensors | **❌ structure-required** |\n| **StaB-ddG** | ProteinMPNN backbone | **❌ structure-required** |\n| **ESM-IF** | graph NN over backbone coords | **❌ structure-required** |\n| **SaProt** | Foldseek 3Di tokens + seq | **❌ structure-required** |\n| **ThermoMPNN** | structural mini-MPNN | **❌ structure-required** |\n\n## The real head…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:47:59.214Z",
-      "text": "**🎯 5-way blend with StaB on 1491-row subset: ρ = +0.5867** (n=1400, +0.070 lift over 4-way on same pool). Just 0.013 short of +0.60.\n\n**Key findings:**\n- **StaB importance 39%** — dominates the tree. It's the lead teacher by far.\n- 4-way (same pool) = +0.5165; StaB alone = +0.5513; **5-way = +0.5867**\n- Per-fold: f0=+0.622, f1=+0.566, **f2=+0.286** (173-row fold drags pooled down)\n- The +0.60 ceiling on this subset is blocked by the tiny fold 2 (single cluster, 173 rows)\n\n**Implication for the full StaB retrain (running):** when the 15-cell OOF lands on the full ~4400-row 5-way pool (not just 1400), fold 2 won't be a singleton. We should easily exceed +0.60 on the full pool. The StaB cluster retrain **is** the path to +0.60+.\n\nHonest caveat: this is single-cluster-seed. Needs ≥5 seeds of the cluster fold assignment before locking. Project memory notes 3-seed wins have flipped twice.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:46:34.611Z",
-      "text": "**StaB 5-way meta harvest script ready + smoke-tested.**\n\n- Script: `scripts/stacked_meta_ensemble_5way_stab.py`\n- Handles StaB's different schema (`pdb`, `mutations`, `pred`, `label` vs RDE's `val_idx`/`complex`/`mutstr`)\n- Searches scratch + `/clusterfs/nilah/sergio/loop_overflow/stabddg_cluster/preds/`\n- Watcher: `scripts/check_stabddg_cluster_progress.sh` auto-launches meta when ≥10 cells complete\n- Expected intersection size: ~4300-4450 rows (StaB's filter is stricter than 4-way)\n\n**Honest prediction:** 4-way (RDE+PPAC+FoldX) +0.5918 + StaB → **+0.60** over/under. Isotonic adds another +0.003-0.005. This is the single biggest outstanding lever.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:45:53.412Z",
-      "text": "**Spam check: PASS (42 jobs, 28 R + 13 PD)**.\n\nProgress check:\n- **StaB-ddG retrain**: running 28:45 elapsed, each job takes 2-4h. Not finished.\n- **Struct-fusion sweep**: 0 summary.json files yet (jobs still training)\n- **Tsub resubmits**: 13 jobs running\n- **Spawn #5 agents**: 4 have reported, 6 still running (FoldX residual boost, per-seed meta, StaB-1491 blend, StaB harvest prep, seed bootstrap, FoldX-distill harvest follow-up)\n\n**Biggest completed findings this hour:**\n1. **+0.592 new headline** (RDE+PPAC+FoldX, iso_mean) — **drops DPL** from the meta ensemble\n2. **LOPO robustness: +0.589** — +0.585 is NOT a cluster-split artifact\n3. **FoldX distill / BindingGym / Multi-teacher single-teacher distill all flat or dead**\n4. **Struct-fusion partial harvest: NOT promising**, mean-of-folds −0.007 vs baseline, overfitting signature at ep5\n5. **LightGBM / CatBoost / zero-impute / per-seed…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:45:11.204Z",
-      "text": "**🔒 LOPO verdict: the +0.585 is ROBUST.** \n\nStrict leave-one-PDB-out on all 320 PDBs:\n- isotonic + ridge: **+0.5890** (LOPO actually slightly higher than cluster-aware +0.5854)\n- isotonic + mean: +0.5846 (tied)\n- Δ vs cluster-aware: **+0.0036**\n\n**This kills the \"cluster split is leaking\" reviewer attack.** The paper can now claim both:\n- Cluster-aware 5-fold: ρ = +0.5918 (RDE+PPAC+FoldX iso_mean)\n- Strict LOPO (all 320 PDBs): ρ = +0.5890 (4-way iso_ridge, within 0.004)\n\nThe number is not an artifact of the cluster split. Robustness check passes.\n\n**Paper rebuilt, headline now +0.592.** 13 pages, 1.73 MB.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:42:55.408Z",
-      "text": "**🎯 NEW HEADLINE: ρ = +0.5918 on RDE+PPAC+FoldX (iso_mean) — 3-way beats 4-way.**\n\n**Dropping DPL lifts the meta-ensemble.** DPL's isotonic-calibrated rank map overweights what RDE already captures.\n\n**Subset rankings:**\n\n| Config | iso_mean ρ | Δ vs 4-way |\n|---|---|---|\n| **RDE+PPAC+FoldX** | **+0.5918** | **+0.0064** 🏆 |\n| DPL+FoldX+PPAC+RDE (4-way) | +0.5854 | — |\n| FoldX+RDE (2-way) | +0.5849 | -0.0005 |\n| DPL+FoldX+RDE | +0.5837 | -0.0017 |\n\n**Awkward finding for the paper**: our own DPL is now *neutral-to-harmful* in the meta-ensemble. FoldX+RDE alone (no DPL) is effectively tied with the 4-way. Keeping PPAC adds +0.007 orthogonal signal on top.\n\n**Paper framing pivot**: the headline is now \"**isotonic-calibrated mean of RDE + PPAC + FoldX = +0.592**\". DPL becomes a *standalone sequence-only model* (beats PPAC +0.281 by +0.096, new SOTA among sequence-only models), not an ensemble…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:41:33.907Z",
-      "text": "**Zero-impute verdict**: +0.585 intersection is optimal. Full pool (5900 rows vs 5476) with missingness indicators + zero-impute hurts: isotonic_mean drops to +0.5788 (-0.0066), isotonic+GBR to +0.5731 (-0.0124). The 424 extra rows are too noisy. **Intersection stays as the right eval set for the headline.**",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:40:02.915Z",
-      "text": "**LightGBM + CatBoost verdict — plateau is real**. None of the 7 GBDT variants beat **isotonic_mean +0.5854**. Best GBDT was catboost_500_es50_raw at +0.5763 (still -0.009 below isotonic_mean, +0.005 over the old sklearn GBR).\n\n**Clear finding**: on 4 features × 5476 rows × 116 CV clusters, there's not enough non-monotonic interaction structure for tree boosters to exploit. What works is **monotone per-base calibration → simple mean**. GBDTs can't mimic that in this data regime.\n\n**Locked in**: `isotonic_mean` (+0.5854) is the production blender. Stopping GBDT exploration.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:39:03.304Z",
-      "text": "**Struct-fusion partial verdict — NOT promising:**\n\n| Fold | Struct-fusion (ep5/10 partial) | Baseline | Δ |\n|---|---|---|---|\n| 0 | +0.077 (preempted) | +0.170 | **−0.093** |\n| 1 | +0.462 | +0.475 | −0.013 |\n| 2 | +0.399 | +0.332 | **+0.067** |\n| 3 | +0.162 | +0.158 | +0.004 |\n| 4 | +0.496 | +0.497 | −0.001 |\n\n**Mean-of-fold-means: −0.007 vs baseline**. Only fold 2 clearly lifts. Peak ρ declining from ep1-3 → ep5 (overfitting signature). Fold 0 tanking (also had preemption). **Skipping promotion into the meta-ensemble.**\n\nThe paper-critical insight: the +0.585 meta-ensemble ceiling **isn't being cracked by any new DPL variant**. We've now tried 30+ architectural, loss, data, distillation, and training-trick variants on top of DPL LoRA and NONE has pushed the ΔPL-alone number past +0.40 on the cluster-aware pool. The ceiling is real. The meta-ensemble is the beating model.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:35:51.505Z",
-      "text": "**FoldX residual boost pilot** submitted: job 33418085 on A40 lowprio. Lookup: 5873 keys, 99.4% RDE overlap. Reuses `--boost-rde` path with FoldX targets. Pilot tests whether DPL can capture *orthogonal* residual signal that FoldX misses.\n\n**Honest prediction:** +0.54-0.58 range. Beats FoldX alone (+0.558) is a coin flip — fitting residuals of a strong teacher is hard because DPL signal is mostly redundant with FoldX on easy rows. Min 5 seeds needed before trusting a small delta.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:35:09.808Z",
-      "text": "**Harvest verdict — all three single-teacher approaches underperform:**\n\n| Pilot | State | Result | Verdict |\n|---|---|---|---|\n| **FoldX distillation** (33417945) | PREEMPTED @ ep 2/10 | ρ ep2=+0.049 (trailing baseline +0.096) | Low priority, needs requeue |\n| **BindingGym→SKEMPI transfer** (33416062) | PREEMPTED but completed twophase | **best ρ=+0.071** (Δ baseline −0.025) | **DEAD** — don't scale. 23 unique chains in BGym too narrow |\n| **Multi-teacher distill** (33418001) | RUNNING ep 0 | TBD, needs ~2.5h | In flight |\n\n**Key finding**: no single-teacher distillation path approaches the +0.585 meta-ensemble. The meta-ensemble beats all distillation variants because GBR can gate each teacher conditionally rather than forcing the student to mimic a mean. **The paper story is the meta-ensemble, not distillation.**",
-      "tags": [
-        "result",
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T16:34:02.809Z",
-      "text": "10 agents launched for hourly spawn #5. Targets:\n1. Strict LOPO rerun — tests if +0.585 is robust to the hardest split\n2. FoldX residual boost — DPL learns to correct FoldX errors\n3. Bootstrap CI on +0.585 — publishability check\n4. LightGBM/CatBoost meta — different GBDT libraries\n5. Harvest FoldX-distill + BindingGym + multi-teacher pilots\n6. Zero-impute full pool meta — recover the ~1059 rows lost to intersection\n7. Per-seed 9-feature meta — individual seed predictions as features\n8. StaB-1491 blend on the intersection — unlock +0.60 on that subset\n9. Struct-fusion full-sweep partial harvest\n10. StaB cluster retrain harvest script (pre-built, ready to fire)\n\nWill report as they land.",
-      "tags": [
-        "error",
-        "result",
-        "dataset",
         "model"
       ]
     }
