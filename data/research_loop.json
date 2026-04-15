@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-15T20:51:04Z",
+  "generated_at": "2026-04-15T21:21:29Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3580,
-    "assistant_turns": 5377,
+    "user_turns": 3618,
+    "assistant_turns": 5434,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-15T20:50:15.742Z"
+    "last_ts": "2026-04-15T21:21:20.456Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,88 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-15T21:20:25.409Z",
+      "text": "BindingGym LoRA 5-seed rerun `33421045` submitted on fc_nilah normal. Now fix the undefined `zhang2025ppac` citation:",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T21:20:01.006Z",
+      "text": "**QoS cap is 16 GPUs shared across ALL fc_nilah users**. Other users are currently using most of it. Our 30 jobs will drain ~16 at a time as slots free. Still better than lowprio (non-preemptable + eventually faster than 113-deep lowprio backlog), but not the instant unlock I hoped for.\n\nNow handling item #4 (BindingGym 1-seed) — submitting a 5-seed rerun:",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T21:19:08.802Z",
+      "text": "PDF rebuilt clean, now **15 pages** (was 14 — added the ensemble significance appendix). Ref links resolved.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T21:18:01.228Z",
+      "text": "Now rebuild PDF and also add the appendix reference target so `\\ref{app:stabddg_ensemble_significance}` doesn't break:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T21:17:35.860Z",
+      "text": "Ensemble claim softened honestly. Also need to fix the HEADLINE row in the master table that shows ensemble `.573` — should be annotated \"α=0.3 best-α, not significant\":",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T21:17:10.788Z",
+      "text": "**30 headline-critical jobs migrated to fc_nilah normal priority** (`33420991-33421020`) — will start as hardware frees, bypassing the 113-deep lowprio backlog. Now fixing the +0.573 ensemble claim in the paper (that's reviewer-critical and doesn't need compute):",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-15T21:16:23.199Z",
+      "text": "All 30 headline-rerun jobs (15 DPL LoRA + 15 UN) are PD on priority — none have started. S1131 DPL `33418232` is gone (never ran — confirms the empty dir finding). Cancelling lowprio versions + resubmitting to fc_nilah normal:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T21:16:15.086Z",
+      "text": "Executing the \"most ethical decision\" plan:\n\n1. **Migrate headline-critical reruns to fc_nilah normal** — unblocks the +0.377 fix\n2. **Fix the mislabeled +0.573 ensemble claim** in main.tex (cite true 50/50, drop significance claim)\n3. **Rerun BindingGym DPL LoRA at 5 seeds** (1-seed violation)\n4. **Drop DPL×frozen reviewer-bait** from appendix (can't answer without 60h compute)\n5. **Fix zhang2025ppac citation** or find a working bibkey\n6. **Rebuild PDF**\n\nStarting with the migration — checking current state first:",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-15T21:15:27.422Z",
+      "text": "**Cron check — same state as last 4 ticks. Holding.**\n\n- **(1) Beating-model**: 0 new results in 35 min. Pilot still PD. Queue 143 saturated. Nothing to kill, no new pilot — off-framing for sequence-only paper and no compute room anyway.\n- **(2) Spam**: 143 >> 15.\n\nWatchdog flagging 13 stale ProtAttBA SKEMPI cells (same ones it's been nursing through preemption cycles). Still the same set of answers I gave 3 minutes ago on decisions you need to make — the state hasn't changed.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-15T21:15:04.920Z",
+      "text": "Yes — a few decisions that are currently blocking paper progress:\n\n**1. Migrate headline-critical jobs to `fc_nilah` normal priority?**\n- DPL LoRA SKEMPI 15-cell headline rerun (`33419905`, `33420168-82`) — still PD, blocking the +0.377 fix\n- UN SKEMPI rerun (`33420346-60`) — still PD\n- ProtAttBA SKEMPI 15-cell headline (`33418302-316`) — getting repeatedly preempted, watchdog keeps resubmitting\n- DPL LoRA S1131 fair (`33418232` — which actually wasn't submitted, the dir is empty per the 5-seed audit)\n- Moving to `fc_nilah + a40_gpu3_normal + savio3_gpu` = non-preemptable, immediate start. Requires `--cpus-per-task=8`. Tested working.\n\n**2. `+0.573 \"50/50 ensemble\"` claim — paper mislabeled**\n- Bootstrap agent found: true 50/50 is +0.562, Δρ = +0.003, p = 0.47 (NOT significant)\n- The +0.573 number is actually the grid-search best-α=0.3 ensemble, Δρ = +0.014, p = 0.058 (borderline, grid-i…",
+      "tags": [
+        "result",
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-15T21:10:50.708Z",
+      "text": "Queue 143, no change. Pilot `33419905` and all 14 rerun cells still PD. 0 new results. Watchdog caught 2 more ProtAttBA SKEMPI preemptions (`pattsk_f2s1`/`f1s2`) and auto-resubmitted — this experiment is getting hammered by preemption but staying alive.\n\nNothing actionable. Sleeping 25 min.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
       "ts": "2026-04-15T20:47:10.006Z",
       "text": "DPL LoRA × frozen ensemble probe **blocked**: DPL frozen per-row preds on SKEMPI cluster-aware don't exist anywhere. Candidates checked:\n\n- `combined_dpl/results.json` — frozen but aggregate metrics only, no npz saves\n- `dpl_foldx_feat_skempi/` — frozen features but with FoldX channel, not pure\n- `ft_frozen/fold0_seed0.npz` — loose GKF single-cell only, not cluster-aware\n- `harvest_master_table.py::DELTAPOT_BENCH_MAP` has NO SKEMPI entry at all\n\n**DPL LoRA reference computed**: pooled ρ = **+0.3521**, n=7677, CI [+0.333, +0.372] — matches the canonical helper number from the reconciliation doc exactly.\n\n**Confirms paper headline should be +0.352, not +0.377** (within the canonical helper's scope), which is consistent with everything we've computed this session.\n\nTo answer the reviewer-bait question (LoRA + frozen ensemble), we'd need 15 more cells of frozen DPL on SKEMPI cluster-aware —…",
       "tags": [
@@ -313,86 +395,6 @@
       "tags": [
         "result",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:31:01.974Z",
-      "text": "PDF rebuilt. S1131 table row now shows:\n- **PPAC `.567`** (bold = best sequence-only, replaces old `.610`)\n- **ProtAttBA `.454`** (replaces off-provenance `.478`)\n- **Trancept `.034`** (|ρ|, new from today's Tranception job)\n- **ESM1v `.230`**, **SaProt `.204`** (now properly filled with absolute values)\n- DPL LoRA `.384` (fold-mean, unchanged)\n\n**So to directly answer your question**: yes, both numbers shifted when retrained properly.\n- **PPAC `+0.610` → `+0.567`** is explained by the 2-row asymmetry + 3-seed→5-seed bump. \n- **ProtAttBA `+0.478`** was never a defensible number — the clean retrain gives `+0.486` pooled or `+0.454` fold-mean. I've been using `+0.454` fold-mean in the text since it's the row-matched metric, but the 3-seed caveat still applies (below your 5-seed rule).\n\nBoth are still **worse than the structural/full-subset PPAC in the old draft**, but the story is consiste…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:30:18.338Z",
-      "text": "Correct — both numbers shifted when we retrained properly. Precise summary:\n\n## PPAC on S1131 cluster-aware\n\n| run | n_rows | seeds × folds | pooled ρ | fold-mean ρ | notes |\n|---|---|---|---|---|---|\n| **OLD** `results/ppac_cluster_s1131/` | 1129 | 3 × 5 | **+0.610** | +0.545 | row-asymmetric — includes 2 rows DPL rejects (`2AJF:E:T159S`, `1JTG:A:V190A`), drops 2I9B (2 rows) which DPL keeps. 1127/1129 overlap with DPL. Below 5-seed rule. |\n| **FAIR** `results/ppac_s1131_fair_1129_5seed/` (job 33418780, landed today) | 1129 | 5 × 5 | **+0.567 ± 0.025** | ~+0.471 | row-identical to DPL via shared `build_rows` loader. Grand pooled = +0.564. Satisfies 5-seed rule. |\n\nSo `+0.610` → `+0.567` when you (a) fix the 2-row asymmetry, (b) bump seeds from 3 → 5. **Net delta: −0.043.**\n\n## ProtAttBA on S1131 cluster-aware\n\n| run | n_rows | seeds × folds | pooled ρ | fold-mean ρ | notes |\n|---|---|---…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:15:26.328Z",
-      "text": "Watchdog log last modified 3.5 min ago — polling fine. Pilot `33419905` still PD. Queue 123.\n\n**Cron verdict — holding, nothing to do.**\n- **(1)** No new pilot results to kill (0 new actionable in 35 min). Queue is saturated, can't fire more. All paper-critical experiments still running.\n- **(2)** 123 >> 15. Not firing.\n\nWaiting on pilot to start (verifies the fold 3 save-fix), then will submit the 14-cell rerun to regenerate the headline SKEMPI cluster-aware numbers cleanly.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:13:05.836Z",
-      "text": "S1131 Tranception |ρ| = 0.034 filled. The 2 new results this tick (Tranception S1131 + FoldX-as-feat null) are both harvested/noted. Pilot `33419905` still PD on priority.\n\nScheduling next wakeup — waiting on (a) pilot to start and confirm save-fix works, (b) ProtAttBA SKEMPI 15-job sweep, (c) ~6 other hourly-spawn-#8 agents still running somewhere (bootstrap already reported, orphan audit reported, intersection harvester reported, CKA reported — so really just the pilots and cosine/label-noise/d_hidden in queue, which won't land for hours).",
-      "tags": [
-        "result",
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:12:52.509Z",
-      "text": "Tranception job still R on `n0278` (the known-bad node — it slipped past the exclude flag). SKEMPI results pending. S1131 result landed separately. Updating master with S1131 Trancept number:",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:12:28.253Z",
-      "text": "Tranception S1131 zero-shot landed! Harvesting.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:12:00.361Z",
-      "text": "Pilot queued, not started yet. Queue still 123. Checking for other recent completions.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:11:45.793Z",
-      "text": "Pilot `33419905` (fold 3 seed 0) submitted. When it finishes, the npz will have matching `val_preds`/`val_idx`/`val_labels` lengths (the assertion at save time will also catch any leftover bug). If it passes, I'll fire the remaining 14 cells (3 seeds × 4 other folds).\n\n---\n\n## Now your PPAC S1131/SKEMPI question\n\n**S1131 PPAC fair retrain** — ✅ **done**. Per earlier ticks:\n- Job `33418780` completed on 1080Ti. Artifact at `results/ppac_s1131_fair_1129_5seed/summary.json`.\n- 5 seeds × 5 folds GroupKFold by mmseqs cluster, n=1129, same `build_rows` loader as DPL (row-identical).\n- **Mean pooled ρ = +0.567 ± 0.025** (grand pooled +0.564).\n- Fold-mean is +0.471.\n- Replaces the stale +0.610 which was from a row-asymmetric 1127-row subset.\n\n**SKEMPI PPAC retrain** — ✅ **done** a while back (task #66). Per the CKA agent + bootstrap agent:\n- Artifact at `results/ppac_cluster/preds.npz` with per-…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:11:09.834Z",
-      "text": "Script parses clean. Launching pilot on fold 3 seed 0 specifically (the corrupted cell) so if the fix works, we'll see a saved npz with matching lengths.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:10:59.194Z",
-      "text": "Syntax check + launch pilot (1 cell) to verify the fix works before spawning 15 jobs:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T20:10:44.485Z",
-      "text": "Now I need to initialize `best_kept_idx` and `best_val_labels` to None before the epoch loop:",
-      "tags": [
-        "note"
       ]
     }
   ]
