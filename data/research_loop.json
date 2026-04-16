@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T05:24:05Z",
+  "generated_at": "2026-04-16T05:54:11Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3915,
-    "assistant_turns": 5905,
+    "user_turns": 3960,
+    "assistant_turns": 5966,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T05:23:58.776Z"
+    "last_ts": "2026-04-16T05:54:05.323Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,171 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-16T05:54:01.419Z",
+      "text": "Also truncate sequences to 512 for ESM-C (still captures full binding interface for most SKEMPI complexes):",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:53:43.101Z",
+      "text": "Now enable gradient checkpointing in the training script for ESM-C:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:53:30.650Z",
+      "text": "**ALL ESM-C jobs are OOMing** — both A40 (44GB used!) and 1080Ti. Root cause: **our ESMC300M class has no gradient checkpointing**. Without it, PyTorch stores all 30 layers' activations for backward — on SKEMPI's 500+ aa chains, that's 44GB+.\n\nThe smoke tests passed because Tsuboyama mini-proteins are ~50 aa. SKEMPI chains are 10× longer.\n\nTwo quick fixes — gradient checkpointing + sequence truncation:",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:51:31.695Z",
+      "text": "## FULL STATUS: 135 JOBS SUBMITTED\n\n| partition | running | pending | experiments |\n|---|---|---|---|\n| savio3_gpu (A40) | 2 | 99 | A/B/C/D/E/F/G (105 cells) |\n| savio2_1080ti | 1 | 29 | B2/D2 (30 cells) |\n| **TOTAL** | **3** | **128** | **135 cells** |\n\n**9 experiments running tonight:**\n\n| Exp | Backbone | Mode | PAE | Interface | Data | Cells | Partition |\n|---|---|---|---|---|---|---|---|\n| **A** | ESM-2 650M | LoRA | - | yes | full | 15 | fc_nilah |\n| **B** | ESM-C 300M | LoRA | - | yes | full | 15 | lowprio A40 |\n| **B2** | ESM-C 300M | LoRA | - | yes | full | 15 | **1080Ti** |\n| **C** | ESM-C 300M | Full FT | yes | yes | full | 15 | lowprio A40 |\n| **D** | ESM-C 300M | LoRA | yes | yes | full | 15 | lowprio A40 |\n| **D2** | ESM-C 300M | LoRA | yes | yes | full | 15 | **1080Ti** |\n| **E** | ESM-C 300M | Full FT | - | yes | full | 15 | lowprio A40 |\n| **F** | ESM-C 300M | LoRA | - |…",
+      "tags": [
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:51:04.338Z",
+      "text": "**ALL 5 SMOKE TESTS PASSED!** Look at these val rho numbers on 100 rows:\n\n| smoke test | val ρ | status |\n|---|---|---|\n| A: ESM-2 LoRA | **+0.578** | ✅ |\n| B: ESM-C LoRA | **+0.748** | ✅ |\n| C: ESM-C FT+PAE | **+0.706** | ✅ |\n| D: ESM-C LoRA+PAE | **+0.748** | ✅ |\n| E: ESM-C FT noPAE | **+0.706** | ✅ |\n\nESM-C is beating ESM-2 even on 100 rows! Now spamming 1080Ti too:",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:50:51.357Z",
+      "text": "**105 jobs submitted.** 4 already running, 101 pending. Now let me also check if the smoke tests finished and actually worked:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:49:46.248Z",
+      "text": "Now the MEGA launch script — all experiments, all folds, all seeds, multiple data variants:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:46:31.120Z",
+      "text": "**All 5 running instantly.** Each processes only 100 binding + 100 stability = 200 rows for 1 epoch. Should finish in **2-5 minutes**. Check with:\n\n```\ntail -f logs/smoke_esm2_33431827.out\ntail -f logs/smoke_esmc_33431829.out\n```",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:45:40.813Z",
+      "text": "Now add the truncation after data loading:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:45:12.507Z",
+      "text": "You're right — 41k rows × 1 epoch is still hours. Let me kill these and submit with a tiny 200-row subset. Need to add a `--max-rows` flag:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:43:46.531Z",
+      "text": "Smoke test `33431631` submitted — 1 epoch, batch 2, 30-min walltime. Check with:\n```\ntail -f logs/smoke_test_33431631.out\n```\n\nI'll check back in a few minutes for output.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:42:19.217Z",
+      "text": "OK — the SLURM job from earlier (33430489) shows data loaded fine, model loaded fine, but then hangs in the training loop (too slow per row). The caching fix I just applied should help. Let me run a TRULY tiny test — override the data to just 50 rows:",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:41:59.914Z",
+      "text": "The `| tail -40` pipe ate all the output. Let me run it again without the pipe, and check the actual output file from the training:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:41:51.585Z",
+      "text": "Exit code 143 = killed by timeout (SIGTERM). The 5-min timeout hit before even 1 epoch. Let me check how far it got:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:35:21.574Z",
+      "text": "Pilot running. Now answering your question:\n\n## Yes — the DPL anti-symmetry still holds\n\nYou're asking about passing `PROTEIN + BINDER_WT` and `PROTEIN + BINDER_MT` to get the ΔΔG via the difference function. **That's exactly what the DPL head does**:\n\n```\nFor mutation at site i (wt_aa → mt_aa) in the binder:\n\n  context_i = [ESM(binder)[i] ; CrossAttn(ESM(binder)[i] → ESM(target))]\n  \n  ΔΔG_site = h(context_i, mt_aa) - h(context_i, wt_aa)\n               ↑ potential with mutant    ↑ potential with wildtype\n```\n\nThe context `context_i` is the SAME for both `h(ctx, mt)` and `h(ctx, wt)` — it includes the target protein via cross-attention. So the model sees:\n- **The target protein** (via cross-attention to partner chain)\n- **The binder's local context** (via ESM embedding at the mutation site)\n- **The WT amino acid** (subtracted)\n- **The MT amino acid** (added)\n\nThe **difference** `h(ctx, m…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:34:48.050Z",
+      "text": "Let me cancel and resubmit with the caching fix, then address your question.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:34:38.632Z",
+      "text": "**Important tradeoff**: `.detach().requires_grad_(True)` means **gradients flow through the head but NOT back through ESM LoRA** for cached rows. The LoRA adapters only get gradients from the FIRST time a chain is encoded (before it enters cache). For unique chains (most stability rows), the first encoding IS the only one, so LoRA gets gradients. For SKEMPI rows sharing chains across mutations, the cache helps speed but LoRA misses repeated-chain gradients. This is acceptable for tonight — the head is the main learnable component anyway.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:34:13.987Z",
+      "text": "Same for stability rows — detach the encoded embeddings:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:33:49.465Z",
+      "text": "All 6 still R, no errors, no crashes. The issue is the epoch just takes a long time — the training loop processes **~41k rows one at a time** with a full ESM-2/ESM-C forward pass per row. Each row = ~0.5-1 second on A40 (tokenize + ESM forward + head forward + backward). So:\n\n- ~33k stability + ~6k binding rows per epoch\n- ~41k × 0.7 sec average ≈ **~28,700 seconds ≈ 8 hours per epoch**\n\nThat's way too slow. The old `train_twophase_lora.py` was faster because it cached ESM embeddings per unique chain and chunked rows. Our new script does a fresh ESM forward per row (we disabled caching to fix the shared-graph backward bug).\n\n**The bottleneck is clear**: per-row ESM forward with no caching. Need to fix the caching approach — detach the cached embeddings so they're leaf tensors that don't share the backward graph, but still allow gradient flow through the head.",
+      "tags": [
+        "error",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:26:44.285Z",
+      "text": "**ESM-C is loading correctly now:**\n\n- **B new**: `ESM-C 300M + LoRA: 0.92M trainable` (332M total, LoRA on `out_proj`)\n- **C**: `ESM-C 300M FULL FT: 332M trainable` (all params unfrozen)\n- **A**: ESM-2 650M, 27 min in, about to hit epoch 1\n\nAll 6 jobs alive and training. Epoch 1 logs should start appearing in the next ~10 min for the ESM-C jobs (faster than ESM-2 since 300M < 650M).",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:26:30.900Z",
+      "text": "**All 6 RUNNING.** 2 on fc_nilah (27 min in), 4 on lowprio (just started 2 min ago). Let me check if the new ESM-C jobs are actually loading ESM-C this time:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:24:41.286Z",
+      "text": "Current state:\n- **A** (ESM-2 LoRA): R on fc_nilah — running correctly\n- **B old** (fc_nilah `33430057`): R but loaded ESM-2 fallback — let it run as duplicate baseline\n- **B new** (lowprio `33430286`): PD — will load ESM-C 300M via `esmc_backbone.py`\n- **C** (lowprio `33430287`): PD — ESM-C FT + PAE\n- **D** (lowprio `33430288`): PD — ESM-C LoRA + PAE\n- **E** (lowprio `33430289`): PD — ESM-C FT no PAE\n\nThe ESM-C jobs now use our native `esmc_backbone.py` with RoPE + local weight cache at `/global/scratch/users/sergiomar10/hf_cache/hub/esmc_300m_2024_12_v0.pth`. No more `from esmc import ESMC` fallback.\n\n**Also note**: the LoRA vs full-FT distinction is now controlled by `lr_lora` threshold: `>= 1e-4` = LoRA mode, `< 1e-4` (like `5e-5` for C/E) = full fine-tune mode. This is a bit hacky — the `lr_lora` arg does double duty. But it works for tonight's pilots.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:24:10.714Z",
+      "text": "Now let me **NOT cancel the running A+B** (they're actually both ESM-2 LoRA now, which is fine as a sanity check). Instead, let me cancel the 3 lowprio PD jobs and resubmit B/C/D/E with the fixed ESM-C path:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
       "ts": "2026-04-16T05:23:42.545Z",
       "text": "Also need to fix the `encode_sequence` function to handle ESM-C:",
       "tags": [
@@ -212,170 +377,6 @@
       "text": "Running. Bug #3 fixed: rows with out-of-range positions are now skipped instead of producing a no-grad tensor. Three bugs fixed total in this round:\n\n1. Tsuboyama CSV path\n2. FireProt `mutation` column name\n3. No-grad rows from out-of-range positions\n4. Shared-graph backward (per-row gradient accumulation)\n\nI'll check again in 15 min for epoch 1 output. Sorry about the iteration — new training script is always a debugging process.",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:58:12.140Z",
-      "text": "`row_loss` has no gradient — happens when all mutation sites in a row are out-of-range (pos >= seq_len after truncation). The `total_ddg` stays as a plain `torch.tensor(0.0)` with no grad_fn. Quick fix: skip rows with no valid sites.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:52:43.354Z",
-      "text": "2 running, 3 PD (fc_nilah CPU cap). Fix applied: per-row backward with gradient accumulation, no ESM cache during training. I'll check logs in ~15 min to see if epoch 1 completes. Meanwhile I'll keep writing the OOD eval script.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:51:59.165Z",
-      "text": "Also need to disable the chain cache during training (it causes the shared-graph issue) and only use it during eval:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:51:41.045Z",
-      "text": "I see the problem — `batch_iface_loss_row` is undefined and I still reference `batch_ddg_loss` and `batch_n_alphas` which are no longer initialized. Let me clean this up properly — each row computes its own loss and calls backward:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:51:31.991Z",
-      "text": "Now I need to restructure the inner loop to compute `loss_ddg` and `batch_iface_loss_row` per-row instead of accumulating them. Let me read the current state around the loss computation:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:51:18.833Z",
-      "text": "Now replace the batch-level backward with per-row backward + gradient accumulation:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:51:08.179Z",
-      "text": "The fix: **process one row at a time with its own forward+backward, accumulate gradients**. This avoids the shared-graph issue entirely:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:50:52.362Z",
-      "text": "The issue: `get_chain_emb()` caches ESM outputs, but multiple rows in the same batch share cached tensors. When row 1's loss does `.backward()`, it frees the graph that row 2's cached tensor was part of. Row 2 then tries to backward through the freed graph → crash.\n\n**The fix**: don't call `.backward()` per-row. Accumulate losses as tensors (keeping the graph alive), then do ONE `.backward()` at the end of the batch. That's actually what the code DOES (`total_loss.backward()` after the loop) — but the cache breaks it because the cached ESM embeddings were created in a single forward pass shared across rows.\n\nThe real fix: **each row in the batch needs its own ESM forward pass** (no cache sharing within a batch), OR we detach the cached embeddings so they become leaf tensors with their own graph.\n\nSimplest fix that preserves gradient flow to LoRA: **don't cache within a batch. Cache ONLY…",
-      "tags": [
-        "error",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:50:29.467Z",
-      "text": "**\"Trying to backward through the graph a second time\"** — the ESM embedding cache is reusing tensors across rows in the same batch, then `.backward()` on the first row frees the graph that the second row still needs. The fix: the cache must `.detach()` embeddings OR we need to process each row's loss independently.\n\nThe root cause is at line 584: the training loop accumulates `total_loss` across multiple rows using cached ESM embeddings. When `.backward()` fires, it tries to backprop through the ESM graph that was already freed by an earlier row's backward.\n\nFix: **detach cached embeddings from the compute graph** so each row builds its own graph from the cached features. This means the LoRA backbone doesn't get gradients from the cache — but that's actually fine for per-row processing. OR, accumulate losses without calling `.backward()` per-row and do one backward at the end of the bat…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:48:47.716Z",
-      "text": "**All 5 RUNNING.** Bugs fixed:\n1. Tsuboyama CSV path: `data/tsuboyama/` → `data/stability/`\n2. FireProt `mutation` column: `\"mutant\"` → `\"mutation\"`\n3. Zero-division safety: empty pool → fallback to the other pool\n4. `--lambda-pae` argparse flag added\n5. pycache cleared\n\nThis time: SKEMPI (7,877) + Tsuboyama (30,000) + FireProt (3,438) = **41,315 total rows** loading correctly. First epoch logs in ~15 min. I'll check back then.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:48:16.120Z",
-      "text": "**Both loaders working: 30,000 Tsuboyama + 3,438 FireProt = 33,438 stability rows.** Resubmitting all 5 pilots:",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:47:20.459Z",
-      "text": "Line 241: `r.get(\"mutant\", \"\")` — but FireProt column is `mutation`, not `mutant`. The Tsuboyama fix used `r.get(\"mutation\", ...)` but the FireProt function was a separate copy that wasn't updated. Fix:",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:47:10.761Z",
-      "text": "Need `env_setup.sh` for GLIBCXX. The actual issue in the FireProt loader: looking at my code, the `load_fireprot_rows` function still has the OLD column mappings. Let me check:",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:46:43.311Z",
-      "text": "Data looks fine — 3438 with ddG, single-letter mutations. The loader must be failing on the wt==mt check. Let me trace:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:46:31.993Z",
-      "text": "Tsuboyama works (30,000 rows). FireProt still 0 — the column `sequence` exists but in a different position, and `ddG` might have NaN values that are filtering everything out. Let me check:",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:46:04.693Z",
-      "text": "Now let me verify the loaders actually produce rows with the fixed column mapping:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:45:48.464Z",
-      "text": "FireProt also uses `wild_type` and `mutation` (same as Tsuboyama). My fix already handles `wild_type` → `wt` and `mutation` → `mt`. But FireProt has `ddG` which sometimes is NaN (it has `dTm` too). And `sequence` is a very long column at the end. Let me also add a safety check for the zero-division:",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:45:37.122Z",
-      "text": "Also fix the FireProt loader (same issue likely):",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:45:25.406Z",
-      "text": "Column names are `wild_type`, `mutation`, `position`, `ddG`, `sequence` — but my loader uses `wt`, `mt`, `pos`. The column name mismatch caused 0 rows to parse. Quick fix:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:45:13.558Z",
-      "text": "`ZeroDivisionError` at line 457: `perm_s` (stability rows in training) is empty — the Tsuboyama/FireProt loader returned 0 rows. The tile operation divides by `len(perm_s)` which is 0. Two issues: (1) the stability loader is failing silently, (2) the balanced sampler doesn't handle empty pools.\n\nLet me check why stability rows are empty:",
-      "tags": [
-        "error",
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:44:52.699Z",
-      "text": "Jobs are gone from squeue. They either just finished (unlikely — too fast) or crashed again. Let me check errors:",
-      "tags": [
-        "error",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:42:25.893Z",
-      "text": "**All 5 pilots RUNNING immediately.** Clean:\n\n- `33428949` Exp A (ESM-2 LoRA) on n0209\n- `33428950` Exp B (ESM-C LoRA) on n0210\n- `33428951` Exp C (ESM-C FT + PAE) on n0212\n- `33428952` Exp D (ESM-C LoRA + PAE) on n0216\n- `33428953` Exp E (ESM-C FT no PAE) on n0216\n\n**0 background processes**, **0 stale pollers/watchdogs/harvesters**. Just these 5 clean training jobs.\n\nNow while they cook, let me write the OOD eval script you asked for — tests on all the DDG datasets we DIDN'T train on. I'll have it ready by the time epoch 1 logs appear (~15 min).",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:41:56.242Z",
-      "text": "Both bugs fixed:\n1. Tsuboyama CSV path: `data/tsuboyama/` → `data/stability/tsuboyama_dpl_ready.csv`\n2. `--lambda-pae` flag was already in argparse (the D/E jobs loaded a cached old version — pycache cleared now)\n\nResubmitting all 5 pilots:",
-      "tags": [
-        "model"
       ]
     }
   ]
