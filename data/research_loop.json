@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T13:55:15Z",
+  "generated_at": "2026-04-16T14:25:20Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3997,
-    "assistant_turns": 6018,
+    "user_turns": 4006,
+    "assistant_turns": 6032,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T13:55:08.835Z"
+    "last_ts": "2026-04-16T14:00:15.640Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,44 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-16T14:00:15.489Z",
+      "text": "OOD jobs started 4-6 seconds ago, still loading. These are fast inference jobs (~5-10 min each). Results should land soon. The ESM-2 training (e2G) is also running.\n\n**Current state: 238 jobs in queue. The OOD evals test ALL 5 held-out datasets (Tsuboyama, FireProt, BindingGym, ProteinGym, S1131) on every completed checkpoint. Results will populate `results.json` with the `\"ood\"` key containing per-dataset Spearman ρ. First OOD results should appear within 10 minutes.**",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T13:59:58.558Z",
+      "text": "Jobs just started — logs are empty. Let me wait a moment and check again:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T13:59:47.802Z",
+      "text": "**211 OOD eval jobs + 75 ESM-2 training = 238 total.** 10 already running (8 on 1080Ti, 2 on A40).\n\nNow each OOD eval scores **5 datasets**: Tsuboyama, FireProt, BindingGym, ProteinGym binding, S1131.\n\nLet me check if the new OOD jobs are actually working:",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T13:58:56.666Z",
+      "text": "Now cancel old OOD jobs and resubmit with ALL datasets on BOTH partitions:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T13:58:07.202Z",
+      "text": "BindingGym IS in the script but let me add ProteinGym, S1131, and FireProt HOF. Then cancel the old OOD jobs and resubmit with ALL datasets + spam both partitions:",
+      "tags": [
+        "dataset"
+      ]
+    },
     {
       "ts": "2026-04-16T13:51:57.971Z",
       "text": "**188 jobs fired:**\n\n**OOD eval (113 jobs)** — each loads a completed checkpoint, scores Tsuboyama + FireProt + BindingGym, writes OOD rho to `results.json`. ~5-10 min each on A40.\n\n**New ESM-2 training (75 jobs)** — 5 data-variant experiments on fc_nilah normal:\n\n| Exp | Data | Purpose |\n|---|---|---|\n| **e2F** | SKEMPI only | binding-focused ESM-2 |\n| **e2G** | Stability only | Tsuboyama+FireProt ESM-2 |\n| **e2I** | SKEMPI+Tsuboyama | no FireProt |\n| **e2J** | Full, λ_iface=0.5 | high interface loss |\n| **e2K** | Full, λ_iface=0.0 | no interface loss ablation |\n\nThese match the ESM-C variants but with the stronger ESM-2 650M backbone. Combined with the existing ESM-2 full-data results (val ρ=+0.606), we'll have a complete ablation table for both backbones.\n\n18 already running, 170 draining overnight. OOD results should start landing within 10-15 minutes.",
@@ -352,42 +390,6 @@
       "tags": [
         "model",
         "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:51:04.338Z",
-      "text": "**ALL 5 SMOKE TESTS PASSED!** Look at these val rho numbers on 100 rows:\n\n| smoke test | val ρ | status |\n|---|---|---|\n| A: ESM-2 LoRA | **+0.578** | ✅ |\n| B: ESM-C LoRA | **+0.748** | ✅ |\n| C: ESM-C FT+PAE | **+0.706** | ✅ |\n| D: ESM-C LoRA+PAE | **+0.748** | ✅ |\n| E: ESM-C FT noPAE | **+0.706** | ✅ |\n\nESM-C is beating ESM-2 even on 100 rows! Now spamming 1080Ti too:",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:50:51.357Z",
-      "text": "**105 jobs submitted.** 4 already running, 101 pending. Now let me also check if the smoke tests finished and actually worked:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:49:46.248Z",
-      "text": "Now the MEGA launch script — all experiments, all folds, all seeds, multiple data variants:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:46:31.120Z",
-      "text": "**All 5 running instantly.** Each processes only 100 binding + 100 stability = 200 rows for 1 epoch. Should finish in **2-5 minutes**. Check with:\n\n```\ntail -f logs/smoke_esm2_33431827.out\ntail -f logs/smoke_esmc_33431829.out\n```",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:45:40.813Z",
-      "text": "Now add the truncation after data loading:",
-      "tags": [
-        "note"
       ]
     }
   ]
