@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T02:53:33Z",
+  "generated_at": "2026-04-16T03:23:39Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3777,
-    "assistant_turns": 5698,
+    "user_turns": 3782,
+    "assistant_turns": 5706,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T02:50:43.287Z"
+    "last_ts": "2026-04-16T03:12:08.446Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,36 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-16T03:08:10.133Z",
+      "text": "Good question — AF2-Multimer's trick is exactly the thing we're missing. Here's how they did it:\n\n## AF2-Multimer architecture (simplified)\n\n```\nInput: Chain A (L_A residues) + Chain B (L_B residues)\n       ↓\nStep 1: Paired MSAs (cross-species pairing to find co-evolutionary signal)\n       ↓\nStep 2: Build SINGLE representation:  (L_A + L_B, 384)\n        → one vector per residue across BOTH chains concatenated\n        \nStep 3: Build PAIR representation:    (L_A + L_B, L_A + L_B, 128)  \n        → one value for EVERY residue pair, INCLUDING cross-chain\n        → z[i_in_A, j_in_B] encodes the predicted spatial/contact\n          relationship between residue i on chain A and residue j on chain B\n       ↓\nStep 4: Evoformer (48 blocks of attention)\n        → single rep attends to pair rep\n        → pair rep updated by triangular attention + outer product of single\n        → THIS IS WHERE CROSS-C…",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T03:03:09.253Z",
+      "text": "All jobs cancelled. Clean slate. Let me think with you.\n\n## The core flaw you identified\n\nYou're right — our current architecture is blind to the binding partner:\n\n```\nCurrent DPL:\n  mutation at chain A, position i\n  context = ESM-2(chain_A)[i]    ← sees ONLY chain A\n  prediction = h(context, mut_aa) - h(context, wt_aa)\n  \n  ❌ Chain B (the binding partner) is NEVER seen by the head\n  ❌ For pMHC: the model sees peptide WT vs MT but never the MHC\n  ❌ For antibody-antigen: sees the mutated CDR but not the antigen\n```\n\nESM-2 is a single-chain model. When it encodes chain A, it has zero knowledge that chain B exists. So our ΔΔG prediction is really \"how unusual is this mutation in chain A's evolutionary context\" — a proxy for binding, not actual binding.\n\n## Your goal: one model that understands BOTH stability AND binding\n\nTwo tasks, different inputs:\n\n| task | input | what the model needs to…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T02:55:55.900Z",
+      "text": "Here's the clean table:\n\n## All Datasets — What We Have\n\n| Dataset | N | Task | Input | Label | Split Protocol | Best dedicated ρ |\n|---|---|---|---|---|---|---|\n| **SKEMPI + AB-Bind** | 7,698 | PPI binding ΔΔG | WT+MUT seqs of 2-chain complex | ΔΔG_bind (kcal/mol) | 5-fold GKF mmseqs 30% cluster | +0.35 (DPL LoRA) |\n| **S1131** (SKEMPI subset) | 1,129 | PPI binding ΔΔG | WT+MUT seqs of 2-chain complex | ΔΔG_bind (kcal/mol) | 5-fold GKF mmseqs 30% cluster | +0.384 (DPL LoRA) |\n| **Tsuboyama K50** | 29,902 | Monomeric stability | WT+MUT seq of 1 mini-protein | ΔΔG_fold (K50 cooperativity) | 5-fold GKF by protein | +0.744 (DPL LoRA) |\n| **FireProt curated** | 3,438 | Monomeric stability | WT+MUT seq of 1 protein | ΔΔG_fold (kcal/mol) | 5-fold GKF by protein | +0.369 (DPL frozen) |\n| **FireProt HOF** | 350 | Monomeric stability | WT+MUT seq of 1 protein | ΔΔG_fold (kcal/mol) | Fixed homolog…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T02:55:03.940Z",
+      "text": "All jobs killed. Let me give you the honest picture.\n\n**First — what happened with Tsuboyama**: The +0.744 was a **dedicated model trained ON Tsuboyama**. What you just saw (−0.138) is the SKEMPI-trained model applied zero-shot TO Tsuboyama. Phase-2 SKEMPI fine-tuning overwrote the Phase-1 Tsuboyama signal. The +0.744 dedicated model still exists and is real — the OOD test just proved that fine-tuning on dataset A destroys performance on dataset B. That's a finding, not a bug.\n\n**The real lesson**: we've been evaluating the **architecture** (DPL constraint) not a **model** (single set of weights). Each benchmark's number came from a model specifically trained on that benchmark. That's honest and standard — but it means \"download our model\" doesn't work.\n\nNow — the clean slate you asked for. Here are all our datasets with their structure:",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-16T02:50:43.138Z",
       "text": "## OOD Results Table — All 11 Checkpoints × 8 Benchmarks\n\n| Benchmark | Dedicated ρ | OOD mean ρ ± std | Verdict |\n|---|---|---|---|\n| **S1131 fair 1129** | +0.384 (retrained) | **+0.634 ± 0.124** | ⚠️ MISLEADING — S1131 is a SUBSET of SKEMPI, ~80% of rows are in-distribution |\n| **ATLAS TCR-pMHC** (n=214) | +0.088 (retrained) | **+0.263 ± 0.067** | ✅ Positive transfer (3× dedicated) |\n| **FireProt curated** (n=3438) | +0.369 (frozen) | **+0.145 ± 0.030** | ❌ 60% degradation |\n| **FireProt HOF** (n=350) | +0.234 (frozen) | **+0.083 ± 0.023** | ❌ 65% degradation |\n| **BindingGym LOAEO** (28k) | +0.276 (LoRA) | **−0.019 ± 0.021** | ❌ Zero signal — no transfer |\n| **ProteinGym binding** (35k) | +0.293 | **−0.029 ± 0.022** | ❌ Zero signal — no transfer |\n| **SAbDab v2** (n=427) | −0.057 | **−0.017 ± 0.019** | ➖ Both at noise floor |\n| **Tsuboyama K50** (29k) | +0.744 (LoRA) | **−0.138 ± 0.03…",
@@ -366,36 +396,6 @@
         "dataset",
         "model",
         "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-15T23:32:10.160Z",
-      "text": "10 agents incoming — focused on **automation (so work moves forward unattended), paper polish, and filling the ThermoMPNN structural gap**. No new architectural pilots — the cron text is stale relative to the deployment pivot.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-15T23:26:08.620Z",
-      "text": "**Yes — roughly half the wall time**, but with a real variance tradeoff. Let me break it down:\n\n## 15 cells vs 5 cells — wall time math\n\n### Current protocol (3 seeds × 5 folds = 15 cells)\n- **fc_nilah CPU cap** forces 2 waves (9 cells in wave 1 + 6 cells in wave 2, since other DPL variants are also sharing the cap)\n- Wall time: **~4h40m** (2h20m per wave)\n- Variance: can report `ρ = X ± Y across 3 seeds` — small but nonzero error bar\n\n### 1 seed × 5 folds = 5 cells\n- **All 5 cells fit in one wave** (5 × 8 = 40 CPUs, well under the cap)\n- Wall time: **~2h20m** (one wave)\n- Variance: **zero — single point estimate, no error bar**\n\n### Or: 2 seeds × 5 folds = 10 cells\n- Fits in one wave (10 × 8 = 80 CPUs, plus other DPL variants → over cap by ~24 CPUs → probably fits but tight)\n- Wall time: **~2h20m-2h40m** (one wave, possibly tail cells queued briefly)\n- Variance: tiny 2-seed spread, bett…",
-      "tags": [
-        "error",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T23:17:29.007Z",
-      "text": "**Not exactly \"quickly\" — closer to 2-5 hours total**. Here's the breakdown:\n\n## Timing per dplrr cell\n\nEach cell fine-tunes ESM-2 + LoRA + DPL head on ~6200 SKEMPI training rows for 10 epochs. From the earlier log I read, **each epoch takes ~14 minutes** (around 850 seconds). So:\n- **Per cell**: 10 epochs × ~14 min = **~2h20m**\n- **First best-val save (first phase2_ckpt)**: typically epoch 2-3 = ~30-45 min from now\n\n## Parallelism\n\nfc_nilah QoS has a 128-CPU cap, each dplrr cell uses 8 CPUs → **max 16 concurrent cells**. But we also have `dpl_s1131_fair`, `tsub_lora_smoke`, `dpl_multitask_pilot` sharing the cap (3 cells × 8 = 24 CPUs) plus the 9 dplrr cells already running (72 CPUs) → 96 CPUs used → only 4 more slots free.\n\nSo:\n- **Currently running**: 9 dplrr cells + 3 other DPL variants (12 jobs, 96 CPUs)\n- **PD waiting**: 6 more dplrr cells (`f3s0`-`f4s2`)\n- **First wave (9 cells)**:…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T23:16:05.116Z",
-      "text": "Log timestamps show dplrr_f1s0 has only been running **~2 min** (I misread `1:46` earlier — that's minutes:seconds, not hours:minutes). Setup is done, Phase-1 adapter loaded (`loaded 132 LoRA tensors`), head initialized, training hasn't started yet. Each epoch is ~14 min, so first best-val save will appear in ~20 min.\n\n---\n\n## Your question: ESM-2 masking pretraining vs ΔΔG\n\n**Correct — ESM-2 does NOT understand ΔΔG.** Here's the honest story layer by layer:\n\n### Layer 1: ESM-2 650M (pretrained, frozen backbone)\n\n- **Training task**: masked residue prediction on UniRef50 (~60 million protein sequences). Standard MLM, like BERT but for amino acids.\n- **What it learned**: distributional statistics over natural sequences — which residues commonly appear where, which residues are evolutionarily conserved, implicit contact maps from co-evolution. This gives it a **structure-aware representati…",
-      "tags": [
-        "model"
       ]
     }
   ]
