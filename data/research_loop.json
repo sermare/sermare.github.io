@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T13:25:12Z",
+  "generated_at": "2026-04-16T13:55:15Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3990,
-    "assistant_turns": 6008,
+    "user_turns": 3997,
+    "assistant_turns": 6018,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T07:25:21.900Z"
+    "last_ts": "2026-04-16T13:55:08.835Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,44 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-16T13:51:57.971Z",
+      "text": "**188 jobs fired:**\n\n**OOD eval (113 jobs)** — each loads a completed checkpoint, scores Tsuboyama + FireProt + BindingGym, writes OOD rho to `results.json`. ~5-10 min each on A40.\n\n**New ESM-2 training (75 jobs)** — 5 data-variant experiments on fc_nilah normal:\n\n| Exp | Data | Purpose |\n|---|---|---|\n| **e2F** | SKEMPI only | binding-focused ESM-2 |\n| **e2G** | Stability only | Tsuboyama+FireProt ESM-2 |\n| **e2I** | SKEMPI+Tsuboyama | no FireProt |\n| **e2J** | Full, λ_iface=0.5 | high interface loss |\n| **e2K** | Full, λ_iface=0.0 | no interface loss ablation |\n\nThese match the ESM-C variants but with the stronger ESM-2 650M backbone. Combined with the existing ESM-2 full-data results (val ρ=+0.606), we'll have a complete ablation table for both backbones.\n\n18 already running, 170 draining overnight. OOD results should start landing within 10-15 minutes.",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T13:50:34.338Z",
+      "text": "Now fire OOD eval on all 118 completed cells + submit more ESM-2 training:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T13:48:05.295Z",
+      "text": "The old batch (33432981) ran before the OOD fix was applied — it wrote results.json without the OOD section. The resubmitted jobs (with the fix) would have skipped this cell because `results.json` already existed.\n\n**The fix is simple**: run the OOD eval as a separate post-processing step on the saved checkpoints. This is faster than retraining anyway — we have 118 completed models, just need to load each and score OOD datasets.\n\nWant me to write a quick OOD eval script and fire it on all 118 completed cells? It's inference-only, ~2-5 min per cell, can run on lowprio or 1080Ti.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T13:47:49.297Z",
+      "text": "No OOD results — the OOD eval block crashed on all jobs (the `load_tsuboyama_rows` bug affected the first batch, and the resubmitted batch may not have reached the OOD block or had a different issue). Let me check:",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-16T13:47:03.870Z",
+      "text": "**Queue is EMPTY — all jobs finished.** 118 results.json files landed. Here's the summary:\n\n## Results Table (multi-task val ρ, pooled binding+stability)\n\n| Experiment | Done | Mean val ρ | Std | Range | Notes |\n|---|---|---|---|---|---|\n| **A: ESM-2 650M LoRA** | **15/15** | **+0.606** | 0.032 | [+0.557, +0.655] | **Best overall** |\n| B: ESM-C 300M LoRA | **15/15** | +0.526 | 0.047 | [+0.454, +0.612] | |\n| C: ESM-C 300M FT+PAE | **15/15** | +0.536 | 0.034 | [+0.490, +0.597] | |\n| D: ESM-C 300M LoRA+PAE | 12/15 | +0.533 | 0.050 | [+0.454, +0.612] | 3 preempted |\n| E: ESM-C 300M FT noPAE | 12/15 | +0.514 | 0.058 | [+0.400, +0.607] | 3 preempted |\n| G: ESM-C stab only | 14/15 | +0.487 | 0.035 | [+0.416, +0.522] | No SKEMPI |\n| J: ESM-C high iface (λ=0.5) | **15/15** | +0.533 | 0.049 | [+0.444, +0.614] | |\n| K: ESM-C no iface (λ=0) | **15/15** | +0.532 | 0.045 | [+0.459, +0.601] | Ablation…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-16T07:21:51.007Z",
       "text": "**152 cells resubmitted (18 already-done cells skipped). 26 running, 126 pending.** Both bugs fixed:\n\n1. OOD eval: no more circular import (`load_tsuboyama_rows` is already defined in the same file)\n2. Stability-only: `--skempi-sources none` returns empty list instead of crashing on `data/none/manifest.json`\n\n**Current completed results (real numbers):**\n- ESM-2 LoRA fold 0: **val ρ = +0.628** (multi-task binding+stability)\n- ESM-C LoRA 11 folds: **val ρ = +0.454 to +0.612** (varies by fold)\n\nThese are running all night. The OOD eval at the end of each job will now produce BindingGym / ProteinGym / FireProt HOF / Tsuboyama (when not in training) numbers automatically. Everything draining across A40 + lowprio.",
@@ -348,41 +386,6 @@
     {
       "ts": "2026-04-16T05:45:40.813Z",
       "text": "Now add the truncation after data loading:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:45:12.507Z",
-      "text": "You're right — 41k rows × 1 epoch is still hours. Let me kill these and submit with a tiny 200-row subset. Need to add a `--max-rows` flag:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:43:46.531Z",
-      "text": "Smoke test `33431631` submitted — 1 epoch, batch 2, 30-min walltime. Check with:\n```\ntail -f logs/smoke_test_33431631.out\n```\n\nI'll check back in a few minutes for output.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:42:19.217Z",
-      "text": "OK — the SLURM job from earlier (33430489) shows data loaded fine, model loaded fine, but then hangs in the training loop (too slow per row). The caching fix I just applied should help. Let me run a TRULY tiny test — override the data to just 50 rows:",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:41:59.914Z",
-      "text": "The `| tail -40` pipe ate all the output. Let me run it again without the pipe, and check the actual output file from the training:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:41:51.585Z",
-      "text": "Exit code 143 = killed by timeout (SIGTERM). The 5-min timeout hit before even 1 epoch. Let me check how far it got:",
       "tags": [
         "note"
       ]
