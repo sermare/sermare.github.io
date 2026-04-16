@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T02:23:27Z",
+  "generated_at": "2026-04-16T02:53:33Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3767,
-    "assistant_turns": 5682,
+    "user_turns": 3777,
+    "assistant_turns": 5698,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T02:23:22.444Z"
+    "last_ts": "2026-04-16T02:50:43.287Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,49 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-16T02:50:43.138Z",
+      "text": "## OOD Results Table — All 11 Checkpoints × 8 Benchmarks\n\n| Benchmark | Dedicated ρ | OOD mean ρ ± std | Verdict |\n|---|---|---|---|\n| **S1131 fair 1129** | +0.384 (retrained) | **+0.634 ± 0.124** | ⚠️ MISLEADING — S1131 is a SUBSET of SKEMPI, ~80% of rows are in-distribution |\n| **ATLAS TCR-pMHC** (n=214) | +0.088 (retrained) | **+0.263 ± 0.067** | ✅ Positive transfer (3× dedicated) |\n| **FireProt curated** (n=3438) | +0.369 (frozen) | **+0.145 ± 0.030** | ❌ 60% degradation |\n| **FireProt HOF** (n=350) | +0.234 (frozen) | **+0.083 ± 0.023** | ❌ 65% degradation |\n| **BindingGym LOAEO** (28k) | +0.276 (LoRA) | **−0.019 ± 0.021** | ❌ Zero signal — no transfer |\n| **ProteinGym binding** (35k) | +0.293 | **−0.029 ± 0.022** | ❌ Zero signal — no transfer |\n| **SAbDab v2** (n=427) | −0.057 | **−0.017 ± 0.019** | ➖ Both at noise floor |\n| **Tsuboyama K50** (29k) | +0.744 (LoRA) | **−0.138 ± 0.03…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T02:49:39.876Z",
+      "text": "**All 11 OOD inference jobs DONE!** Let me pull the numbers:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T02:26:38.117Z",
+      "text": "**First OOD job `ood_fc_f0s0` is RUNNING** on n0273. 8 total fc_nilah jobs active. More OOD cells will cascade as slots open from the last 4 dplrr training cells finishing.\n\n**Results path to watch**: \n```\nresults/dpl_ood_inference/fold0_seed0/ood_results.json\n```\n\nFirst OOD result should land in **~30-45 min** (ESM-2 forward on ~70k total rows across 8 benchmarks). I'll check back then. The rest will cascade — estimated **~1.5-2h for all 11 OOD results**.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T02:25:59.136Z",
+      "text": "fc_nilah at 56 CPUs running (7 jobs × 8 cpus each). QoS cap is 128 — **72 CPUs free**. The 11 OOD jobs need 11 × 8 = 88 CPUs. That's slightly over the remaining 72. So **~9 OOD jobs can start NOW**, 2 more when the first training cells finish.\n\nThe OOD jobs show `(None)` as reason which means they're about to be scheduled. Let me check once more:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T02:25:08.808Z",
+      "text": "Still PD on lowprio A40. Let me try fc_nilah normal — the dplrr training cells are finishing and freeing those slots:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T02:23:30.715Z",
+      "text": "**8 idle A40 nodes on savio3_gpu!** Want me to:\n\n1. Cancel `patt_fph_s2/s3/s4` (free 3 1080Ti slots)\n2. **AND** also submit the 11 OOD jobs to savio3_gpu A40 lowprio (uses the 8 idle A40 nodes — faster than waiting for 1080Ti)\n\nThe A40 will be ~2× faster per job than 1080Ti anyway. Say the word and I fire both.",
+      "tags": [
+        "infra"
+      ]
+    },
     {
       "ts": "2026-04-16T02:23:21.028Z",
       "text": "**None have started. All 11 stuck on `(Priority)` behind other users on savio2_1080ti.** No log files exist yet.\n\nThe 1080Ti partition is fully occupied:\n\n| node | who | job | GPU slots used |\n|---|---|---|---|\n| n0299 | **us** | patt_fph_s2/s3/s4 (ProtAttBA HOF) | 3 |\n| n0229 | bensonli + mahikabansal | their jobs | 2 |\n| n0227 | 23liguanting | chem242 | 1 |\n| n0298 | philothei | chem242 | 1 |\n| n0302 | 23lysam | c142 | 1 |\n\n**8 GPUs running across 5 nodes, zero free.** Our OOD jobs can't start until slots open.\n\n**Two ways to unblock:**\n\n**A)** Cancel our 3 `patt_fph_*` jobs (11 min of progress lost, frees 3 1080Ti slots immediately → 3 OOD jobs start within seconds)\n\n**B)** Also submit the 11 OOD jobs to **savio3_gpu A40 lowprio** as a parallel backup pool — different partition, might have free slots:",
@@ -352,49 +395,6 @@
       "ts": "2026-04-15T23:16:05.116Z",
       "text": "Log timestamps show dplrr_f1s0 has only been running **~2 min** (I misread `1:46` earlier — that's minutes:seconds, not hours:minutes). Setup is done, Phase-1 adapter loaded (`loaded 132 LoRA tensors`), head initialized, training hasn't started yet. Each epoch is ~14 min, so first best-val save will appear in ~20 min.\n\n---\n\n## Your question: ESM-2 masking pretraining vs ΔΔG\n\n**Correct — ESM-2 does NOT understand ΔΔG.** Here's the honest story layer by layer:\n\n### Layer 1: ESM-2 650M (pretrained, frozen backbone)\n\n- **Training task**: masked residue prediction on UniRef50 (~60 million protein sequences). Standard MLM, like BERT but for amino acids.\n- **What it learned**: distributional statistics over natural sequences — which residues commonly appear where, which residues are evolutionarily conserved, implicit contact maps from co-evolution. This gives it a **structure-aware representati…",
       "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T23:15:11.694Z",
-      "text": "12 fc_nilah jobs running (9 dplrr + 3 other DPL variants). **dplrr has been running 1h46m — should be at epoch 7-8 of 10 by now**. No `phase2_ckpt` files landed yet. Let me check one log to see if the save message is appearing:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T23:14:13.415Z",
-      "text": "**All 9 dplrr cells f0-f2 are now R**, plus `dpl_s1131_fair`, `tsub_lora_smoke`, `dpl_multitask_pilot`. 6 more dplrr cells (f3-f4) still PD on `Priority`/`QOSGrpCpuLimit` — will start as the first batch finishes.\n\n---\n\n## Your question: pretrained or from scratch? With what datasets?\n\n**Not from scratch — they ARE starting from a pretrained LoRA adapter.** Here's exactly what these running dplrr cells do:\n\n### The training recipe (per `train_twophase_lora.py` with `--reuse-adapter --only-twophase`)\n\n1. **Backbone**: ESM-2 650M (`facebook/esm2_t33_650M_UR50D`) — **frozen pretrained weights from Meta**, not trained by us\n2. **LoRA adapter**: r=16, alpha=32, query+value, dropout 0.1. **Loaded from `results/twophase_lora/phase1_lora_adapter.pt`** — this is the **Phase-1 Tsuboyama-pretrained adapter**:\n   - Trained on Tsuboyama K50 (29,902 monomeric stability mutations, 362 mini-proteins)…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T23:13:25.756Z",
-      "text": "Cleared. **0 fc_nilah jobs running, 15 dplrr cells + 4 other DPL-family jobs PD**. Scheduler will dispatch dplrr next — reasons are shifting from `QOSGrpCpuLimit` to `Priority`/`Resources` as slots free.\n\n- `dplrr_f2s1 / f2s2 / f3s0-4s2` already showing `Priority` (9 cells) → these will start within seconds/minutes as hardware allocates\n- `dplrr_f0s0-f2s0` (6 cells) still `QOSGrpCpuLimit` → will cascade in next\n\nIn a few minutes the 15 dplrr cells should be running on fresh Python processes with the patched script → they will save phase2 ckpts at best-val epochs. UN cells can be resubmitted once dplrr completes (~2-3h from start).\n\nChecking the first cell's status in ~30s:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T23:13:04.853Z",
-      "text": "Got it — cancelling all 15 UN cells (12 R + 3 PD) so the 15 dplrr cells can take the fc_nilah slots immediately.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T23:12:02.980Z",
-      "text": "Clean: **14 pattsk cancelled**. fc_nilah state is now **96 CPUs running (12 UN cells) + 176 CPUs pending (15 dplrr + 3 UN + bglora5s + s1131_fair + tsub_smoke + multitask)**, all DPL-family.\n\n## Queue drain plan\n\n- **Now → ~1.5h**: 12 UN cells finish → 96 CPUs free\n- **~1.5h**: **15 dplrr cells (120 CPUs) can't ALL fit at once** — cap is 128, so ~15 will fit if nothing else is running. Actually: 15×8=120 ≤ 128 ✓. All 15 dplrr can start in parallel.\n- **Simultaneously**: 3 PD UN cells (`unrr_f4*`) start filling the remaining 8 CPU gap\n- **~1.5h + 2h = ~3.5h from now**: all 15 dplrr cells finish, 120 CPUs free\n- **~3.5h**: bglora5s + s1131_fair + tsub_smoke + multitask (4 × 8 = 32 CPUs) can all run concurrently\n\nSo in roughly **~5h total from now**, all DPL-family work will have run sequentially on fc_nilah normal priority with no contention.\n\n## Bonus: the 15 UN R cells are using the PATC…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-15T23:11:33.865Z",
-      "text": "**Current fc_nilah state**: 12 UN SKEMPI cells are now **RUNNING** (`unrr_f{0..3}_s{0..2}`, 4 min in, 96 CPUs used). The 15 new dplrr cells + 3 PD UN + other DPL variants are all queued waiting for the 128-CPU cap to clear.\n\n**Biggest blocker**: the 14 `pattsk_*` ProtAttBA SKEMPI migration cells (112 CPUs) are competing for the same fc_nilah budget. They're a baseline comparison, not our model. Cancelling them now means our dplrr cells can start as soon as the currently-running UN cells free up slots.\n\nCancelling ProtAttBA SKEMPI from fc_nilah:",
-      "tags": [
-        "dataset",
         "model"
       ]
     }
