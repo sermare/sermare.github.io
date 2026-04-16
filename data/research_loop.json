@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T04:53:55Z",
+  "generated_at": "2026-04-16T05:24:05Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3896,
-    "assistant_turns": 5880,
+    "user_turns": 3915,
+    "assistant_turns": 5905,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T04:52:43.462Z"
+    "last_ts": "2026-04-16T05:23:58.776Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,62 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-16T05:23:42.545Z",
+      "text": "Also need to fix the `encode_sequence` function to handle ESM-C:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:23:22.060Z",
+      "text": "**Problem spotted**: Exp B says `\"esmc not installed, falling back to ESM-2 650M\"`. So **both A and B are running ESM-2 650M** — ESM-C isn't loading. The fallback in the training script triggers because `from esmc import ESMC` fails (the pip package isn't installed), and then it falls through to ESM-2.\n\nBut we built `esmc_backbone.py` with the native loader that works! The training script isn't using it — it's trying to import the official `esmc` package which doesn't exist. Let me fix the ESM-C loading path to use our native loader:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:19:16.405Z",
+      "text": "Done:\n- **A** (ESM-2 LoRA): R on fc_nilah `n0211`\n- **B** (ESM-C LoRA): R on fc_nilah `n0215`\n- **C** (ESM-C FT+PAE): PD on lowprio `(Priority)`\n- **D** (ESM-C LoRA+PAE): PD on lowprio `(Priority)`\n- **E** (ESM-C FT noPAE): PD on lowprio `(Priority)`\n\nC/D/E will start as lowprio A40 slots open. A+B are running now and should hit epoch 1 in ~10-15 min.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:18:56.902Z",
+      "text": "3 PD on fc_nilah. Let me cancel them and resubmit to lowprio savio3_gpu A40:",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:13:26.135Z",
+      "text": "API Error: Server is temporarily limiting requests (not your usage limit) · Rate limited",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:13:19.181Z",
+      "text": "The weights are right there at `/global/scratch/users/sergiomar10/hf_cache/hub/esmc_300m_2024_12_v0.pth`. My `esmc_backbone.py` downloads from HuggingFace by default — let me point it to this local file instead so ESM-C jobs don't waste time downloading:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:59:30.461Z",
+      "text": "Running. Bug #3 fixed: rows with out-of-range positions are now skipped instead of producing a no-grad tensor. Three bugs fixed total in this round:\n\n1. Tsuboyama CSV path\n2. FireProt `mutation` column name\n3. No-grad rows from out-of-range positions\n4. Shared-graph backward (per-row gradient accumulation)\n\nI'll check again in 15 min for epoch 1 output. Sorry about the iteration — new training script is always a debugging process.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:58:12.140Z",
+      "text": "`row_loss` has no gradient — happens when all mutation sites in a row are out-of-range (pos >= seq_len after truncation). The `total_ddg` stays as a plain `torch.tensor(0.0)` with no grad_fn. Quick fix: skip rows with no valid sites.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
       "ts": "2026-04-16T04:52:43.354Z",
       "text": "2 running, 3 PD (fc_nilah CPU cap). Fix applied: per-row backward with gradient accumulation, no ESM cache during training. I'll check logs in ~15 min to see if epoch 1 completes. Meanwhile I'll keep writing the OOD eval script.",
       "tags": [
@@ -320,66 +376,6 @@
       "text": "Both bugs fixed:\n1. Tsuboyama CSV path: `data/tsuboyama/` → `data/stability/tsuboyama_dpl_ready.csv`\n2. `--lambda-pae` flag was already in argparse (the D/E jobs loaded a cached old version — pycache cleared now)\n\nResubmitting all 5 pilots:",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:41:32.458Z",
-      "text": "Now verify `--lambda-pae` is in argparse (I added it earlier but the old jobs loaded cached bytecode):",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:41:19.337Z",
-      "text": "**Clean slate: 0 SLURM jobs, 0 background processes.** Now fixing both bugs:",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:40:15.290Z",
-      "text": "Found the file at `data/stability/tsuboyama_dpl_ready.csv` (not `data/tsuboyama/`). Let me kill the rogue background processes AND fix both bugs:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:39:02.117Z",
-      "text": "**Two bugs found, both easy fixes:**\n\n1. **Exp A/B/C**: `FileNotFoundError: data/tsuboyama/tsuboyama_dpl_ready.csv` — wrong path for Tsuboyama CSV\n2. **Exp D/E**: `unrecognized arguments: --lambda-pae` — the jobs were submitted BEFORE I added the `--lambda-pae` flag to argparse. The script on disk now has it, but these jobs loaded an older cached version.\n\nFixing the Tsuboyama path first:",
-      "tags": [
-        "error",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:38:48.881Z",
-      "text": "**All 5 jobs are GONE from the queue** — they crashed. Let me check the error logs:",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:38:09.871Z",
-      "text": "Two things in parallel: (1) OOD eval script for held-out DDG datasets, (2) AF2-Multimer augmentation pipeline. Writing the eval script myself, dispatching AF2 agent:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:36:19.094Z",
-      "text": "Still loading data (Tsuboyama + FireProt next, then backbone). The per-task metrics will show on the first epoch print. Should be ~10 more minutes for ESM-C jobs (300M loads faster) and ~15 for ESM-2.\n\n**Quick summary of what's now in the pipeline**:\n- 5 pilot cells running (A/B/C/D/E)\n- Checkpoints: saves best 2 per cell (with PAE head if present)\n- Logs: per-epoch Spearman split into `bind_rho` (SKEMPI) + `stab_rho` (Tsuboyama/FireProt)\n- All on held-out validation fold, ΔΔG Spearman correlation\n- Once pilots show clean epoch 1 with positive bind_rho + stab_rho → scale to 75 cells",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:36:05.736Z",
-      "text": "Now the logs will show:\n\n```\nep  1/10  loss=X.XX  ddg=X.XX  val_rmse=X.XX  rho=+X.XX  r=+X.XX  bind_rho=+X.XX(n=1500)  stab_rho=+X.XX(n=6000)  (Xs)\n```\n\n## What each metric means\n\n| metric | what it measures | on what data |\n|---|---|---|\n| `rho` | Spearman(pred ΔΔG, true ΔΔG) | ALL val rows (binding + stability pooled) |\n| `r` | Pearson(pred ΔΔG, true ΔΔG) | ALL val rows pooled |\n| `val_rmse` | RMSE of ΔΔG prediction | ALL val rows pooled |\n| **`bind_rho`** | Spearman on **binding rows only** | SKEMPI+ABBind held-out fold (~1500 rows) |\n| **`stab_rho`** | Spearman on **stability rows only** | Tsuboyama+FireProt held-out fold (~6000 rows) |\n| `n=` | how many rows in each subset | |\n\n**`bind_rho` is the number to watch** — that's the SKEMPI-equivalent metric that we were tracking before (+0.35ish). `stab_rho` is the Tsuboyama+FireProt equivalent (+0.74ish). If both are positive and climbi…",
-      "tags": [
-        "result",
-        "dataset"
       ]
     }
   ]
