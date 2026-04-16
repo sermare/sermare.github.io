@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T16:25:34Z",
+  "generated_at": "2026-04-16T16:55:37Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4014,
-    "assistant_turns": 6044,
+    "user_turns": 4026,
+    "assistant_turns": 6061,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T16:08:23.648Z"
+    "last_ts": "2026-04-16T16:54:54.236Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,52 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-16T16:40:14.431Z",
+      "text": "**144 OOD eval jobs resubmitted with fixed BindingGym + ProteinGym loaders.** 23 already running. Each job now loads **all 4 OOD datasets** properly:\n- Tsuboyama K50 (500 rows)\n- FireProt curated (500 rows)\n- **BindingGym** (500 rows from per-assay singles files with proper WT sequences)\n- **ProteinGym** (500 rows from DMS assay files with mutation parsing)\n\nPlus 75 ESM-2 training jobs still draining on fc_nilah. Results should start landing in ~10 min. When they're all done I'll generate the full OOD table + figures.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T16:39:13.829Z",
+      "text": "Both loaders working now. Resubmitting all OOD evals with the fixed script:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T16:38:27.803Z",
+      "text": "Found it! The `mutant` column in BindingGym's DMS files is a **dict of multi-site mutations per chain** like `{'A': 'H91Y:Y92F:T93R', 'B': 'G100A', 'C': ''}`, NOT the simple `M1A` format my parser expects. These are **multi-site mutations across multiple chains**. The simple `parse_mutant()` function can't handle this.\n\nLet me fix the loader to parse the dict-format mutations and use the per-assay singles files (which have simpler single mutations):",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-16T16:38:09.160Z",
+      "text": "BindingGym loader returns 0 rows. The issue: `wildtype_sequence` in the CSV is a dict string like `{'A': 'DIQM...', 'B': 'EVQL...'}` but `eval()` might be failing. Let me debug:",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-16T16:37:05.875Z",
+      "text": "Here are the real results. Let me present them honestly:\n\n## Results Table (val_rho restored from checkpoint metadata)\n\n| Experiment | N | Backbone | Training Data | Val ρ | Tsub (ID) | FProt (ID) | ProtGym (OOD*) |\n|---|---|---|---|---|---|---|---|\n| **esm2_lora** | 15 | ESM-2 650M | SKEMPI+Tsub+FP | **+0.603** | +0.811 | **+0.650** | −0.090* |\n| **esm2_stab_only** | 15 | ESM-2 650M | Tsub+FP only | +0.576 | **+0.862** | +0.621 | **+0.050*** |\n| esm2_highiface | 9 | ESM-2 650M | SKEMPI+Tsub+FP (λ=0.5) | +0.571 | +0.660 | +0.408 | −0.076* |\n| esmc_ft_pae | 15 | ESM-C 300M | SKEMPI+Tsub+FP (FT+PAE) | +0.542 | +0.667 | +0.472 | −0.030* |\n| esmc_lora_highiface | 15 | ESM-C 300M | SKEMPI+Tsub+FP (λ=0.5) | +0.535 | +0.665 | +0.496 | −0.035* |\n| esmc_lora_noiface | 15 | ESM-C 300M | SKEMPI+Tsub+FP (λ=0) | +0.533 | +0.676 | +0.485 | −0.036* |\n| esmc_ft_nopae | 15 | ESM-C 300M | SKEMPI+Tsub+FP (…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T16:33:31.294Z",
+      "text": "Results are in. Let me fix two issues (BindingGym missing, val_rho overwritten by stubs) and generate the proper analysis:",
+      "tags": [
+        "result",
+        "dataset"
+      ]
+    },
     {
       "ts": "2026-04-16T16:05:11.649Z",
       "text": "**220 total jobs: 144 OOD eval + 75 ESM-2 training + 1 remaining.** 3 running, 217 pending.\n\nEach OOD eval now scores **ALL 4 held-out datasets**: Tsuboyama, FireProt, **BindingGym**, **ProteinGym** with proper mutation parsing from the raw DMS files. Results land in `results.json` under `\"ood\"` key.\n\nWhen everything finishes I'll pull a comprehensive table showing:\n- Each experiment's training data config\n- In-distribution val ρ (bind + stab)\n- **OOD ρ on each held-out dataset** (the key numbers)\n- Separated by what was trained vs what's truly OOD per model\n\nThe ESM-2 training experiments (75 new cells) will also auto-evaluate OOD at the end via the training script's built-in OOD block.",
@@ -347,49 +393,6 @@
       "text": "Now I'll add OOD evaluation at the end of training (after last epoch, uses the best checkpoint):",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:58:01.134Z",
-      "text": "All in training loop, loading data + backbone. With the 3 memory fixes, the first epoch should complete without OOM. Epoch 1 output in ~10-15 min for ESM-C, ~20 min for ESM-2.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:57:51.002Z",
-      "text": "Syntax OK (the exit 1 is from `find -delete` on already-empty pycache, irrelevant).\n\n**Three memory optimizations now stacked:**\n1. **Gradient checkpointing** — ~4× less activation memory\n2. **Sequence truncation 512** — ~2× less per-chain\n3. **Mixed precision FP16** — ~2× less model + activation memory\n\nCombined: roughly **~16× less memory** than the OOMing version. ESM-C 300M should now fit comfortably on both A40 (~3-5GB usage) and 1080Ti (~5-8GB).\n\nThe currently running jobs will already pick up the mixed-precision fix since they haven't started their training loops yet (still in data loading). The gradient checkpointing + seq truncation changes were already in from the previous edit. **No need to resubmit** — the 135 jobs will use the updated script when they reach the training loop.\n\nLet me verify the running jobs are progressing:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:57:06.766Z",
-      "text": "Now wrap the encode + forward in autocast, and use scaler for backward:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:56:55.458Z",
-      "text": "Not in the script yet. Adding `torch.cuda.amp.autocast` + `GradScaler`:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:56:33.712Z",
-      "text": "Yes — **mixed precision (FP16/BF16)**. Halves memory usage. One line:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:55:57.289Z",
-      "text": "**135 jobs resubmitted with OOM fixes:**\n- Gradient checkpointing enabled for ESM-C (saves ~4× activation memory)\n- Sequence truncation: 512 tokens for ESM-C (vs 1022 for ESM-2)\n- 5 already running (4 A40 + 1 1080Ti)\n\nThese should survive now. The smoke tests passed on short sequences; with grad checkpointing + 512 truncation, long SKEMPI chains should fit too.",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
