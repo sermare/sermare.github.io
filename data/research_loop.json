@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T04:23:50Z",
+  "generated_at": "2026-04-16T04:53:55Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3833,
-    "assistant_turns": 5779,
+    "user_turns": 3896,
+    "assistant_turns": 5880,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T04:23:30.163Z"
+    "last_ts": "2026-04-16T04:52:43.462Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,226 +166,220 @@
   ],
   "recent_updates": [
     {
-      "ts": "2026-04-16T04:23:29.436Z",
-      "text": "**Three pilot cells submitted to fc_nilah normal** (`33427260`, `33427262`, `33427263`). All PD with `(None)` — about to start. Each will:\n\n1. Load backbone (ESM-2 650M or ESM-C 300M)\n2. Build InterfaceAwareDPL head with 4-head cross-attention\n3. Load SKEMPI+ABBind (7.7k binding rows with interface contacts) + Tsuboyama+FireProt (33k stability rows)\n4. Train 10 epochs with balanced 50/50 binding/stability batches\n5. Compute L_ddg + 0.1 × L_interface\n6. Save phase2 checkpoints at every best-val epoch\n\n**Re: your PAE loss request for ESM-C**: Exp C (ESM-C full fine-tune) is the right vehicle for that. The PAE head needs the proteinbase Boltz2 PAE files downloaded (currently S3 URLs). I'll add the explicit PAE prediction head + L_pae loss to the training script while these pilots run — it's a clean addition to the `model_interface_dpl.py` module. For tonight's pilot, Exp C runs without L_pa…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:22:46.341Z",
-      "text": "All syntax clean. Now firing **3 parallel experiments** as requested. Per your instructions:\n- **Exp A**: ESM-2 650M + LoRA (baseline, proven)\n- **Exp B**: ESM-C 300M + LoRA (smaller, faster)\n- **Exp C**: ESM-C 300M + Full fine-tune + explicit PAE loss (your request)\n\nStarting with a **pilot cell** (fold 0 seed 0) for each to verify the full pipeline works before firing all 15 cells:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:22:33.556Z",
-      "text": "**ALL PIECES ARE READY:**\n\n- ESM-C 300M + RoPE + LoRA: **verified** (0.28% trainable with LoRA, or 332M full fine-tune)\n- ESM-2 650M + LoRA: already proven\n- InterfaceAwareDPL model: tested + verified\n- SKEMPI binding encoding + cross-attention path: agent wired it in\n- Interface contacts: 7,899 rows with contact masks\n- Proteinbase: 2,596 labeled pairs parsed\n- Training script: complete with both binding + stability paths\n\nLet me do the final syntax check and then **fire all three experiments**:",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:21:30.825Z",
-      "text": "ESM-C forward works (shape `[1, 17, 960]` correct) but LoRA wrapping fails because peft expects a dict-like config. Quick fix:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:20:48.448Z",
-      "text": "Both data agents done:\n\n**Interface contacts**: 349 PDBs, **7,899 rows with contact masks** (89.1% have non-empty contacts, mean 21.7 interface residues per mutation). 7 ABBind PDB chain-naming mismatches handled. Clean.\n\nNow let me verify the ESM-C backbone with RoPE:",
+      "ts": "2026-04-16T04:52:43.354Z",
+      "text": "2 running, 3 PD (fc_nilah CPU cap). Fix applied: per-row backward with gradient accumulation, no ESM cache during training. I'll check logs in ~15 min to see if epoch 1 completes. Meanwhile I'll keep writing the OOD eval script.",
       "tags": [
         "note"
       ]
     },
     {
-      "ts": "2026-04-16T04:20:01.444Z",
-      "text": "I can see the exact spot where RoPE needs to go. Let me create a proper ESM-C backbone module with RoPE that can be used in the training script:",
+      "ts": "2026-04-16T04:51:59.165Z",
+      "text": "Also need to disable the chain cache during training (it causes the shared-graph issue) and only use it during eval:",
       "tags": [
         "note"
       ]
     },
     {
-      "ts": "2026-04-16T04:19:36.857Z",
-      "text": "Good — the agent built a clean ESM-C model class. I can see where RoPE needs to go (in the attention forward, between Q/K computation and the attention dot product). Let me add it:",
+      "ts": "2026-04-16T04:51:41.045Z",
+      "text": "I see the problem — `batch_iface_loss_row` is undefined and I still reference `batch_ddg_loss` and `batch_n_alphas` which are no longer initialized. Let me clean this up properly — each row computes its own loss and calls backward:",
       "tags": [
         "note"
       ]
     },
     {
-      "ts": "2026-04-16T04:19:18.784Z",
-      "text": "You're right — no reason to pick one. Let me set up **three experiments in parallel**:\n\n| experiment | backbone | fine-tune | GPU | est. time/cell |\n|---|---|---|---|---|\n| **A** | ESM-2 650M | LoRA r=16 | A40 (fc_nilah) | ~2.5h |\n| **B** | ESM-C 300M | LoRA r=16 | A40 or 1080Ti | ~1.5h |\n| **C** | ESM-C 300M | Full fine-tune | A40 | ~2h |\n\nAll three use the same InterfaceAwareDPL cross-attention head + interface loss. Only the backbone differs.\n\n**ESM-C full fine-tune fits on a single A40**: 333M params × 4B + optimizer (2×) + gradients + activations ≈ 10-15 GB. A40 has 48GB. No multi-GPU needed for ESM-C.\n\n**Multi-GPU (DDP) is useful for ESM-2 650M full fine-tune** (would need ~25GB) and for faster batch processing. I'll add a `--ddp` flag using PyTorch's `DistributedDataParallel` — but it's not blocking for tonight since ESM-C fits on one GPU.\n\nTwo things need to happen first:\n1. **Fi…",
+      "ts": "2026-04-16T04:51:31.991Z",
+      "text": "Now I need to restructure the inner loop to compute `loss_ddg` and `batch_iface_loss_row` per-row instead of accumulating them. Let me read the current state around the loss computation:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:51:18.833Z",
+      "text": "Now replace the batch-level backward with per-row backward + gradient accumulation:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:51:08.179Z",
+      "text": "The fix: **process one row at a time with its own forward+backward, accumulate gradients**. This avoids the shared-graph issue entirely:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:50:52.362Z",
+      "text": "The issue: `get_chain_emb()` caches ESM outputs, but multiple rows in the same batch share cached tensors. When row 1's loss does `.backward()`, it frees the graph that row 2's cached tensor was part of. Row 2 then tries to backward through the freed graph → crash.\n\n**The fix**: don't call `.backward()` per-row. Accumulate losses as tensors (keeping the graph alive), then do ONE `.backward()` at the end of the batch. That's actually what the code DOES (`total_loss.backward()` after the loop) — but the cache breaks it because the cached ESM embeddings were created in a single forward pass shared across rows.\n\nThe real fix: **each row in the batch needs its own ESM forward pass** (no cache sharing within a batch), OR we detach the cached embeddings so they become leaf tensors with their own graph.\n\nSimplest fix that preserves gradient flow to LoRA: **don't cache within a batch. Cache ONLY…",
+      "tags": [
+        "error",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:50:29.467Z",
+      "text": "**\"Trying to backward through the graph a second time\"** — the ESM embedding cache is reusing tensors across rows in the same batch, then `.backward()` on the first row frees the graph that the second row still needs. The fix: the cache must `.detach()` embeddings OR we need to process each row's loss independently.\n\nThe root cause is at line 584: the training loop accumulates `total_loss` across multiple rows using cached ESM embeddings. When `.backward()` fires, it tries to backprop through the ESM graph that was already freed by an earlier row's backward.\n\nFix: **detach cached embeddings from the compute graph** so each row builds its own graph from the cached features. This means the LoRA backbone doesn't get gradients from the cache — but that's actually fine for per-row processing. OR, accumulate losses without calling `.backward()` per-row and do one backward at the end of the bat…",
       "tags": [
         "model"
       ]
     },
     {
-      "ts": "2026-04-16T04:16:48.603Z",
-      "text": "ESM-C agent found a way in — **native PyTorch reconstruction from the HF checkpoint**, not through the official package (which needs Python 3.10+). Key stats:\n\n- **Hidden dim: 960, 30 layers, 15 heads, 333M params**\n- **LoRA works** via peft targeting `out_proj + down` (2.6M trainable at r=16)\n- **Caveat**: RoPE not yet implemented in the test class, and the HF config.json is wrong (says 768/12 but actual weights are 960/30)\n\n**For tonight**: sticking with **ESM-2 650M** (proven, LoRA-ready, no RoPE issues). ESM-C 300M swap is a clean follow-up once RoPE is implemented in the loader. The architecture file already handles `esm_dim=960` or `esm_dim=1280` via constructor args.\n\nStatus:\n- **Model module**: done + tested ✅\n- **Interface contacts**: done (6,814 SKEMPI rows with contact masks) ✅\n- **Proteinbase parsing**: done (2,596 labeled pairs, target sequences found) ✅\n- **ESM-C**: loading…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:16:01.012Z",
-      "text": "Agent building the SKEMPI binding encoding path. While it works, let me write the sbatch submission script so we can fire immediately once the code is ready:",
-      "tags": [
-        "dataset",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:15:25.904Z",
-      "text": "The Tsuboyama/FireProt loaders look good but need to actually handle the CSV column names correctly. The bigger issue is the SKEMPI loader — I need to convert the SKEMPI manifest format into our unified row format with chain-level sequences. Let me rewrite the `load_skempi_rows` function to produce unified binding rows with the right structure, and also fix the training loop to handle both binding and stability rows cleanly.\n\nGiven the complexity and that we need to train tonight, let me take a pragmatic approach: use the EXISTING `train_twophase_lora.py` encoding infrastructure (it already handles SKEMPI chain maps, ESM tokenization, chunked forward passes) and WRAP it with the new cross-attention head. This avoids rewriting the entire data pipeline.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:15:09.808Z",
-      "text": "ESM-C not installable tonight (custom package, not on standard pip/transformers). **Using ESM-2 650M for tonight** — proven, LoRA-ready, swap to ESM-C 300M is a 1-line change later.\n\nNow the critical path — wiring up the SKEMPI binding encoding. The training script needs the chain-level ESM encoding for cross-attention. Let me update the key sections:",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:14:14.804Z",
-      "text": "Both data prep agents DONE:\n- **Interface contacts**: 349 PDBs, 6,814 SKEMPI rows with contact masks (avg ~33 interface residues per mutation)\n- **Proteinbase**: 2,596 labeled pairs, all target sequences found\n- **ESM-C**: test script exists (agent may still be installing)\n\nAll three ingredients ready. Now I need to wire up the SKEMPI binding encoding into the training script — the chain-map → per-chain ESM encoding → cross-attention path. This is the critical piece. Building it now, then we submit.",
+      "ts": "2026-04-16T04:48:47.716Z",
+      "text": "**All 5 RUNNING.** Bugs fixed:\n1. Tsuboyama CSV path: `data/tsuboyama/` → `data/stability/`\n2. FireProt `mutation` column: `\"mutant\"` → `\"mutation\"`\n3. Zero-division safety: empty pool → fallback to the other pool\n4. `--lambda-pae` argparse flag added\n5. pycache cleared\n\nThis time: SKEMPI (7,877) + Tsuboyama (30,000) + FireProt (3,438) = **41,315 total rows** loading correctly. First epoch logs in ~15 min. I'll check back then.",
       "tags": [
         "dataset"
       ]
     },
     {
-      "ts": "2026-04-16T04:13:53.387Z",
-      "text": "Proteinbase parsed: **2,596 labeled binder pairs** (435 with Kd, 2,556 with binding labels), **all 24 target sequences found** at `data/proteinbase/target_sequences.json`. One blocker: **PAE files are S3 URLs, not local** — need to download 3,752 PAE JSONs for interface labels. That's a follow-up.\n\n**For tonight's training run**, we have enough without proteinbase PAE:\n\n| source | N | labels | interface labels |\n|---|---|---|---|\n| SKEMPI + AB-Bind | 7,698 | ΔΔG | crystal PDB contacts (agent computing now) |\n| Tsuboyama K50 | 29,902 | ΔΔG | none (stability, partner=zeros) |\n| FireProt curated | 3,438 | ΔΔG | none (stability, partner=zeros) |\n| proteinbase Kd | 435 | Kd → ΔG | **not yet** (PAE needs download) |\n| **Total tonight** | **~41k** | | |\n\nProteinbase's 435 Kd rows can be added with just target+binder sequences — the interface loss is optional. I'll wire them in for the ΔΔG loss…",
+      "ts": "2026-04-16T04:48:16.120Z",
+      "text": "**Both loaders working: 30,000 Tsuboyama + 3,438 FireProt = 33,438 stability rows.** Resubmitting all 5 pilots:",
       "tags": [
         "dataset"
       ]
     },
     {
-      "ts": "2026-04-16T04:12:29.974Z",
-      "text": "Training script skeleton done (SKEMPI binding path needs wiring to the chain-encoding logic, but the stability path is complete). Let me address your PAE question — this is important.\n\n## PAE matrix as an explicit output + loss?\n\nYou're right to ask. Currently the cross-attention weights α_ij serve as our \"interface map\" but they're NOT the same as a PAE matrix. Here's the difference:\n\n| | Cross-attention α_ij | AF2-style PAE matrix |\n|---|---|---|\n| **What it predicts** | \"how relevant is partner residue j to this mutation at site i\" | \"predicted alignment error between residues i and j in Angstroms\" |\n| **Shape** | (n_mutation_sites, L_partner) — one row per mutation | (L_A + L_B, L_A + L_B) — full complex |\n| **Trained by** | ΔΔG loss (implicit) + interface contact loss (explicit) | Structure prediction loss |\n| **Gradient flows?** | Yes — through both L_ddg and L_interface | Would ne…",
+      "ts": "2026-04-16T04:47:20.459Z",
+      "text": "Line 241: `r.get(\"mutant\", \"\")` — but FireProt column is `mutation`, not `mutant`. The Tsuboyama fix used `r.get(\"mutation\", ...)` but the FireProt function was a separate copy that wasn't updated. Fix:",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:47:10.761Z",
+      "text": "Need `env_setup.sh` for GLIBCXX. The actual issue in the FireProt loader: looking at my code, the `load_fireprot_rows` function still has the OLD column mappings. Let me check:",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:46:43.311Z",
+      "text": "Data looks fine — 3438 with ddG, single-letter mutations. The loader must be failing on the wt==mt check. Let me trace:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:46:31.993Z",
+      "text": "Tsuboyama works (30,000 rows). FireProt still 0 — the column `sequence` exists but in a different position, and `ddG` might have NaN values that are filtering everything out. Let me check:",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:46:04.693Z",
+      "text": "Now let me verify the loaders actually produce rows with the fixed column mapping:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:45:48.464Z",
+      "text": "FireProt also uses `wild_type` and `mutation` (same as Tsuboyama). My fix already handles `wild_type` → `wt` and `mutation` → `mt`. But FireProt has `ddG` which sometimes is NaN (it has `dTm` too). And `sequence` is a very long column at the end. Let me also add a safety check for the zero-division:",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:45:37.122Z",
+      "text": "Also fix the FireProt loader (same issue likely):",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:45:25.406Z",
+      "text": "Column names are `wild_type`, `mutation`, `position`, `ddG`, `sequence` — but my loader uses `wt`, `mt`, `pos`. The column name mismatch caused 0 rows to parse. Quick fix:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:45:13.558Z",
+      "text": "`ZeroDivisionError` at line 457: `perm_s` (stability rows in training) is empty — the Tsuboyama/FireProt loader returned 0 rows. The tile operation divides by `len(perm_s)` which is 0. Two issues: (1) the stability loader is failing silently, (2) the balanced sampler doesn't handle empty pools.\n\nLet me check why stability rows are empty:",
       "tags": [
         "error",
         "dataset"
       ]
     },
     {
-      "ts": "2026-04-16T04:10:01.092Z",
-      "text": "**Model module verified**:\n- **DPL head**: 2.19M params, anti-symmetric (fwd+rev ≈ 0.03, numerical precision)\n- **UN ablation**: 2.19M params, same interface but unconstrained\n- **Cross-attention**: produces (B, 4_heads, 1, L_partner) attention weights\n- **Stability mode**: partner=None → zero context, no attention, works cleanly\n- **Interface loss**: computes correctly on dummy interface mask\n\nNow building the training script. This is the big one — combined data loader for SKEMPI + Tsuboyama + FireProt + proteinbase, with balanced batch sampling and the three-loss objective. Writing it now while agents finish data prep.",
+      "ts": "2026-04-16T04:44:52.699Z",
+      "text": "Jobs are gone from squeue. They either just finished (unlikely — too fast) or crashed again. Let me check errors:",
       "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:09:33.091Z",
-      "text": "Model module done. Now syntax-checking and starting on the training script:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:08:27.235Z",
-      "text": "Now building the core model. Starting with the `InterfaceAwareDPL` module:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:08:05.404Z",
-      "text": "3 agents dispatched for data prep. While they work, I'm building the core architecture. Let me clean up stale tasks and start coding:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:06:52.594Z",
-      "text": "Clean slate. Zero jobs. Now attacking the build in parallel — I'll handle the core architecture + training script myself while agents handle data prep:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:00:59.419Z",
-      "text": "Plan saved to memory. Ready to start building when you say go. The full architecture + data plan + training recipe is captured in `memory/project_interface_aware_dpl_v2.md` so we won't lose it across sessions.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T03:59:38.064Z",
-      "text": "ESM-C 300M exists on HuggingFace (`EvolutionaryScale/esmc-300m-2024-12`) but isn't installed yet. Quick `pip install esmc` will fix that.\n\n## Concrete next steps — what to do RIGHT NOW\n\n**Phase 0 (tonight, ~1h setup)**:\n1. `pip install esmc` in the tttppi conda env\n2. Precompute SKEMPI interface contacts from crystal PDBs (~35 sec)\n3. Parse proteinbase: extract (target_sequence, binder_sequence, Kd/binding_label, Boltz2_PAE_path) for the 1,332 Kd rows + 9,325 binding rows\n4. Write the `InterfaceAwareDPL` module + combined dataloader\n\n**Phase 1 (tomorrow, training)**:\n- 3 seeds × 5 folds on SKEMPI + Tsuboyama + FireProt + proteinbase\n- ESM-C 300M + LoRA r=16 + cross-attention DPL head\n- L_total = L_ddg + 0.1·L_interface + 0.05·L_binding_class\n- Train on savio2_1080ti (ESM-C 300M fits on 11GB for training!)\n- ~15 cells × ~1.5h each (300M is 2× faster than 650M) = ~23 GPU-hours\n\n**Phase 2 (…",
-      "tags": [
-        "dataset",
-        "model",
+        "error",
         "infra"
       ]
     },
     {
-      "ts": "2026-04-16T03:58:51.053Z",
-      "text": "This is getting really exciting. Let me organize what you just unlocked:\n\n## Your proteinbase data\n\n| metric | count | type |\n|---|---|---|\n| **Kd measurements** | 1,332 | Experimental binding affinity (continuous) |\n| **Binding labels** (Strong/Medium/None) | 9,325 | Experimental classification |\n| **Boltz2 ipTM** | 3,796 | Predicted complex quality (continuous) |\n| **PAE files** | 3,752 | Per-residue-pair error matrices from Boltz2 |\n| Total binders | 5,253 | Against 20+ targets (nipah, EGFR, PD-L1, IL7R, MDM2...) |\n\nThe Kd rows are gold — real experimental binding affinity on de novo designed proteins. And you have 3,752 PAE matrices from Boltz2 that serve as structural interface labels without crystals.\n\n## Let me clarify what the model actually looks like\n\nYou're passing **two inputs per prediction**:\n```\nInput 1: PROTEIN + BINDER_WT  (target protein + wild-type binder)\nInput 2: PRO…",
+      "ts": "2026-04-16T04:42:25.893Z",
+      "text": "**All 5 pilots RUNNING immediately.** Clean:\n\n- `33428949` Exp A (ESM-2 LoRA) on n0209\n- `33428950` Exp B (ESM-C LoRA) on n0210\n- `33428951` Exp C (ESM-C FT + PAE) on n0212\n- `33428952` Exp D (ESM-C LoRA + PAE) on n0216\n- `33428953` Exp E (ESM-C FT no PAE) on n0216\n\n**0 background processes**, **0 stale pollers/watchdogs/harvesters**. Just these 5 clean training jobs.\n\nNow while they cook, let me write the OOD eval script you asked for — tests on all the DDG datasets we DIDN'T train on. I'll have it ready by the time epoch 1 logs appear (~15 min).",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:41:56.242Z",
+      "text": "Both bugs fixed:\n1. Tsuboyama CSV path: `data/tsuboyama/` → `data/stability/tsuboyama_dpl_ready.csv`\n2. `--lambda-pae` flag was already in argparse (the D/E jobs loaded a cached old version — pycache cleared now)\n\nResubmitting all 5 pilots:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:41:32.458Z",
+      "text": "Now verify `--lambda-pae` is in argparse (I added it earlier but the old jobs loaded cached bytecode):",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:41:19.337Z",
+      "text": "**Clean slate: 0 SLURM jobs, 0 background processes.** Now fixing both bugs:",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:40:15.290Z",
+      "text": "Found the file at `data/stability/tsuboyama_dpl_ready.csv` (not `data/tsuboyama/`). Let me kill the rogue background processes AND fix both bugs:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:39:02.117Z",
+      "text": "**Two bugs found, both easy fixes:**\n\n1. **Exp A/B/C**: `FileNotFoundError: data/tsuboyama/tsuboyama_dpl_ready.csv` — wrong path for Tsuboyama CSV\n2. **Exp D/E**: `unrecognized arguments: --lambda-pae` — the jobs were submitted BEFORE I added the `--lambda-pae` flag to argparse. The script on disk now has it, but these jobs loaded an older cached version.\n\nFixing the Tsuboyama path first:",
+      "tags": [
+        "error",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T04:38:48.881Z",
+      "text": "**All 5 jobs are GONE from the queue** — they crashed. Let me check the error logs:",
       "tags": [
         "error"
       ]
     },
     {
-      "ts": "2026-04-16T03:48:42.066Z",
-      "text": "Great questions. Let me address each:\n\n## 1. Structures for augmentation + SASA as proxy labels\n\nYou're onto something important — **we don't need crystal structures, we need interface labels, and there are multiple ways to get them**:\n\n**Tier 1 — Crystal PDB contacts (highest quality, limited supply)**\n- We have crystal structures for all 349 SKEMPI PDBs\n- Compute contact map: residue j in chain B within 8Å of mutation site i in chain A\n- ~35 seconds to precompute for all of SKEMPI\n- **Coverage: 100% of SKEMPI, 0% of everything else**\n\n**Tier 2 — AF2-Multimer predicted contacts (medium quality, unlimited supply)**\n- Predict complex structures for ANY pair of sequences\n- AF2-Multimer gets ~70% DockQ on easy targets — noisy but useful\n- Could augment to PPIRef (~100k complexes) for pretraining\n- **Coverage: anything with 2 sequences, but requires AF2 compute (~5 GPU-min per complex)**\n\n**…",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T03:38:52.984Z",
-      "text": "This is the best idea that's come up in this entire session. Let me give you my honest input on each version, then sketch the implementation.\n\n## My assessment\n\n**Version B (attribution-based interface recovery) is genuinely novel and testable.** Nobody has turned \"does your ΔΔG model know where the interface is?\" into a systematic benchmark. The closest is PPIformer's attention visualization, but that's a figure, not a metric.\n\n**Version C (binding-site-conditional ΔΔG) is the natural extension** that makes it a tool paper, not just a benchmark paper.\n\n**The key architectural choice you identified is exactly right**: cross-attention with attention weights AS the interface map, not post-hoc. This is interpretable-by-construction and directly connects the ΔΔG prediction to physical interface contacts.\n\n## The concrete architecture\n\n```python\nclass InterfaceAwareDPL(nn.Module):\n    \"\"\"…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T03:08:10.133Z",
-      "text": "Good question — AF2-Multimer's trick is exactly the thing we're missing. Here's how they did it:\n\n## AF2-Multimer architecture (simplified)\n\n```\nInput: Chain A (L_A residues) + Chain B (L_B residues)\n       ↓\nStep 1: Paired MSAs (cross-species pairing to find co-evolutionary signal)\n       ↓\nStep 2: Build SINGLE representation:  (L_A + L_B, 384)\n        → one vector per residue across BOTH chains concatenated\n        \nStep 3: Build PAIR representation:    (L_A + L_B, L_A + L_B, 128)  \n        → one value for EVERY residue pair, INCLUDING cross-chain\n        → z[i_in_A, j_in_B] encodes the predicted spatial/contact\n          relationship between residue i on chain A and residue j on chain B\n       ↓\nStep 4: Evoformer (48 blocks of attention)\n        → single rep attends to pair rep\n        → pair rep updated by triangular attention + outer product of single\n        → THIS IS WHERE CROSS-C…",
+      "ts": "2026-04-16T04:38:09.871Z",
+      "text": "Two things in parallel: (1) OOD eval script for held-out DDG datasets, (2) AF2-Multimer augmentation pipeline. Writing the eval script myself, dispatching AF2 agent:",
       "tags": [
         "note"
       ]
     },
     {
-      "ts": "2026-04-16T03:03:09.253Z",
-      "text": "All jobs cancelled. Clean slate. Let me think with you.\n\n## The core flaw you identified\n\nYou're right — our current architecture is blind to the binding partner:\n\n```\nCurrent DPL:\n  mutation at chain A, position i\n  context = ESM-2(chain_A)[i]    ← sees ONLY chain A\n  prediction = h(context, mut_aa) - h(context, wt_aa)\n  \n  ❌ Chain B (the binding partner) is NEVER seen by the head\n  ❌ For pMHC: the model sees peptide WT vs MT but never the MHC\n  ❌ For antibody-antigen: sees the mutated CDR but not the antigen\n```\n\nESM-2 is a single-chain model. When it encodes chain A, it has zero knowledge that chain B exists. So our ΔΔG prediction is really \"how unusual is this mutation in chain A's evolutionary context\" — a proxy for binding, not actual binding.\n\n## Your goal: one model that understands BOTH stability AND binding\n\nTwo tasks, different inputs:\n\n| task | input | what the model needs to…",
+      "ts": "2026-04-16T04:36:19.094Z",
+      "text": "Still loading data (Tsuboyama + FireProt next, then backbone). The per-task metrics will show on the first epoch print. Should be ~10 more minutes for ESM-C jobs (300M loads faster) and ~15 for ESM-2.\n\n**Quick summary of what's now in the pipeline**:\n- 5 pilot cells running (A/B/C/D/E)\n- Checkpoints: saves best 2 per cell (with PAE head if present)\n- Logs: per-epoch Spearman split into `bind_rho` (SKEMPI) + `stab_rho` (Tsuboyama/FireProt)\n- All on held-out validation fold, ΔΔG Spearman correlation\n- Once pilots show clean epoch 1 with positive bind_rho + stab_rho → scale to 75 cells",
       "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T02:55:55.900Z",
-      "text": "Here's the clean table:\n\n## All Datasets — What We Have\n\n| Dataset | N | Task | Input | Label | Split Protocol | Best dedicated ρ |\n|---|---|---|---|---|---|---|\n| **SKEMPI + AB-Bind** | 7,698 | PPI binding ΔΔG | WT+MUT seqs of 2-chain complex | ΔΔG_bind (kcal/mol) | 5-fold GKF mmseqs 30% cluster | +0.35 (DPL LoRA) |\n| **S1131** (SKEMPI subset) | 1,129 | PPI binding ΔΔG | WT+MUT seqs of 2-chain complex | ΔΔG_bind (kcal/mol) | 5-fold GKF mmseqs 30% cluster | +0.384 (DPL LoRA) |\n| **Tsuboyama K50** | 29,902 | Monomeric stability | WT+MUT seq of 1 mini-protein | ΔΔG_fold (K50 cooperativity) | 5-fold GKF by protein | +0.744 (DPL LoRA) |\n| **FireProt curated** | 3,438 | Monomeric stability | WT+MUT seq of 1 protein | ΔΔG_fold (kcal/mol) | 5-fold GKF by protein | +0.369 (DPL frozen) |\n| **FireProt HOF** | 350 | Monomeric stability | WT+MUT seq of 1 protein | ΔΔG_fold (kcal/mol) | Fixed homolog…",
-      "tags": [
+        "result",
         "dataset",
         "model"
       ]
     },
     {
-      "ts": "2026-04-16T02:55:03.940Z",
-      "text": "All jobs killed. Let me give you the honest picture.\n\n**First — what happened with Tsuboyama**: The +0.744 was a **dedicated model trained ON Tsuboyama**. What you just saw (−0.138) is the SKEMPI-trained model applied zero-shot TO Tsuboyama. Phase-2 SKEMPI fine-tuning overwrote the Phase-1 Tsuboyama signal. The +0.744 dedicated model still exists and is real — the OOD test just proved that fine-tuning on dataset A destroys performance on dataset B. That's a finding, not a bug.\n\n**The real lesson**: we've been evaluating the **architecture** (DPL constraint) not a **model** (single set of weights). Each benchmark's number came from a model specifically trained on that benchmark. That's honest and standard — but it means \"download our model\" doesn't work.\n\nNow — the clean slate you asked for. Here are all our datasets with their structure:",
+      "ts": "2026-04-16T04:36:05.736Z",
+      "text": "Now the logs will show:\n\n```\nep  1/10  loss=X.XX  ddg=X.XX  val_rmse=X.XX  rho=+X.XX  r=+X.XX  bind_rho=+X.XX(n=1500)  stab_rho=+X.XX(n=6000)  (Xs)\n```\n\n## What each metric means\n\n| metric | what it measures | on what data |\n|---|---|---|\n| `rho` | Spearman(pred ΔΔG, true ΔΔG) | ALL val rows (binding + stability pooled) |\n| `r` | Pearson(pred ΔΔG, true ΔΔG) | ALL val rows pooled |\n| `val_rmse` | RMSE of ΔΔG prediction | ALL val rows pooled |\n| **`bind_rho`** | Spearman on **binding rows only** | SKEMPI+ABBind held-out fold (~1500 rows) |\n| **`stab_rho`** | Spearman on **stability rows only** | Tsuboyama+FireProt held-out fold (~6000 rows) |\n| `n=` | how many rows in each subset | |\n\n**`bind_rho` is the number to watch** — that's the SKEMPI-equivalent metric that we were tracking before (+0.35ish). `stab_rho` is the Tsuboyama+FireProt equivalent (+0.74ish). If both are positive and climbi…",
       "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T02:50:43.138Z",
-      "text": "## OOD Results Table — All 11 Checkpoints × 8 Benchmarks\n\n| Benchmark | Dedicated ρ | OOD mean ρ ± std | Verdict |\n|---|---|---|---|\n| **S1131 fair 1129** | +0.384 (retrained) | **+0.634 ± 0.124** | ⚠️ MISLEADING — S1131 is a SUBSET of SKEMPI, ~80% of rows are in-distribution |\n| **ATLAS TCR-pMHC** (n=214) | +0.088 (retrained) | **+0.263 ± 0.067** | ✅ Positive transfer (3× dedicated) |\n| **FireProt curated** (n=3438) | +0.369 (frozen) | **+0.145 ± 0.030** | ❌ 60% degradation |\n| **FireProt HOF** (n=350) | +0.234 (frozen) | **+0.083 ± 0.023** | ❌ 65% degradation |\n| **BindingGym LOAEO** (28k) | +0.276 (LoRA) | **−0.019 ± 0.021** | ❌ Zero signal — no transfer |\n| **ProteinGym binding** (35k) | +0.293 | **−0.029 ± 0.022** | ❌ Zero signal — no transfer |\n| **SAbDab v2** (n=427) | −0.057 | **−0.017 ± 0.019** | ➖ Both at noise floor |\n| **Tsuboyama K50** (29k) | +0.744 (LoRA) | **−0.138 ± 0.03…",
-      "tags": [
-        "dataset",
-        "model"
+        "result",
+        "dataset"
       ]
     }
   ]
