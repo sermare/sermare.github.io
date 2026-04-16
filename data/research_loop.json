@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T06:54:27Z",
+  "generated_at": "2026-04-16T07:24:32Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3980,
-    "assistant_turns": 5992,
+    "user_turns": 3990,
+    "assistant_turns": 6008,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T06:16:50.412Z"
+    "last_ts": "2026-04-16T07:21:51.133Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,47 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-16T07:21:51.007Z",
+      "text": "**152 cells resubmitted (18 already-done cells skipped). 26 running, 126 pending.** Both bugs fixed:\n\n1. OOD eval: no more circular import (`load_tsuboyama_rows` is already defined in the same file)\n2. Stability-only: `--skempi-sources none` returns empty list instead of crashing on `data/none/manifest.json`\n\n**Current completed results (real numbers):**\n- ESM-2 LoRA fold 0: **val ρ = +0.628** (multi-task binding+stability)\n- ESM-C LoRA 11 folds: **val ρ = +0.454 to +0.612** (varies by fold)\n\nThese are running all night. The OOD eval at the end of each job will now produce BindingGym / ProteinGym / FireProt HOF / Tsuboyama (when not in training) numbers automatically. Everything draining across A40 + lowprio.",
+      "tags": [
+        "error",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T07:20:52.225Z",
+      "text": "**Results are landing! Here's what we have so far:**\n\n| Experiment | Completed cells | Val ρ range |\n|---|---|---|\n| **ESM-2 LoRA (A)** | 2/15 | +0.626 to +0.628 |\n| **ESM-C LoRA (B)** | 11/15 | +0.454 to +0.612 |\n| Others | 0/15 each (preempted or OOD bug) | — |\n\n**ESM-2 LoRA is hitting +0.628 val ρ** (pooled binding+stability) and **ESM-C LoRA +0.454 to +0.612** depending on fold. These are the MULTI-TASK numbers — the model sees both SKEMPI binding AND Tsuboyama+FireProt stability in the same training run.\n\nThe OOD eval bug is fixed. The \"none\" source bug is fixed. Let me resubmit the failed experiments (everything except B which is mostly done and A which has 2 cells done):",
+      "tags": [
+        "error",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T07:20:34.908Z",
+      "text": "Now let me check what we already have completed and what needs resubmission:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T07:19:57.181Z",
+      "text": "Now fix the \"none\" source issue for stability-only experiments:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T07:19:48.226Z",
+      "text": "OK — not as bad as it looks. Main issues:\n\n**1. `load_tsuboyama_rows` UnboundLocalError (154 errors)** — this is the OOD eval block at the end of training. The OOD code tries to `from train_interface_dpl_v2 import load_tsuboyama_rows` but it's importing ITSELF, causing a circular reference. The training loop COMPLETED fine for these — only the OOD eval crashed. Quick fix.\n\n**2. `data/none/manifest.json` (15 errors)** — Exp G (`--skempi-sources none`) tried to load manifests from a nonexistent \"none\" source. These are the stability-only experiments.\n\n**3. PREEMPTION** — the ESM-C lowprio job got preempted, not a code bug.\n\n**4. OOM (6 errors)** — some ESM-C jobs without gradient checkpointing from earlier batch. Already fixed.\n\n**5. No-grad (5 errors)** — already fixed with the skip check.\n\n**The good news: 18 results.json files exist, including 11 from `esmc_lora` + 2 from `esm2_lora`.**…",
+      "tags": [
+        "error",
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-16T06:16:49.943Z",
       "text": "**Training is working and converging!** Key numbers from the logs:\n\n**Exp B (ESM-C LoRA)** — fold 1 seed 2, epoch 3:\n- `bind_rho = +0.468` (n=1338) — SKEMPI binding\n- `stab_rho = +0.315` (n=6811) — Tsuboyama+FireProt stability\n- ~6.5 min per epoch, on track to finish 10 epochs in ~65 min\n\n**Exp A (ESM-2 LoRA)** — fold 0 seed 0, epoch 3:\n- `bind_rho = +0.156` (n=2156) — lower binding (fold 0 is the hard fold)\n- `stab_rho = +0.562` (n=6006) — strong stability\n- ~6.5 min per epoch\n\nBoth are climbing epoch-over-epoch. ESM-C is showing **stronger binding signal** (+0.47 at ep 3) while ESM-2 shows **stronger stability signal** (+0.56 at ep 3). Interesting divergence.\n\n**ETA for all 182 jobs**: \n- ~65 min per cell on A40\n- 14 concurrent A40 slots → ~13 waves → ~14 hours to drain everything\n- 1080Ti slower but runs in parallel\n- OOD eval adds ~5 min at the end of each job (200 rows per OOD datas…",
@@ -344,43 +385,6 @@
       "text": "Exit code 143 = killed by timeout (SIGTERM). The 5-min timeout hit before even 1 epoch. Let me check how far it got:",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:35:21.574Z",
-      "text": "Pilot running. Now answering your question:\n\n## Yes — the DPL anti-symmetry still holds\n\nYou're asking about passing `PROTEIN + BINDER_WT` and `PROTEIN + BINDER_MT` to get the ΔΔG via the difference function. **That's exactly what the DPL head does**:\n\n```\nFor mutation at site i (wt_aa → mt_aa) in the binder:\n\n  context_i = [ESM(binder)[i] ; CrossAttn(ESM(binder)[i] → ESM(target))]\n  \n  ΔΔG_site = h(context_i, mt_aa) - h(context_i, wt_aa)\n               ↑ potential with mutant    ↑ potential with wildtype\n```\n\nThe context `context_i` is the SAME for both `h(ctx, mt)` and `h(ctx, wt)` — it includes the target protein via cross-attention. So the model sees:\n- **The target protein** (via cross-attention to partner chain)\n- **The binder's local context** (via ESM embedding at the mutation site)\n- **The WT amino acid** (subtracted)\n- **The MT amino acid** (added)\n\nThe **difference** `h(ctx, m…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:34:48.050Z",
-      "text": "Let me cancel and resubmit with the caching fix, then address your question.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:34:38.632Z",
-      "text": "**Important tradeoff**: `.detach().requires_grad_(True)` means **gradients flow through the head but NOT back through ESM LoRA** for cached rows. The LoRA adapters only get gradients from the FIRST time a chain is encoded (before it enters cache). For unique chains (most stability rows), the first encoding IS the only one, so LoRA gets gradients. For SKEMPI rows sharing chains across mutations, the cache helps speed but LoRA misses repeated-chain gradients. This is acceptable for tonight — the head is the main learnable component anyway.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:34:13.987Z",
-      "text": "Same for stability rows — detach the encoded embeddings:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:33:49.465Z",
-      "text": "All 6 still R, no errors, no crashes. The issue is the epoch just takes a long time — the training loop processes **~41k rows one at a time** with a full ESM-2/ESM-C forward pass per row. Each row = ~0.5-1 second on A40 (tokenize + ESM forward + head forward + backward). So:\n\n- ~33k stability + ~6k binding rows per epoch\n- ~41k × 0.7 sec average ≈ **~28,700 seconds ≈ 8 hours per epoch**\n\nThat's way too slow. The old `train_twophase_lora.py` was faster because it cached ESM embeddings per unique chain and chunked rows. Our new script does a fresh ESM forward per row (we disabled caching to fix the shared-graph backward bug).\n\n**The bottleneck is clear**: per-row ESM forward with no caching. Need to fix the caching approach — detach the cached embeddings so they're leaf tensors that don't share the backward graph, but still allow gradient flow through the head.",
-      "tags": [
-        "error",
-        "model"
       ]
     }
   ]
