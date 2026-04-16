@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T05:54:11Z",
+  "generated_at": "2026-04-16T06:24:24Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 3960,
-    "assistant_turns": 5966,
+    "user_turns": 3980,
+    "assistant_turns": 5992,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T05:54:05.323Z"
+    "last_ts": "2026-04-16T06:16:50.412Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,87 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-16T06:16:49.943Z",
+      "text": "**Training is working and converging!** Key numbers from the logs:\n\n**Exp B (ESM-C LoRA)** — fold 1 seed 2, epoch 3:\n- `bind_rho = +0.468` (n=1338) — SKEMPI binding\n- `stab_rho = +0.315` (n=6811) — Tsuboyama+FireProt stability\n- ~6.5 min per epoch, on track to finish 10 epochs in ~65 min\n\n**Exp A (ESM-2 LoRA)** — fold 0 seed 0, epoch 3:\n- `bind_rho = +0.156` (n=2156) — lower binding (fold 0 is the hard fold)\n- `stab_rho = +0.562` (n=6006) — strong stability\n- ~6.5 min per epoch\n\nBoth are climbing epoch-over-epoch. ESM-C is showing **stronger binding signal** (+0.47 at ep 3) while ESM-2 shows **stronger stability signal** (+0.56 at ep 3). Interesting divergence.\n\n**ETA for all 182 jobs**: \n- ~65 min per cell on A40\n- 14 concurrent A40 slots → ~13 waves → ~14 hours to drain everything\n- 1080Ti slower but runs in parallel\n- OOD eval adds ~5 min at the end of each job (200 rows per OOD datas…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T06:16:17.071Z",
+      "text": "**182 jobs total** across 13 experiments. Here's the full matrix:\n\n| Exp | Backbone | Mode | Interface λ | PAE λ | Data | Jobs |\n|---|---|---|---|---|---|---|\n| **A** | ESM-2 650M | LoRA | 0.1 | 0 | full | 15 |\n| **B** | ESM-C 300M | LoRA | 0.1 | 0 | full | 15 |\n| **B2** | ESM-C 300M | LoRA | 0.1 | 0 | full (1080Ti) | 15 |\n| **C** | ESM-C 300M | Full FT | 0.1 | 0.05 | full | 15 |\n| **D** | ESM-C 300M | LoRA | 0.1 | 0.05 | full | 15 |\n| **D2** | ESM-C 300M | LoRA | 0.1 | 0.05 | full (1080Ti) | 15 |\n| **E** | ESM-C 300M | Full FT | 0.1 | 0 | full | 15 |\n| **F** | ESM-C 300M | LoRA | 0.1 | 0 | SKEMPI only | 15 |\n| **G** | ESM-C 300M | LoRA | 0.1 | 0 | stability only | 15 |\n| **H** | ESM-C 300M | LoRA | 0.1 | 0 | SKEMPI+FireProt | 15 |\n| **I** | ESM-C 300M | LoRA | 0.1 | 0 | SKEMPI+Tsuboyama | 15 |\n| **J** | ESM-C 300M | LoRA | **0.5** | 0 | full | 15 |\n| **K** | ESM-C 300M | LoRA | **0.0**…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T06:14:30.034Z",
+      "text": "You're out of extra usage · resets 9am (America/Los_Angeles)",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T06:13:56.993Z",
+      "text": "Now let me also submit additional data configuration experiments. The currently-running 135 jobs will pick up the OOD eval code automatically (it runs after training). Let me add more data variants:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T06:12:59.769Z",
+      "text": "Now I'll add OOD evaluation at the end of training (after last epoch, uses the best checkpoint):",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:58:01.134Z",
+      "text": "All in training loop, loading data + backbone. With the 3 memory fixes, the first epoch should complete without OOM. Epoch 1 output in ~10-15 min for ESM-C, ~20 min for ESM-2.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:57:51.002Z",
+      "text": "Syntax OK (the exit 1 is from `find -delete` on already-empty pycache, irrelevant).\n\n**Three memory optimizations now stacked:**\n1. **Gradient checkpointing** — ~4× less activation memory\n2. **Sequence truncation 512** — ~2× less per-chain\n3. **Mixed precision FP16** — ~2× less model + activation memory\n\nCombined: roughly **~16× less memory** than the OOMing version. ESM-C 300M should now fit comfortably on both A40 (~3-5GB usage) and 1080Ti (~5-8GB).\n\nThe currently running jobs will already pick up the mixed-precision fix since they haven't started their training loops yet (still in data loading). The gradient checkpointing + seq truncation changes were already in from the previous edit. **No need to resubmit** — the 135 jobs will use the updated script when they reach the training loop.\n\nLet me verify the running jobs are progressing:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:57:06.766Z",
+      "text": "Now wrap the encode + forward in autocast, and use scaler for backward:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:56:55.458Z",
+      "text": "Not in the script yet. Adding `torch.cuda.amp.autocast` + `GradScaler`:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:56:33.712Z",
+      "text": "Yes — **mixed precision (FP16/BF16)**. Halves memory usage. One line:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T05:55:57.289Z",
+      "text": "**135 jobs resubmitted with OOM fixes:**\n- Gradient checkpointing enabled for ESM-C (saves ~4× activation memory)\n- Sequence truncation: 512 tokens for ESM-C (vs 1022 for ESM-2)\n- 5 already running (4 A40 + 1 1080Ti)\n\nThese should survive now. The smoke tests passed on short sequences; with grad checkpointing + 512 truncation, long SKEMPI chains should fit too.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
       "ts": "2026-04-16T05:54:01.419Z",
       "text": "Also truncate sequences to 512 for ESM-C (still captures full binding interface for most SKEMPI complexes):",
       "tags": [
@@ -300,83 +381,6 @@
       "tags": [
         "error",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:26:44.285Z",
-      "text": "**ESM-C is loading correctly now:**\n\n- **B new**: `ESM-C 300M + LoRA: 0.92M trainable` (332M total, LoRA on `out_proj`)\n- **C**: `ESM-C 300M FULL FT: 332M trainable` (all params unfrozen)\n- **A**: ESM-2 650M, 27 min in, about to hit epoch 1\n\nAll 6 jobs alive and training. Epoch 1 logs should start appearing in the next ~10 min for the ESM-C jobs (faster than ESM-2 since 300M < 650M).",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:26:30.900Z",
-      "text": "**All 6 RUNNING.** 2 on fc_nilah (27 min in), 4 on lowprio (just started 2 min ago). Let me check if the new ESM-C jobs are actually loading ESM-C this time:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:24:41.286Z",
-      "text": "Current state:\n- **A** (ESM-2 LoRA): R on fc_nilah — running correctly\n- **B old** (fc_nilah `33430057`): R but loaded ESM-2 fallback — let it run as duplicate baseline\n- **B new** (lowprio `33430286`): PD — will load ESM-C 300M via `esmc_backbone.py`\n- **C** (lowprio `33430287`): PD — ESM-C FT + PAE\n- **D** (lowprio `33430288`): PD — ESM-C LoRA + PAE\n- **E** (lowprio `33430289`): PD — ESM-C FT no PAE\n\nThe ESM-C jobs now use our native `esmc_backbone.py` with RoPE + local weight cache at `/global/scratch/users/sergiomar10/hf_cache/hub/esmc_300m_2024_12_v0.pth`. No more `from esmc import ESMC` fallback.\n\n**Also note**: the LoRA vs full-FT distinction is now controlled by `lr_lora` threshold: `>= 1e-4` = LoRA mode, `< 1e-4` (like `5e-5` for C/E) = full fine-tune mode. This is a bit hacky — the `lr_lora` arg does double duty. But it works for tonight's pilots.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:24:10.714Z",
-      "text": "Now let me **NOT cancel the running A+B** (they're actually both ESM-2 LoRA now, which is fine as a sanity check). Instead, let me cancel the 3 lowprio PD jobs and resubmit B/C/D/E with the fixed ESM-C path:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:23:42.545Z",
-      "text": "Also need to fix the `encode_sequence` function to handle ESM-C:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:23:22.060Z",
-      "text": "**Problem spotted**: Exp B says `\"esmc not installed, falling back to ESM-2 650M\"`. So **both A and B are running ESM-2 650M** — ESM-C isn't loading. The fallback in the training script triggers because `from esmc import ESMC` fails (the pip package isn't installed), and then it falls through to ESM-2.\n\nBut we built `esmc_backbone.py` with the native loader that works! The training script isn't using it — it's trying to import the official `esmc` package which doesn't exist. Let me fix the ESM-C loading path to use our native loader:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:19:16.405Z",
-      "text": "Done:\n- **A** (ESM-2 LoRA): R on fc_nilah `n0211`\n- **B** (ESM-C LoRA): R on fc_nilah `n0215`\n- **C** (ESM-C FT+PAE): PD on lowprio `(Priority)`\n- **D** (ESM-C LoRA+PAE): PD on lowprio `(Priority)`\n- **E** (ESM-C FT noPAE): PD on lowprio `(Priority)`\n\nC/D/E will start as lowprio A40 slots open. A+B are running now and should hit epoch 1 in ~10-15 min.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:18:56.902Z",
-      "text": "3 PD on fc_nilah. Let me cancel them and resubmit to lowprio savio3_gpu A40:",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:13:26.135Z",
-      "text": "API Error: Server is temporarily limiting requests (not your usage limit) · Rate limited",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:13:19.181Z",
-      "text": "The weights are right there at `/global/scratch/users/sergiomar10/hf_cache/hub/esmc_300m_2024_12_v0.pth`. My `esmc_backbone.py` downloads from HuggingFace by default — let me point it to this local file instead so ESM-C jobs don't waste time downloading:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T04:59:30.461Z",
-      "text": "Running. Bug #3 fixed: rows with out-of-range positions are now skipped instead of producing a no-grad tensor. Three bugs fixed total in this round:\n\n1. Tsuboyama CSV path\n2. FireProt `mutation` column name\n3. No-grad rows from out-of-range positions\n4. Shared-graph backward (per-row gradient accumulation)\n\nI'll check again in 15 min for epoch 1 output. Sorry about the iteration — new training script is always a debugging process.",
-      "tags": [
-        "dataset"
       ]
     }
   ]
