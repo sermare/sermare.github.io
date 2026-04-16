@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T16:55:37Z",
+  "generated_at": "2026-04-16T17:25:42Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4026,
-    "assistant_turns": 6061,
+    "user_turns": 4033,
+    "assistant_turns": 6072,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T16:54:54.236Z"
+    "last_ts": "2026-04-16T17:23:16.382Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,42 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-16T17:16:14.289Z",
+      "text": "**HANDOFF.md completely rewritten** — 12 sections covering everything from this session:\n\n1. **Project pivot history** (tokenizer → DPL v1 → Interface-Aware DPL v2)\n2. **Cluster config** (all accounts/QoS/partitions/dead nodes/memory limits)\n3. **All abbreviations** (DPL, UN, PPAC, GKF, stab_only, ID, OOD, λ_iface, etc.)\n4. **All datasets in depth** (training + OOD + not-yet-integrated, with paths + row counts + column formats)\n5. **Architecture** (cross-attention, DPL head, PAE head, losses)\n6. **Training script** (all flags, what it does step-by-step, all bugs fixed)\n7. **All 16 experiments** with their configs + result dirs\n8. **Results table** with ID vs OOD separation\n9. **v1 history** (the +0.377 saga, master table audit, save-fix)\n10. **Paper state** (16 pages, Section 6 draft, stale number fixes)\n11. **Key file paths** (every important script, data file, result dir)\n12. **Session…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T17:12:54.640Z",
+      "text": "This is the old HANDOFF from the tokenizer era. I need to write a completely new one covering the Δ-Potential Learning pivot and everything from this session. Let me write it:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T16:57:06.847Z",
+      "text": "## Full Results Summary\n\n### Paper Table\n\n| Model | Backbone | Val ρ | Tsub (ID) | FProt (ID) | **BndGym (OOD)** | **PrtGym (OOD)** |\n|---|---|---|---|---|---|---|\n| **Full data** | **ESM-2 650M** | **+0.603** | +0.811 | **+0.650** | −0.053 | −0.090 |\n| **Stab-only** | **ESM-2 650M** | +0.576 | **+0.862** | +0.621 | **+0.120** | **+0.050** |\n| λ_iface=0.5 | ESM-2 650M | +0.571 | +0.660 | +0.408 | +0.006 | −0.076 |\n| Full data | ESM-C 300M | +0.530 | +0.668 | +0.496 | −0.028 | −0.041 |\n| FT + PAE | ESM-C 300M | +0.542 | +0.667 | +0.472 | −0.024 | −0.030 |\n| Full FT | ESM-C 300M | +0.531 | +0.655 | +0.465 | −0.018 | −0.037 |\n| λ_iface=0 | ESM-C 300M | +0.533 | +0.676 | +0.485 | −0.019 | −0.036 |\n\n### Key Findings\n\n**1. ESM-2 650M dominates ESM-C 300M** — bigger backbone wins everywhere:\n- In-distribution: +0.81 vs +0.67 (Tsuboyama), +0.65 vs +0.50 (FireProt)\n- The 2× parameter advantage ma…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T16:56:45.208Z",
+      "text": "## Complete Results\n\n**Figures saved**: `paper/figures/interface_dpl_v2_results.{png,pdf}`\n\nLet me show you the figure:",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T16:55:04.979Z",
+      "text": "Now I have the full picture. **BindingGym data is landing!** Let me generate the paper-ready figure and table:",
+      "tags": [
+        "dataset"
+      ]
+    },
     {
       "ts": "2026-04-16T16:40:14.431Z",
       "text": "**144 OOD eval jobs resubmitted with fixed BindingGym + ProteinGym loaders.** 23 already running. Each job now loads **all 4 OOD datasets** properly:\n- Tsuboyama K50 (500 rows)\n- FireProt curated (500 rows)\n- **BindingGym** (500 rows from per-assay singles files with proper WT sequences)\n- **ProteinGym** (500 rows from DMS assay files with mutation parsing)\n\nPlus 75 ESM-2 training jobs still draining on fc_nilah. Results should start landing in ~10 min. When they're all done I'll generate the full OOD table + figures.",
@@ -355,44 +391,6 @@
         "error",
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T06:16:49.943Z",
-      "text": "**Training is working and converging!** Key numbers from the logs:\n\n**Exp B (ESM-C LoRA)** — fold 1 seed 2, epoch 3:\n- `bind_rho = +0.468` (n=1338) — SKEMPI binding\n- `stab_rho = +0.315` (n=6811) — Tsuboyama+FireProt stability\n- ~6.5 min per epoch, on track to finish 10 epochs in ~65 min\n\n**Exp A (ESM-2 LoRA)** — fold 0 seed 0, epoch 3:\n- `bind_rho = +0.156` (n=2156) — lower binding (fold 0 is the hard fold)\n- `stab_rho = +0.562` (n=6006) — strong stability\n- ~6.5 min per epoch\n\nBoth are climbing epoch-over-epoch. ESM-C is showing **stronger binding signal** (+0.47 at ep 3) while ESM-2 shows **stronger stability signal** (+0.56 at ep 3). Interesting divergence.\n\n**ETA for all 182 jobs**: \n- ~65 min per cell on A40\n- 14 concurrent A40 slots → ~13 waves → ~14 hours to drain everything\n- 1080Ti slower but runs in parallel\n- OOD eval adds ~5 min at the end of each job (200 rows per OOD datas…",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T06:16:17.071Z",
-      "text": "**182 jobs total** across 13 experiments. Here's the full matrix:\n\n| Exp | Backbone | Mode | Interface λ | PAE λ | Data | Jobs |\n|---|---|---|---|---|---|---|\n| **A** | ESM-2 650M | LoRA | 0.1 | 0 | full | 15 |\n| **B** | ESM-C 300M | LoRA | 0.1 | 0 | full | 15 |\n| **B2** | ESM-C 300M | LoRA | 0.1 | 0 | full (1080Ti) | 15 |\n| **C** | ESM-C 300M | Full FT | 0.1 | 0.05 | full | 15 |\n| **D** | ESM-C 300M | LoRA | 0.1 | 0.05 | full | 15 |\n| **D2** | ESM-C 300M | LoRA | 0.1 | 0.05 | full (1080Ti) | 15 |\n| **E** | ESM-C 300M | Full FT | 0.1 | 0 | full | 15 |\n| **F** | ESM-C 300M | LoRA | 0.1 | 0 | SKEMPI only | 15 |\n| **G** | ESM-C 300M | LoRA | 0.1 | 0 | stability only | 15 |\n| **H** | ESM-C 300M | LoRA | 0.1 | 0 | SKEMPI+FireProt | 15 |\n| **I** | ESM-C 300M | LoRA | 0.1 | 0 | SKEMPI+Tsuboyama | 15 |\n| **J** | ESM-C 300M | LoRA | **0.5** | 0 | full | 15 |\n| **K** | ESM-C 300M | LoRA | **0.0**…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T06:14:30.034Z",
-      "text": "You're out of extra usage · resets 9am (America/Los_Angeles)",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T06:13:56.993Z",
-      "text": "Now let me also submit additional data configuration experiments. The currently-running 135 jobs will pick up the OOD eval code automatically (it runs after training). Let me add more data variants:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T06:12:59.769Z",
-      "text": "Now I'll add OOD evaluation at the end of training (after last epoch, uses the best checkpoint):",
-      "tags": [
-        "note"
       ]
     }
   ]
