@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-16T15:55:28Z",
+  "generated_at": "2026-04-16T16:25:34Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4006,
-    "assistant_turns": 6032,
+    "user_turns": 4014,
+    "assistant_turns": 6044,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-16T14:00:15.640Z"
+    "last_ts": "2026-04-16T16:08:23.648Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,35 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-16T16:05:11.649Z",
+      "text": "**220 total jobs: 144 OOD eval + 75 ESM-2 training + 1 remaining.** 3 running, 217 pending.\n\nEach OOD eval now scores **ALL 4 held-out datasets**: Tsuboyama, FireProt, **BindingGym**, **ProteinGym** with proper mutation parsing from the raw DMS files. Results land in `results.json` under `\"ood\"` key.\n\nWhen everything finishes I'll pull a comprehensive table showing:\n- Each experiment's training data config\n- In-distribution val ρ (bind + stab)\n- **OOD ρ on each held-out dataset** (the key numbers)\n- Separated by what was trained vs what's truly OOD per model\n\nThe ESM-2 training experiments (75 new cells) will also auto-evaluate OOD at the end via the training script's built-in OOD block.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-16T16:04:19.756Z",
+      "text": "The earlier results got wiped by the `rm -rf $OUTDIR` in the resubmit script. Only `esm2_stab_only` (15/15) survived. But many have **checkpoints without results.json** — meaning they were killed mid-training by `scancel`. The OOD eval can still run on those checkpoints.\n\nLet me submit OOD eval for ALL dirs that have checkpoints (not just results.json):",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T16:03:33.480Z",
+      "text": "Only 15 OOD dirs found — some results got wiped when I `rm -rf` output dirs during resubmissions. Let me check what actually exists:",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-16T16:01:25.273Z",
+      "text": "Now I have the full picture. BindingGym has `wildtype_sequence` as a dict of chains. ProteinGym has `mutated_sequence`. Let me rewrite the OOD eval with proper loaders and FIRE EVERYTHING:",
+      "tags": [
+        "dataset"
+      ]
+    },
     {
       "ts": "2026-04-16T14:00:15.489Z",
       "text": "OOD jobs started 4-6 seconds ago, still loading. These are fast inference jobs (~5-10 min each). Results should land soon. The ESM-2 training (e2G) is also running.\n\n**Current state: 238 jobs in queue. The OOD evals test ALL 5 held-out datasets (Tsuboyama, FireProt, BindingGym, ProteinGym, S1131) on every completed checkpoint. Results will populate `results.json` with the `\"ood\"` key containing per-dataset Spearman ρ. First OOD results should appear within 10 minutes.**",
@@ -361,35 +390,6 @@
       "tags": [
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:54:01.419Z",
-      "text": "Also truncate sequences to 512 for ESM-C (still captures full binding interface for most SKEMPI complexes):",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:53:43.101Z",
-      "text": "Now enable gradient checkpointing in the training script for ESM-C:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:53:30.650Z",
-      "text": "**ALL ESM-C jobs are OOMing** — both A40 (44GB used!) and 1080Ti. Root cause: **our ESMC300M class has no gradient checkpointing**. Without it, PyTorch stores all 30 layers' activations for backward — on SKEMPI's 500+ aa chains, that's 44GB+.\n\nThe smoke tests passed because Tsuboyama mini-proteins are ~50 aa. SKEMPI chains are 10× longer.\n\nTwo quick fixes — gradient checkpointing + sequence truncation:",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T05:51:31.695Z",
-      "text": "## FULL STATUS: 135 JOBS SUBMITTED\n\n| partition | running | pending | experiments |\n|---|---|---|---|\n| savio3_gpu (A40) | 2 | 99 | A/B/C/D/E/F/G (105 cells) |\n| savio2_1080ti | 1 | 29 | B2/D2 (30 cells) |\n| **TOTAL** | **3** | **128** | **135 cells** |\n\n**9 experiments running tonight:**\n\n| Exp | Backbone | Mode | PAE | Interface | Data | Cells | Partition |\n|---|---|---|---|---|---|---|---|\n| **A** | ESM-2 650M | LoRA | - | yes | full | 15 | fc_nilah |\n| **B** | ESM-C 300M | LoRA | - | yes | full | 15 | lowprio A40 |\n| **B2** | ESM-C 300M | LoRA | - | yes | full | 15 | **1080Ti** |\n| **C** | ESM-C 300M | Full FT | yes | yes | full | 15 | lowprio A40 |\n| **D** | ESM-C 300M | LoRA | yes | yes | full | 15 | lowprio A40 |\n| **D2** | ESM-C 300M | LoRA | yes | yes | full | 15 | **1080Ti** |\n| **E** | ESM-C 300M | Full FT | - | yes | full | 15 | lowprio A40 |\n| **F** | ESM-C 300M | LoRA | - |…",
-      "tags": [
-        "model",
-        "infra"
       ]
     }
   ]
