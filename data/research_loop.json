@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-17T19:31:18Z",
+  "generated_at": "2026-04-17T20:01:22Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4103,
-    "assistant_turns": 6161,
+    "user_turns": 4115,
+    "assistant_turns": 6179,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-17T19:30:47.919Z"
+    "last_ts": "2026-04-17T19:45:48.968Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,28 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-17T19:42:44.893Z",
+      "text": "**All dead jobs rescued. Queue is healthy now.**\n\n| Job | Before | After |\n|---|---|---|\n| `abbibench_ood` (33454360→**33488783**) | QOSMinCpuNotSatisfied (stuck forever) | **PENDING Resources** (normal queue wait) |\n| `esm_if_pre` (33454707→**33488782**) | QOSMinCpuNotSatisfied (stuck forever) | **PENDING Resources** (normal queue wait) |\n| `abonly_G1` (33454789) | afterok on failed 33454707 (zombie) | **dep rewired → 33488782**, will auto-fire |\n\n**Fix applied:** bumped `cpus-per-task=4 → 8` and `mem=32G → 48G` in both sbatch scripts — the `a40_gpu3_normal` QoS has an 8-CPU floor which is why they wouldn't schedule.\n\n**Remaining pending reasons (all legitimate now):**\n- 5× `JobArrayTaskLimit` — pattba_retrain and abonly_E arrays throttled to ≤11 concurrent; auto-advance as cells finish\n- 3× `Dependency` — pattba chain (retrain → ood_infer → agg_sup_ood) + G1 chain (esm_if_pre → G1); al…",
+      "tags": [
+        "error",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-17T19:42:05.868Z",
+      "text": "Both jobs request 4 CPUs on `a40_gpu3_normal` — that QoS has an 8-CPU minimum (which is why the E1 array with 8 CPUs runs but these 4-CPU jobs don't). Two clean fixes: bump CPUs to 8, OR move to `savio_lowprio` (preemptable, already requeue-safe). I'll do both — bump to 8 CPUs and keep a non-preemptable path, but also drop a lowprio fallback.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-17T19:41:50.887Z",
+      "text": "**Here's the dependency map:**\n\n| Job | Stuck reason | Fixable? |\n|---|---|---|\n| 33454360 `abbibench_ood` | **QOSMinCpuNotSatisfied** (a40_gpu3_normal) | ✅ swap to lowprio |\n| 33454707 `esm_if_pre` | **QOSMinCpuNotSatisfied** (a40_gpu3_normal) | ✅ swap to lowprio |\n| 33454789 `abonly_G1` | afterok on esm_if_pre | ✅ **auto-unblocks** once esm_if_pre runs |\n| 33451472 `pattba_ood_infer` | afterany on pattba_retrain array | ⏳ legitimate — pattba_retrain is ACTIVELY running |\n| 33453123 `agg_sup_ood` | afterany on pattba_ood_infer | ⏳ legitimate chain |\n\nThe two QOS-stuck jobs are the only ones worth rerouting. Let me inspect and resubmit.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-17T19:27:43.163Z",
       "text": "Done — both actions are live.\n\n**1. Dead jobs recovered** (abonly_E1/E2/E3):\n- Cancelled 33454381/82/83 (stuck on DependencyNeverSatisfied)\n- Resubmitted as 33488542/43/44\n- **First 13 of 45 array cells already RUNNING** on A40 GPUs, no dependency issue\n\n**2. Checkpoint backup** running in background → `/clusterfs/nilah/sergio/paper_checkpoints_v2/`. Packaging (as `.tar.gz`, one per experiment, stamped `_20260417`):\n\n| Experiment | Why |\n|---|---|\n| `interface_dpl_v2_esm2_lora` | best SKEMPI binding (val ρ +0.602, test-ca +0.847) |\n| `interface_dpl_v2_esm2_stab_only` | best OOD (Tsub +0.862, FireP +0.621) |\n| `interface_dpl_v2_esm2_highiface` | ablation pair |\n| `interface_dpl_v2_esmc_lora` | best ESM-C LoRA |\n| `interface_dpl_v2_esmc_ft_pae` | PAE-loss variant (big — 57 GB raw) |\n| `abonly_B3_multitask_stability` | best antibody-focused (+0.391) |\n| `abonly_F1_antigen_partner` | antigen…",
@@ -368,29 +390,6 @@
       "text": "Now cancel old OOD jobs and resubmit with ALL datasets on BOTH partitions:",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T13:58:07.202Z",
-      "text": "BindingGym IS in the script but let me add ProteinGym, S1131, and FireProt HOF. Then cancel the old OOD jobs and resubmit with ALL datasets + spam both partitions:",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T13:51:57.971Z",
-      "text": "**188 jobs fired:**\n\n**OOD eval (113 jobs)** — each loads a completed checkpoint, scores Tsuboyama + FireProt + BindingGym, writes OOD rho to `results.json`. ~5-10 min each on A40.\n\n**New ESM-2 training (75 jobs)** — 5 data-variant experiments on fc_nilah normal:\n\n| Exp | Data | Purpose |\n|---|---|---|\n| **e2F** | SKEMPI only | binding-focused ESM-2 |\n| **e2G** | Stability only | Tsuboyama+FireProt ESM-2 |\n| **e2I** | SKEMPI+Tsuboyama | no FireProt |\n| **e2J** | Full, λ_iface=0.5 | high interface loss |\n| **e2K** | Full, λ_iface=0.0 | no interface loss ablation |\n\nThese match the ESM-C variants but with the stronger ESM-2 650M backbone. Combined with the existing ESM-2 full-data results (val ρ=+0.606), we'll have a complete ablation table for both backbones.\n\n18 already running, 170 draining overnight. OOD results should start landing within 10-15 minutes.",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T13:50:34.338Z",
-      "text": "Now fire OOD eval on all 118 completed cells + submit more ESM-2 training:",
-      "tags": [
-        "model"
       ]
     }
   ]
