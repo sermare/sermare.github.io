@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-17T20:01:22Z",
+  "generated_at": "2026-04-17T20:31:29Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4115,
-    "assistant_turns": 6179,
+    "user_turns": 4119,
+    "assistant_turns": 6187,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-17T19:45:48.968Z"
+    "last_ts": "2026-04-17T20:30:13.804Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-17T20:30:09.812Z",
+      "text": "**Backup done — 11 archives, 57 GB on `/clusterfs/nilah/sergio/paper_checkpoints_v2/`**\n\n| Archive | Size |\n|---|---|\n| **interface_dpl_v2_esmc_ft_pae** (full-FT) | **52 GB** ← dominates |\n| abonly_D5_combo | 968 MB |\n| esm2_highiface | 741 MB |\n| esm2_lora | 683 MB |\n| esm2_stab_only | 649 MB |\n| abonly_F1_antigen_partner | 538 MB |\n| abonly_B3_multitask_stability | 523 MB |\n| esmc_lora | 422 MB |\n| abonly_A2 | 348 MB |\n| **ppac_antibody_only** | **1.4 KB** ← ⚠️ ckpts missed |\n| **protattba_antibody_only** | **1.1 KB** ← ⚠️ ckpts missed |\n\n**Issue:** PPAC and ProtAttBA save as `ckpt.pt` (single file), not `ckpt_*.pt`. My glob missed them. Patching now.",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-17T19:42:44.893Z",
       "text": "**All dead jobs rescued. Queue is healthy now.**\n\n| Job | Before | After |\n|---|---|---|\n| `abbibench_ood` (33454360→**33488783**) | QOSMinCpuNotSatisfied (stuck forever) | **PENDING Resources** (normal queue wait) |\n| `esm_if_pre` (33454707→**33488782**) | QOSMinCpuNotSatisfied (stuck forever) | **PENDING Resources** (normal queue wait) |\n| `abonly_G1` (33454789) | afterok on failed 33454707 (zombie) | **dep rewired → 33488782**, will auto-fire |\n\n**Fix applied:** bumped `cpus-per-task=4 → 8` and `mem=32G → 48G` in both sbatch scripts — the `a40_gpu3_normal` QoS has an 8-CPU floor which is why they wouldn't schedule.\n\n**Remaining pending reasons (all legitimate now):**\n- 5× `JobArrayTaskLimit` — pattba_retrain and abonly_E arrays throttled to ≤11 concurrent; auto-advance as cells finish\n- 3× `Dependency` — pattba chain (retrain → ood_infer → agg_sup_ood) + G1 chain (esm_if_pre → G1); al…",
@@ -383,13 +390,6 @@
       "tags": [
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T13:58:56.666Z",
-      "text": "Now cancel old OOD jobs and resubmit with ALL datasets on BOTH partitions:",
-      "tags": [
-        "note"
       ]
     }
   ]
