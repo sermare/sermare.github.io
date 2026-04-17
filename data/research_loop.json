@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-17T16:00:25Z",
+  "generated_at": "2026-04-17T16:30:31Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4062,
-    "assistant_turns": 6106,
+    "user_turns": 4067,
+    "assistant_turns": 6113,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-17T13:44:44.558Z"
+    "last_ts": "2026-04-17T16:09:25.505Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-17T16:06:22.193Z",
+      "text": "Pulled the real numbers. Here's the full picture:\n\n---\n\n## ID (in-distribution) — antibody cluster-aware val ρ\n\n| Model | val ρ | Source |\n|---|---|---|\n| **Ours abonly_B3** (ESM-2 LoRA + multi-task stability) | **+0.391 ± 0.13** | our train |\n| **Ours abonly_F1** (ESM-2 LoRA + antigen cross-attn) | **+0.373 ± 0.15** | our train |\n| ESM-2 pool+tokens+pair (on AB-Bind 5-fold, random split) | +0.398 ± 0.09 | our baseline |\n| **PPAC retrained on antibody manifest** (SOTA #1) | **+0.305 ± 0.12** | our re-run |\n| **ProtAttBA retrained on antibody manifest** (SOTA #2) | **+0.291 ± 0.11** | our re-run |\n| Ours abonly_A2 / B2 / D5 | +0.25–0.28 | our train |\n| Ours abonly_B1 (SAbDab-only) | **−0.058** | our train |\n\n**So ID-wise we do beat published SOTA retrained on the same split** by ≈ +0.09 ρ (B3 vs PPAC, B3 vs ProtAttBA), matched-protocol.\n\n---\n\n## OOD — the only real complex-transfer number…",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-17T13:41:41.556Z",
       "text": "**Queue:** 11 running, 17 pending (abbibench_ood, pattba_ood_infer, abonly_E1/E2/E3, abonly_G1, abonly_G4_protattba, agg_sup_ood, esm_if_pre, pattba_retrain).\n\n---\n\n**ΔΔG — Interface-DPL v2 (general binding, 28 experiments, 15 cells each)**\n\n| Variant | val ρ | Tsub | FireP | BindGym |\n|---|---|---|---|---|\n| **esm2_stab_only** (no SKEMPI) | +0.576 | **+0.862** | **+0.621** | **+0.120** |\n| esm2_lora (SKEMPI multi-task) | **+0.602** | — | — | — |\n| esm2_highiface | +0.607 | — | — | — |\n| esm2_noiface | +0.607 | — | — | — |\n| esmc_ft_pae | +0.542 | +0.667 | +0.472 | −0.024 |\n| esmc_lora | +0.530 | +0.668 | +0.496 | −0.028 |\n| esmc_stab_only | +0.489 | +0.687 | +0.436 | +0.048 |\n| esmc_lora_highiface | +0.535 | +0.665 | +0.496 | −0.043 |\n| esmc_ft_nopae | +0.531 | +0.655 | +0.465 | −0.018 |\n\n**Headlines:**\n- **SKEMPI-trained models win val ρ** (up to +0.607), **but lose OOD transfer** — Bi…",
@@ -379,15 +386,6 @@
     {
       "ts": "2026-04-16T07:21:51.007Z",
       "text": "**152 cells resubmitted (18 already-done cells skipped). 26 running, 126 pending.** Both bugs fixed:\n\n1. OOD eval: no more circular import (`load_tsuboyama_rows` is already defined in the same file)\n2. Stability-only: `--skempi-sources none` returns empty list instead of crashing on `data/none/manifest.json`\n\n**Current completed results (real numbers):**\n- ESM-2 LoRA fold 0: **val ρ = +0.628** (multi-task binding+stability)\n- ESM-C LoRA 11 folds: **val ρ = +0.454 to +0.612** (varies by fold)\n\nThese are running all night. The OOD eval at the end of each job will now produce BindingGym / ProteinGym / FireProt HOF / Tsuboyama (when not in training) numbers automatically. Everything draining across A40 + lowprio.",
-      "tags": [
-        "error",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T07:20:52.225Z",
-      "text": "**Results are landing! Here's what we have so far:**\n\n| Experiment | Completed cells | Val ρ range |\n|---|---|---|\n| **ESM-2 LoRA (A)** | 2/15 | +0.626 to +0.628 |\n| **ESM-C LoRA (B)** | 11/15 | +0.454 to +0.612 |\n| Others | 0/15 each (preempted or OOD bug) | — |\n\n**ESM-2 LoRA is hitting +0.628 val ρ** (pooled binding+stability) and **ESM-C LoRA +0.454 to +0.612** depending on fold. These are the MULTI-TASK numbers — the model sees both SKEMPI binding AND Tsuboyama+FireProt stability in the same training run.\n\nThe OOD eval bug is fixed. The \"none\" source bug is fixed. Let me resubmit the failed experiments (everything except B which is mostly done and A which has 2 cells done):",
       "tags": [
         "error",
         "dataset",
