@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-17T13:30:08Z",
+  "generated_at": "2026-04-17T14:00:11Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4056,
-    "assistant_turns": 6098,
+    "user_turns": 4062,
+    "assistant_turns": 6106,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-17T09:07:35.868Z"
+    "last_ts": "2026-04-17T13:44:44.558Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,14 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-17T13:41:41.556Z",
+      "text": "**Queue:** 11 running, 17 pending (abbibench_ood, pattba_ood_infer, abonly_E1/E2/E3, abonly_G1, abonly_G4_protattba, agg_sup_ood, esm_if_pre, pattba_retrain).\n\n---\n\n**ΔΔG — Interface-DPL v2 (general binding, 28 experiments, 15 cells each)**\n\n| Variant | val ρ | Tsub | FireP | BindGym |\n|---|---|---|---|---|\n| **esm2_stab_only** (no SKEMPI) | +0.576 | **+0.862** | **+0.621** | **+0.120** |\n| esm2_lora (SKEMPI multi-task) | **+0.602** | — | — | — |\n| esm2_highiface | +0.607 | — | — | — |\n| esm2_noiface | +0.607 | — | — | — |\n| esmc_ft_pae | +0.542 | +0.667 | +0.472 | −0.024 |\n| esmc_lora | +0.530 | +0.668 | +0.496 | −0.028 |\n| esmc_stab_only | +0.489 | +0.687 | +0.436 | +0.048 |\n| esmc_lora_highiface | +0.535 | +0.665 | +0.496 | −0.043 |\n| esmc_ft_nopae | +0.531 | +0.655 | +0.465 | −0.018 |\n\n**Headlines:**\n- **SKEMPI-trained models win val ρ** (up to +0.607), **but lose OOD transfer** — Bi…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-17T09:04:32.168Z",
       "text": "**Honest answer: we don't have real antibody OOD numbers — only in-distribution antibody val ρ.**\n\nThe v2 OOD eval script (`eval_ood_post.py` line 90-162) checks Tsuboyama / FireProt / BindingGym / ProteinGym / S1131 — **no AB-Bind, AB1101, AB645, or held-out SAbDab**. So every antibody ρ we report is from the cluster-aware validation fold of the antibody manifest itself, not transfer to an external antibody benchmark.\n\n**What we have (antibody-group GroupKFold, 5×3 = 15 cells each, val ρ only):**\n\n| Variant | What it is | val ρ (antibody fold) |\n|---|---|---|\n| **abonly_B3 multitask_stability** | SKEMPI-ab + Tsuboyama + FireProt multi-task | **+0.394 ± 0.134** (n=11) |\n| **abonly_F1 antigen_partner** | cross-attn to antigen chain | **+0.393 ± 0.139** (n=5) |\n| abonly_A2 | ESM-2 150M LoRA r=16 | +0.276 ± 0.104 |\n| abonly_B2 | CoV-AbDab pretrain | +0.268 ± 0.097 |\n| abonly_D5 | curriculum…",
@@ -384,13 +392,6 @@
         "error",
         "dataset",
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T07:20:34.908Z",
-      "text": "Now let me check what we already have completed and what needs resubmission:",
-      "tags": [
-        "note"
       ]
     }
   ]
