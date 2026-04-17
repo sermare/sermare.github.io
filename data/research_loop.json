@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-17T08:59:33Z",
+  "generated_at": "2026-04-17T09:29:40Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4034,
-    "assistant_turns": 6073,
+    "user_turns": 4056,
+    "assistant_turns": 6098,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-17T08:59:15.485Z"
+    "last_ts": "2026-04-17T09:07:35.868Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,22 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-17T09:04:32.168Z",
+      "text": "**Honest answer: we don't have real antibody OOD numbers — only in-distribution antibody val ρ.**\n\nThe v2 OOD eval script (`eval_ood_post.py` line 90-162) checks Tsuboyama / FireProt / BindingGym / ProteinGym / S1131 — **no AB-Bind, AB1101, AB645, or held-out SAbDab**. So every antibody ρ we report is from the cluster-aware validation fold of the antibody manifest itself, not transfer to an external antibody benchmark.\n\n**What we have (antibody-group GroupKFold, 5×3 = 15 cells each, val ρ only):**\n\n| Variant | What it is | val ρ (antibody fold) |\n|---|---|---|\n| **abonly_B3 multitask_stability** | SKEMPI-ab + Tsuboyama + FireProt multi-task | **+0.394 ± 0.134** (n=11) |\n| **abonly_F1 antigen_partner** | cross-attn to antigen chain | **+0.393 ± 0.139** (n=5) |\n| abonly_A2 | ESM-2 150M LoRA r=16 | +0.276 ± 0.104 |\n| abonly_B2 | CoV-AbDab pretrain | +0.268 ± 0.097 |\n| abonly_D5 | curriculum…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-17T09:02:43.442Z",
+      "text": "**Current progress snapshot (2026-04-17 01:23+)**\n\n**Queue:** 26 running, 68 pending — mostly OOD eval jobs + the tail of the e2F–e2K ESM-2 data-variant sweep. No failures since the BindingGym loader fix landed.\n\n**Completed results:** 495 `results.json` files across the v2 sweep; 11 written since the HANDOFF rewrite (new OOD scores coming in).\n\n**What the fresh OOD numbers are saying (ESM-C 300M, SKEMPI + Tsuboyama + FireProt multi-task):**\n- Val ρ (in-distribution SKEMPI): +0.47 to +0.61 across 5 folds × 3 seeds — stable.\n- BindingGym transfer: floating around **zero, slight negative** (−0.14 to +0.05). Mean ~−0.03.\n- ProteinGym binding: still mostly null (`None`) — those jobs are in the queued batch.\n\n**The honest story (unchanged from the table in HANDOFF §7):**\n- In-distribution SKEMPI works (ρ ≈ 0.55).\n- ESM-2 **stability-only** is still the best OOD transfer (+0.12 BG / +0.05 PG).…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-16T17:16:14.289Z",
       "text": "**HANDOFF.md completely rewritten** — 12 sections covering everything from this session:\n\n1. **Project pivot history** (tokenizer → DPL v1 → Interface-Aware DPL v2)\n2. **Cluster config** (all accounts/QoS/partitions/dead nodes/memory limits)\n3. **All abbreviations** (DPL, UN, PPAC, GKF, stab_only, ID, OOD, λ_iface, etc.)\n4. **All datasets in depth** (training + OOD + not-yet-integrated, with paths + row counts + column formats)\n5. **Architecture** (cross-attention, DPL head, PAE head, losses)\n6. **Training script** (all flags, what it does step-by-step, all bugs fixed)\n7. **All 16 experiments** with their configs + result dirs\n8. **Results table** with ID vs OOD separation\n9. **v1 history** (the +0.377 saga, master table audit, save-fix)\n10. **Paper state** (16 pages, Section 6 draft, stale number fixes)\n11. **Key file paths** (every important script, data file, result dir)\n12. **Session…",
@@ -375,22 +391,6 @@
       "text": "Now let me check what we already have completed and what needs resubmission:",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T07:19:57.181Z",
-      "text": "Now fix the \"none\" source issue for stability-only experiments:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T07:19:48.226Z",
-      "text": "OK — not as bad as it looks. Main issues:\n\n**1. `load_tsuboyama_rows` UnboundLocalError (154 errors)** — this is the OOD eval block at the end of training. The OOD code tries to `from train_interface_dpl_v2 import load_tsuboyama_rows` but it's importing ITSELF, causing a circular reference. The training loop COMPLETED fine for these — only the OOD eval crashed. Quick fix.\n\n**2. `data/none/manifest.json` (15 errors)** — Exp G (`--skempi-sources none`) tried to load manifests from a nonexistent \"none\" source. These are the stability-only experiments.\n\n**3. PREEMPTION** — the ESM-C lowprio job got preempted, not a code bug.\n\n**4. OOM (6 errors)** — some ESM-C jobs without gradient checkpointing from earlier batch. Already fixed.\n\n**5. No-grad (5 errors)** — already fixed with the skip check.\n\n**The good news: 18 results.json files exist, including 11 from `esmc_lora` + 2 from `esm2_lora`.**…",
-      "tags": [
-        "error",
-        "dataset",
-        "model"
       ]
     }
   ]
