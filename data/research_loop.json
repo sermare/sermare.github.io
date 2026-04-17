@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-17T19:01:03Z",
+  "generated_at": "2026-04-17T19:31:18Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4079,
-    "assistant_turns": 6131,
+    "user_turns": 4103,
+    "assistant_turns": 6161,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-17T18:39:57.184Z"
+    "last_ts": "2026-04-17T19:30:47.919Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,22 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-17T19:27:43.163Z",
+      "text": "Done — both actions are live.\n\n**1. Dead jobs recovered** (abonly_E1/E2/E3):\n- Cancelled 33454381/82/83 (stuck on DependencyNeverSatisfied)\n- Resubmitted as 33488542/43/44\n- **First 13 of 45 array cells already RUNNING** on A40 GPUs, no dependency issue\n\n**2. Checkpoint backup** running in background → `/clusterfs/nilah/sergio/paper_checkpoints_v2/`. Packaging (as `.tar.gz`, one per experiment, stamped `_20260417`):\n\n| Experiment | Why |\n|---|---|\n| `interface_dpl_v2_esm2_lora` | best SKEMPI binding (val ρ +0.602, test-ca +0.847) |\n| `interface_dpl_v2_esm2_stab_only` | best OOD (Tsub +0.862, FireP +0.621) |\n| `interface_dpl_v2_esm2_highiface` | ablation pair |\n| `interface_dpl_v2_esmc_lora` | best ESM-C LoRA |\n| `interface_dpl_v2_esmc_ft_pae` | PAE-loss variant (big — 57 GB raw) |\n| `abonly_B3_multitask_stability` | best antibody-focused (+0.391) |\n| `abonly_F1_antigen_partner` | antigen…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-17T19:20:25.949Z",
+      "text": "## Currently running (11 R / 17 PD)\n\n**Running (all 11 are `pattba_retrain`)** — ProtAttBA retrained on SKEMPI+AB-Bind 5-fold/3-seed. Started ~2h ago, ~6h remaining. This closes the last SOTA-baseline gap.\n\n**Pending — actionable:**\n| Job | State | Issue |\n|---|---|---|\n| `abbibench_ood` | QOSMinCpuNotSatisfied | waiting for CPU slot |\n| `pattba_ood_infer` | Dependency on pattba_retrain | will auto-fire when training finishes |\n| `agg_sup_ood` | Dependency | will auto-fire after ood jobs |\n| `esm_if_pre` | QOSMinCpuNotSatisfied | ESM-IF embedding precompute |\n| `abonly_G1` | Dependency on esm_if_pre | blocked downstream |\n| **`abonly_E1`, `E2`, `E3`** | **DependencyNeverSatisfied** | **dead — the parent they depend on already failed** |\n| `pattba_retrain_0`, `_1` | JobArrayTaskLimit | will run once current 11 free slots |\n\n**Action needed on `abonly_E1/E2/E3`:** those three array jobs wi…",
+      "tags": [
+        "error",
+        "dataset"
+      ]
+    },
     {
       "ts": "2026-04-17T18:36:53.300Z",
       "text": "Here's the **complete, honest picture** pulling all ID and OOD numbers side-by-side:\n\n---\n\n## 1) Antibody-focused models (abonly_*) — ID only, **no OOD run yet**\n\n| Model | val ρ (antibody GroupKFold) |\n|---|---|\n| **abonly_B3** ESM-2 LoRA + multi-task stab | **+0.391 ± 0.13** |\n| **abonly_F1** ESM-2 LoRA + antigen cross-attn | **+0.373 ± 0.15** |\n| **PPAC retrained** on antibody manifest (SOTA #1) | **+0.305 ± 0.12** |\n| **ProtAttBA retrained** on antibody manifest (SOTA #2) | **+0.291 ± 0.11** |\n| abonly_A2 / B2 / D5 | +0.25 – +0.28 |\n| abonly_D1 / D2 / D4 | +0.14 – +0.18 |\n| abonly_B1 SAbDab-only | **−0.058** (collapse) |\n\n➜ **ID-wise we beat retrained PPAC/ProtAttBA by ~+0.09 ρ.** OOD eval (AB-Bind, SAbDab-v2) still queued — 0 cells done for any antibody-focused run.\n\n---\n\n## 2) General ΔΔG v2 models — ID vs OOD (scraped from 157 ood_complex logs)\n\n| v2 model | val ρ (SKEMPI) | SAbDa…",
@@ -375,20 +391,6 @@
       "text": "Now fire OOD eval on all 118 completed cells + submit more ESM-2 training:",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T13:48:05.295Z",
-      "text": "The old batch (33432981) ran before the OOD fix was applied — it wrote results.json without the OOD section. The resubmitted jobs (with the fix) would have skipped this cell because `results.json` already existed.\n\n**The fix is simple**: run the OOD eval as a separate post-processing step on the saved checkpoints. This is faster than retraining anyway — we have 118 completed models, just need to load each and score OOD datasets.\n\nWant me to write a quick OOD eval script and fire it on all 118 completed cells? It's inference-only, ~2-5 min per cell, can run on lowprio or 1080Ti.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T13:47:49.297Z",
-      "text": "No OOD results — the OOD eval block crashed on all jobs (the `load_tsuboyama_rows` bug affected the first batch, and the resubmitted batch may not have reached the OOD block or had a different issue). Let me check:",
-      "tags": [
-        "error"
       ]
     }
   ]
