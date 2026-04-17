@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-17T20:31:29Z",
+  "generated_at": "2026-04-17T21:01:36Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4119,
-    "assistant_turns": 6187,
+    "user_turns": 4124,
+    "assistant_turns": 6197,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-17T20:30:13.804Z"
+    "last_ts": "2026-04-17T20:57:08.183Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,30 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-17T20:51:34.121Z",
+      "text": "## General ΔΔG models\n\n| Model | Training data | val ρ (ID) | SAbDab-v2 OOD | ATLAS TCR-pMHC OOD | SKEMPI test-ca | Tsub | FireP | BindGym |\n|---|---|---|---|---|---|---|---|---|\n| **esm2_lora** | SKEMPI + Tsuboyama + FireProt (multi-task) | **+0.602** | +0.064 | **+0.415** | **+0.847** | — | — | — |\n| esm2_highiface (λ_iface ↑) | same | +0.607 | +0.061 | +0.459 | +0.783 | — | — | — |\n| esm2_noiface (λ_iface=0) | same | +0.607 | — | — | — | — | — | — |\n| **esm2_stab_only** | Tsuboyama + FireProt (no SKEMPI) | +0.576 | **+0.094** | +0.205 | +0.066 | **+0.862** | **+0.621** | **+0.120** |\n| esmc_lora | SKEMPI + Tsuboyama + FireProt | +0.530 | +0.050 | +0.371 | +0.767 | +0.668 | +0.496 | −0.028 |\n| esmc_lora_highiface | same | +0.535 | +0.036 | +0.403 | +0.770 | +0.665 | +0.496 | −0.043 |\n| esmc_lora_noiface | same | +0.533 | +0.069 | +0.340 | +0.757 | +0.676 | +0.485 | −0.019 |\n| esmc_lora…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-17T20:50:04.435Z",
+      "text": "## The matched ID vs OOD picture (now with retrained-SOTA numbers included)\n\n| Category | ID ρ (val) | OOD ρ (antibody SAbDab_v2) | OOD ρ (ATLAS TCR-pMHC) |\n|---|---|---|---|\n| **Our antibody-focused best** (abonly_B3 multitask) | **+0.391** | pending (in queue) | pending |\n| **Our antibody-focused** (abonly_F1 cross-attn) | **+0.373** | pending | pending |\n| **Retrained PPAC** (antibody manifest) | +0.305 | pending | pending |\n| **Retrained ProtAttBA** (antibody manifest) | +0.291 | pending | pending |\n| Our general ΔΔG (esm2_lora, SKEMPI multi-task) | **+0.602** | **+0.064** | +0.415 |\n| Our general ΔΔG (esm2_stab_only) | +0.576 | +0.094 | +0.205 |\n| Our general ΔΔG (esmc_lora family) | +0.53 | +0.04–0.07 | +0.34–0.40 |\n\n**Bottom line:**\n- ID: our antibody-focused models **beat retrained PPAC/ProtAttBA SOTA by ~+0.09 ρ**.\n- OOD (antibody): antibody-focused OOD **still pending** (`abbib…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-17T20:38:18.345Z",
+      "text": "Patched — both retrained SOTA baselines now have their `ckpt.pt` + `preds.npz` included.\n\n**Final backup summary:**\n- **11 archives, ~58 GB total** at `/clusterfs/nilah/sergio/paper_checkpoints_v2/`\n- Safe from Savio scratch purge\n- Covers: 5 v2 variants (inc. full-FT ESM-C) + 4 antibody-focused + **both retrained SOTA baselines (PPAC 457 MB, ProtAttBA 1.1 GB)**\n- **Still to add when those finish:** `ppac_skempi_abbind_5fold_5seed` and `protattba_skempi_abbind_5fold_3seed` (the running 11-cell pattba_retrain array). I'll re-run the same script with those two added after the array finishes.\n\nQueue: 24 running, 11 pending — all healthy.",
+      "tags": [
+        "dataset",
+        "infra"
+      ]
+    },
     {
       "ts": "2026-04-17T20:30:09.812Z",
       "text": "**Backup done — 11 archives, 57 GB on `/clusterfs/nilah/sergio/paper_checkpoints_v2/`**\n\n| Archive | Size |\n|---|---|\n| **interface_dpl_v2_esmc_ft_pae** (full-FT) | **52 GB** ← dominates |\n| abonly_D5_combo | 968 MB |\n| esm2_highiface | 741 MB |\n| esm2_lora | 683 MB |\n| esm2_stab_only | 649 MB |\n| abonly_F1_antigen_partner | 538 MB |\n| abonly_B3_multitask_stability | 523 MB |\n| esmc_lora | 422 MB |\n| abonly_A2 | 348 MB |\n| **ppac_antibody_only** | **1.4 KB** ← ⚠️ ckpts missed |\n| **protattba_antibody_only** | **1.1 KB** ← ⚠️ ckpts missed |\n\n**Issue:** PPAC and ProtAttBA save as `ckpt.pt` (single file), not `ckpt_*.pt`. My glob missed them. Patching now.",
@@ -366,30 +390,6 @@
       "text": "Now I have the full picture. BindingGym has `wildtype_sequence` as a dict of chains. ProteinGym has `mutated_sequence`. Let me rewrite the OOD eval with proper loaders and FIRE EVERYTHING:",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T14:00:15.489Z",
-      "text": "OOD jobs started 4-6 seconds ago, still loading. These are fast inference jobs (~5-10 min each). Results should land soon. The ESM-2 training (e2G) is also running.\n\n**Current state: 238 jobs in queue. The OOD evals test ALL 5 held-out datasets (Tsuboyama, FireProt, BindingGym, ProteinGym, S1131) on every completed checkpoint. Results will populate `results.json` with the `\"ood\"` key containing per-dataset Spearman ρ. First OOD results should appear within 10 minutes.**",
-      "tags": [
-        "result",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T13:59:58.558Z",
-      "text": "Jobs just started — logs are empty. Let me wait a moment and check again:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T13:59:47.802Z",
-      "text": "**211 OOD eval jobs + 75 ESM-2 training = 238 total.** 10 already running (8 on 1080Ti, 2 on A40).\n\nNow each OOD eval scores **5 datasets**: Tsuboyama, FireProt, BindingGym, ProteinGym binding, S1131.\n\nLet me check if the new OOD jobs are actually working:",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
