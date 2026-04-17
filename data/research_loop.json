@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-17T18:30:58Z",
+  "generated_at": "2026-04-17T19:01:03Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4077,
-    "assistant_turns": 6127,
+    "user_turns": 4079,
+    "assistant_turns": 6131,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-17T17:08:50.465Z"
+    "last_ts": "2026-04-17T18:39:57.184Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,14 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-17T18:36:53.300Z",
+      "text": "Here's the **complete, honest picture** pulling all ID and OOD numbers side-by-side:\n\n---\n\n## 1) Antibody-focused models (abonly_*) — ID only, **no OOD run yet**\n\n| Model | val ρ (antibody GroupKFold) |\n|---|---|\n| **abonly_B3** ESM-2 LoRA + multi-task stab | **+0.391 ± 0.13** |\n| **abonly_F1** ESM-2 LoRA + antigen cross-attn | **+0.373 ± 0.15** |\n| **PPAC retrained** on antibody manifest (SOTA #1) | **+0.305 ± 0.12** |\n| **ProtAttBA retrained** on antibody manifest (SOTA #2) | **+0.291 ± 0.11** |\n| abonly_A2 / B2 / D5 | +0.25 – +0.28 |\n| abonly_D1 / D2 / D4 | +0.14 – +0.18 |\n| abonly_B1 SAbDab-only | **−0.058** (collapse) |\n\n➜ **ID-wise we beat retrained PPAC/ProtAttBA by ~+0.09 ρ.** OOD eval (AB-Bind, SAbDab-v2) still queued — 0 cells done for any antibody-focused run.\n\n---\n\n## 2) General ΔΔG v2 models — ID vs OOD (scraped from 157 ood_complex logs)\n\n| v2 model | val ρ (SKEMPI) | SAbDa…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-17T17:01:55.567Z",
       "text": "**Short answer: mostly finishing. A few time out, but we still get a good estimate — the timed-out jobs print the ρ to stdout before the save step, so I can scrape them.**\n\n---\n\n## Queue health (last 24h, SLURM history)\n\n| State | Count | Notes |\n|---|---|---|\n| COMPLETED | 480 | normal |\n| FAILED | 820 | **of these, ~644 are `of3_pb`** — OpenFold3 proteinbase predictions failing at start (CUDA/config), not our ΔΔG work |\n| TIMEOUT | 17 | 10 of them are `ood_complex` hitting the 1h30m wall |\n| CANCELLED | 41 | old jobs you killed |\n| OOM | 6 | ESM-C first batch before FP16/checkpointing fix |\n\n**For the OOD-eval array specifically** (181 jobs): 147 COMPLETED (81%), 10 TIMEOUT, 23 FAILED, 1 PENDING.\n\n## Timeouts are CPU-fallback, not real hangs\n\nThe 10 timeouts landed on nodes where `CUDA_VISIBLE_DEVICES` failed to init → torch fell back to CPU. SAbDab_v2 eval on CPU = 2200s per dataset v…",
@@ -381,14 +389,6 @@
       "text": "No OOD results — the OOD eval block crashed on all jobs (the `load_tsuboyama_rows` bug affected the first batch, and the resubmitted batch may not have reached the OOD block or had a different issue). Let me check:",
       "tags": [
         "error"
-      ]
-    },
-    {
-      "ts": "2026-04-16T13:47:03.870Z",
-      "text": "**Queue is EMPTY — all jobs finished.** 118 results.json files landed. Here's the summary:\n\n## Results Table (multi-task val ρ, pooled binding+stability)\n\n| Experiment | Done | Mean val ρ | Std | Range | Notes |\n|---|---|---|---|---|---|\n| **A: ESM-2 650M LoRA** | **15/15** | **+0.606** | 0.032 | [+0.557, +0.655] | **Best overall** |\n| B: ESM-C 300M LoRA | **15/15** | +0.526 | 0.047 | [+0.454, +0.612] | |\n| C: ESM-C 300M FT+PAE | **15/15** | +0.536 | 0.034 | [+0.490, +0.597] | |\n| D: ESM-C 300M LoRA+PAE | 12/15 | +0.533 | 0.050 | [+0.454, +0.612] | 3 preempted |\n| E: ESM-C 300M FT noPAE | 12/15 | +0.514 | 0.058 | [+0.400, +0.607] | 3 preempted |\n| G: ESM-C stab only | 14/15 | +0.487 | 0.035 | [+0.416, +0.522] | No SKEMPI |\n| J: ESM-C high iface (λ=0.5) | **15/15** | +0.533 | 0.049 | [+0.444, +0.614] | |\n| K: ESM-C no iface (λ=0) | **15/15** | +0.532 | 0.045 | [+0.459, +0.601] | Ablation…",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
