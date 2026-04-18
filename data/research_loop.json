@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-18T23:06:13Z",
+  "generated_at": "2026-04-18T23:36:27Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4303,
-    "assistant_turns": 6452,
+    "user_turns": 4318,
+    "assistant_turns": 6472,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-18T22:41:40.633Z"
+    "last_ts": "2026-04-18T23:24:41.789Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,20 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-18T23:18:10.536Z",
+      "text": "**📊 Summary figure generated** — 7 panels in one. PDF + PNG saved to `results/figures/summary_abbibench.{png,pdf}`.\n\n## What the panels show\n\n| Panel | View | Finding |\n|---|---|---|\n| **1** (top-left, wide) | **Heatmap**: antibody variants × AbBiBench complexes, ρ color-coded. Red-shaded columns = sign-flipped complexes | **1n8z and 3gbn are blue (negative) for every variant** — visual proof of the sign-flip |\n| **2** (top-right) | **Boxplot**: ρ distribution per complex pooled across 122 cells × 10 variants | 4d5_her2 and 1mlc visibly positive; 1n8z/3gbn clearly anti-correlated |\n| **3** (middle-left) | **Sign-flip scatter**: OOD raw vs sign-flipped for each variant | All points shift +0.17 up-left → validates the flip hypothesis |\n| **4** (middle-right, wide) | **Post-train technique × base heatmap** with cell counts | **hybrid × abB3 = +0.159** dark green; **hybrid × esm2_lora = +0.1…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-18T23:15:20.872Z",
+      "text": "Good — 294/548 pt_deep done, 31 running. But **per-row predictions aren't cached** in results.json; only per-complex ρ. I'll submit a dedicated inference job to dump preds for the champion + 3 baselines, and meanwhile generate summary figures from the ρ data we already have.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-18T22:38:35.665Z",
       "text": "**Both documents updated with comprehensive model descriptions.**\n\n## UPDATE.md — completely rewritten (self-contained session reference)\n\nNow includes:\n- **ASCII pipeline diagram** — Phase 1 base training → Phase 2 post-training → Phase 3 OOD eval\n- **Section 2: Backbone spec** — ESM-2 650M + LoRA r=16 config + ESM-C 300M alternative\n- **Section 3: InterfaceAwareDPL head** — full forward signature, anti-symmetric formula, cross-attention\n- **Section 4: All 8 loss variants** — with formulas for pearson / ranknet / soft_spearman / hybrid / group_dro / cycle_aug / ipo / rank_dist\n- **Section 5: Data** — schema tables for binding / stability / antibody\n- **Section 6: Base model pool** — all 5 bases + 12 abB3 ckpts\n- **Section 7: Hyperparam YAML** — current post-train defaults\n- **Section 8: Evaluation pipeline** — 8 benchmarks + sign-flip handling code\n- **Section 9: 🏆 Champion block** — hy…",
@@ -365,22 +379,6 @@
       "text": "Both agents delivered. Now executing the plan — implement 5 post-training techniques, launch, and update HANDOFF in parallel.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T04:13:57.379Z",
-      "text": "**C-series cancelled (45 tasks killed)** — queue now 19 R / 1 PD → 126 cells still to run.\n\n---\n\n## First AbBiBench result is in (from earlier run, 1 cell)\n\n**`antibody_only_esm2_lora` fold0_seed0:** mean ρ across 8 valid AbBiBench complexes = **−0.094**\n\n| Complex | n mutations | ρ |\n|---|---|---|\n| 1mlc | 1,229 | **+0.202** |\n| 4d5_her2 | 2,080 | +0.193 |\n| 5a12_ang2 | 944 | +0.050 |\n| 2fjg | 2,223 | −0.009 |\n| g6_LC | 2,014 | −0.052 |\n| 4fqi | 130,629 | −0.088 |\n| 1n8z | 419 | **−0.506** |\n| 3gbn | 3,729 | **−0.545** |\n\n**This is one cell of the weakest baseline variant.** Two complexes (3gbn, 1n8z) are strongly *anti-correlated* — model is **worse than random** on those. One pattern worth watching: the small-n complexes (3gbn at 3.7k, 1n8z at 419) show the worst scores — could be scale mismatch or just noise.\n\n---\n\n## What's coming\n\n- **19 cells currently running** on savio3 A40s, ~1…",
-      "tags": [
-        "model",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-18T04:06:54.200Z",
-      "text": "**171 cells = 13 model variants × (5 folds × 3 seeds) on the antibody manifest.** \"Cell\" = one trained model (one fold × seed). Same 171 → AbBiBench OOD gives us mean ρ per variant with 11–15 seed cells.\n\n---\n\n## What each variant varies\n\n| Group | Variants (cells each) | What's different |\n|---|---|---|\n| **Baseline** | `antibody_only_esm2_lora` (15) | ESM-2 650M + LoRA r=16, MSE loss on ΔΔG, no tricks. Reference point. |\n| **A-series — backbone size/FT** | `abonly_A2_esm2_150m_lora_r16` (15) | Smaller backbone: ESM-2 **150M** LoRA. Tests \"does 650M help?\" |\n| **B-series — training data** | `abonly_B2_covabdab_pretrain` (15)<br>`abonly_B3_multitask_stability` (12) | B2: pretrain on CoV-AbDab (unlabeled antibodies) → fine-tune on ΔΔG.<br>B3: co-train on ΔΔG + Tsuboyama + FireProt stability (best ID winner at +0.391). |\n| **C-series — loss function** | `antibody_only_C1_listmle` (15)<br>`…",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
