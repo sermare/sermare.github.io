@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-18T10:04:03Z",
+  "generated_at": "2026-04-18T10:34:07Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4169,
-    "assistant_turns": 6261,
+    "user_turns": 4195,
+    "assistant_turns": 6299,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-18T07:28:20.087Z"
+    "last_ts": "2026-04-18T10:32:21.747Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,48 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-18T10:32:21.664Z",
+      "text": "## 🚀 60 post-train jobs firing (15 running + 1 pending in first batch)\n\nArray `33514881`: 5 techniques × 4 base ckpts × 3 seeds on savio3 A40 lowprio, ~90 min wall expected.\n\n---\n\n## 🔥 MAJOR FINDING from free-win analysis (no new training needed)\n\n**The \"ρ≈0 OOD\" story is mean-dominated by 2 pathological complexes.** Per-complex breakdown across 122 pooled cells × 10 antibody variants:\n\n| AbBiBench complex | n | **mean ρ** | median | std | Status |\n|---|---|---|---|---|---|\n| **4d5_her2** (Herceptin/HER2) | 122 | **+0.222** | +0.268 | 0.12 | **★ strong positive OOD** |\n| **1mlc** (Fab/lysozyme) | 122 | **+0.125** | +0.144 | 0.07 | **★ positive OOD** |\n| 2fjg | 122 | 0.000 | +0.002 | 0.04 | no signal |\n| 4fqi | 122 | −0.044 | −0.045 | 0.05 | no signal |\n| 5a12_ang2 | 122 | −0.019 | −0.008 | 0.07 | no signal |\n| g6_LC | 122 | −0.032 | −0.038 | 0.05 | no signal |\n| **1n8z** | 122 | **−0.347…",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-18T10:30:48.814Z",
+      "text": "All 10 agents reported. Synthesizing and launching now.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-18T10:29:21.006Z",
+      "text": "5 of 10 agents reported. Locking in the 5 tractable techniques and writing the script now.\n\n**Synthesized from returned agents (Loss, Architecture, Data-aug, Self-sup, DA):**\n\n| # | Technique | Source agent | Formula (1-liner) | Est ΔρOOD |\n|---|---|---|---|---|\n| 1 | **Pearson-surrogate** | Loss | `1 − corr(ŷ, y)`, batch≥32 | +0.10–0.12 |\n| 2 | **RankNet pairwise** | Loss | `Σ log(1+exp(−(ŷᵢ−ŷⱼ)/T))` for all yᵢ>yⱼ | +0.11–0.15 |\n| 3 | **Hybrid (0.2·MSE + 0.4·SoftSp + 0.4·RankNet)** | Loss | composite | +0.16–0.20 |\n| 4 | **Group-DRO** | DA | `max_g E_{batch∈g}[MSE]`, groups={SKEMPI, Ab, SAbDab, Tsub, FireP} | +0.06–0.12 |\n| 5 | **Antisymmetry cycle aug** | Data aug | append (MT→WT, −ΔΔG) to every batch | +0.08–0.15 |",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-18T10:27:38.068Z",
+      "text": "Going. Spawning 10 brainstorm agents in parallel AND writing the post-train script now.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-18T10:25:16.402Z",
+      "text": "**Honest answer: no, nothing exists yet.**\n\n- 0 scripts matching `post_train*`, `dpo*`, `ppo*`, `ipo*`, `rank_distill*`\n- 0 result dirs for any post-training variant\n- 0 jobs in queue doing it\n\nI got as far as brainstorming + verifying base ckpt paths (esm2_lora, esm2_stab_only, abonly_B3, abonly_F1 all confirmed exist at `/fold0_seed0/ckpt_dpl_*.pt`) and spawned the HANDOFF-update agent. **I never wrote `post_train.py` or launched anything.** That got interrupted before I typed any code.\n\n**Background agent status:** HANDOFF.md rewrite agent still running; no PPO/DPO agent was ever spawned.\n\n---\n\n**The plan on paper (from the brainstorm agent, ranked by ROI for ΔΔG regression):**\n\n| # | Technique | Data signal | Loss | Est. ΔρOOD | Effort |\n|---|---|---|---|---|---|\n| 1 | **Ensemble rank distillation** | 15-cell mean + variance → weighted pairs | var-weighted pairwise MSE + BCE | +0.05–…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-18T10:24:16.264Z",
+      "text": "**Major update — the AbBiBench array nearly finished (126/171 cells done). Antibody OOD numbers are in for all 11 variants.**\n\n---\n\n## Antibody-focused models — ID vs OOD (REAL, cells completed)\n\n| Variant | ID cells | **ID ρ (val)** | OOD cells | **OOD ρ (AbBiBench)** | Δ (ID→OOD) |\n|---|---|---|---|---|---|\n| abonly_E1 stab_listmle | 9 | **+0.427 ± 0.15** | 9 | −0.052 ± 0.03 | −0.48 |\n| abonly_B3 multitask_stability | 12 | +0.391 ± 0.13 | 12 | −0.051 ± 0.04 | −0.44 |\n| abonly_E2 stab_highiface | 12 | +0.376 ± 0.13 | 12 | −0.049 ± 0.03 | −0.43 |\n| abonly_F1 antigen_partner | 11 | +0.373 ± 0.14 | 11 | **−0.023 ± 0.06** | −0.40 |\n| abonly_A2 esm2_150m_lora | 15 | +0.276 | 15 | −0.079 | −0.36 |\n| abonly_B2 CoV-AbDab pretrain | 15 | +0.268 | 15 | −0.057 | −0.33 |\n| antibody_only_esm2_lora (baseline) | 15 | +0.265 | 15 | −0.069 | −0.33 |\n| **abonly_D5 combo** | 15 | +0.245 | 15 | **+0.027 ±…",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-18T04:23:26.258Z",
       "text": "Both agents delivered. Now executing the plan — implement 5 post-training techniques, launch, and update HANDOFF in parallel.",
@@ -347,51 +389,6 @@
       "ts": "2026-04-16T16:56:45.208Z",
       "text": "## Complete Results\n\n**Figures saved**: `paper/figures/interface_dpl_v2_results.{png,pdf}`\n\nLet me show you the figure:",
       "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T16:55:04.979Z",
-      "text": "Now I have the full picture. **BindingGym data is landing!** Let me generate the paper-ready figure and table:",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T16:40:14.431Z",
-      "text": "**144 OOD eval jobs resubmitted with fixed BindingGym + ProteinGym loaders.** 23 already running. Each job now loads **all 4 OOD datasets** properly:\n- Tsuboyama K50 (500 rows)\n- FireProt curated (500 rows)\n- **BindingGym** (500 rows from per-assay singles files with proper WT sequences)\n- **ProteinGym** (500 rows from DMS assay files with mutation parsing)\n\nPlus 75 ESM-2 training jobs still draining on fc_nilah. Results should start landing in ~10 min. When they're all done I'll generate the full OOD table + figures.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T16:39:13.829Z",
-      "text": "Both loaders working now. Resubmitting all OOD evals with the fixed script:",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-16T16:38:27.803Z",
-      "text": "Found it! The `mutant` column in BindingGym's DMS files is a **dict of multi-site mutations per chain** like `{'A': 'H91Y:Y92F:T93R', 'B': 'G100A', 'C': ''}`, NOT the simple `M1A` format my parser expects. These are **multi-site mutations across multiple chains**. The simple `parse_mutant()` function can't handle this.\n\nLet me fix the loader to parse the dict-format mutations and use the per-assay singles files (which have simpler single mutations):",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T16:38:09.160Z",
-      "text": "BindingGym loader returns 0 rows. The issue: `wildtype_sequence` in the CSV is a dict string like `{'A': 'DIQM...', 'B': 'EVQL...'}` but `eval()` might be failing. Let me debug:",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-16T16:37:05.875Z",
-      "text": "Here are the real results. Let me present them honestly:\n\n## Results Table (val_rho restored from checkpoint metadata)\n\n| Experiment | N | Backbone | Training Data | Val ρ | Tsub (ID) | FProt (ID) | ProtGym (OOD*) |\n|---|---|---|---|---|---|---|---|\n| **esm2_lora** | 15 | ESM-2 650M | SKEMPI+Tsub+FP | **+0.603** | +0.811 | **+0.650** | −0.090* |\n| **esm2_stab_only** | 15 | ESM-2 650M | Tsub+FP only | +0.576 | **+0.862** | +0.621 | **+0.050*** |\n| esm2_highiface | 9 | ESM-2 650M | SKEMPI+Tsub+FP (λ=0.5) | +0.571 | +0.660 | +0.408 | −0.076* |\n| esmc_ft_pae | 15 | ESM-C 300M | SKEMPI+Tsub+FP (FT+PAE) | +0.542 | +0.667 | +0.472 | −0.030* |\n| esmc_lora_highiface | 15 | ESM-C 300M | SKEMPI+Tsub+FP (λ=0.5) | +0.535 | +0.665 | +0.496 | −0.035* |\n| esmc_lora_noiface | 15 | ESM-C 300M | SKEMPI+Tsub+FP (λ=0) | +0.533 | +0.676 | +0.485 | −0.036* |\n| esmc_ft_nopae | 15 | ESM-C 300M | SKEMPI+Tsub+FP (…",
-      "tags": [
-        "result",
-        "dataset",
         "model"
       ]
     }
