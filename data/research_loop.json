@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-18T11:04:10Z",
+  "generated_at": "2026-04-18T11:34:14Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
     "user_turns": 4256,
-    "assistant_turns": 6383,
+    "assistant_turns": 6385,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-18T11:03:52.042Z"
+    "last_ts": "2026-04-18T11:04:29.153Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-18T11:04:29.053Z",
+      "text": "**Final agent landed — this one is the most important of all 18.**\n\n---\n\n## 🚨 Key findings from SOTA agent\n\n**1. The FLAb2 benchmark (Graylab 2025, bioRxiv 2025.12.27.696706) tested 30+ PLMs on 32 antibody developability datasets:**\n- **80% of datasets have no statistically significant PLM correlation**\n- **40% of apparent PLM predictive power is just germline edit distance** (V-gene artifact)\n- **Our ρ≈0 on AbBiBench is the field-wide baseline, NOT our failure**\n\nThis completely reframes the paper story: we aren't failing a task others solved — we're matching the field ceiling, which is ~zero for sequence-only antibody OOD.\n\n**2. AlphaBind (mAbs 2025, A-Alpha-Bio) confirms our exact pattern:**\n- Pretrained on 5M AlphaSeq Ab-Ag Kd measurements\n- **Zero-shot ρ ≈ 0 on 3 of 4 test antibodies** (matches our AbBiBench result)\n- **After ~300-row per-target fine-tune → ρ jumps to 0.5-0.8**\n- **…",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-18T11:03:51.875Z",
       "text": "**🚀 825 JOBS QUEUED — well past your 500 target.**\n\n| Job pool | Count | State |\n|---|---|---|\n| **pt_spam** (600-job sweep: 5 techniques × 15 base ckpts × 10 seeds 10-19) | **600** | PD |\n| **post_train** (original 208: techniques × 4 primary bases × seeds 0-9) | **132** | 113 PD + 19 R |\n| **v2_ab_ood** (90 general-v2 cells → AbBiBench OOD) | **90** | PD |\n| pattba chain | 3 | mixed |\n\n7/8 brainstorm agents reported. **Synthesized top OOD-improvement picks across all 18 brainstorm agents (original 10 + new 8):**\n\n| # | Technique | Source | Effort | Est ΔρOOD |\n|---|---|---|---|---|\n| **1** | **LP-FT (frozen backbone + head-only FT)** ← what we're running NOW | Kumar 2022 / OOD theory | — (running) | **+0.15 to +0.25** |\n| 2 | **VICReg feature-collapse regularizer** on penultimate | Arora 2022 | 6h | +0.10 to +0.20 |\n| 3 | **V-REx** (variance of per-env risks) across SKEMPI/Ab/stability…",
@@ -380,13 +387,6 @@
       "tags": [
         "error",
         "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-17T16:06:22.193Z",
-      "text": "Pulled the real numbers. Here's the full picture:\n\n---\n\n## ID (in-distribution) — antibody cluster-aware val ρ\n\n| Model | val ρ | Source |\n|---|---|---|\n| **Ours abonly_B3** (ESM-2 LoRA + multi-task stability) | **+0.391 ± 0.13** | our train |\n| **Ours abonly_F1** (ESM-2 LoRA + antigen cross-attn) | **+0.373 ± 0.15** | our train |\n| ESM-2 pool+tokens+pair (on AB-Bind 5-fold, random split) | +0.398 ± 0.09 | our baseline |\n| **PPAC retrained on antibody manifest** (SOTA #1) | **+0.305 ± 0.12** | our re-run |\n| **ProtAttBA retrained on antibody manifest** (SOTA #2) | **+0.291 ± 0.11** | our re-run |\n| Ours abonly_A2 / B2 / D5 | +0.25–0.28 | our train |\n| Ours abonly_B1 (SAbDab-only) | **−0.058** | our train |\n\n**So ID-wise we do beat published SOTA retrained on the same split** by ≈ +0.09 ρ (B3 vs PPAC, B3 vs ProtAttBA), matched-protocol.\n\n---\n\n## OOD — the only real complex-transfer number…",
-      "tags": [
-        "model"
       ]
     }
   ]
