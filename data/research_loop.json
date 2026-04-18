@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-18T18:35:10Z",
+  "generated_at": "2026-04-18T19:05:15Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4283,
-    "assistant_turns": 6423,
+    "user_turns": 4286,
+    "assistant_turns": 6428,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-18T17:32:49.690Z"
+    "last_ts": "2026-04-18T18:46:10.028Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-18T18:46:10.028Z",
+      "text": "**Progress: 93/808 post-train OOD cells done. First clear winner emerging.**\n\n| Variant | n | OOD raw | **OOD flipped** | std | vs base |\n|---|---|---|---|---|---|\n| **post_train_hybrid_esm2_stab_only (fold1)** | 10 | +0.041 | **+0.114** | 0.005 | **+0.012 ↑** |\n| **post_train_hybrid_esm2_stab_only (fold3)** | 10 | +0.036 | **+0.114** | 0.004 | **+0.012 ↑** |\n| **post_train_ranknet_esm2_stab_only (fold3)** | 10 | +0.036 | +0.113 | 0.003 | +0.011 ↑ |\n| post_train_ranknet_esm2_lora (lr=1e-4, 400 steps) | 2 | −0.086 | +0.113 | — | +0.014 ↑ |\n| post_train_ranknet_abF1 (fold3) | 10 | −0.031 | +0.112 | 0.004 | +0.021 ↑ |\n| post_train_ranknet_esm2_lora | 18 | −0.087 | +0.112 | 0.002 | +0.013 ↑ |\n| post_train_pearson_esm2_lora | 10 | −0.064 | +0.087 | 0.004 | **−0.012 ↓** |\n| post_train_group_dro_abF1 | 3 | −0.005 | +0.086 | — | −0.005 |\n| post_train_pearson_abF1 | 18 | −0.001 | +0.080 | 0.008 |…",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-18T17:27:51.134Z",
       "text": "**HANDOFF.md updated — 609 lines, clean merge into existing structure.**\n\nAgent report:\n- **Header**: bumped \"Last updated\" to 2026-04-17 (late session)\n- **Section 5 (bug-fixes)**: added 5 new rows — pred_row fix, ABB row cap, 8-CPU requirement on a40_gpu3_normal QoS, savio2_1080ti as second compute lane\n- **Section 6**: appended new subsections:\n  - AbBiBench OOD table (baseline / B3 / F1 / E1 / D5) with ID + raw + flipped\n  - Per-complex breakdown flagging 4d5_her2 = +0.222 as real signal, 1n8z/3gbn as pathological\n  - Retrained SOTA (PPAC +0.305, ProtAttBA +0.291) with \"beaten by +0.08-0.13\" note\n  - Post-training pipeline (7 techniques, 808 ckpts, first ranknet/abF1 = +0.112)\n  - pt_iter20 + native-ID + pt_ood sweep descriptions\n  - Field-wide SOTA context (FLAb2, AlphaBind, Pythia-PPI, BALM, TransABseq, CATH-ddG)\n- **Section 10 (next directions)**: restructured into Running-now / H…",
@@ -377,13 +384,6 @@
       "tags": [
         "dataset",
         "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-17T20:30:09.812Z",
-      "text": "**Backup done — 11 archives, 57 GB on `/clusterfs/nilah/sergio/paper_checkpoints_v2/`**\n\n| Archive | Size |\n|---|---|\n| **interface_dpl_v2_esmc_ft_pae** (full-FT) | **52 GB** ← dominates |\n| abonly_D5_combo | 968 MB |\n| esm2_highiface | 741 MB |\n| esm2_lora | 683 MB |\n| esm2_stab_only | 649 MB |\n| abonly_F1_antigen_partner | 538 MB |\n| abonly_B3_multitask_stability | 523 MB |\n| esmc_lora | 422 MB |\n| abonly_A2 | 348 MB |\n| **ppac_antibody_only** | **1.4 KB** ← ⚠️ ckpts missed |\n| **protattba_antibody_only** | **1.1 KB** ← ⚠️ ckpts missed |\n\n**Issue:** PPAC and ProtAttBA save as `ckpt.pt` (single file), not `ckpt_*.pt`. My glob missed them. Patching now.",
-      "tags": [
-        "model"
       ]
     }
   ]
