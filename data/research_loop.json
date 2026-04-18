@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-18T22:05:54Z",
+  "generated_at": "2026-04-18T22:36:05Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4286,
-    "assistant_turns": 6428,
+    "user_turns": 4300,
+    "assistant_turns": 6446,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-18T19:16:34.763Z"
+    "last_ts": "2026-04-18T22:35:15.975Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,36 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-18T22:34:02.647Z",
+      "text": "**🎯 Deep dive on hybrid × abB3 LAUNCHED — 548 focused cells running.**\n\n## Experimental design\n\n| Stage | What it varies | Jobs |\n|---|---|---|\n| **A — Weight × LR × Steps grid** | 6 loss-weight configs × 3 LRs × 2 step counts × 4 abB3 bases × 3 seeds | **432** |\n| **B — Base diversity** | hybrid default × all 12 abB3 bases (fold0-4 × seed0-2) × 8 seeds | **96** |\n| **C — Unfreeze LoRA ablation** | 4 bases × 5 seeds at low LR (5e-5) with LoRA adapters unfrozen | **20** |\n| **Total** | | **548** |\n\n## Loss-weight configs swept in Stage A\n\n| Tag | (w_mse, w_softsp, w_ranknet) | Hypothesis |\n|---|---|---|\n| w_default | 0.2, 0.4, 0.4 | current champion |\n| w_rank_heavy | 0.0, 0.5, 0.5 | remove MSE entirely |\n| w_mse_heavy | 0.5, 0.25, 0.25 | anchor to scale |\n| w_sp_only | 0.0, 1.0, 0.0 | pure soft-spearman |\n| w_rk_only | 0.0, 0.0, 1.0 | pure RankNet |\n| w_balanced | 0.33, 0.33, 0.34 | equa…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-18T22:32:47.877Z",
+      "text": "Queue cleared. 12 abB3 base ckpts available (all fold/seed combinations). Adding a hybrid-weight flag to `post_train.py` so we can sweep loss weights, then firing the deep dive.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-18T22:32:30.488Z",
+      "text": "Great call. Cancelling everything and going deep on `hybrid × abB3`.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-18T22:30:38.962Z",
+      "text": "**318/808 post-train cells done — clear winners emerged.**\n\n## 🏆 BEST COMBOS (OOD_flipped, sorted):\n\n| technique × base | n | **OOD_flip** | σ | vs base |\n|---|---|---|---|---|\n| **hybrid × abB3** | 10 | **+0.159** | 0.002 | **+0.042 ↑↑↑** |\n| **ranknet × abB3** | 11 | **+0.139** | 0.035 | **+0.022 ↑↑** |\n| **hybrid × esm2_lora** | 12 | **+0.130** | 0.008 | **+0.031 ↑↑** |\n| pearson × esm2_stab_only | 10 | +0.117 | 0.006 | +0.015 ↑ |\n| ranknet × esm2_stab_only | 38 | +0.106 | 0.007 | +0.004 |\n| ranknet × abF1 | 12 | +0.106 | 0.013 | +0.015 ↑ |\n| ranknet × esm2_lora | 32 | +0.105 | 0.011 | +0.006 |\n| pearson × esm2_lora | 40 | +0.105 | 0.011 | +0.006 |\n\n## Pooled by TECHNIQUE:\n\n| Technique | n | mean OOD_flip | std |\n|---|---|---|---|\n| **hybrid** (MSE + SoftSpearman + RankNet) | 59 | **+0.116** | 0.027 |\n| cycle_aug (anti-symmetry) | 8 | +0.114 | 0.002 |\n| ranknet | 93 | +0.110 | 0.019 |…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-18T18:46:10.028Z",
       "text": "**Progress: 93/808 post-train OOD cells done. First clear winner emerging.**\n\n| Variant | n | OOD raw | **OOD flipped** | std | vs base |\n|---|---|---|---|---|---|\n| **post_train_hybrid_esm2_stab_only (fold1)** | 10 | +0.041 | **+0.114** | 0.005 | **+0.012 ↑** |\n| **post_train_hybrid_esm2_stab_only (fold3)** | 10 | +0.036 | **+0.114** | 0.004 | **+0.012 ↑** |\n| **post_train_ranknet_esm2_stab_only (fold3)** | 10 | +0.036 | +0.113 | 0.003 | +0.011 ↑ |\n| post_train_ranknet_esm2_lora (lr=1e-4, 400 steps) | 2 | −0.086 | +0.113 | — | +0.014 ↑ |\n| post_train_ranknet_abF1 (fold3) | 10 | −0.031 | +0.112 | 0.004 | +0.021 ↑ |\n| post_train_ranknet_esm2_lora | 18 | −0.087 | +0.112 | 0.002 | +0.013 ↑ |\n| post_train_pearson_esm2_lora | 10 | −0.064 | +0.087 | 0.004 | **−0.012 ↓** |\n| post_train_group_dro_abF1 | 3 | −0.005 | +0.086 | — | −0.005 |\n| post_train_pearson_abF1 | 18 | −0.001 | +0.080 | 0.008 |…",
@@ -350,38 +380,6 @@
       "text": "**🔥 ALL FIRING NOW**\n\n| Job | Status | Coverage |\n|---|---|---|\n| **`ab_ood` array 33510242** | **17 RUNNING + 153 PENDING** | 171 antibody-focused cells × AbBiBench 16 complexes |\n| **`ppac_ood_infer` 33510243** | **SUBMITTED** | 25 cells of PPAC-retrained-on-SKEMPI+AB-Bind |\n| `pattba_ood_infer` 33451472 | PENDING (dep on pattba_retrain which has 4 still running) | ProtAttBA SKEMPI+AB-Bind OOD |\n| `pattba_retrain` | 4 RUNNING (nearly done, oldest at 7h elapsed) | — |\n\n**Fix applied to get ab_ood running:**\n1. Initial launch failed with `JobLaunchFailure` because the log dir didn't exist → `mkdir -p _ab_ood_array_logs` before sbatch.\n2. Added `ABB_MAX_ROWS_PER_COMPLEX=3000` env cap to `eval_abbibench_ood.py` — the 4fqi complex has 130k rows which is what was blowing the 4h budget on previous attempts. Cap makes each cell ~15 min instead of 3.5h.\n\n**Coverage now:** 171 antibody-focused m…",
       "tags": [
         "error",
-        "dataset",
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-18T03:50:14.034Z",
-      "text": "**Freed ~7.4 GB.** Deleted: 2 POISONED dirs + 8 smoke dirs. Stripped ckpts from 3 worst antibody variants (B1/D1/D4) — results.json + preds.npz kept so the tables still build.\n\n---\n\n## General ΔΔG models — ID vs OOD\n\n| Model | Training data | val ρ | SAbDab OOD | ATLAS OOD | Tsub OOD | FireP OOD |\n|---|---|---|---|---|---|---|\n| **esm2_lora** | SKEMPI + Tsub + FireP (multi-task) | **+0.602** | +0.064 | **+0.415** | — | — |\n| esm2_highiface | same | +0.607 | +0.061 | +0.459 | — | — |\n| **esm2_stab_only** | Tsub + FireP only | +0.576 | **+0.094** | +0.205 | **+0.862** | **+0.621** |\n| esmc_lora | SKEMPI + Tsub + FireP | +0.530 | +0.050 | +0.371 | +0.668 | +0.496 |\n| esmc_lora_pae (+PAE loss) | same | +0.522 | +0.045 | +0.369 | +0.639 | +0.485 |\n| esmc_ft_pae (full-FT) | same | +0.542 | +0.046 | +0.376 | +0.667 | +0.472 |\n| esmc_stab_only | Tsub + FireP only | +0.489 | +0.068 | +0.183 | +0.…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-17T20:51:34.121Z",
-      "text": "## General ΔΔG models\n\n| Model | Training data | val ρ (ID) | SAbDab-v2 OOD | ATLAS TCR-pMHC OOD | SKEMPI test-ca | Tsub | FireP | BindGym |\n|---|---|---|---|---|---|---|---|---|\n| **esm2_lora** | SKEMPI + Tsuboyama + FireProt (multi-task) | **+0.602** | +0.064 | **+0.415** | **+0.847** | — | — | — |\n| esm2_highiface (λ_iface ↑) | same | +0.607 | +0.061 | +0.459 | +0.783 | — | — | — |\n| esm2_noiface (λ_iface=0) | same | +0.607 | — | — | — | — | — | — |\n| **esm2_stab_only** | Tsuboyama + FireProt (no SKEMPI) | +0.576 | **+0.094** | +0.205 | +0.066 | **+0.862** | **+0.621** | **+0.120** |\n| esmc_lora | SKEMPI + Tsuboyama + FireProt | +0.530 | +0.050 | +0.371 | +0.767 | +0.668 | +0.496 | −0.028 |\n| esmc_lora_highiface | same | +0.535 | +0.036 | +0.403 | +0.770 | +0.665 | +0.496 | −0.043 |\n| esmc_lora_noiface | same | +0.533 | +0.069 | +0.340 | +0.757 | +0.676 | +0.485 | −0.019 |\n| esmc_lora…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-17T20:50:04.435Z",
-      "text": "## The matched ID vs OOD picture (now with retrained-SOTA numbers included)\n\n| Category | ID ρ (val) | OOD ρ (antibody SAbDab_v2) | OOD ρ (ATLAS TCR-pMHC) |\n|---|---|---|---|\n| **Our antibody-focused best** (abonly_B3 multitask) | **+0.391** | pending (in queue) | pending |\n| **Our antibody-focused** (abonly_F1 cross-attn) | **+0.373** | pending | pending |\n| **Retrained PPAC** (antibody manifest) | +0.305 | pending | pending |\n| **Retrained ProtAttBA** (antibody manifest) | +0.291 | pending | pending |\n| Our general ΔΔG (esm2_lora, SKEMPI multi-task) | **+0.602** | **+0.064** | +0.415 |\n| Our general ΔΔG (esm2_stab_only) | +0.576 | +0.094 | +0.205 |\n| Our general ΔΔG (esmc_lora family) | +0.53 | +0.04–0.07 | +0.34–0.40 |\n\n**Bottom line:**\n- ID: our antibody-focused models **beat retrained PPAC/ProtAttBA SOTA by ~+0.09 ρ**.\n- OOD (antibody): antibody-focused OOD **still pending** (`abbib…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-17T20:38:18.345Z",
-      "text": "Patched — both retrained SOTA baselines now have their `ckpt.pt` + `preds.npz` included.\n\n**Final backup summary:**\n- **11 archives, ~58 GB total** at `/clusterfs/nilah/sergio/paper_checkpoints_v2/`\n- Safe from Savio scratch purge\n- Covers: 5 v2 variants (inc. full-FT ESM-C) + 4 antibody-focused + **both retrained SOTA baselines (PPAC 457 MB, ProtAttBA 1.1 GB)**\n- **Still to add when those finish:** `ppac_skempi_abbind_5fold_5seed` and `protattba_skempi_abbind_5fold_3seed` (the running 11-cell pattba_retrain array). I'll re-run the same script with those two added after the array finishes.\n\nQueue: 24 running, 11 pending — all healthy.",
-      "tags": [
         "dataset",
         "infra"
       ]
