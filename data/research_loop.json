@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-18T10:34:07Z",
+  "generated_at": "2026-04-18T11:04:10Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4195,
-    "assistant_turns": 6299,
+    "user_turns": 4256,
+    "assistant_turns": 6383,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-18T10:32:21.747Z"
+    "last_ts": "2026-04-18T11:03:52.042Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,56 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-18T11:03:51.875Z",
+      "text": "**🚀 825 JOBS QUEUED — well past your 500 target.**\n\n| Job pool | Count | State |\n|---|---|---|\n| **pt_spam** (600-job sweep: 5 techniques × 15 base ckpts × 10 seeds 10-19) | **600** | PD |\n| **post_train** (original 208: techniques × 4 primary bases × seeds 0-9) | **132** | 113 PD + 19 R |\n| **v2_ab_ood** (90 general-v2 cells → AbBiBench OOD) | **90** | PD |\n| pattba chain | 3 | mixed |\n\n7/8 brainstorm agents reported. **Synthesized top OOD-improvement picks across all 18 brainstorm agents (original 10 + new 8):**\n\n| # | Technique | Source | Effort | Est ΔρOOD |\n|---|---|---|---|---|\n| **1** | **LP-FT (frozen backbone + head-only FT)** ← what we're running NOW | Kumar 2022 / OOD theory | — (running) | **+0.15 to +0.25** |\n| 2 | **VICReg feature-collapse regularizer** on penultimate | Arora 2022 | 6h | +0.10 to +0.20 |\n| 3 | **V-REx** (variance of per-env risks) across SKEMPI/Ab/stability…",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-18T11:00:57.440Z",
+      "text": "Spawning 8 brainstorm agents + building a 500-job array in parallel.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-18T10:45:14.309Z",
+      "text": "**301 jobs in the queue / running.** Well past your 100-minimum.\n\n| Job pool | Count | State |\n|---|---|---|\n| **post_train array** (5 techniques × 4 bases × ~10 seeds) | **208** | 15 R + 193 PD |\n| **v2_ab_ood array** (general-v2 AbBiBench OOD eval) | **90** | PD |\n| pattba_retrain | 1 | R |\n| pattba_ood_infer, agg_sup_ood | 2 | dep-gated |\n\n**Summary of what's running:**\n1. **208 post-train jobs** (fixed pred_row bug, sanity verified — final loss dropped from buggy 1.0 to 0.20 in 30 steps, confirming real training)\n2. **90 general-v2 AbBiBench OOD jobs** — fills in the OOD table for the 6 general ΔΔG variants that haven't been evaluated on antibody OOD yet\n3. Pre-existing pattba retrain chain still winding down\n\n**Expected timeline:**\n- post_train: ~40 min/cell × 208 / 25 concurrent = ~5.5h wall\n- v2_ab_ood: ~20 min/cell × 90 / 25 concurrent = ~1.2h wall\n- First results land in ~30 min…",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-18T10:44:19.499Z",
+      "text": "Sanity green — **final loss 0.20** (= pearson corr 0.80). The fix works. Relaunching 208-array now.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-18T10:43:59.716Z",
+      "text": "Fixes applied, sanity2 (33514966) submitted to verify the `pred_row` fix before resubmitting the 208 array. Waiting on it now.\n\nWhile we wait: **the sign-flip diagnostic confirmed the per-complex insight** — after flipping 1n8z + 3gbn (the 2 pathological complexes), every antibody variant's OOD ρ jumps:\n\n| Variant | Original ρ | **Sign-flipped ρ** | Δ |\n|---|---|---|---|\n| antibody_only_esm2_lora (baseline) | −0.069 | **+0.144** | +0.21 |\n| abonly_A2 ESM-2 150M | −0.079 | **+0.142** | +0.22 |\n| abonly_B2 CoV-AbDab | −0.057 | +0.139 | +0.20 |\n| abonly_E2 stab_highiface | −0.049 | +0.124 | +0.17 |\n| abonly_B3 multitask_stability | −0.051 | +0.117 | +0.17 |\n| abonly_E1 stab_listmle | −0.052 | +0.114 | +0.17 |\n| abonly_F1 antigen_partner | −0.023 | +0.091 | +0.11 |\n| **abonly_D5 combo** (was best) | +0.027 | +0.021 | **−0.01** |\n\n**This is huge:** under the sign-flip hypothesis, the \"best\" O…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-18T10:36:06.500Z",
+      "text": "Already on it — fix applied. Let me sanity-test with 10 steps before re-spamming 208 jobs.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-18T10:35:54.086Z",
+      "text": "**Oops — all 60 post-train jobs failed silently** with `KeyError: 'sequence'`. My script expected a top-level `sequence` key but SKEMPI rows have multi-chain dicts. Fixing now, then resubmitting 208 jobs (60 original + 148 extra).",
+      "tags": [
+        "error",
+        "dataset"
+      ]
+    },
     {
       "ts": "2026-04-18T10:32:21.664Z",
       "text": "## 🚀 60 post-train jobs firing (15 running + 1 pending in first batch)\n\nArray `33514881`: 5 techniques × 4 base ckpts × 3 seeds on savio3 A40 lowprio, ~90 min wall expected.\n\n---\n\n## 🔥 MAJOR FINDING from free-win analysis (no new training needed)\n\n**The \"ρ≈0 OOD\" story is mean-dominated by 2 pathological complexes.** Per-complex breakdown across 122 pooled cells × 10 antibody variants:\n\n| AbBiBench complex | n | **mean ρ** | median | std | Status |\n|---|---|---|---|---|---|\n| **4d5_her2** (Herceptin/HER2) | 122 | **+0.222** | +0.268 | 0.12 | **★ strong positive OOD** |\n| **1mlc** (Fab/lysozyme) | 122 | **+0.125** | +0.144 | 0.07 | **★ positive OOD** |\n| 2fjg | 122 | 0.000 | +0.002 | 0.04 | no signal |\n| 4fqi | 122 | −0.044 | −0.045 | 0.05 | no signal |\n| 5a12_ang2 | 122 | −0.019 | −0.008 | 0.07 | no signal |\n| g6_LC | 122 | −0.032 | −0.038 | 0.05 | no signal |\n| **1n8z** | 122 | **−0.347…",
@@ -335,59 +385,6 @@
     {
       "ts": "2026-04-17T16:06:22.193Z",
       "text": "Pulled the real numbers. Here's the full picture:\n\n---\n\n## ID (in-distribution) — antibody cluster-aware val ρ\n\n| Model | val ρ | Source |\n|---|---|---|\n| **Ours abonly_B3** (ESM-2 LoRA + multi-task stability) | **+0.391 ± 0.13** | our train |\n| **Ours abonly_F1** (ESM-2 LoRA + antigen cross-attn) | **+0.373 ± 0.15** | our train |\n| ESM-2 pool+tokens+pair (on AB-Bind 5-fold, random split) | +0.398 ± 0.09 | our baseline |\n| **PPAC retrained on antibody manifest** (SOTA #1) | **+0.305 ± 0.12** | our re-run |\n| **ProtAttBA retrained on antibody manifest** (SOTA #2) | **+0.291 ± 0.11** | our re-run |\n| Ours abonly_A2 / B2 / D5 | +0.25–0.28 | our train |\n| Ours abonly_B1 (SAbDab-only) | **−0.058** | our train |\n\n**So ID-wise we do beat published SOTA retrained on the same split** by ≈ +0.09 ρ (B3 vs PPAC, B3 vs ProtAttBA), matched-protocol.\n\n---\n\n## OOD — the only real complex-transfer number…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-17T13:41:41.556Z",
-      "text": "**Queue:** 11 running, 17 pending (abbibench_ood, pattba_ood_infer, abonly_E1/E2/E3, abonly_G1, abonly_G4_protattba, agg_sup_ood, esm_if_pre, pattba_retrain).\n\n---\n\n**ΔΔG — Interface-DPL v2 (general binding, 28 experiments, 15 cells each)**\n\n| Variant | val ρ | Tsub | FireP | BindGym |\n|---|---|---|---|---|\n| **esm2_stab_only** (no SKEMPI) | +0.576 | **+0.862** | **+0.621** | **+0.120** |\n| esm2_lora (SKEMPI multi-task) | **+0.602** | — | — | — |\n| esm2_highiface | +0.607 | — | — | — |\n| esm2_noiface | +0.607 | — | — | — |\n| esmc_ft_pae | +0.542 | +0.667 | +0.472 | −0.024 |\n| esmc_lora | +0.530 | +0.668 | +0.496 | −0.028 |\n| esmc_stab_only | +0.489 | +0.687 | +0.436 | +0.048 |\n| esmc_lora_highiface | +0.535 | +0.665 | +0.496 | −0.043 |\n| esmc_ft_nopae | +0.531 | +0.655 | +0.465 | −0.018 |\n\n**Headlines:**\n- **SKEMPI-trained models win val ρ** (up to +0.607), **but lose OOD transfer** — Bi…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-17T09:04:32.168Z",
-      "text": "**Honest answer: we don't have real antibody OOD numbers — only in-distribution antibody val ρ.**\n\nThe v2 OOD eval script (`eval_ood_post.py` line 90-162) checks Tsuboyama / FireProt / BindingGym / ProteinGym / S1131 — **no AB-Bind, AB1101, AB645, or held-out SAbDab**. So every antibody ρ we report is from the cluster-aware validation fold of the antibody manifest itself, not transfer to an external antibody benchmark.\n\n**What we have (antibody-group GroupKFold, 5×3 = 15 cells each, val ρ only):**\n\n| Variant | What it is | val ρ (antibody fold) |\n|---|---|---|\n| **abonly_B3 multitask_stability** | SKEMPI-ab + Tsuboyama + FireProt multi-task | **+0.394 ± 0.134** (n=11) |\n| **abonly_F1 antigen_partner** | cross-attn to antigen chain | **+0.393 ± 0.139** (n=5) |\n| abonly_A2 | ESM-2 150M LoRA r=16 | +0.276 ± 0.104 |\n| abonly_B2 | CoV-AbDab pretrain | +0.268 ± 0.097 |\n| abonly_D5 | curriculum…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-17T09:02:43.442Z",
-      "text": "**Current progress snapshot (2026-04-17 01:23+)**\n\n**Queue:** 26 running, 68 pending — mostly OOD eval jobs + the tail of the e2F–e2K ESM-2 data-variant sweep. No failures since the BindingGym loader fix landed.\n\n**Completed results:** 495 `results.json` files across the v2 sweep; 11 written since the HANDOFF rewrite (new OOD scores coming in).\n\n**What the fresh OOD numbers are saying (ESM-C 300M, SKEMPI + Tsuboyama + FireProt multi-task):**\n- Val ρ (in-distribution SKEMPI): +0.47 to +0.61 across 5 folds × 3 seeds — stable.\n- BindingGym transfer: floating around **zero, slight negative** (−0.14 to +0.05). Mean ~−0.03.\n- ProteinGym binding: still mostly null (`None`) — those jobs are in the queued batch.\n\n**The honest story (unchanged from the table in HANDOFF §7):**\n- In-distribution SKEMPI works (ρ ≈ 0.55).\n- ESM-2 **stability-only** is still the best OOD transfer (+0.12 BG / +0.05 PG).…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T17:16:14.289Z",
-      "text": "**HANDOFF.md completely rewritten** — 12 sections covering everything from this session:\n\n1. **Project pivot history** (tokenizer → DPL v1 → Interface-Aware DPL v2)\n2. **Cluster config** (all accounts/QoS/partitions/dead nodes/memory limits)\n3. **All abbreviations** (DPL, UN, PPAC, GKF, stab_only, ID, OOD, λ_iface, etc.)\n4. **All datasets in depth** (training + OOD + not-yet-integrated, with paths + row counts + column formats)\n5. **Architecture** (cross-attention, DPL head, PAE head, losses)\n6. **Training script** (all flags, what it does step-by-step, all bugs fixed)\n7. **All 16 experiments** with their configs + result dirs\n8. **Results table** with ID vs OOD separation\n9. **v1 history** (the +0.377 saga, master table audit, save-fix)\n10. **Paper state** (16 pages, Section 6 draft, stale number fixes)\n11. **Key file paths** (every important script, data file, result dir)\n12. **Session…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T17:12:54.640Z",
-      "text": "This is the old HANDOFF from the tokenizer era. I need to write a completely new one covering the Δ-Potential Learning pivot and everything from this session. Let me write it:",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T16:57:06.847Z",
-      "text": "## Full Results Summary\n\n### Paper Table\n\n| Model | Backbone | Val ρ | Tsub (ID) | FProt (ID) | **BndGym (OOD)** | **PrtGym (OOD)** |\n|---|---|---|---|---|---|---|\n| **Full data** | **ESM-2 650M** | **+0.603** | +0.811 | **+0.650** | −0.053 | −0.090 |\n| **Stab-only** | **ESM-2 650M** | +0.576 | **+0.862** | +0.621 | **+0.120** | **+0.050** |\n| λ_iface=0.5 | ESM-2 650M | +0.571 | +0.660 | +0.408 | +0.006 | −0.076 |\n| Full data | ESM-C 300M | +0.530 | +0.668 | +0.496 | −0.028 | −0.041 |\n| FT + PAE | ESM-C 300M | +0.542 | +0.667 | +0.472 | −0.024 | −0.030 |\n| Full FT | ESM-C 300M | +0.531 | +0.655 | +0.465 | −0.018 | −0.037 |\n| λ_iface=0 | ESM-C 300M | +0.533 | +0.676 | +0.485 | −0.019 | −0.036 |\n\n### Key Findings\n\n**1. ESM-2 650M dominates ESM-C 300M** — bigger backbone wins everywhere:\n- In-distribution: +0.81 vs +0.67 (Tsuboyama), +0.65 vs +0.50 (FireProt)\n- The 2× parameter advantage ma…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-16T16:56:45.208Z",
-      "text": "## Complete Results\n\n**Figures saved**: `paper/figures/interface_dpl_v2_results.{png,pdf}`\n\nLet me show you the figure:",
       "tags": [
         "model"
       ]
