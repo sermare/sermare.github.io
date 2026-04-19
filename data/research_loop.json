@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T10:09:40Z",
+  "generated_at": "2026-04-19T10:39:44Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4437,
-    "assistant_turns": 6651,
+    "user_turns": 4440,
+    "assistant_turns": 6656,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T09:21:34.969Z"
+    "last_ts": "2026-04-19T10:21:15.339Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T10:18:09.632Z",
+      "text": "**Hourly tick** — queue **551**, no refill needed.\n\n| Delta | This hour |\n|---|---|\n| refill_ood AbBiBench | 126 → **168/250** (+42, pace doubled) |\n| RLHF trained | still 0/200 |\n| abB3p retrains | still 0/15 |\n| aayl retry2 | 3 PD |\n\n**Only new data:** another +42 refill_ood cells evaluated. No new winning configs, no new aayl* numbers. Critical-path jobs (RLHF + retrains + aayl retries) still queued behind higher-priority users on savio_lowprio.\n\nHANDOFF appended. Queue healthy, loop continues.",
+      "tags": [
+        "infra"
+      ]
+    },
     {
       "ts": "2026-04-19T09:18:29.096Z",
       "text": "**Hourly tick** — queue **593**, no refill needed.\n\n| Delta | This hour |\n|---|---|\n| refill_ood AbBiBench eval | 101 → **126/250** (+25) |\n| RLHF cells trained | 0/200 |\n| abB3p retrains | 0/15 |\n| aayl retry2 | 3 PD |\n| New OOD numbers | none |\n\n**Lowprio saturation dragging.** ~25 cells/hour throughput — at this rate refill_ood finishes in ~5h, and the critical path (abB3p retrains + RLHF) requires 6h+ of uninterrupted A40 time once slots free.\n\nHANDOFF at 1003 lines. Nothing to do but wait.",
@@ -371,13 +378,6 @@
       "text": "**📊 Pred-vs-real figure generated + deep-dive OOD eval firing.**\n\n## Current state\n\n| Item | Status |\n|---|---|\n| **pt_deep training** (548 cells) | ✅ ALL COMPLETED |\n| **Dump-preds** (4 ckpts) | ✅ all 4 `abbibench_preds.npz` saved (18,638 mutations each) |\n| **Deep-dive OOD eval** (array 33526397) | just submitted, 548 cells will start shortly |\n| **Summary figure** (7 panels) | `results/figures/summary_abbibench.png` |\n| **Pred-vs-real figure** (12 panels) | `results/figures/pred_vs_real.png` ← new |\n\n## Pred-vs-real figure — what it shows\n\n- **Top 8 panels**: per-complex scatter of predicted ΔΔG vs ground-truth `binding_score`. 4 models overlaid (champion = red, hybrid_esm2_lora = teal, base_abB3 = gold, base_esm2_lora = blue). Signs flipped on pathological complexes.\n  - Each subplot title shows per-model ρ\n  - 2fjg / 3gbn / 4d5 / 4fq / 5a1 / 1mlc / 1n8 all visible in this 8-tile vie…",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T01:34:44.298Z",
-      "text": "**All 548 deep-dive training cells COMPLETED + all 4 pred-dump files saved.** Queue empty. But I need to trigger AbBiBench eval on the deep-dive ckpts (didn't auto-run). Firing that now + generating the pred-vs-real figure from the 4 dumps we have.",
-      "tags": [
-        "note"
       ]
     }
   ]
