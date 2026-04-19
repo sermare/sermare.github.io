@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T18:11:16Z",
+  "generated_at": "2026-04-19T18:41:23Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4477,
-    "assistant_turns": 6715,
+    "user_turns": 4480,
+    "assistant_turns": 6720,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T17:21:51.787Z"
+    "last_ts": "2026-04-19T18:21:27.523Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T18:18:21.427Z",
+      "text": "**Hourly tick** — queue **605**, no refill.\n\n| Item | State |\n|---|---|\n| **abB3p_ood** (leak-free aayl test) | 15 still PD — priority-starved |\n| esm2_refill2_ood | 300 PD |\n| RLHF aayl (122 cells) | kto +0.001, dpo **+0.000**, ipo −0.006, simpo −0.006 |\n\nRLHF fully measured — all 4 preference-optimization methods score aayl ρ ≈ 0 ± 0.007. No new winning configs. Leak-free abB3p aayl eval still blocked in queue.\n\nHANDOFF at 1222 lines.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-19T17:18:46.820Z",
       "text": "**Hourly tick** — queue **643**, no refill needed.\n\n## 🎯 DPO/KTO/SimPO/IPO: all 4 preference losses fully measured (83 cells total)\n\n| Technique | n | aayl ρ |\n|---|---|---|\n| **kto** | 23 | **+0.002** |\n| **dpo** | 15 | **+0.000** |\n| **ipo** | 15 | −0.003 |\n| **simpo** | 30 | −0.007 |\n\n**Zero across all 4.** RLHF-family confirms the ceiling — no preference-optimization loss helps sequence-only antibody OOD.\n\n## Still pending\n- 15 abB3p_ood (leak-free base OOD — the decisive test)\n- 300 esm2_refill2_ood (10 techniques × best-base)\n- 250 1080Ti refill_80\n\n## Standing ranking unchanged\n1. 🏆 base esm2_lora (general) **+0.088**\n2. base abB3 +0.039\n3. base esm2_stab +0.007\n4. kto/dpo/ipo/simpo × abB3: ≈ 0\n5. hybrid × abB3 (\"champion\"): +0.003\n\nHANDOFF at 1207 lines. Paper story solidifying: **no post-training trick beats the untouched general base** on leak-free antibody OOD.",
@@ -377,13 +384,6 @@
       "text": "Now let me design a proper broad-OOD evaluation — across many protein distributions, not just held-out clusters.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T02:35:23.929Z",
-      "text": "You're right. We've been measuring \"generalization to held-out clusters of the same distribution\" — that's not OOD, that's just a hard within-distribution val split. An \"out-of-the-box\" model needs to transfer to **genuinely novel proteins** — different folds, different families, different assays.\n\nLet me list what OOD should actually mean and what evaluations are available:\n\n## What we've been calling \"OOD\" (but isn't really)\n| Benchmark | Reality | Verdict |\n|---|---|---|\n| SKEMPI GroupKFold val | held-out cluster, same SKEMPI distribution | within-distribution |\n| AbBiBench 16 complexes | **9 are literal leaks, 3 suspicious** | mostly ID |\n| SAbDab v2 leak-filtered | filtered by mmseqs30 but same antibody distribution | near-ID |\n| S1131 cluster-aware | SKEMPI subset, same distribution | within-distribution |\n\n## What TRUE OOD looks like (what we should test on)\n| Benchmark | n assays…",
-      "tags": [
-        "dataset"
       ]
     }
   ]
