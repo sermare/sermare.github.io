@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T14:10:25Z",
+  "generated_at": "2026-04-19T14:40:30Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4458,
-    "assistant_turns": 6685,
+    "user_turns": 4465,
+    "assistant_turns": 6695,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T13:19:29.557Z"
+    "last_ts": "2026-04-19T14:19:04.440Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,20 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T14:19:03.830Z",
+      "text": "**Hourly tick — 🎉 breakthrough hour:**\n\n| Milestone | State |\n|---|---|\n| RLHF training | **200/200 ✅** |\n| esm2_refill2 training | **300/300 ✅** |\n| abB3p retrains | **9/15 RUNNING** 🏃 (6h to finish) |\n| New OOD eval jobs | **500 submitted** (33546282, 33546283) |\n\n**Queue**: 254 → **754** after refill.\n\n**What the next hour will tell us:**\n1. Do DPO/KTO/SimPO/IPO preference losses break the aayl ρ≈0 ceiling when applied to esm2_lora base? (the sweep tests all 4 on the proven-best backbone)\n2. Does any of the 10 techniques × esm2_lora combination beat base esm2_lora's +0.088 on aayl?\n3. abB3p retrains give us leak-free bases — first checkpoint expected ~hour 6\n\nHANDOFF at 1126 lines. Next tick at `:07`.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T14:18:16.603Z",
+      "text": "# 🎉 Major progress this hour: 500 cells trained\n\n| Array | State | New |\n|---|---|---|\n| **RLHF (DPO/KTO/SimPO/IPO)** | **200/200 TRAINED** ✅ | need OOD eval |\n| **esm2_refill2** | **300/300 TRAINED** ✅ | need OOD eval |\n| **abB3p retrains** | **9/15 RUNNING** 🏃 | ~6h to go |\n| refill_80 (1080Ti) | 238 PD, 1 R | slow |\n\nQueue: 254 — need to submit 500 OOD-eval jobs on the newly-trained cells.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-19T13:19:29.489Z",
       "text": "**Hourly tick — ⚠️ discovered and fixed 515 silent failures:**\n\n| Failed array | Reason | Fix |\n|---|---|---|\n| 200 RLHF | JobLaunchFailure — `_rlhf_logs` missing at submit time | mkdir + resubmit |\n| 300 esm2_refill2 | JobLaunchFailure — `_esm2_refill2_logs` missing | mkdir + resubmit |\n| 15 abB3p retrains | `sabdab_v2` not a valid `--skempi-sources` value (no manifest.json) | drop it, use `skempi,abbind` + resubmit |\n\n**Queue**: 250 → **765** after resubmit.\n**refill_ood**: DONE (250/250). All abB3 refill cells have AbBiBench OOD.\n\nNow all critical paths are queued cleanly:\n- 200 RLHF (DPO/KTO/SimPO/IPO × 10 bases × 5 seeds)\n- 300 esm2_refill2 (10 techniques × 10 esm2_lora bases × 3 seeds) — targets our winner\n- 15 abB3p retrains (leak-free base ckpts, 6h each, **publication-critical**)\n- 250 refill_80 (1080Ti)\n\nNext tick: first RLHF / esm2_refill2 cells should start landing; abB3p ret…",
@@ -370,20 +384,6 @@
       "text": "# 🚨 CRITICAL FINDING — our OOD is NOT OOD\n\n**9/16 AbBiBench complexes are LEAKS into training data.** Only the 4 `aayl*` synthetic scFvs are truly out-of-distribution.\n\n## The damning table\n\n| Complex | Status | Evidence |\n|---|---|---|\n| 1mlc, 1mlc_LC | 🔴 **LEAK** | 1MLC in SKEMPI + AB-Bind + SAbDab + 28 rows in antibody_only_manifest |\n| 1n8z | 🔴 **LEAK** | 1N8Z in SKEMPI + AB-Bind + SAbDab + 35 manifest rows |\n| **4d5_her2 (Herceptin)** | 🔴 **LEAK** | Reuses 1N8Z backbone; H 100% / L 97% identical to training |\n| 1mhp, 1mhp_LC | 🔴 **LEAK** | 1MHP in SKEMPI/AB-Bind/SAbDab + 187 manifest rows, same cluster `2NY7_H` as 1MLC |\n| 2fjg, g6_LC | 🔴 **LEAK** | 2FJG in SAbDab + 6 manifest rows |\n| 5a12_vegf | 🔴 **LEAK** | 4ZFF in SAbDab, 6 manifest rows, antigen 100% identical |\n| 5a12_ang2 | 🟡 SUSPICIOUS | sibling 4ZFF in training; L 100% id |\n| 3gbn | 🟡 SUSPICIOUS | antigen 94% id to training…",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-19T02:25:02.727Z",
-      "text": "Answering each question with what we know + what's in flight:\n\n## 1. Does complex size predict OOD performance?\n**NO correlation.** Spearman(n_muts, |ρ|) = **−0.24**.\n\n| Complex | n_muts | ρ_flipped |\n|---|---|---|\n| 4fqi | 6000 | **−0.063** ❌ weak |\n| **1n8z** ★ | **419** | **+0.477** ✅ strong |\n| 4d5_her2 | 2080 | +0.271 ✅ |\n\nThe smallest complex (1n8z, 419 muts) has the strongest signal. More data ≠ better OOD. Signal is driven by **complex-specific biology**, not sample size.\n\n## 2. Leakage? ⏳ audit agent running in background (will report)\n\n## 3. How can we sample?\nCurrently: `ABB_MAX_ROWS_PER_COMPLEX=3000` random subsample with `random_state=0`. I built a 15-job sampling-robustness manifest (5 different `ABB_SEED` values × 3 models). Need to submit — doing that next message.\n\n## 4. Input = antibody + antigen? **YES**\nAt inference (`eval_abbibench_ood.py` lines 183-260):\n- **Input**…",
-      "tags": [
-        "result"
-      ]
-    },
-    {
-      "ts": "2026-04-19T02:22:29.339Z",
-      "text": "Tackling all your questions at once. Spawning 3 research agents + firing 580+ new jobs in parallel.",
-      "tags": [
-        "note"
       ]
     }
   ]
