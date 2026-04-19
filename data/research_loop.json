@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T02:37:50Z",
+  "generated_at": "2026-04-19T03:08:06Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4360,
-    "assistant_turns": 6541,
+    "user_turns": 4365,
+    "assistant_turns": 6545,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T02:37:23.199Z"
+    "last_ts": "2026-04-19T03:02:19.012Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T03:02:19.012Z",
+      "text": "**The `schedule` skill spawns a remote Anthropic-cloud agent — it can't SSH into Savio.** Your jobs live on `/global/scratch/users/sergiomar10/loop` and you need `sbatch` against Savio's SLURM, which a cloud agent can't reach.\n\nTwo workable paths:\n\n**A) Use the `loop` skill** — keeps this local Claude Code session alive on an interval. I stay running here, check the queue every hour, submit more sweeps, and rewrite HANDOFF.md. This is the right fit — it uses the SSH/Savio access this session already has. Caveat: only works while this session stays open.\n\n**B) Install a Savio cron job** — lightweight bash script on Savio login node that (1) checks `squeue` count and (2) submits from a pool of manifest files when queue < 200. Survives session close but can't write HANDOFF narrative (unless I give it a templated update). This is the durable solution.\n\nWhich do you want — `loop` for this ses…",
+      "tags": [
+        "infra"
+      ]
+    },
     {
       "ts": "2026-04-19T02:37:23.118Z",
       "text": "## The pivot: 11 broad-OOD jobs firing (4 aayl + 7 multi-benchmark)\n\n**Your observation is the most important one of the session.** We've been polishing numbers on benchmarks that are essentially GroupKFold-hard val splits of the same distribution. True \"out-of-the-box\" means:\n\n- **Tsuboyama K50** — 270k mutations on de novo mini-proteins; ESM-2 650M NEVER saw any of them\n- **FireProt** — curated stability across DIVERSE enzymes\n- **ProteinGym** — 217 DMS assays, most novel proteins\n- **BindingGym** — 90 binding assays\n- **MegaScale (Rocklin 2023)** — 1M+ de novo mini-protein mutations (not downloaded yet — next-session work)\n\n## What we just submitted (11 jobs running now)\n\n**4 aayl rerun jobs** (33528151-54) — resubmitted with correct cwd after symlink cd leaked:\n- champion hybrid×abB3 (2 seeds)\n- base abB3 (fold0, fold1)\n- base esm2_lora / esm2_stab_only\n\n→ First real AbBiBench OOD nu…",
@@ -375,13 +382,6 @@
       "text": "**808-job post-train OOD array submitted (33517156).** Now to answer your question with what we have:\n\n---\n\n## ID vs OOD — CURRENT STATE (sign-flipped OOD column uses the fix we identified earlier)\n\n### Antibody-focused (122 cells each) — AbBiBench OOD **in**\n\n| Variant | ID ρ | OOD raw | **OOD sign-flipped** |\n|---|---|---|---|\n| **abonly_E1** stab_listmle | **+0.427** | −0.052 | +0.114 |\n| **abonly_B3** multitask_stability | +0.391 | −0.051 | +0.117 |\n| abonly_E2 stab_highiface | +0.376 | −0.049 | +0.124 |\n| abonly_F1 antigen_partner | +0.373 | −0.023 | +0.091 |\n| abonly_A2 ESM-2 150M | +0.276 | −0.079 | **+0.142** |\n| abonly_B2 CoV-AbDab pretrain | +0.268 | −0.057 | +0.139 |\n| antibody_only_esm2_lora (baseline) | +0.265 | −0.069 | **+0.144** |\n| abonly_D5 combo | +0.245 | **+0.027** | +0.021 |\n| abonly_D2 inv-√N | +0.181 | −0.054 | +0.103 |\n\n### General v2 ΔΔG — AbBiBench OOD also in…",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-18T16:48:15.247Z",
-      "text": "**All 825 post-train jobs COMPLETED — 808 ckpts saved, final_loss 0.13 (training worked). But AbBiBench eval hasn't been run on them yet.** Launching that array now.",
-      "tags": [
-        "note"
       ]
     }
   ]
