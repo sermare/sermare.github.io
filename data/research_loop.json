@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T08:09:23Z",
+  "generated_at": "2026-04-19T08:39:27Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4429,
-    "assistant_turns": 6639,
+    "user_turns": 4433,
+    "assistant_turns": 6645,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T07:21:36.833Z"
+    "last_ts": "2026-04-19T08:21:32.380Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T08:18:24.039Z",
+      "text": "**Hourly tick** — queue **618**, no refill needed.\n\n| Change this hour | State |\n|---|---|\n| refill_ood AbBiBench eval | 70 → **101/250** (+31 cells) |\n| RLHF trained | 0 (200 still PD) |\n| abB3p retrains | 0 (15 still PD) |\n| aayl retry2 | 3 still PD |\n\n**No new OOD numbers this hour.** Savio lowprio contested — our jobs queued behind higher-priority users. `esm2_stab_only` remains the only cell with aayl* ρ (+0.007).\n\nHANDOFF at 980 lines. Next tick at `:07` — RLHF and abB3p retrains should start landing as lowprio slots free.",
+      "tags": [
+        "infra"
+      ]
+    },
     {
       "ts": "2026-04-19T07:18:31.276Z",
       "text": "**Hourly tick** — queue healthy at **650** (> 200 threshold, no refill needed).\n\n| Check | State |\n|---|---|\n| refill_80 (1080Ti) | 250 PD — contested partition, no slots freeing up |\n| rlhf (DPO/KTO/SimPO/IPO) | 200 PD — awaiting A40 slots |\n| refill_ood (AbBiBench eval) | 23 R + 158 PD, **70/250 done** — slow churn on savio_lowprio |\n| aayl retry2 (champion + 2 bases) | 3 PD |\n| abB3p retrains (leak-free bases) | 15 PD, 6h runtime once they start |\n\n**New OOD results this hour**: zero. Only `esm2_stab_only` has aayl numbers (+0.007 mean).\n\nEverything we submitted last hour (RLHF sweep, abB3p retrains, aayl retries) is still PENDING due to savio_lowprio contention — other users are burning A40 quota. Low-prio is lowest priority by design.\n\nHANDOFF at 962 lines. Next tick at `:07` should catch the first RLHF cell completions and start abB3p retrains.",
@@ -371,13 +378,6 @@
       "text": "**📊 Summary figure generated** — 7 panels in one. PDF + PNG saved to `results/figures/summary_abbibench.{png,pdf}`.\n\n## What the panels show\n\n| Panel | View | Finding |\n|---|---|---|\n| **1** (top-left, wide) | **Heatmap**: antibody variants × AbBiBench complexes, ρ color-coded. Red-shaded columns = sign-flipped complexes | **1n8z and 3gbn are blue (negative) for every variant** — visual proof of the sign-flip |\n| **2** (top-right) | **Boxplot**: ρ distribution per complex pooled across 122 cells × 10 variants | 4d5_her2 and 1mlc visibly positive; 1n8z/3gbn clearly anti-correlated |\n| **3** (middle-left) | **Sign-flip scatter**: OOD raw vs sign-flipped for each variant | All points shift +0.17 up-left → validates the flip hypothesis |\n| **4** (middle-right, wide) | **Post-train technique × base heatmap** with cell counts | **hybrid × abB3 = +0.159** dark green; **hybrid × esm2_lora = +0.1…",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-18T23:15:20.872Z",
-      "text": "Good — 294/548 pt_deep done, 31 running. But **per-row predictions aren't cached** in results.json; only per-complex ρ. I'll submit a dedicated inference job to dump preds for the champion + 3 baselines, and meanwhile generate summary figures from the ρ data we already have.",
-      "tags": [
-        "note"
       ]
     }
   ]
