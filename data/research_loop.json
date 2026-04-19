@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T09:09:31Z",
+  "generated_at": "2026-04-19T09:39:35Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4433,
-    "assistant_turns": 6645,
+    "user_turns": 4437,
+    "assistant_turns": 6651,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T08:21:32.380Z"
+    "last_ts": "2026-04-19T09:21:34.969Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T09:18:29.096Z",
+      "text": "**Hourly tick** — queue **593**, no refill needed.\n\n| Delta | This hour |\n|---|---|\n| refill_ood AbBiBench eval | 101 → **126/250** (+25) |\n| RLHF cells trained | 0/200 |\n| abB3p retrains | 0/15 |\n| aayl retry2 | 3 PD |\n| New OOD numbers | none |\n\n**Lowprio saturation dragging.** ~25 cells/hour throughput — at this rate refill_ood finishes in ~5h, and the critical path (abB3p retrains + RLHF) requires 6h+ of uninterrupted A40 time once slots free.\n\nHANDOFF at 1003 lines. Nothing to do but wait.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-19T08:18:24.039Z",
       "text": "**Hourly tick** — queue **618**, no refill needed.\n\n| Change this hour | State |\n|---|---|\n| refill_ood AbBiBench eval | 70 → **101/250** (+31 cells) |\n| RLHF trained | 0 (200 still PD) |\n| abB3p retrains | 0 (15 still PD) |\n| aayl retry2 | 3 still PD |\n\n**No new OOD numbers this hour.** Savio lowprio contested — our jobs queued behind higher-priority users. `esm2_stab_only` remains the only cell with aayl* ρ (+0.007).\n\nHANDOFF at 980 lines. Next tick at `:07` — RLHF and abB3p retrains should start landing as lowprio slots free.",
@@ -371,13 +378,6 @@
       "text": "**All 548 deep-dive training cells COMPLETED + all 4 pred-dump files saved.** Queue empty. But I need to trigger AbBiBench eval on the deep-dive ckpts (didn't auto-run). Firing that now + generating the pred-vs-real figure from the 4 dumps we have.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T23:18:10.536Z",
-      "text": "**📊 Summary figure generated** — 7 panels in one. PDF + PNG saved to `results/figures/summary_abbibench.{png,pdf}`.\n\n## What the panels show\n\n| Panel | View | Finding |\n|---|---|---|\n| **1** (top-left, wide) | **Heatmap**: antibody variants × AbBiBench complexes, ρ color-coded. Red-shaded columns = sign-flipped complexes | **1n8z and 3gbn are blue (negative) for every variant** — visual proof of the sign-flip |\n| **2** (top-right) | **Boxplot**: ρ distribution per complex pooled across 122 cells × 10 variants | 4d5_her2 and 1mlc visibly positive; 1n8z/3gbn clearly anti-correlated |\n| **3** (middle-left) | **Sign-flip scatter**: OOD raw vs sign-flipped for each variant | All points shift +0.17 up-left → validates the flip hypothesis |\n| **4** (middle-right, wide) | **Post-train technique × base heatmap** with cell counts | **hybrid × abB3 = +0.159** dark green; **hybrid × esm2_lora = +0.1…",
-      "tags": [
-        "model"
       ]
     }
   ]
