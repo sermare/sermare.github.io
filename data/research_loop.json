@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T19:11:29Z",
+  "generated_at": "2026-04-19T19:41:36Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4487,
-    "assistant_turns": 6732,
+    "user_turns": 4497,
+    "assistant_turns": 6749,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T19:07:43.943Z"
+    "last_ts": "2026-04-19T19:34:21.931Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,28 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T19:34:21.848Z",
+      "text": "**Hourly tick — ⚡ A40 unlock:**\n\n| Metric | Before | After |\n|---|---|---|\n| Queue | 569 | **1081** |\n| Running | 3 | **28** |\n| GPU types accessible | A40 only | A40 + V100 + TITAN + K80 |\n\nChanged `--gres=gpu:A40:1` → `--gres=gpu:1` across all 17 active co_nilah lowprio sbatch scripts. Resubmitted the stalled arrays (abB3p_ood, esm2_refill2_ood, rlhf_ood, retr). Jobs immediately landed on non-A40 slots that had been sitting idle.\n\n**Expected 5-10× throughput increase** on OOD evaluation. The critical-path jobs (abB3p_ood, esm2_refill2_ood, retrieval) should start completing within the next hour.\n\nHANDOFF at 1286 lines. Next tick will have first leak-free aayl numbers.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-19T19:34:05.355Z",
+      "text": "**✅ A40 constraint removed, queue more than doubled** (579 → 1081) and jobs IMMEDIATELY landed:\n\n| Pool | State |\n|---|---|\n| e2r2_ood | 596 PD + **4 RUNNING** ← new GPU types picked up |\n| rlhf_ood | 210 PD + **24 RUNNING** ← running on non-A40 GPUs now |\n| abB3p_ood | 30 PD (overshoot from resubmit — duplicate OOD eval will just rewrite results.json) |\n| retr jobs | 2 each PD |\n| 1080Ti refill_80 | 210 PD (separate partition, unaffected) |\n\n**The removal of `--gres=gpu:A40:1` → `--gres=gpu:1`** opened up V100/TITAN/K80 slots that were sitting idle on savio3_gpu. 28 cells now running vs the 0-3 we were stuck at for hours.",
+      "tags": [
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-19T19:18:21.934Z",
+      "text": "**Hourly tick** — queue **569**, no refill.\n\n| Check | State |\n|---|---|\n| Retrieval jobs (3) | PD since last hour |\n| abB3p_ood (leak-free test) | 15 still PD |\n| esm2_refill2_ood | 300 still PD |\n| 1080Ti refill_80 | 210 still PD |\n| New aayl numbers | **none** |\n\nSavio A40 lowprio severely contested — no slots freeing up for our queue. Standing leaderboard unchanged: base esm2_lora +0.088 aayl still the sole result on leak-free data.\n\nHANDOFF at 1268 lines.",
+      "tags": [
+        "model",
+        "infra"
+      ]
+    },
     {
       "ts": "2026-04-19T19:04:38.906Z",
       "text": "**Hourly tick — 🚀 pivoting out of the zero-shot paradigm**\n\n**Agreement on your framing** — ρ≈0 on aayl is the FLAb2 ceiling *for our regime*. The three directions you picked all break out of it.\n\n## Action this tick\n\n| Task | State |\n|---|---|\n| **Backed up leak-free bases** (639 MB) | ✅ `abB3_purged_LEAKFREE_20260419.tar.gz` |\n| **Backed up top post-train cells** (291 MB) | ✅ `post_train_rlhf_20260419.tar.gz` |\n| **Total backup footprint** | 60 GB across 14 archives |\n| **Retrieval-aug script** (~150 LOC) | ✅ `scripts/eval_retrieval_aayl.py` — mean-pool ESM-2 heavy chains, k-NN, exp(−d/τ) weighted labels |\n| **3 retrieval eval jobs submitted** | base_esm2_lora, base_abB3, abB3p_f0s0 (leak-free) |\n\n## Queue status\n\n| Pool | Count |\n|---|---|\n| Queue total | **579** (no refill) |\n| 300 esm2_refill2_ood | PD |\n| 210 1080Ti refill_80 | PD |\n| 50 rlhf_ood | PD+R |\n| 15 abB3p_ood | PD |\n| **…",
@@ -361,28 +383,6 @@
       "text": "**Hourly tick done.**\n\n| Check | State |\n|---|---|\n| Queue before | 254 |\n| New submission | +250 OOD eval jobs (33528558) on completed abB3_refill cells |\n| Queue after | **504** |\n| aayl status | 4 running, ~21 min in (eval'd complexes alphabetically, aayl* at the end) |\n| New OOD results | none this hour |\n| HANDOFF | appended 12-line hourly tick → 862 lines |\n\nBoth partitions still busy:\n- 250 `refill_80` PD on savio2_1080ti\n- 250 `refill_ood` PD on savio3_gpu\n- 4 aayl rerun R on savio3_gpu\n\nNext hourly tick: ~`:07` — by then aayl* OOD numbers should land + abB3_refill AbBiBench results start populating.",
       "tags": [
         "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-19T03:24:45.880Z",
-      "text": "## First hourly iteration complete ✅\n\n**Hourly cron `59a50919` scheduled** — fires at `:07` every hour, updates HANDOFF + refills queue if < 200 jobs. Session-only (dies if Claude exits), auto-expires after 7 days.\n\n**This iteration's work:**\n\n| Action | Result |\n|---|---|\n| Check queue | was 0 (all prior jobs completed) |\n| **Diagnose broad-OOD timings** | 4 aayl jobs timed out at 30 min; resubmitted with 1h30m budget |\n| **Analyze broad-OOD results** | 🚨 Champion **REGRESSED** on true OOD (Tsub −0.08, FireP −0.11 vs base) |\n| **Fire refill arrays** | 250 A40 + 250 1080Ti post-train refill jobs |\n| **Update HANDOFF.md** | Added urgent section: leakage + champion regression + next-session action plan |\n\n**Queue now: 504 jobs** (223 A40 PD + 27 A40 R + 250 1080Ti PD + 4 aayl). Both partitions busy.\n\n**Next fire: ~:07 in the next hour** — I'll check queue, auto-refill if < 200, and scribe…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T03:23:24.362Z",
-      "text": "# 🚨 EVEN WORSE NEWS — Champion REGRESSED on true OOD\n\n**Tsuboyama + FireProt (truly OOD, de novo proteins): the champion hybrid × abB3 is WORSE than every base model.**\n\n| Cell | Tsub | FireP |\n|---|---|---|\n| **base abF1** | **+0.885** | +0.828 |\n| **base abB3** (fold0) | +0.875 | **+0.836** |\n| **base esm2_lora** | +0.850 | +0.835 |\n| **pt hybrid × esm2_lora** | +0.843 | **+0.847** ← only post-train that kept signal |\n| **CHAMPION hybrid × abB3 seed15** | **+0.794** | **+0.729** ← LOST 0.08-0.11 vs base ❌ |\n| **CHAMPION hybrid × abB3 seed10** | +0.794 | +0.731 ← same |\n\n**Combined with the leakage finding, the true picture is:**\n1. AbBiBench \"+0.159\" was leakage artifact\n2. On actual OOD (Tsub/FireP), champion **lost** +0.08-0.11 ρ vs base\n3. **Our post-training actively damaged broad generalization**\n4. `pt_hybrid × esm2_lora` is the ONLY post-train variant that didn't lose ground (+0…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T03:22:19.013Z",
-      "text": "**Scheduled:** hourly loop `59a50919` fires at `:07` every hour (off-minute to avoid fleet collision). Session-only, auto-expires after 7 days, `CronDelete 59a50919` to cancel sooner.\n\nNow running the first iteration immediately.",
-      "tags": [
-        "note"
       ]
     }
   ]
