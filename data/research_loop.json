@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T01:37:21Z",
+  "generated_at": "2026-04-19T02:07:34Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4330,
-    "assistant_turns": 6488,
+    "user_turns": 4337,
+    "assistant_turns": 6502,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T01:36:47.078Z"
+    "last_ts": "2026-04-19T01:41:12.250Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,27 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T01:41:12.250Z",
+      "text": "Here's what the **hybrid × abB3** exploration actually shows now that we've accumulated 22 OOD-evaluated cells:\n\n## 📊 Summary — hybrid × abB3 OOD transfer\n\n| Metric | Value |\n|---|---|\n| **Cells evaluated** | 22 |\n| **Pooled mean OOD_flipped** | **+0.150 ± 0.027** |\n| **Best single cell** | **+0.164** |\n| **Median** | **+0.159** |\n| Worst | +0.064 |\n\n## 🔬 Per-complex breakdown — WHERE the signal lives\n\n| Complex | n | mean ρ (flipped) | std | Reading |\n|---|---|---|---|---|\n| **1n8z** ★ | 22 | **+0.477** | 0.018 | 🔥 flipped, strongest signal |\n| **3gbn** ★ | 22 | +0.381 | 0.171 | flipped, strong but noisy |\n| **4d5_her2 (Herceptin)** | 22 | **+0.271** | 0.015 | 🔥 cleanest real OOD win |\n| 5a12_ang2 | 22 | +0.093 | 0.071 | weak positive |\n| 1mlc | 22 | +0.057 | 0.017 | weak positive |\n| 2fjg | 22 | +0.009 | 0.007 | noise |\n| g6_LC | 22 | −0.024 | 0.031 | noise |\n| 4fqi | 22 | −0.063 | 0.0…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T01:40:14.672Z",
+      "text": "Now let me look at what we DO have already — the earlier 808-cell run had results for hybrid × abB3.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-19T01:39:35.662Z",
+      "text": "**All 548 deep OOD eval jobs FAILED.** Let me diagnose.",
+      "tags": [
+        "error"
+      ]
+    },
     {
       "ts": "2026-04-19T01:36:46.982Z",
       "text": "**📊 Pred-vs-real figure generated + deep-dive OOD eval firing.**\n\n## Current state\n\n| Item | Status |\n|---|---|\n| **pt_deep training** (548 cells) | ✅ ALL COMPLETED |\n| **Dump-preds** (4 ckpts) | ✅ all 4 `abbibench_preds.npz` saved (18,638 mutations each) |\n| **Deep-dive OOD eval** (array 33526397) | just submitted, 548 cells will start shortly |\n| **Summary figure** (7 panels) | `results/figures/summary_abbibench.png` |\n| **Pred-vs-real figure** (12 panels) | `results/figures/pred_vs_real.png` ← new |\n\n## Pred-vs-real figure — what it shows\n\n- **Top 8 panels**: per-complex scatter of predicted ΔΔG vs ground-truth `binding_score`. 4 models overlaid (champion = red, hybrid_esm2_lora = teal, base_abB3 = gold, base_esm2_lora = blue). Signs flipped on pathological complexes.\n  - Each subplot title shows per-model ρ\n  - 2fjg / 3gbn / 4d5 / 4fq / 5a1 / 1mlc / 1n8 all visible in this 8-tile vie…",
@@ -358,27 +379,6 @@
       "text": "All 10 agents reported. Synthesizing and launching now.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T10:29:21.006Z",
-      "text": "5 of 10 agents reported. Locking in the 5 tractable techniques and writing the script now.\n\n**Synthesized from returned agents (Loss, Architecture, Data-aug, Self-sup, DA):**\n\n| # | Technique | Source agent | Formula (1-liner) | Est ΔρOOD |\n|---|---|---|---|---|\n| 1 | **Pearson-surrogate** | Loss | `1 − corr(ŷ, y)`, batch≥32 | +0.10–0.12 |\n| 2 | **RankNet pairwise** | Loss | `Σ log(1+exp(−(ŷᵢ−ŷⱼ)/T))` for all yᵢ>yⱼ | +0.11–0.15 |\n| 3 | **Hybrid (0.2·MSE + 0.4·SoftSp + 0.4·RankNet)** | Loss | composite | +0.16–0.20 |\n| 4 | **Group-DRO** | DA | `max_g E_{batch∈g}[MSE]`, groups={SKEMPI, Ab, SAbDab, Tsub, FireP} | +0.06–0.12 |\n| 5 | **Antisymmetry cycle aug** | Data aug | append (MT→WT, −ΔΔG) to every batch | +0.08–0.15 |",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-18T10:27:38.068Z",
-      "text": "Going. Spawning 10 brainstorm agents in parallel AND writing the post-train script now.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T10:25:16.402Z",
-      "text": "**Honest answer: no, nothing exists yet.**\n\n- 0 scripts matching `post_train*`, `dpo*`, `ppo*`, `ipo*`, `rank_distill*`\n- 0 result dirs for any post-training variant\n- 0 jobs in queue doing it\n\nI got as far as brainstorming + verifying base ckpt paths (esm2_lora, esm2_stab_only, abonly_B3, abonly_F1 all confirmed exist at `/fold0_seed0/ckpt_dpl_*.pt`) and spawned the HANDOFF-update agent. **I never wrote `post_train.py` or launched anything.** That got interrupted before I typed any code.\n\n**Background agent status:** HANDOFF.md rewrite agent still running; no PPO/DPO agent was ever spawned.\n\n---\n\n**The plan on paper (from the brainstorm agent, ranked by ROI for ΔΔG regression):**\n\n| # | Technique | Data signal | Loss | Est. ΔρOOD | Effort |\n|---|---|---|---|---|---|\n| 1 | **Ensemble rank distillation** | 15-cell mean + variance → weighted pairs | var-weighted pairwise MSE + BCE | +0.05–…",
-      "tags": [
-        "model"
       ]
     }
   ]
