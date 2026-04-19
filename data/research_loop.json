@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T06:08:59Z",
+  "generated_at": "2026-04-19T06:39:08Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4393,
-    "assistant_turns": 6587,
+    "user_turns": 4422,
+    "assistant_turns": 6627,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T05:19:08.459Z"
+    "last_ts": "2026-04-19T06:38:54.177Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,34 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T06:38:53.767Z",
+      "text": "## 🧹 LEAKAGE PURGE + RLHF SWEEP FIRING\n\n**Purge completed:**\n- **832 rows (37.8%)** dropped from `antibody_only_manifest.json` — all 28 leaked + cluster-sibling PDBs\n- Saved clean manifest + `leaked_pdbs.txt`\n- Added `PURGE_LEAKED_PDBS` env var to `train_interface_dpl_v2.py` for future runs\n\n**Added 3 new preference-optimization losses** (true DPO family, adapted for scalar regression):\n\n| Technique | Formula | Pitch |\n|---|---|---|\n| **dpo** | `−log σ(β·(s_w − s_l))`, β=0.5 | classic DPO margin, reference-free for regression |\n| **kto** | binary gain/loss relative to mean label, β=0.3 | Kahneman-Tversky, cheapest pairing |\n| **simpo** | `−log σ(β·(s_w − s_l) − γ)`, β=1, γ=0.5 | reference-free preference |\n\nPlus existing **ipo** (IPO margin). All 4 use the same stab/destab pair builder.\n\n## 🚀 215 new jobs submitted (queue now 669)\n\n| Array | Count | Purpose |\n|---|---|---|\n| **rlhf** 335…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T06:36:02.420Z",
+      "text": "**Purged 832 rows (37.8%) of leaked data. Clean manifest saved with 1367 rows.**\n\nNow adding DPO-family losses to `post_train.py` and retraining + post-training on clean manifest.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-19T06:19:01.505Z",
+      "text": "**Hourly tick done.**\n\n| Check | State |\n|---|---|\n| Queue | 466 (no refill needed — >200) |\n| aayl retry jobs (33528674/5/6) | PENDING, will run when A40 slots free |\n| refill_ood | 37/250 done, 23 R, 190 PD |\n| **True OOD finding** | **aayl ρ ∈ [−0.027, +0.026] across 37 cells × 5 techniques × 8 bases** — null confirmed |\n| HANDOFF | 910 lines (appended definitive-null section) |\n\n**Key conclusion this hour:** every post-training variant produces aayl ρ ≈ 0 — no technique, no base, no loss function breaks the FLAb2 field-wide ceiling. The +0.10 \"OOD\" scores we were reporting came entirely from the 9 leaked complexes.\n\nNext tick at `:07`: champion + 2 bases aayl numbers should be in by then, giving us the direct \"post-train helped vs base?\" comparison on genuine OOD.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-19T06:18:44.357Z",
+      "text": "# 🎯 DEFINITIVE CONFIRMATION — aayl ρ ≈ 0 across ALL 37 refill variants\n\n| Tech × Base | n | raw OOD | flipped | **aayl-only ρ** |\n|---|---|---|---|---|\n| ranknet × fold1_seed2 | 5 | −0.053 | +0.097 | **+0.008** |\n| ranknet × fold4_seed1 | 5 | −0.042 | +0.095 | **+0.006** |\n| pearson × fold4_seed1 | 4 | −0.045 | +0.093 | **−0.000** |\n| ranknet × fold0_seed2 | 3 | +0.005 | +0.070 | **+0.018** |\n| cycle_aug × fold0_seed1 | 5 | +0.021 | +0.051 | **+0.025** |\n| group_dro × fold0_seed1 | 5 | +0.021 | +0.050 | **+0.026** |\n| hybrid × fold4_seed0 | 3 | −0.065 | +0.057 | **−0.027** |\n\n**The entire range of aayl ρ across 5 techniques × 8 bases × 37 cells is −0.027 to +0.026.** All within noise of zero. Meanwhile the \"flipped OOD\" column (+0.05 to +0.10) is **purely leakage-driven** — it's entirely from the 9 leaked complexes.\n\n**Confirmed:**\n1. Every post-training variant → aayl ρ ≈ 0 ± 0.03\n2. Th…",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-19T05:19:08.390Z",
       "text": "## Hourly tick complete — the real OOD story\n\n**First honest OOD number: ρ = +0.007 on aayl* synthetic scFvs** for base `esm2_stab_only`. That's the field ceiling FLAb2 warned about. Not a model failure — a fundamental-learnability result.\n\n**Queue**: 490 jobs (250 refill_80 PD + 210 refill_ood PD + 27 R + 3 aayl resubmits). Both partitions busy, no refill needed.\n\n**HANDOFF**: 890 lines with urgent leak-free update.\n\n**Next hourly (~1h)**: champion + base_abB3 + base_esm2_lora aayl* scores come in; will tell us whether hybrid post-training moves the ρ≈0 ceiling on genuinely novel antibodies.",
@@ -351,35 +379,6 @@
       "text": "**🎯 Deep dive on hybrid × abB3 LAUNCHED — 548 focused cells running.**\n\n## Experimental design\n\n| Stage | What it varies | Jobs |\n|---|---|---|\n| **A — Weight × LR × Steps grid** | 6 loss-weight configs × 3 LRs × 2 step counts × 4 abB3 bases × 3 seeds | **432** |\n| **B — Base diversity** | hybrid default × all 12 abB3 bases (fold0-4 × seed0-2) × 8 seeds | **96** |\n| **C — Unfreeze LoRA ablation** | 4 bases × 5 seeds at low LR (5e-5) with LoRA adapters unfrozen | **20** |\n| **Total** | | **548** |\n\n## Loss-weight configs swept in Stage A\n\n| Tag | (w_mse, w_softsp, w_ranknet) | Hypothesis |\n|---|---|---|\n| w_default | 0.2, 0.4, 0.4 | current champion |\n| w_rank_heavy | 0.0, 0.5, 0.5 | remove MSE entirely |\n| w_mse_heavy | 0.5, 0.25, 0.25 | anchor to scale |\n| w_sp_only | 0.0, 1.0, 0.0 | pure soft-spearman |\n| w_rk_only | 0.0, 0.0, 1.0 | pure RankNet |\n| w_balanced | 0.33, 0.33, 0.34 | equa…",
       "tags": [
         "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-18T22:32:47.877Z",
-      "text": "Queue cleared. 12 abB3 base ckpts available (all fold/seed combinations). Adding a hybrid-weight flag to `post_train.py` so we can sweep loss weights, then firing the deep dive.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T22:32:30.488Z",
-      "text": "Great call. Cancelling everything and going deep on `hybrid × abB3`.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T22:30:38.962Z",
-      "text": "**318/808 post-train cells done — clear winners emerged.**\n\n## 🏆 BEST COMBOS (OOD_flipped, sorted):\n\n| technique × base | n | **OOD_flip** | σ | vs base |\n|---|---|---|---|---|\n| **hybrid × abB3** | 10 | **+0.159** | 0.002 | **+0.042 ↑↑↑** |\n| **ranknet × abB3** | 11 | **+0.139** | 0.035 | **+0.022 ↑↑** |\n| **hybrid × esm2_lora** | 12 | **+0.130** | 0.008 | **+0.031 ↑↑** |\n| pearson × esm2_stab_only | 10 | +0.117 | 0.006 | +0.015 ↑ |\n| ranknet × esm2_stab_only | 38 | +0.106 | 0.007 | +0.004 |\n| ranknet × abF1 | 12 | +0.106 | 0.013 | +0.015 ↑ |\n| ranknet × esm2_lora | 32 | +0.105 | 0.011 | +0.006 |\n| pearson × esm2_lora | 40 | +0.105 | 0.011 | +0.006 |\n\n## Pooled by TECHNIQUE:\n\n| Technique | n | mean OOD_flip | std |\n|---|---|---|---|\n| **hybrid** (MSE + SoftSpearman + RankNet) | 59 | **+0.116** | 0.027 |\n| cycle_aug (anti-symmetry) | 8 | +0.114 | 0.002 |\n| ranknet | 93 | +0.110 | 0.019 |…",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-18T18:46:10.028Z",
-      "text": "**Progress: 93/808 post-train OOD cells done. First clear winner emerging.**\n\n| Variant | n | OOD raw | **OOD flipped** | std | vs base |\n|---|---|---|---|---|---|\n| **post_train_hybrid_esm2_stab_only (fold1)** | 10 | +0.041 | **+0.114** | 0.005 | **+0.012 ↑** |\n| **post_train_hybrid_esm2_stab_only (fold3)** | 10 | +0.036 | **+0.114** | 0.004 | **+0.012 ↑** |\n| **post_train_ranknet_esm2_stab_only (fold3)** | 10 | +0.036 | +0.113 | 0.003 | +0.011 ↑ |\n| post_train_ranknet_esm2_lora (lr=1e-4, 400 steps) | 2 | −0.086 | +0.113 | — | +0.014 ↑ |\n| post_train_ranknet_abF1 (fold3) | 10 | −0.031 | +0.112 | 0.004 | +0.021 ↑ |\n| post_train_ranknet_esm2_lora | 18 | −0.087 | +0.112 | 0.002 | +0.013 ↑ |\n| post_train_pearson_esm2_lora | 10 | −0.064 | +0.087 | 0.004 | **−0.012 ↓** |\n| post_train_group_dro_abF1 | 3 | −0.005 | +0.086 | — | −0.005 |\n| post_train_pearson_abF1 | 18 | −0.001 | +0.080 | 0.008 |…",
-      "tags": [
         "model"
       ]
     }
