@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T18:41:23Z",
+  "generated_at": "2026-04-19T19:11:29Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4480,
-    "assistant_turns": 6720,
+    "user_turns": 4487,
+    "assistant_turns": 6732,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T18:21:27.523Z"
+    "last_ts": "2026-04-19T19:07:43.943Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,35 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T19:04:38.906Z",
+      "text": "**Hourly tick — 🚀 pivoting out of the zero-shot paradigm**\n\n**Agreement on your framing** — ρ≈0 on aayl is the FLAb2 ceiling *for our regime*. The three directions you picked all break out of it.\n\n## Action this tick\n\n| Task | State |\n|---|---|\n| **Backed up leak-free bases** (639 MB) | ✅ `abB3_purged_LEAKFREE_20260419.tar.gz` |\n| **Backed up top post-train cells** (291 MB) | ✅ `post_train_rlhf_20260419.tar.gz` |\n| **Total backup footprint** | 60 GB across 14 archives |\n| **Retrieval-aug script** (~150 LOC) | ✅ `scripts/eval_retrieval_aayl.py` — mean-pool ESM-2 heavy chains, k-NN, exp(−d/τ) weighted labels |\n| **3 retrieval eval jobs submitted** | base_esm2_lora, base_abB3, abB3p_f0s0 (leak-free) |\n\n## Queue status\n\n| Pool | Count |\n|---|---|\n| Queue total | **579** (no refill) |\n| 300 esm2_refill2_ood | PD |\n| 210 1080Ti refill_80 | PD |\n| 50 rlhf_ood | PD+R |\n| 15 abB3p_ood | PD |\n| **…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T19:03:12.039Z",
+      "text": "Backups secured. Now implementing retrieval-augmented inference (the ~50-LOC free-lunch win) since it can run independently of all the pending jobs.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-19T19:01:47.950Z",
+      "text": "Agreed — the three moves you picked are the right ones. **We've been drilling into a saturated paradigm**; every promising direction breaks out of it. Let me save the leak-free ckpts first, then start on retrieval (the cheapest of the three) and plan the other two.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-19T18:57:03.031Z",
+      "text": "# Good morning. Here's the honest overnight summary:\n\n## ❌ No OOD breakthrough. ✅ But the picture is now decisive.\n\n### The paper story is crystallized\n**Base `esm2_lora` (general SKEMPI-trained) = +0.088 aayl ρ is still the best.** No post-training technique beats the untouched base on leak-free OOD.\n\n### Top 15 post-training cells ever (across 500+ runs)\n\n| aayl ρ | Config |\n|---|---|\n| **+0.039** | kto × abB3_fold0_seed1 (5 seeds, σ≈0.001) |\n| +0.030 | group_dro / cycle_aug × abB3_fold0_seed1 |\n| +0.028 | ipo / dpo / simpo / cycle_aug / hybrid × abB3 |\n| +0.027 | group_dro / pearson × abB3 |\n\n**None reach even half of base esm2_lora (+0.088).** The KTO × abB3 cluster at +0.039 is consistent with its base abB3 baseline (+0.039) — KTO didn't hurt, but didn't help either. Every other technique is worse than the base.\n\n### RLHF family — fully measured (122+ cells)\n- kto +0.001, dpo +0.000…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-19T18:18:21.427Z",
       "text": "**Hourly tick** — queue **605**, no refill.\n\n| Item | State |\n|---|---|\n| **abB3p_ood** (leak-free aayl test) | 15 still PD — priority-starved |\n| esm2_refill2_ood | 300 PD |\n| RLHF aayl (122 cells) | kto +0.001, dpo **+0.000**, ipo −0.006, simpo −0.006 |\n\nRLHF fully measured — all 4 preference-optimization methods score aayl ρ ≈ 0 ± 0.007. No new winning configs. Leak-free abB3p aayl eval still blocked in queue.\n\nHANDOFF at 1222 lines.",
@@ -352,36 +381,6 @@
     {
       "ts": "2026-04-19T03:22:19.013Z",
       "text": "**Scheduled:** hourly loop `59a50919` fires at `:07` every hour (off-minute to avoid fleet collision). Session-only, auto-expires after 7 days, `CronDelete 59a50919` to cancel sooner.\n\nNow running the first iteration immediately.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T03:02:19.012Z",
-      "text": "**The `schedule` skill spawns a remote Anthropic-cloud agent — it can't SSH into Savio.** Your jobs live on `/global/scratch/users/sergiomar10/loop` and you need `sbatch` against Savio's SLURM, which a cloud agent can't reach.\n\nTwo workable paths:\n\n**A) Use the `loop` skill** — keeps this local Claude Code session alive on an interval. I stay running here, check the queue every hour, submit more sweeps, and rewrite HANDOFF.md. This is the right fit — it uses the SSH/Savio access this session already has. Caveat: only works while this session stays open.\n\n**B) Install a Savio cron job** — lightweight bash script on Savio login node that (1) checks `squeue` count and (2) submits from a pool of manifest files when queue < 200. Survives session close but can't write HANDOFF narrative (unless I give it a templated update). This is the durable solution.\n\nWhich do you want — `loop` for this ses…",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-19T02:37:23.118Z",
-      "text": "## The pivot: 11 broad-OOD jobs firing (4 aayl + 7 multi-benchmark)\n\n**Your observation is the most important one of the session.** We've been polishing numbers on benchmarks that are essentially GroupKFold-hard val splits of the same distribution. True \"out-of-the-box\" means:\n\n- **Tsuboyama K50** — 270k mutations on de novo mini-proteins; ESM-2 650M NEVER saw any of them\n- **FireProt** — curated stability across DIVERSE enzymes\n- **ProteinGym** — 217 DMS assays, most novel proteins\n- **BindingGym** — 90 binding assays\n- **MegaScale (Rocklin 2023)** — 1M+ de novo mini-protein mutations (not downloaded yet — next-session work)\n\n## What we just submitted (11 jobs running now)\n\n**4 aayl rerun jobs** (33528151-54) — resubmitted with correct cwd after symlink cd leaked:\n- champion hybrid×abB3 (2 seeds)\n- base abB3 (fold0, fold1)\n- base esm2_lora / esm2_stab_only\n\n→ First real AbBiBench OOD nu…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T02:36:52.508Z",
-      "text": "**🔥 MAJOR HIDDEN FINDING in the broad-OOD scan:**\n\n`interface_dpl_v2_esm2_stab_only` (which never saw SKEMPI binding data) is the **best variant at EVERY broad-OOD benchmark**:\n\n| Benchmark | esm2_stab_only (no binding train) | All ESMC SKEMPI-multitask |\n|---|---|---|\n| **Tsuboyama K50** (270k stability) | **+0.862** | +0.65 to +0.69 |\n| **FireProt** (curated stability) | **+0.621** | +0.44 to +0.50 |\n| **BindingGym** (90 binding assays) | **+0.120** | **−0.02 to −0.04** ❌ |\n| **ProteinGym** (binding subset) | **+0.050** | **−0.03 to −0.07** ❌ |\n\n**SKEMPI-multitask models score NEGATIVE on BindingGym and ProteinGym.** Training on SKEMPI actively destroys transfer to broader binding distributions. This is the field-wide phenomenon FLAb2 flagged.\n\n**We've never evaluated our champion (hybrid × abB3) on these broad OOD benchmarks** — only on the leaky AbBiBench. Firing that now.",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T02:36:19.080Z",
-      "text": "Now let me design a proper broad-OOD evaluation — across many protein distributions, not just held-out clusters.",
       "tags": [
         "note"
       ]
