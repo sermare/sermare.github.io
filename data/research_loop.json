@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T11:09:50Z",
+  "generated_at": "2026-04-19T11:39:55Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4440,
-    "assistant_turns": 6656,
+    "user_turns": 4443,
+    "assistant_turns": 6661,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T10:21:15.339Z"
+    "last_ts": "2026-04-19T11:21:21.086Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T11:18:14.968Z",
+      "text": "**Hourly tick — 🏃 first real milestone in hours:**\n\n| Status | This hour |\n|---|---|\n| Queue | **506** (no refill) |\n| refill_ood | 168 → **213/250** (+45) |\n| **aayl retry2 (champion + 2 bases)** | **ALL 3 NOW RUNNING** ← first critical jobs started |\n| RLHF | 0/200 trained |\n| abB3p retrains | 0/15 |\n\n**The critical head-to-head comparison is now running.** In ~45-60 min we'll have:\n- Champion hybrid × abB3 aayl ρ\n- Base abB3 fold1_seed0 aayl ρ (post-training started from here)\n- Base esm2_lora fold0_seed0 aayl ρ (general-binding baseline)\n\nCombined with the existing esm2_stab_only = +0.007, that's 4 data points on the only leak-free OOD axis we have.\n\nHANDOFF at 1043 lines. Next tick at `:07` should have the first post-training-on-genuine-OOD signal.",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-19T10:18:09.632Z",
       "text": "**Hourly tick** — queue **551**, no refill needed.\n\n| Delta | This hour |\n|---|---|\n| refill_ood AbBiBench | 126 → **168/250** (+42, pace doubled) |\n| RLHF trained | still 0/200 |\n| abB3p retrains | still 0/15 |\n| aayl retry2 | 3 PD |\n\n**Only new data:** another +42 refill_ood cells evaluated. No new winning configs, no new aayl* numbers. Critical-path jobs (RLHF + retrains + aayl retries) still queued behind higher-priority users on savio_lowprio.\n\nHANDOFF appended. Queue healthy, loop continues.",
@@ -371,13 +378,6 @@
       "text": "**All 548 deep OOD eval jobs FAILED.** Let me diagnose.",
       "tags": [
         "error"
-      ]
-    },
-    {
-      "ts": "2026-04-19T01:36:46.982Z",
-      "text": "**📊 Pred-vs-real figure generated + deep-dive OOD eval firing.**\n\n## Current state\n\n| Item | Status |\n|---|---|\n| **pt_deep training** (548 cells) | ✅ ALL COMPLETED |\n| **Dump-preds** (4 ckpts) | ✅ all 4 `abbibench_preds.npz` saved (18,638 mutations each) |\n| **Deep-dive OOD eval** (array 33526397) | just submitted, 548 cells will start shortly |\n| **Summary figure** (7 panels) | `results/figures/summary_abbibench.png` |\n| **Pred-vs-real figure** (12 panels) | `results/figures/pred_vs_real.png` ← new |\n\n## Pred-vs-real figure — what it shows\n\n- **Top 8 panels**: per-complex scatter of predicted ΔΔG vs ground-truth `binding_score`. 4 models overlaid (champion = red, hybrid_esm2_lora = teal, base_abB3 = gold, base_esm2_lora = blue). Signs flipped on pathological complexes.\n  - Each subplot title shows per-model ρ\n  - 2fjg / 3gbn / 4d5 / 4fq / 5a1 / 1mlc / 1n8 all visible in this 8-tile vie…",
-      "tags": [
-        "model"
       ]
     }
   ]
