@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T12:10:00Z",
+  "generated_at": "2026-04-19T12:40:05Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4443,
-    "assistant_turns": 6661,
+    "user_turns": 4449,
+    "assistant_turns": 6670,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T11:21:21.086Z"
+    "last_ts": "2026-04-19T12:19:13.973Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,24 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T12:19:13.892Z",
+      "text": "**Hourly tick — 🎯 the aayl retry comparison landed AND queue topped up to 550.**\n\n## The real story in 4 numbers\n\n| Model | aayl ρ | Verdict |\n|---|---|---|\n| base `esm2_lora` (general SKEMPI-trained) | **+0.088** | 🏆 winner |\n| base abB3 (antibody-specialized) | +0.039 | runner-up |\n| base esm2_stab_only | +0.007 | weak |\n| CHAMPION hybrid×abB3 post-train | **+0.003** | ← post-training HURT |\n\n**Paper headline**: **\"Sequence-only antibody ΔΔG OOD peaks at ρ=+0.09 using a GENERAL binding model; antibody specialization and hybrid-loss post-training both hurt.\"**\n\n## What I submitted this tick\n\n**300-job `esm2_refill2` sweep (33543232)** — since esm2_lora is the proven-best base, I focused next-round compute on it:\n- 10 techniques (pearson/ranknet/hybrid/group_dro/cycle_aug/ipo/**dpo/kto/simpo**/rank_dist)\n- × 10 esm2_lora bases\n- × 3 seeds\n- = 300 cells on savio3_gpu\n\nThe question now: **…",
+      "tags": [
+        "result",
+        "dataset",
+        "model",
+        "infra"
+      ]
+    },
+    {
+      "ts": "2026-04-19T12:18:23.968Z",
+      "text": "# 🎯 BREAKTHROUGH — first HONEST champion-vs-base aayl numbers\n\n**All 4 aayl retry2 jobs finished. Head-to-head on the 4 truly-OOD synthetic scFvs:**\n\n| Model | aayl49 | aayl49_ML | aayl50_LC | aayl51 | aayl52_LC | **MEAN** |\n|---|---|---|---|---|---|---|\n| 🟢 **base esm2_lora** (general SKEMPI) | −0.104 | +0.088 | +0.113 | **+0.173** | **+0.168** | **+0.088** ⭐ |\n| 🔵 base abB3 (antibody-specialized) | +0.049 | +0.076 | +0.048 | +0.042 | −0.022 | +0.039 |\n| 🟡 base esm2_stab_only | −0.039 | −0.132 | +0.055 | +0.092 | +0.058 | +0.007 |\n| 🔴 **CHAMPION hybrid × abB3** | −0.043 | −0.024 | +0.018 | +0.066 | −0.004 | **+0.003** ← worst |\n\n## Two MAJOR findings\n\n1. **CHAMPION hybrid × abB3 is WORSE than its own base (+0.003 vs +0.039 Δ=−0.036)** — confirms post-training actively damages true-OOD transfer. Every insight from the last session is vindicated.\n\n2. **🏆 `interface_dpl_v2_esm2_lora` (gene…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-19T11:18:14.968Z",
       "text": "**Hourly tick — 🏃 first real milestone in hours:**\n\n| Status | This hour |\n|---|---|\n| Queue | **506** (no refill) |\n| refill_ood | 168 → **213/250** (+45) |\n| **aayl retry2 (champion + 2 bases)** | **ALL 3 NOW RUNNING** ← first critical jobs started |\n| RLHF | 0/200 trained |\n| abB3p retrains | 0/15 |\n\n**The critical head-to-head comparison is now running.** In ~45-60 min we'll have:\n- Champion hybrid × abB3 aayl ρ\n- Base abB3 fold1_seed0 aayl ρ (post-training started from here)\n- Base esm2_lora fold0_seed0 aayl ρ (general-binding baseline)\n\nCombined with the existing esm2_stab_only = +0.007, that's 4 data points on the only leak-free OOD axis we have.\n\nHANDOFF at 1043 lines. Next tick at `:07` should have the first post-training-on-genuine-OOD signal.",
@@ -364,20 +382,6 @@
       "text": "Here's what the **hybrid × abB3** exploration actually shows now that we've accumulated 22 OOD-evaluated cells:\n\n## 📊 Summary — hybrid × abB3 OOD transfer\n\n| Metric | Value |\n|---|---|\n| **Cells evaluated** | 22 |\n| **Pooled mean OOD_flipped** | **+0.150 ± 0.027** |\n| **Best single cell** | **+0.164** |\n| **Median** | **+0.159** |\n| Worst | +0.064 |\n\n## 🔬 Per-complex breakdown — WHERE the signal lives\n\n| Complex | n | mean ρ (flipped) | std | Reading |\n|---|---|---|---|---|\n| **1n8z** ★ | 22 | **+0.477** | 0.018 | 🔥 flipped, strongest signal |\n| **3gbn** ★ | 22 | +0.381 | 0.171 | flipped, strong but noisy |\n| **4d5_her2 (Herceptin)** | 22 | **+0.271** | 0.015 | 🔥 cleanest real OOD win |\n| 5a12_ang2 | 22 | +0.093 | 0.071 | weak positive |\n| 1mlc | 22 | +0.057 | 0.017 | weak positive |\n| 2fjg | 22 | +0.009 | 0.007 | noise |\n| g6_LC | 22 | −0.024 | 0.031 | noise |\n| 4fqi | 22 | −0.063 | 0.0…",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T01:40:14.672Z",
-      "text": "Now let me look at what we DO have already — the earlier 808-cell run had results for hybrid × abB3.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T01:39:35.662Z",
-      "text": "**All 548 deep OOD eval jobs FAILED.** Let me diagnose.",
-      "tags": [
-        "error"
       ]
     }
   ]
