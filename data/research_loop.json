@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T15:10:35Z",
+  "generated_at": "2026-04-19T15:40:40Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4465,
-    "assistant_turns": 6695,
+    "user_turns": 4471,
+    "assistant_turns": 6705,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T14:49:45.341Z"
+    "last_ts": "2026-04-19T15:22:37.269Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,21 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T15:19:30.614Z",
+      "text": "**Hourly tick — 🎉 LEAK-FREE BASES ARE PUBLISHABLE:**\n\n| Check | State |\n|---|---|\n| abB3p retrains | **12/15 DONE** (val ρ +0.53 to +0.63, **mean +0.60**) |\n| Queue | **733** (+15 abB3p_ood submitted) |\n| abB3p OOD jobs | **11 queued** for AbBiBench aayl scoring |\n| RLHF progress (14 aayl cells) | simpo −0.006, kto −0.020 — no ceiling break |\n| esm2_refill2 OOD | 300 still PD |\n\n**The critical deliverable just landed:** leak-free base ckpts with val ρ +0.60 — equal to the contaminated esm2_lora baseline. These are the publishable bases.\n\n**The decisive experiment firing now:** abB3p_ood (11 jobs) will tell us aayl ρ of the leak-free bases. If aayl ≈ +0.088 (matching leaky esm2_lora), then our +0.088 OOD ceiling was **real** not inflated. If it drops to ρ ≈ 0, it was leakage-driven all along.\n\nHANDOFF at 1156 lines. Next tick will have the answer.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T15:18:58.900Z",
+      "text": "# 🎉 HUGE MILESTONE — 12 abB3p retrains finished with val ρ +0.53 to +0.63!\n\n**Leak-free retraining results** (purged manifest, skempi+abbind, 8 epochs):\n\n| Fold×Seed | val ρ | n_train |\n|---|---|---|\n| fold0_seed0 | **+0.626** | 5721 |\n| fold0_seed1 | +0.594 | 5682 |\n| fold0_seed2 | +0.606 | 5682 |\n| fold1_seed0 | +0.532 | 6336 |\n| fold1_seed1 | +0.561 | 6336 |\n| fold2_seed0 | +0.631 | 6013 |\n| fold3_seed1 | +0.579 | 7300 |\n| fold3_seed2 | +0.567 | 7300 |\n| fold4_seed0 | +0.624 | 5976 |\n| fold4_seed1 | +0.622 | 5976 |\n| fold4_seed2 | +0.629 | 6268 |\n\n**Mean val ρ ≈ +0.60** — **on par with the leaky esm2_lora base (+0.602)** and these are LEAK-FREE. 3 more still running.\n\n**These are publishable base ckpts.** Need AbBiBench OOD on them next (especially aayl* to see true OOD ρ with clean training).\n\n**RLHF so far (14/200 aayl):**\n- simpo × abB3: aayl_mean −0.006 (n=9) — no break of ceiling…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-19T14:19:03.830Z",
       "text": "**Hourly tick — 🎉 breakthrough hour:**\n\n| Milestone | State |\n|---|---|\n| RLHF training | **200/200 ✅** |\n| esm2_refill2 training | **300/300 ✅** |\n| abB3p retrains | **9/15 RUNNING** 🏃 (6h to finish) |\n| New OOD eval jobs | **500 submitted** (33546282, 33546283) |\n\n**Queue**: 254 → **754** after refill.\n\n**What the next hour will tell us:**\n1. Do DPO/KTO/SimPO/IPO preference losses break the aayl ρ≈0 ceiling when applied to esm2_lora base? (the sweep tests all 4 on the proven-best backbone)\n2. Does any of the 10 techniques × esm2_lora combination beat base esm2_lora's +0.088 on aayl?\n3. abB3p retrains give us leak-free bases — first checkpoint expected ~hour 6\n\nHANDOFF at 1126 lines. Next tick at `:07`.",
@@ -368,22 +383,6 @@
       "text": "**Found them! It's a case-sensitivity issue** — PDBs are `AAYL49_bca.pdb` (uppercase) but metadata references `aayl49_bca.pdb` (lowercase). Fixing now.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T02:30:50.568Z",
-      "text": "# 💀 Double blow\n\n**1. We have zero real OOD measurements.**\n\nAll 5 aayl* (the only clean complexes) consistently failed with `pdb_not_found:/data/abbibench/.../aayl49_bca.pdb` etc. The PDB files for the synthetic scFvs don't exist at the expected path. Every \"OOD\" ρ we've been celebrating came from the **9 leaked + 3 suspicious complexes**.\n\n```\nScanned 2024 results.json files\naayl* keys with valid ρ: []   ← ZERO measurements on the only clean complexes\n```\n\n**2. General-model audit returned 10 open questions — 4 HIGH priority gaps:**\n\n| Q | Status | Priority |\n|---|---|---|\n| Q1: hybrid × esm2_lora on SAbDab_v2/ATLAS/S1131/Tsub/FireP | MISSING | HIGH |\n| Q2: general-base deep-dive (esm2_lora analog of abB3 sweep) | running now (gen_deep 594 jobs) | HIGH ✅ |\n| Q6: PPAC/ProtAttBA retrained on AbBiBench | MISSING | HIGH |\n| Q7: public zero-shot SOTA (ESM-1v / ESM-IF / SaProt) on AbBiBench…",
-      "tags": [
-        "error",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T02:29:13.455Z",
-      "text": "# 🚨 CRITICAL FINDING — our OOD is NOT OOD\n\n**9/16 AbBiBench complexes are LEAKS into training data.** Only the 4 `aayl*` synthetic scFvs are truly out-of-distribution.\n\n## The damning table\n\n| Complex | Status | Evidence |\n|---|---|---|\n| 1mlc, 1mlc_LC | 🔴 **LEAK** | 1MLC in SKEMPI + AB-Bind + SAbDab + 28 rows in antibody_only_manifest |\n| 1n8z | 🔴 **LEAK** | 1N8Z in SKEMPI + AB-Bind + SAbDab + 35 manifest rows |\n| **4d5_her2 (Herceptin)** | 🔴 **LEAK** | Reuses 1N8Z backbone; H 100% / L 97% identical to training |\n| 1mhp, 1mhp_LC | 🔴 **LEAK** | 1MHP in SKEMPI/AB-Bind/SAbDab + 187 manifest rows, same cluster `2NY7_H` as 1MLC |\n| 2fjg, g6_LC | 🔴 **LEAK** | 2FJG in SAbDab + 6 manifest rows |\n| 5a12_vegf | 🔴 **LEAK** | 4ZFF in SAbDab, 6 manifest rows, antigen 100% identical |\n| 5a12_ang2 | 🟡 SUSPICIOUS | sibling 4ZFF in training; L 100% id |\n| 3gbn | 🟡 SUSPICIOUS | antigen 94% id to training…",
-      "tags": [
-        "dataset"
       ]
     }
   ]
