@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T21:11:54Z",
+  "generated_at": "2026-04-19T21:42:01Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4501,
-    "assistant_turns": 6756,
+    "user_turns": 4504,
+    "assistant_turns": 6762,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T20:18:31.522Z"
+    "last_ts": "2026-04-19T21:18:40.427Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,20 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T21:18:40.346Z",
+      "text": "**Hourly tick — 🔥 DPO holding:**\n\n| Metric | State |\n|---|---|\n| Queue | 1013 |\n| esm2_refill2 aayl cells done | 47/300 |\n| **DPO × esm2_lora** | **+0.082 mean @ n=3** (base +0.088) |\n| KTO best single cell | **+0.089** (beats base!) |\n| Hybrid × esm2_lora | +0.009 (still collapses) |\n\n**Crystallizing paper finding**: **DPO on a general-binding base preserves OOD** — the first post-training recipe that doesn't damage leak-free aayl transfer. Base-choice matters more than loss choice. abB3 (specialized) collapses all losses; esm2_lora (general) recovers preference-family.\n\nNext tick: n=30 DPO confirmation + abB3p leak-free baseline (30 PD, priority-starved).\n\nHANDOFF at 1340 lines.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T21:18:24.841Z",
+      "text": "# 🔥 DPO SIGNAL HOLDING at n=3 — real pattern emerging\n\n**esm2_refill2 aayl after 47/300 cells (ranked by technique mean):**\n\n| Technique × esm2_lora | n | mean aayl | best cell |\n|---|---|---|---|\n| **dpo** | 3 | **+0.082** | +0.083 |\n| group_dro | 2 | +0.048 | +0.049 |\n| **kto** | 8 | +0.045 | **+0.089** 🔥 |\n| rank_dist | 6 | +0.044 | +0.055 |\n| cycle_aug | 3 | +0.038 | +0.041 |\n| simpo | 9 | +0.037 | +0.051 |\n| ipo | 7 | +0.037 | +0.051 |\n| ranknet | 6 | +0.030 | +0.056 |\n| **hybrid** | 3 | **+0.009** | +0.013 |\n\n**Two key findings:**\n\n1. **DPO × esm2_lora holds at +0.082 with n=3** — reproducibly preserves base-level OOD (+0.088). **First confirmed post-training recipe** that doesn't collapse on leak-free aayl*.\n\n2. **One KTO cell hit +0.089** — beating the base! Could be a lucky seed or a real signal. Need 15+ seeds to call it.\n\n3. **Preference-family > rank-family on esm2_lora** — D…",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-19T20:18:31.442Z",
       "text": "**Hourly tick — 🎯 first positive post-train signal in the entire project:**\n\n**DPO × esm2_lora = +0.082 aayl ρ (n=1, single cell)** — essentially matching the +0.088 base. All other techniques on this base so far are worse. If DPO preserves OOD at 30 seeds, **this is the first publishable \"post-training that doesn't damage OOD\" recipe**.\n\n| Status | |\n|---|---|\n| Queue | 1051 (29 R + rest PD) |\n| Running throughput | 9× improvement from removing A40 constraint |\n| DPO signal | +0.082 vs +0.088 base — nearly full preservation |\n\nNext tick: DPO confirmation at higher n + abB3p leak-free aayl numbers.\n\nHANDOFF at 1312 lines.",
@@ -369,20 +383,6 @@
       "text": "**Hourly tick done.**\n\n| Check | State |\n|---|---|\n| Queue | 466 (no refill needed — >200) |\n| aayl retry jobs (33528674/5/6) | PENDING, will run when A40 slots free |\n| refill_ood | 37/250 done, 23 R, 190 PD |\n| **True OOD finding** | **aayl ρ ∈ [−0.027, +0.026] across 37 cells × 5 techniques × 8 bases** — null confirmed |\n| HANDOFF | 910 lines (appended definitive-null section) |\n\n**Key conclusion this hour:** every post-training variant produces aayl ρ ≈ 0 — no technique, no base, no loss function breaks the FLAb2 field-wide ceiling. The +0.10 \"OOD\" scores we were reporting came entirely from the 9 leaked complexes.\n\nNext tick at `:07`: champion + 2 bases aayl numbers should be in by then, giving us the direct \"post-train helped vs base?\" comparison on genuine OOD.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T06:18:44.357Z",
-      "text": "# 🎯 DEFINITIVE CONFIRMATION — aayl ρ ≈ 0 across ALL 37 refill variants\n\n| Tech × Base | n | raw OOD | flipped | **aayl-only ρ** |\n|---|---|---|---|---|\n| ranknet × fold1_seed2 | 5 | −0.053 | +0.097 | **+0.008** |\n| ranknet × fold4_seed1 | 5 | −0.042 | +0.095 | **+0.006** |\n| pearson × fold4_seed1 | 4 | −0.045 | +0.093 | **−0.000** |\n| ranknet × fold0_seed2 | 3 | +0.005 | +0.070 | **+0.018** |\n| cycle_aug × fold0_seed1 | 5 | +0.021 | +0.051 | **+0.025** |\n| group_dro × fold0_seed1 | 5 | +0.021 | +0.050 | **+0.026** |\n| hybrid × fold4_seed0 | 3 | −0.065 | +0.057 | **−0.027** |\n\n**The entire range of aayl ρ across 5 techniques × 8 bases × 37 cells is −0.027 to +0.026.** All within noise of zero. Meanwhile the \"flipped OOD\" column (+0.05 to +0.10) is **purely leakage-driven** — it's entirely from the 9 leaked complexes.\n\n**Confirmed:**\n1. Every post-training variant → aayl ρ ≈ 0 ± 0.03\n2. Th…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T05:19:08.390Z",
-      "text": "## Hourly tick complete — the real OOD story\n\n**First honest OOD number: ρ = +0.007 on aayl* synthetic scFvs** for base `esm2_stab_only`. That's the field ceiling FLAb2 warned about. Not a model failure — a fundamental-learnability result.\n\n**Queue**: 490 jobs (250 refill_80 PD + 210 refill_ood PD + 27 R + 3 aayl resubmits). Both partitions busy, no refill needed.\n\n**HANDOFF**: 890 lines with urgent leak-free update.\n\n**Next hourly (~1h)**: champion + base_abB3 + base_esm2_lora aayl* scores come in; will tell us whether hybrid post-training moves the ρ≈0 ceiling on genuinely novel antibodies.",
-      "tags": [
-        "model"
       ]
     }
   ]
