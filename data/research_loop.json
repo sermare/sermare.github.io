@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T02:07:34Z",
+  "generated_at": "2026-04-19T02:37:50Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4337,
-    "assistant_turns": 6502,
+    "user_turns": 4360,
+    "assistant_turns": 6541,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T01:41:12.250Z"
+    "last_ts": "2026-04-19T02:37:23.199Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,80 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-19T02:37:23.118Z",
+      "text": "## The pivot: 11 broad-OOD jobs firing (4 aayl + 7 multi-benchmark)\n\n**Your observation is the most important one of the session.** We've been polishing numbers on benchmarks that are essentially GroupKFold-hard val splits of the same distribution. True \"out-of-the-box\" means:\n\n- **Tsuboyama K50** — 270k mutations on de novo mini-proteins; ESM-2 650M NEVER saw any of them\n- **FireProt** — curated stability across DIVERSE enzymes\n- **ProteinGym** — 217 DMS assays, most novel proteins\n- **BindingGym** — 90 binding assays\n- **MegaScale (Rocklin 2023)** — 1M+ de novo mini-protein mutations (not downloaded yet — next-session work)\n\n## What we just submitted (11 jobs running now)\n\n**4 aayl rerun jobs** (33528151-54) — resubmitted with correct cwd after symlink cd leaked:\n- champion hybrid×abB3 (2 seeds)\n- base abB3 (fold0, fold1)\n- base esm2_lora / esm2_stab_only\n\n→ First real AbBiBench OOD nu…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T02:36:52.508Z",
+      "text": "**🔥 MAJOR HIDDEN FINDING in the broad-OOD scan:**\n\n`interface_dpl_v2_esm2_stab_only` (which never saw SKEMPI binding data) is the **best variant at EVERY broad-OOD benchmark**:\n\n| Benchmark | esm2_stab_only (no binding train) | All ESMC SKEMPI-multitask |\n|---|---|---|\n| **Tsuboyama K50** (270k stability) | **+0.862** | +0.65 to +0.69 |\n| **FireProt** (curated stability) | **+0.621** | +0.44 to +0.50 |\n| **BindingGym** (90 binding assays) | **+0.120** | **−0.02 to −0.04** ❌ |\n| **ProteinGym** (binding subset) | **+0.050** | **−0.03 to −0.07** ❌ |\n\n**SKEMPI-multitask models score NEGATIVE on BindingGym and ProteinGym.** Training on SKEMPI actively destroys transfer to broader binding distributions. This is the field-wide phenomenon FLAb2 flagged.\n\n**We've never evaluated our champion (hybrid × abB3) on these broad OOD benchmarks** — only on the leaky AbBiBench. Firing that now.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T02:36:19.080Z",
+      "text": "Now let me design a proper broad-OOD evaluation — across many protein distributions, not just held-out clusters.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-19T02:35:23.929Z",
+      "text": "You're right. We've been measuring \"generalization to held-out clusters of the same distribution\" — that's not OOD, that's just a hard within-distribution val split. An \"out-of-the-box\" model needs to transfer to **genuinely novel proteins** — different folds, different families, different assays.\n\nLet me list what OOD should actually mean and what evaluations are available:\n\n## What we've been calling \"OOD\" (but isn't really)\n| Benchmark | Reality | Verdict |\n|---|---|---|\n| SKEMPI GroupKFold val | held-out cluster, same SKEMPI distribution | within-distribution |\n| AbBiBench 16 complexes | **9 are literal leaks, 3 suspicious** | mostly ID |\n| SAbDab v2 leak-filtered | filtered by mmseqs30 but same antibody distribution | near-ID |\n| S1131 cluster-aware | SKEMPI subset, same distribution | within-distribution |\n\n## What TRUE OOD looks like (what we should test on)\n| Benchmark | n assays…",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-19T02:32:00.043Z",
+      "text": "**The full picture now:**\n\n## Summary of the crisis + fix\n\n1. **9/16 AbBiBench complexes are LEAKS** — our +0.159 \"OOD\" result was mostly ID-memorization on PDBs that appear in training (1MLC, 1N8Z/4d5_her2, 1MHP, 2FJG/g6_LC, 4ZFF/5a12_vegf + cluster-mates).\n\n2. **The 4 truly-OOD `aayl*` complexes** were silently failing with `pdb_not_found` — **case-sensitivity bug**: metadata said `aayl49_bca.pdb`, files were `AAYL49_bca.pdb`. **Just fixed with symlinks.**\n\n3. **All 1196 jobs cancelled** — they were training/eval'ing on a benchmark that's mostly ID. Wasted compute on invalid science.\n\n4. **4 re-eval jobs submitted** (33528139-42) — rerun champion + 3 baselines with aayl* PDBs now reachable. In ~20 min we'll have our **first honest OOD numbers** on the 4 synthetic scFvs.\n\n## What we need to redo (post-mortem action plan)\n\n| # | Task | Priority |\n|---|---|---|\n| 1 | Get aayl* ρ from cham…",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-19T02:31:09.670Z",
+      "text": "**Found them! It's a case-sensitivity issue** — PDBs are `AAYL49_bca.pdb` (uppercase) but metadata references `aayl49_bca.pdb` (lowercase). Fixing now.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-19T02:30:50.568Z",
+      "text": "# 💀 Double blow\n\n**1. We have zero real OOD measurements.**\n\nAll 5 aayl* (the only clean complexes) consistently failed with `pdb_not_found:/data/abbibench/.../aayl49_bca.pdb` etc. The PDB files for the synthetic scFvs don't exist at the expected path. Every \"OOD\" ρ we've been celebrating came from the **9 leaked + 3 suspicious complexes**.\n\n```\nScanned 2024 results.json files\naayl* keys with valid ρ: []   ← ZERO measurements on the only clean complexes\n```\n\n**2. General-model audit returned 10 open questions — 4 HIGH priority gaps:**\n\n| Q | Status | Priority |\n|---|---|---|\n| Q1: hybrid × esm2_lora on SAbDab_v2/ATLAS/S1131/Tsub/FireP | MISSING | HIGH |\n| Q2: general-base deep-dive (esm2_lora analog of abB3 sweep) | running now (gen_deep 594 jobs) | HIGH ✅ |\n| Q6: PPAC/ProtAttBA retrained on AbBiBench | MISSING | HIGH |\n| Q7: public zero-shot SOTA (ESM-1v / ESM-IF / SaProt) on AbBiBench…",
+      "tags": [
+        "error",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T02:29:13.455Z",
+      "text": "# 🚨 CRITICAL FINDING — our OOD is NOT OOD\n\n**9/16 AbBiBench complexes are LEAKS into training data.** Only the 4 `aayl*` synthetic scFvs are truly out-of-distribution.\n\n## The damning table\n\n| Complex | Status | Evidence |\n|---|---|---|\n| 1mlc, 1mlc_LC | 🔴 **LEAK** | 1MLC in SKEMPI + AB-Bind + SAbDab + 28 rows in antibody_only_manifest |\n| 1n8z | 🔴 **LEAK** | 1N8Z in SKEMPI + AB-Bind + SAbDab + 35 manifest rows |\n| **4d5_her2 (Herceptin)** | 🔴 **LEAK** | Reuses 1N8Z backbone; H 100% / L 97% identical to training |\n| 1mhp, 1mhp_LC | 🔴 **LEAK** | 1MHP in SKEMPI/AB-Bind/SAbDab + 187 manifest rows, same cluster `2NY7_H` as 1MLC |\n| 2fjg, g6_LC | 🔴 **LEAK** | 2FJG in SAbDab + 6 manifest rows |\n| 5a12_vegf | 🔴 **LEAK** | 4ZFF in SAbDab, 6 manifest rows, antigen 100% identical |\n| 5a12_ang2 | 🟡 SUSPICIOUS | sibling 4ZFF in training; L 100% id |\n| 3gbn | 🟡 SUSPICIOUS | antigen 94% id to training…",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-19T02:25:02.727Z",
+      "text": "Answering each question with what we know + what's in flight:\n\n## 1. Does complex size predict OOD performance?\n**NO correlation.** Spearman(n_muts, |ρ|) = **−0.24**.\n\n| Complex | n_muts | ρ_flipped |\n|---|---|---|\n| 4fqi | 6000 | **−0.063** ❌ weak |\n| **1n8z** ★ | **419** | **+0.477** ✅ strong |\n| 4d5_her2 | 2080 | +0.271 ✅ |\n\nThe smallest complex (1n8z, 419 muts) has the strongest signal. More data ≠ better OOD. Signal is driven by **complex-specific biology**, not sample size.\n\n## 2. Leakage? ⏳ audit agent running in background (will report)\n\n## 3. How can we sample?\nCurrently: `ABB_MAX_ROWS_PER_COMPLEX=3000` random subsample with `random_state=0`. I built a 15-job sampling-robustness manifest (5 different `ABB_SEED` values × 3 models). Need to submit — doing that next message.\n\n## 4. Input = antibody + antigen? **YES**\nAt inference (`eval_abbibench_ood.py` lines 183-260):\n- **Input**…",
+      "tags": [
+        "result"
+      ]
+    },
+    {
+      "ts": "2026-04-19T02:22:29.339Z",
+      "text": "Tackling all your questions at once. Spawning 3 research agents + firing 580+ new jobs in parallel.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
       "ts": "2026-04-19T01:41:12.250Z",
       "text": "Here's what the **hybrid × abB3** exploration actually shows now that we've accumulated 22 OOD-evaluated cells:\n\n## 📊 Summary — hybrid × abB3 OOD transfer\n\n| Metric | Value |\n|---|---|\n| **Cells evaluated** | 22 |\n| **Pooled mean OOD_flipped** | **+0.150 ± 0.027** |\n| **Best single cell** | **+0.164** |\n| **Median** | **+0.159** |\n| Worst | +0.064 |\n\n## 🔬 Per-complex breakdown — WHERE the signal lives\n\n| Complex | n | mean ρ (flipped) | std | Reading |\n|---|---|---|---|---|\n| **1n8z** ★ | 22 | **+0.477** | 0.018 | 🔥 flipped, strongest signal |\n| **3gbn** ★ | 22 | +0.381 | 0.171 | flipped, strong but noisy |\n| **4d5_her2 (Herceptin)** | 22 | **+0.271** | 0.015 | 🔥 cleanest real OOD win |\n| 5a12_ang2 | 22 | +0.093 | 0.071 | weak positive |\n| 1mlc | 22 | +0.057 | 0.017 | weak positive |\n| 2fjg | 22 | +0.009 | 0.007 | noise |\n| g6_LC | 22 | −0.024 | 0.031 | noise |\n| 4fqi | 22 | −0.063 | 0.0…",
       "tags": [
@@ -306,77 +380,6 @@
     {
       "ts": "2026-04-18T16:48:15.247Z",
       "text": "**All 825 post-train jobs COMPLETED — 808 ckpts saved, final_loss 0.13 (training worked). But AbBiBench eval hasn't been run on them yet.** Launching that array now.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T11:04:29.053Z",
-      "text": "**Final agent landed — this one is the most important of all 18.**\n\n---\n\n## 🚨 Key findings from SOTA agent\n\n**1. The FLAb2 benchmark (Graylab 2025, bioRxiv 2025.12.27.696706) tested 30+ PLMs on 32 antibody developability datasets:**\n- **80% of datasets have no statistically significant PLM correlation**\n- **40% of apparent PLM predictive power is just germline edit distance** (V-gene artifact)\n- **Our ρ≈0 on AbBiBench is the field-wide baseline, NOT our failure**\n\nThis completely reframes the paper story: we aren't failing a task others solved — we're matching the field ceiling, which is ~zero for sequence-only antibody OOD.\n\n**2. AlphaBind (mAbs 2025, A-Alpha-Bio) confirms our exact pattern:**\n- Pretrained on 5M AlphaSeq Ab-Ag Kd measurements\n- **Zero-shot ρ ≈ 0 on 3 of 4 test antibodies** (matches our AbBiBench result)\n- **After ~300-row per-target fine-tune → ρ jumps to 0.5-0.8**\n- **…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T11:03:51.875Z",
-      "text": "**🚀 825 JOBS QUEUED — well past your 500 target.**\n\n| Job pool | Count | State |\n|---|---|---|\n| **pt_spam** (600-job sweep: 5 techniques × 15 base ckpts × 10 seeds 10-19) | **600** | PD |\n| **post_train** (original 208: techniques × 4 primary bases × seeds 0-9) | **132** | 113 PD + 19 R |\n| **v2_ab_ood** (90 general-v2 cells → AbBiBench OOD) | **90** | PD |\n| pattba chain | 3 | mixed |\n\n7/8 brainstorm agents reported. **Synthesized top OOD-improvement picks across all 18 brainstorm agents (original 10 + new 8):**\n\n| # | Technique | Source | Effort | Est ΔρOOD |\n|---|---|---|---|---|\n| **1** | **LP-FT (frozen backbone + head-only FT)** ← what we're running NOW | Kumar 2022 / OOD theory | — (running) | **+0.15 to +0.25** |\n| 2 | **VICReg feature-collapse regularizer** on penultimate | Arora 2022 | 6h | +0.10 to +0.20 |\n| 3 | **V-REx** (variance of per-env risks) across SKEMPI/Ab/stability…",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-18T11:00:57.440Z",
-      "text": "Spawning 8 brainstorm agents + building a 500-job array in parallel.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T10:45:14.309Z",
-      "text": "**301 jobs in the queue / running.** Well past your 100-minimum.\n\n| Job pool | Count | State |\n|---|---|---|\n| **post_train array** (5 techniques × 4 bases × ~10 seeds) | **208** | 15 R + 193 PD |\n| **v2_ab_ood array** (general-v2 AbBiBench OOD eval) | **90** | PD |\n| pattba_retrain | 1 | R |\n| pattba_ood_infer, agg_sup_ood | 2 | dep-gated |\n\n**Summary of what's running:**\n1. **208 post-train jobs** (fixed pred_row bug, sanity verified — final loss dropped from buggy 1.0 to 0.20 in 30 steps, confirming real training)\n2. **90 general-v2 AbBiBench OOD jobs** — fills in the OOD table for the 6 general ΔΔG variants that haven't been evaluated on antibody OOD yet\n3. Pre-existing pattba retrain chain still winding down\n\n**Expected timeline:**\n- post_train: ~40 min/cell × 208 / 25 concurrent = ~5.5h wall\n- v2_ab_ood: ~20 min/cell × 90 / 25 concurrent = ~1.2h wall\n- First results land in ~30 min…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T10:44:19.499Z",
-      "text": "Sanity green — **final loss 0.20** (= pearson corr 0.80). The fix works. Relaunching 208-array now.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T10:43:59.716Z",
-      "text": "Fixes applied, sanity2 (33514966) submitted to verify the `pred_row` fix before resubmitting the 208 array. Waiting on it now.\n\nWhile we wait: **the sign-flip diagnostic confirmed the per-complex insight** — after flipping 1n8z + 3gbn (the 2 pathological complexes), every antibody variant's OOD ρ jumps:\n\n| Variant | Original ρ | **Sign-flipped ρ** | Δ |\n|---|---|---|---|\n| antibody_only_esm2_lora (baseline) | −0.069 | **+0.144** | +0.21 |\n| abonly_A2 ESM-2 150M | −0.079 | **+0.142** | +0.22 |\n| abonly_B2 CoV-AbDab | −0.057 | +0.139 | +0.20 |\n| abonly_E2 stab_highiface | −0.049 | +0.124 | +0.17 |\n| abonly_B3 multitask_stability | −0.051 | +0.117 | +0.17 |\n| abonly_E1 stab_listmle | −0.052 | +0.114 | +0.17 |\n| abonly_F1 antigen_partner | −0.023 | +0.091 | +0.11 |\n| **abonly_D5 combo** (was best) | +0.027 | +0.021 | **−0.01** |\n\n**This is huge:** under the sign-flip hypothesis, the \"best\" O…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-18T10:36:06.500Z",
-      "text": "Already on it — fix applied. Let me sanity-test with 10 steps before re-spamming 208 jobs.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T10:35:54.086Z",
-      "text": "**Oops — all 60 post-train jobs failed silently** with `KeyError: 'sequence'`. My script expected a top-level `sequence` key but SKEMPI rows have multi-chain dicts. Fixing now, then resubmitting 208 jobs (60 original + 148 extra).",
-      "tags": [
-        "error",
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-18T10:32:21.664Z",
-      "text": "## 🚀 60 post-train jobs firing (15 running + 1 pending in first batch)\n\nArray `33514881`: 5 techniques × 4 base ckpts × 3 seeds on savio3 A40 lowprio, ~90 min wall expected.\n\n---\n\n## 🔥 MAJOR FINDING from free-win analysis (no new training needed)\n\n**The \"ρ≈0 OOD\" story is mean-dominated by 2 pathological complexes.** Per-complex breakdown across 122 pooled cells × 10 antibody variants:\n\n| AbBiBench complex | n | **mean ρ** | median | std | Status |\n|---|---|---|---|---|---|\n| **4d5_her2** (Herceptin/HER2) | 122 | **+0.222** | +0.268 | 0.12 | **★ strong positive OOD** |\n| **1mlc** (Fab/lysozyme) | 122 | **+0.125** | +0.144 | 0.07 | **★ positive OOD** |\n| 2fjg | 122 | 0.000 | +0.002 | 0.04 | no signal |\n| 4fqi | 122 | −0.044 | −0.045 | 0.05 | no signal |\n| 5a12_ang2 | 122 | −0.019 | −0.008 | 0.07 | no signal |\n| g6_LC | 122 | −0.032 | −0.038 | 0.05 | no signal |\n| **1n8z** | 122 | **−0.347…",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-18T10:30:48.814Z",
-      "text": "All 10 agents reported. Synthesizing and launching now.",
       "tags": [
         "note"
       ]
