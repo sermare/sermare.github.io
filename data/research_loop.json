@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T01:07:12Z",
+  "generated_at": "2026-04-19T01:37:21Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4318,
-    "assistant_turns": 6472,
+    "user_turns": 4330,
+    "assistant_turns": 6488,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-18T23:24:41.789Z"
+    "last_ts": "2026-04-19T01:36:47.078Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,20 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T01:36:46.982Z",
+      "text": "**📊 Pred-vs-real figure generated + deep-dive OOD eval firing.**\n\n## Current state\n\n| Item | Status |\n|---|---|\n| **pt_deep training** (548 cells) | ✅ ALL COMPLETED |\n| **Dump-preds** (4 ckpts) | ✅ all 4 `abbibench_preds.npz` saved (18,638 mutations each) |\n| **Deep-dive OOD eval** (array 33526397) | just submitted, 548 cells will start shortly |\n| **Summary figure** (7 panels) | `results/figures/summary_abbibench.png` |\n| **Pred-vs-real figure** (12 panels) | `results/figures/pred_vs_real.png` ← new |\n\n## Pred-vs-real figure — what it shows\n\n- **Top 8 panels**: per-complex scatter of predicted ΔΔG vs ground-truth `binding_score`. 4 models overlaid (champion = red, hybrid_esm2_lora = teal, base_abB3 = gold, base_esm2_lora = blue). Signs flipped on pathological complexes.\n  - Each subplot title shows per-model ρ\n  - 2fjg / 3gbn / 4d5 / 4fq / 5a1 / 1mlc / 1n8 all visible in this 8-tile vie…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T01:34:44.298Z",
+      "text": "**All 548 deep-dive training cells COMPLETED + all 4 pred-dump files saved.** Queue empty. But I need to trigger AbBiBench eval on the deep-dive ckpts (didn't auto-run). Firing that now + generating the pred-vs-real figure from the 4 dumps we have.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-18T23:18:10.536Z",
       "text": "**📊 Summary figure generated** — 7 panels in one. PDF + PNG saved to `results/figures/summary_abbibench.{png,pdf}`.\n\n## What the panels show\n\n| Panel | View | Finding |\n|---|---|---|\n| **1** (top-left, wide) | **Heatmap**: antibody variants × AbBiBench complexes, ρ color-coded. Red-shaded columns = sign-flipped complexes | **1n8z and 3gbn are blue (negative) for every variant** — visual proof of the sign-flip |\n| **2** (top-right) | **Boxplot**: ρ distribution per complex pooled across 122 cells × 10 variants | 4d5_her2 and 1mlc visibly positive; 1n8z/3gbn clearly anti-correlated |\n| **3** (middle-left) | **Sign-flip scatter**: OOD raw vs sign-flipped for each variant | All points shift +0.17 up-left → validates the flip hypothesis |\n| **4** (middle-right, wide) | **Post-train technique × base heatmap** with cell counts | **hybrid × abB3 = +0.159** dark green; **hybrid × esm2_lora = +0.1…",
@@ -365,20 +379,6 @@
       "text": "**Honest answer: no, nothing exists yet.**\n\n- 0 scripts matching `post_train*`, `dpo*`, `ppo*`, `ipo*`, `rank_distill*`\n- 0 result dirs for any post-training variant\n- 0 jobs in queue doing it\n\nI got as far as brainstorming + verifying base ckpt paths (esm2_lora, esm2_stab_only, abonly_B3, abonly_F1 all confirmed exist at `/fold0_seed0/ckpt_dpl_*.pt`) and spawned the HANDOFF-update agent. **I never wrote `post_train.py` or launched anything.** That got interrupted before I typed any code.\n\n**Background agent status:** HANDOFF.md rewrite agent still running; no PPO/DPO agent was ever spawned.\n\n---\n\n**The plan on paper (from the brainstorm agent, ranked by ROI for ΔΔG regression):**\n\n| # | Technique | Data signal | Loss | Est. ΔρOOD | Effort |\n|---|---|---|---|---|---|\n| 1 | **Ensemble rank distillation** | 15-cell mean + variance → weighted pairs | var-weighted pairwise MSE + BCE | +0.05–…",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-18T10:24:16.264Z",
-      "text": "**Major update — the AbBiBench array nearly finished (126/171 cells done). Antibody OOD numbers are in for all 11 variants.**\n\n---\n\n## Antibody-focused models — ID vs OOD (REAL, cells completed)\n\n| Variant | ID cells | **ID ρ (val)** | OOD cells | **OOD ρ (AbBiBench)** | Δ (ID→OOD) |\n|---|---|---|---|---|---|\n| abonly_E1 stab_listmle | 9 | **+0.427 ± 0.15** | 9 | −0.052 ± 0.03 | −0.48 |\n| abonly_B3 multitask_stability | 12 | +0.391 ± 0.13 | 12 | −0.051 ± 0.04 | −0.44 |\n| abonly_E2 stab_highiface | 12 | +0.376 ± 0.13 | 12 | −0.049 ± 0.03 | −0.43 |\n| abonly_F1 antigen_partner | 11 | +0.373 ± 0.14 | 11 | **−0.023 ± 0.06** | −0.40 |\n| abonly_A2 esm2_150m_lora | 15 | +0.276 | 15 | −0.079 | −0.36 |\n| abonly_B2 CoV-AbDab pretrain | 15 | +0.268 | 15 | −0.057 | −0.33 |\n| antibody_only_esm2_lora (baseline) | 15 | +0.265 | 15 | −0.069 | −0.33 |\n| **abonly_D5 combo** | 15 | +0.245 | 15 | **+0.027 ±…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-18T04:23:26.258Z",
-      "text": "Both agents delivered. Now executing the plan — implement 5 post-training techniques, launch, and update HANDOFF in parallel.",
-      "tags": [
-        "note"
       ]
     }
   ]
