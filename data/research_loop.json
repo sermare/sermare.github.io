@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T16:10:45Z",
+  "generated_at": "2026-04-19T16:40:55Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4471,
-    "assistant_turns": 6705,
+    "user_turns": 4474,
+    "assistant_turns": 6710,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T15:22:37.269Z"
+    "last_ts": "2026-04-19T16:21:42.880Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,14 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T16:18:37.300Z",
+      "text": "**Hourly tick** — queue **692**, no refill.\n\n## 🎯 RLHF/DPO family VERDICT is in (42 cells)\n\n| Technique | n | aayl ρ | vs base esm2_lora (+0.088) |\n|---|---|---|---|\n| **kto** | 18 | **+0.004** | −0.084 ❌ |\n| **simpo** | 20 | **−0.010** | −0.098 ❌ |\n| **ipo** | 4 | **−0.012** | −0.100 ❌ |\n| dpo | 0 | pending | — |\n\n**Every preference-optimization loss (IPO/KTO/SimPO) scores aayl ρ ≈ 0.** No better than MSE/rank/hybrid from prior sweeps. **RLHF-family does NOT break the OOD ceiling on genuine antibody test set.**\n\n## Still pending\n\n- **15 abB3p_ood** (leak-free base OOD test — will confirm if +0.088 was leakage-inflated or real)\n- **300 esm2_refill2_ood** (10-technique sweep on esm2_lora bases)\n- 250 1080Ti refill_80\n\n## Updated aayl leaderboard\n\n| # | Config | aayl ρ |\n|---|---|---|\n| 🏆 | **base esm2_lora (general SKEMPI)** | **+0.088** |\n| 2 | base abB3 | +0.039 |\n| 3 | base esm2_stab_o…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-19T15:19:30.614Z",
       "text": "**Hourly tick — 🎉 LEAK-FREE BASES ARE PUBLISHABLE:**\n\n| Check | State |\n|---|---|\n| abB3p retrains | **12/15 DONE** (val ρ +0.53 to +0.63, **mean +0.60**) |\n| Queue | **733** (+15 abB3p_ood submitted) |\n| abB3p OOD jobs | **11 queued** for AbBiBench aayl scoring |\n| RLHF progress (14 aayl cells) | simpo −0.006, kto −0.020 — no ceiling break |\n| esm2_refill2 OOD | 300 still PD |\n\n**The critical deliverable just landed:** leak-free base ckpts with val ρ +0.60 — equal to the contaminated esm2_lora baseline. These are the publishable bases.\n\n**The decisive experiment firing now:** abB3p_ood (11 jobs) will tell us aayl ρ of the leak-free bases. If aayl ≈ +0.088 (matching leaky esm2_lora), then our +0.088 OOD ceiling was **real** not inflated. If it drops to ρ ≈ 0, it was leakage-driven all along.\n\nHANDOFF at 1156 lines. Next tick will have the answer.",
@@ -374,13 +382,6 @@
     {
       "ts": "2026-04-19T02:32:00.043Z",
       "text": "**The full picture now:**\n\n## Summary of the crisis + fix\n\n1. **9/16 AbBiBench complexes are LEAKS** — our +0.159 \"OOD\" result was mostly ID-memorization on PDBs that appear in training (1MLC, 1N8Z/4d5_her2, 1MHP, 2FJG/g6_LC, 4ZFF/5a12_vegf + cluster-mates).\n\n2. **The 4 truly-OOD `aayl*` complexes** were silently failing with `pdb_not_found` — **case-sensitivity bug**: metadata said `aayl49_bca.pdb`, files were `AAYL49_bca.pdb`. **Just fixed with symlinks.**\n\n3. **All 1196 jobs cancelled** — they were training/eval'ing on a benchmark that's mostly ID. Wasted compute on invalid science.\n\n4. **4 re-eval jobs submitted** (33528139-42) — rerun champion + 3 baselines with aayl* PDBs now reachable. In ~20 min we'll have our **first honest OOD numbers** on the 4 synthetic scFvs.\n\n## What we need to redo (post-mortem action plan)\n\n| # | Task | Priority |\n|---|---|---|\n| 1 | Get aayl* ρ from cham…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T02:31:09.670Z",
-      "text": "**Found them! It's a case-sensitivity issue** — PDBs are `AAYL49_bca.pdb` (uppercase) but metadata references `aayl49_bca.pdb` (lowercase). Fixing now.",
       "tags": [
         "note"
       ]
