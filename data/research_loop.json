@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T03:08:06Z",
+  "generated_at": "2026-04-19T03:38:17Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4365,
-    "assistant_turns": 6545,
+    "user_turns": 4379,
+    "assistant_turns": 6566,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T03:02:19.012Z"
+    "last_ts": "2026-04-19T03:24:45.951Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,28 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T03:24:45.880Z",
+      "text": "## First hourly iteration complete ✅\n\n**Hourly cron `59a50919` scheduled** — fires at `:07` every hour, updates HANDOFF + refills queue if < 200 jobs. Session-only (dies if Claude exits), auto-expires after 7 days.\n\n**This iteration's work:**\n\n| Action | Result |\n|---|---|\n| Check queue | was 0 (all prior jobs completed) |\n| **Diagnose broad-OOD timings** | 4 aayl jobs timed out at 30 min; resubmitted with 1h30m budget |\n| **Analyze broad-OOD results** | 🚨 Champion **REGRESSED** on true OOD (Tsub −0.08, FireP −0.11 vs base) |\n| **Fire refill arrays** | 250 A40 + 250 1080Ti post-train refill jobs |\n| **Update HANDOFF.md** | Added urgent section: leakage + champion regression + next-session action plan |\n\n**Queue now: 504 jobs** (223 A40 PD + 27 A40 R + 250 1080Ti PD + 4 aayl). Both partitions busy.\n\n**Next fire: ~:07 in the next hour** — I'll check queue, auto-refill if < 200, and scribe…",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-19T03:23:24.362Z",
+      "text": "# 🚨 EVEN WORSE NEWS — Champion REGRESSED on true OOD\n\n**Tsuboyama + FireProt (truly OOD, de novo proteins): the champion hybrid × abB3 is WORSE than every base model.**\n\n| Cell | Tsub | FireP |\n|---|---|---|\n| **base abF1** | **+0.885** | +0.828 |\n| **base abB3** (fold0) | +0.875 | **+0.836** |\n| **base esm2_lora** | +0.850 | +0.835 |\n| **pt hybrid × esm2_lora** | +0.843 | **+0.847** ← only post-train that kept signal |\n| **CHAMPION hybrid × abB3 seed15** | **+0.794** | **+0.729** ← LOST 0.08-0.11 vs base ❌ |\n| **CHAMPION hybrid × abB3 seed10** | +0.794 | +0.731 ← same |\n\n**Combined with the leakage finding, the true picture is:**\n1. AbBiBench \"+0.159\" was leakage artifact\n2. On actual OOD (Tsub/FireP), champion **lost** +0.08-0.11 ρ vs base\n3. **Our post-training actively damaged broad generalization**\n4. `pt_hybrid × esm2_lora` is the ONLY post-train variant that didn't lose ground (+0…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T03:22:19.013Z",
+      "text": "**Scheduled:** hourly loop `59a50919` fires at `:07` every hour (off-minute to avoid fleet collision). Session-only, auto-expires after 7 days, `CronDelete 59a50919` to cancel sooner.\n\nNow running the first iteration immediately.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-19T03:02:19.012Z",
       "text": "**The `schedule` skill spawns a remote Anthropic-cloud agent — it can't SSH into Savio.** Your jobs live on `/global/scratch/users/sergiomar10/loop` and you need `sbatch` against Savio's SLURM, which a cloud agent can't reach.\n\nTwo workable paths:\n\n**A) Use the `loop` skill** — keeps this local Claude Code session alive on an interval. I stay running here, check the queue every hour, submit more sweeps, and rewrite HANDOFF.md. This is the right fit — it uses the SSH/Savio access this session already has. Caveat: only works while this session stays open.\n\n**B) Install a Savio cron job** — lightweight bash script on Savio login node that (1) checks `squeue` count and (2) submits from a pool of manifest files when queue < 200. Survives session close but can't write HANDOFF narrative (unless I give it a templated update). This is the durable solution.\n\nWhich do you want — `loop` for this ses…",
@@ -359,28 +381,6 @@
       "text": "**First 22 post-train OOD results are in** (out of 808, 22 running, 786 pending):\n\n| Variant | cells | raw ρ | **flipped ρ** | vs base (flipped) |\n|---|---|---|---|---|\n| **post_train_ranknet_abF1** | 10 | −0.031 | **+0.112** | base abF1 was +0.091 → **+0.021 ↑** |\n| post_train_pearson_esm2_lora | 10 | −0.064 | +0.087 | base esm2_lora was +0.099 → **−0.012 ↓** |\n| post_train_ranknet_abF1 lr=5e-4 (iter20) | 2 | +0.003 | +0.078 | noisy (n=2) |\n\n**Reading so far:**\n- **RankNet on antibody base (abF1)** edges out the base by +0.02 — looks like a real micro-improvement, but need the full 15 seeds to trust it.\n- **Pearson on general base (esm2_lora)** is slightly *worse* than the base — pearson loss on stability data may not help a model already trained on SKEMPI binding.\n- Signal is small relative to the σ≈0.04-0.06 spread across seeds. Need 10+ cells per variant before drawing conclusions.…",
       "tags": [
         "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-18T16:59:22.242Z",
-      "text": "**🚀 1060 jobs firing + UPDATE.md written (185 lines)**\n\n| Job pool | Count | Purpose |\n|---|---|---|\n| **pt_ood** (808 post-train cells → AbBiBench) | **786 PD + 22 R** | core OOD eval |\n| **pt_iter20** (20 new configs × 4 bases × 3 seeds) | **240 PD** | LR/steps sweep |\n| **nid_*** native-ID eval | **12** | check post-train didn't break Tsub/FireP |\n\n---\n\n**20 new iterations queued (pt_iter20 = 240 jobs):**\n\n| Config | Variations tested |\n|---|---|\n| 3 LRs | 5e-5, 2e-4 (default), 1e-3 |\n| 5 step counts | 50, 100, 250, 500, 1000 |\n| 7 techniques | pearson, ranknet, hybrid, group_dro, cycle_aug, **ipo**, **rank_dist** |\n\n**Native-ID side-eval running on 12 ckpts:**\n- 4 base ckpts (esm2_lora, esm2_stab_only, abB3, abF1)\n- 8 post-train cells (pearson + hybrid × 4 bases, seed 10)\n- Each scored on Tsuboyama (500 rows) + FireProt\n- Tells us: did LP-FT damage native in-distribution ρ?\n\n**UPDATE…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-18T16:55:53.375Z",
-      "text": "On it. Launching 20 more post-train variants + native eval + UPDATE.md in parallel.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-18T16:48:56.775Z",
-      "text": "**808-job post-train OOD array submitted (33517156).** Now to answer your question with what we have:\n\n---\n\n## ID vs OOD — CURRENT STATE (sign-flipped OOD column uses the fix we identified earlier)\n\n### Antibody-focused (122 cells each) — AbBiBench OOD **in**\n\n| Variant | ID ρ | OOD raw | **OOD sign-flipped** |\n|---|---|---|---|\n| **abonly_E1** stab_listmle | **+0.427** | −0.052 | +0.114 |\n| **abonly_B3** multitask_stability | +0.391 | −0.051 | +0.117 |\n| abonly_E2 stab_highiface | +0.376 | −0.049 | +0.124 |\n| abonly_F1 antigen_partner | +0.373 | −0.023 | +0.091 |\n| abonly_A2 ESM-2 150M | +0.276 | −0.079 | **+0.142** |\n| abonly_B2 CoV-AbDab pretrain | +0.268 | −0.057 | +0.139 |\n| antibody_only_esm2_lora (baseline) | +0.265 | −0.069 | **+0.144** |\n| abonly_D5 combo | +0.245 | **+0.027** | +0.021 |\n| abonly_D2 inv-√N | +0.181 | −0.054 | +0.103 |\n\n### General v2 ΔΔG — AbBiBench OOD also in…",
-      "tags": [
         "model"
       ]
     }
