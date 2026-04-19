@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T17:11:01Z",
+  "generated_at": "2026-04-19T17:41:11Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4474,
-    "assistant_turns": 6710,
+    "user_turns": 4477,
+    "assistant_turns": 6715,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T16:21:42.880Z"
+    "last_ts": "2026-04-19T17:21:51.787Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T17:18:46.820Z",
+      "text": "**Hourly tick** — queue **643**, no refill needed.\n\n## 🎯 DPO/KTO/SimPO/IPO: all 4 preference losses fully measured (83 cells total)\n\n| Technique | n | aayl ρ |\n|---|---|---|\n| **kto** | 23 | **+0.002** |\n| **dpo** | 15 | **+0.000** |\n| **ipo** | 15 | −0.003 |\n| **simpo** | 30 | −0.007 |\n\n**Zero across all 4.** RLHF-family confirms the ceiling — no preference-optimization loss helps sequence-only antibody OOD.\n\n## Still pending\n- 15 abB3p_ood (leak-free base OOD — the decisive test)\n- 300 esm2_refill2_ood (10 techniques × best-base)\n- 250 1080Ti refill_80\n\n## Standing ranking unchanged\n1. 🏆 base esm2_lora (general) **+0.088**\n2. base abB3 +0.039\n3. base esm2_stab +0.007\n4. kto/dpo/ipo/simpo × abB3: ≈ 0\n5. hybrid × abB3 (\"champion\"): +0.003\n\nHANDOFF at 1207 lines. Paper story solidifying: **no post-training trick beats the untouched general base** on leak-free antibody OOD.",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-19T16:18:37.300Z",
       "text": "**Hourly tick** — queue **692**, no refill.\n\n## 🎯 RLHF/DPO family VERDICT is in (42 cells)\n\n| Technique | n | aayl ρ | vs base esm2_lora (+0.088) |\n|---|---|---|---|\n| **kto** | 18 | **+0.004** | −0.084 ❌ |\n| **simpo** | 20 | **−0.010** | −0.098 ❌ |\n| **ipo** | 4 | **−0.012** | −0.100 ❌ |\n| dpo | 0 | pending | — |\n\n**Every preference-optimization loss (IPO/KTO/SimPO) scores aayl ρ ≈ 0.** No better than MSE/rank/hybrid from prior sweeps. **RLHF-family does NOT break the OOD ceiling on genuine antibody test set.**\n\n## Still pending\n\n- **15 abB3p_ood** (leak-free base OOD test — will confirm if +0.088 was leakage-inflated or real)\n- **300 esm2_refill2_ood** (10-technique sweep on esm2_lora bases)\n- 250 1080Ti refill_80\n\n## Updated aayl leaderboard\n\n| # | Config | aayl ρ |\n|---|---|---|\n| 🏆 | **base esm2_lora (general SKEMPI)** | **+0.088** |\n| 2 | base abB3 | +0.039 |\n| 3 | base esm2_stab_o…",
@@ -377,13 +384,6 @@
       "text": "You're right. We've been measuring \"generalization to held-out clusters of the same distribution\" — that's not OOD, that's just a hard within-distribution val split. An \"out-of-the-box\" model needs to transfer to **genuinely novel proteins** — different folds, different families, different assays.\n\nLet me list what OOD should actually mean and what evaluations are available:\n\n## What we've been calling \"OOD\" (but isn't really)\n| Benchmark | Reality | Verdict |\n|---|---|---|\n| SKEMPI GroupKFold val | held-out cluster, same SKEMPI distribution | within-distribution |\n| AbBiBench 16 complexes | **9 are literal leaks, 3 suspicious** | mostly ID |\n| SAbDab v2 leak-filtered | filtered by mmseqs30 but same antibody distribution | near-ID |\n| S1131 cluster-aware | SKEMPI subset, same distribution | within-distribution |\n\n## What TRUE OOD looks like (what we should test on)\n| Benchmark | n assays…",
       "tags": [
         "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-19T02:32:00.043Z",
-      "text": "**The full picture now:**\n\n## Summary of the crisis + fix\n\n1. **9/16 AbBiBench complexes are LEAKS** — our +0.159 \"OOD\" result was mostly ID-memorization on PDBs that appear in training (1MLC, 1N8Z/4d5_her2, 1MHP, 2FJG/g6_LC, 4ZFF/5a12_vegf + cluster-mates).\n\n2. **The 4 truly-OOD `aayl*` complexes** were silently failing with `pdb_not_found` — **case-sensitivity bug**: metadata said `aayl49_bca.pdb`, files were `AAYL49_bca.pdb`. **Just fixed with symlinks.**\n\n3. **All 1196 jobs cancelled** — they were training/eval'ing on a benchmark that's mostly ID. Wasted compute on invalid science.\n\n4. **4 re-eval jobs submitted** (33528139-42) — rerun champion + 3 baselines with aayl* PDBs now reachable. In ~20 min we'll have our **first honest OOD numbers** on the 4 synthetic scFvs.\n\n## What we need to redo (post-mortem action plan)\n\n| # | Task | Priority |\n|---|---|---|\n| 1 | Get aayl* ρ from cham…",
-      "tags": [
-        "note"
       ]
     }
   ]
