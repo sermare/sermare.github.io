@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T06:39:08Z",
+  "generated_at": "2026-04-19T07:09:12Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4422,
-    "assistant_turns": 6627,
+    "user_turns": 4425,
+    "assistant_turns": 6633,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T06:38:54.177Z"
+    "last_ts": "2026-04-19T06:48:30.472Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T06:45:24.088Z",
+      "text": "**Current state** (664 queued, 23 running):\n- DPO sanity (33535729): still PENDING Priority — all A40 slots allocated, lowprio waiting\n- 200 `rlhf` array: PD, will validate DPO/KTO/SimPO/IPO when slots free\n- 15 `abB3p` retrains: PD, 6h each — critical for publication (leak-free base ckpts)\n- 454 `refill_*` arrays: 190 PD + 250 1080Ti PD + 23 R\n\nThe monitor timing out doesn't matter — the cron loop (`59a50919`) will fire at `:07` and I'll check DPO results then. If RLHF fails en masse I'll diagnose; if they succeed, we get 200 DPO/KTO/SimPO/IPO OOD numbers in the next hourly sweep.\n\nThe **critical milestone** is the 15 abB3p base retrains finishing (~6h). Those are leak-free base ckpts that give us publishable headline numbers. I'll flag their progress each hourly tick.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-19T06:38:53.767Z",
       "text": "## 🧹 LEAKAGE PURGE + RLHF SWEEP FIRING\n\n**Purge completed:**\n- **832 rows (37.8%)** dropped from `antibody_only_manifest.json` — all 28 leaked + cluster-sibling PDBs\n- Saved clean manifest + `leaked_pdbs.txt`\n- Added `PURGE_LEAKED_PDBS` env var to `train_interface_dpl_v2.py` for future runs\n\n**Added 3 new preference-optimization losses** (true DPO family, adapted for scalar regression):\n\n| Technique | Formula | Pitch |\n|---|---|---|\n| **dpo** | `−log σ(β·(s_w − s_l))`, β=0.5 | classic DPO margin, reference-free for regression |\n| **kto** | binary gain/loss relative to mean label, β=0.3 | Kahneman-Tversky, cheapest pairing |\n| **simpo** | `−log σ(β·(s_w − s_l) − γ)`, β=1, γ=0.5 | reference-free preference |\n\nPlus existing **ipo** (IPO margin). All 4 use the same stab/destab pair builder.\n\n## 🚀 215 new jobs submitted (queue now 669)\n\n| Array | Count | Purpose |\n|---|---|---|\n| **rlhf** 335…",
@@ -369,14 +376,6 @@
     {
       "ts": "2026-04-18T22:38:35.665Z",
       "text": "**Both documents updated with comprehensive model descriptions.**\n\n## UPDATE.md — completely rewritten (self-contained session reference)\n\nNow includes:\n- **ASCII pipeline diagram** — Phase 1 base training → Phase 2 post-training → Phase 3 OOD eval\n- **Section 2: Backbone spec** — ESM-2 650M + LoRA r=16 config + ESM-C 300M alternative\n- **Section 3: InterfaceAwareDPL head** — full forward signature, anti-symmetric formula, cross-attention\n- **Section 4: All 8 loss variants** — with formulas for pearson / ranknet / soft_spearman / hybrid / group_dro / cycle_aug / ipo / rank_dist\n- **Section 5: Data** — schema tables for binding / stability / antibody\n- **Section 6: Base model pool** — all 5 bases + 12 abB3 ckpts\n- **Section 7: Hyperparam YAML** — current post-train defaults\n- **Section 8: Evaluation pipeline** — 8 benchmarks + sign-flip handling code\n- **Section 9: 🏆 Champion block** — hy…",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-18T22:34:02.647Z",
-      "text": "**🎯 Deep dive on hybrid × abB3 LAUNCHED — 548 focused cells running.**\n\n## Experimental design\n\n| Stage | What it varies | Jobs |\n|---|---|---|\n| **A — Weight × LR × Steps grid** | 6 loss-weight configs × 3 LRs × 2 step counts × 4 abB3 bases × 3 seeds | **432** |\n| **B — Base diversity** | hybrid default × all 12 abB3 bases (fold0-4 × seed0-2) × 8 seeds | **96** |\n| **C — Unfreeze LoRA ablation** | 4 bases × 5 seeds at low LR (5e-5) with LoRA adapters unfrozen | **20** |\n| **Total** | | **548** |\n\n## Loss-weight configs swept in Stage A\n\n| Tag | (w_mse, w_softsp, w_ranknet) | Hypothesis |\n|---|---|---|\n| w_default | 0.2, 0.4, 0.4 | current champion |\n| w_rank_heavy | 0.0, 0.5, 0.5 | remove MSE entirely |\n| w_mse_heavy | 0.5, 0.25, 0.25 | anchor to scale |\n| w_sp_only | 0.0, 1.0, 0.0 | pure soft-spearman |\n| w_rk_only | 0.0, 0.0, 1.0 | pure RankNet |\n| w_balanced | 0.33, 0.33, 0.34 | equa…",
       "tags": [
         "result",
         "model"
