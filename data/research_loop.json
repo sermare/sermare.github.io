@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T05:08:43Z",
+  "generated_at": "2026-04-19T05:38:52Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4386,
-    "assistant_turns": 6576,
+    "user_turns": 4393,
+    "assistant_turns": 6587,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T04:18:56.394Z"
+    "last_ts": "2026-04-19T05:19:08.459Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,20 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T05:19:08.390Z",
+      "text": "## Hourly tick complete — the real OOD story\n\n**First honest OOD number: ρ = +0.007 on aayl* synthetic scFvs** for base `esm2_stab_only`. That's the field ceiling FLAb2 warned about. Not a model failure — a fundamental-learnability result.\n\n**Queue**: 490 jobs (250 refill_80 PD + 210 refill_ood PD + 27 R + 3 aayl resubmits). Both partitions busy, no refill needed.\n\n**HANDOFF**: 890 lines with urgent leak-free update.\n\n**Next hourly (~1h)**: champion + base_abB3 + base_esm2_lora aayl* scores come in; will tell us whether hybrid post-training moves the ρ≈0 ceiling on genuinely novel antibodies.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T05:18:42.001Z",
+      "text": "# 🎯 FIRST REAL LEAK-FREE OOD NUMBERS — ρ ≈ 0\n\n**Base `interface_dpl_v2_esm2_stab_only` on the 4 aayl* synthetic scFvs (the only clean complexes):**\n\n| aayl complex | ρ | n |\n|---|---|---|\n| aayl49 | −0.039 | 3000 |\n| aayl49_ML | −0.132 | 3000 |\n| aayl50_LC | +0.055 | 3000 |\n| aayl51 | +0.092 | 3000 |\n| aayl52_LC | +0.058 | 3000 |\n| **MEAN** | **+0.007** | — |\n\n**Essentially zero** — exactly what FLAb2 (Graylab 2025) predicted as the field-wide baseline.\n\n**Compare to the leaked complexes (for this same model):**\n- 4d5_her2: +0.315 (LEAKED — H 100% / L 97% in training)\n- 1n8z: −0.352 (LEAKED — 35 training rows, now we know the \"sign flip\" was memorization)\n- 3gbn: −0.256 (SUSPICIOUS — antigen 94% id to training HA)\n\n## Implications\n\n1. **Confirmed**: true sequence-only antibody OOD ρ ≈ 0 — FLAb2's \"80% null\" is validated.\n2. **Previous +0.159 was 100% leakage artifact** — the 9 leaked com…",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-19T04:18:56.143Z",
       "text": "**Hourly tick done.**\n\n| Check | State |\n|---|---|\n| Queue before | 254 |\n| New submission | +250 OOD eval jobs (33528558) on completed abB3_refill cells |\n| Queue after | **504** |\n| aayl status | 4 running, ~21 min in (eval'd complexes alphabetically, aayl* at the end) |\n| New OOD results | none this hour |\n| HANDOFF | appended 12-line hourly tick → 862 lines |\n\nBoth partitions still busy:\n- 250 `refill_80` PD on savio2_1080ti\n- 250 `refill_ood` PD on savio3_gpu\n- 4 aayl rerun R on savio3_gpu\n\nNext hourly tick: ~`:07` — by then aayl* OOD numbers should land + abB3_refill AbBiBench results start populating.",
@@ -367,20 +381,6 @@
       "text": "**Progress: 93/808 post-train OOD cells done. First clear winner emerging.**\n\n| Variant | n | OOD raw | **OOD flipped** | std | vs base |\n|---|---|---|---|---|---|\n| **post_train_hybrid_esm2_stab_only (fold1)** | 10 | +0.041 | **+0.114** | 0.005 | **+0.012 ↑** |\n| **post_train_hybrid_esm2_stab_only (fold3)** | 10 | +0.036 | **+0.114** | 0.004 | **+0.012 ↑** |\n| **post_train_ranknet_esm2_stab_only (fold3)** | 10 | +0.036 | +0.113 | 0.003 | +0.011 ↑ |\n| post_train_ranknet_esm2_lora (lr=1e-4, 400 steps) | 2 | −0.086 | +0.113 | — | +0.014 ↑ |\n| post_train_ranknet_abF1 (fold3) | 10 | −0.031 | +0.112 | 0.004 | +0.021 ↑ |\n| post_train_ranknet_esm2_lora | 18 | −0.087 | +0.112 | 0.002 | +0.013 ↑ |\n| post_train_pearson_esm2_lora | 10 | −0.064 | +0.087 | 0.004 | **−0.012 ↓** |\n| post_train_group_dro_abF1 | 3 | −0.005 | +0.086 | — | −0.005 |\n| post_train_pearson_abF1 | 18 | −0.001 | +0.080 | 0.008 |…",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-18T17:27:51.134Z",
-      "text": "**HANDOFF.md updated — 609 lines, clean merge into existing structure.**\n\nAgent report:\n- **Header**: bumped \"Last updated\" to 2026-04-17 (late session)\n- **Section 5 (bug-fixes)**: added 5 new rows — pred_row fix, ABB row cap, 8-CPU requirement on a40_gpu3_normal QoS, savio2_1080ti as second compute lane\n- **Section 6**: appended new subsections:\n  - AbBiBench OOD table (baseline / B3 / F1 / E1 / D5) with ID + raw + flipped\n  - Per-complex breakdown flagging 4d5_her2 = +0.222 as real signal, 1n8z/3gbn as pathological\n  - Retrained SOTA (PPAC +0.305, ProtAttBA +0.291) with \"beaten by +0.08-0.13\" note\n  - Post-training pipeline (7 techniques, 808 ckpts, first ranknet/abF1 = +0.112)\n  - pt_iter20 + native-ID + pt_ood sweep descriptions\n  - Field-wide SOTA context (FLAb2, AlphaBind, Pythia-PPI, BALM, TransABseq, CATH-ddG)\n- **Section 10 (next directions)**: restructured into Running-now / H…",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-18T17:26:16.012Z",
-      "text": "**🔥 1338 jobs queued — 300 new jobs on 1080Ti added to the 1038 on A40.**\n\n| Pool | Count | Partition |\n|---|---|---|\n| **pt_ood** (AbBiBench eval on 808 post-train cells) | **22 R + 764 PD** | savio3_gpu A40 |\n| **pt_iter20** (20 hyperparam configs × 12) | **240 PD** | savio3_gpu A40 |\n| **pt_1080** (5 tech × 4 bases × 15 seeds 30-44) | **300 PD** | **savio2_1080ti** |\n| nid_* (native-ID eval) | **12 PD** | savio3_gpu A40 |\n\n**1080Ti partition state**: 2 mix + 2 drain + 3 drain* + 1 inval. Not pristine but enough nodes to take the load. Sbatch used `--gres=gpu:1 --batch 8` (half of A40's batch size to fit 11GB VRAM).\n\n**HANDOFF.md update agent running in background** — rewriting with:\n- Full session history (phases 1-3 + post-train)\n- All fresh numbers (abonly, general v2, retrained SOTA, post-train early results)\n- Per-complex AbBiBench breakdown + sign-flip finding\n- FLAb2 field-wide…",
-      "tags": [
-        "infra"
       ]
     }
   ]
