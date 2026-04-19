@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T20:11:41Z",
+  "generated_at": "2026-04-19T20:41:47Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4497,
-    "assistant_turns": 6749,
+    "user_turns": 4501,
+    "assistant_turns": 6756,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T19:34:21.931Z"
+    "last_ts": "2026-04-19T20:18:31.522Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,20 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T20:18:31.442Z",
+      "text": "**Hourly tick — 🎯 first positive post-train signal in the entire project:**\n\n**DPO × esm2_lora = +0.082 aayl ρ (n=1, single cell)** — essentially matching the +0.088 base. All other techniques on this base so far are worse. If DPO preserves OOD at 30 seeds, **this is the first publishable \"post-training that doesn't damage OOD\" recipe**.\n\n| Status | |\n|---|---|\n| Queue | 1051 (29 R + rest PD) |\n| Running throughput | 9× improvement from removing A40 constraint |\n| DPO signal | +0.082 vs +0.088 base — nearly full preservation |\n\nNext tick: DPO confirmation at higher n + abB3p leak-free aayl numbers.\n\nHANDOFF at 1312 lines.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T20:18:15.842Z",
+      "text": "# 🔥 FIRST POSITIVE SIGNAL — DPO × esm2_lora = +0.082 aayl ρ (n=1)!\n\n| Technique × base | n | aayl ρ | vs base esm2_lora (+0.088) |\n|---|---|---|---|\n| **dpo × esm2_lora** | 1 | **+0.082** | **Δ ≈ 0** — preserves OOD ✅ |\n| group_dro × esm2_lora | 2 | +0.048 | −0.040 |\n| ranknet × esm2_lora | 3 | +0.007 | −0.081 |\n\n**DPO on the esm2_lora base preserves nearly full OOD capability.** First post-training technique that didn't damage true OOD. Single cell so far but strong signal — the 300-cell esm2_refill2_ood array will confirm/falsify at full seed×base coverage.\n\n## Queue health (A40 constraint removed)\n\n| Pool | Count | State |\n|---|---|---|\n| e2r2_ood | 29 R + 565 PD | churning now |\n| rlhf_ood | 210 PD | queued |\n| abB3p_ood | 30 PD | queued |\n| 1080Ti refill_80 | 210 PD | partition separate |\n| retr (3 jobs × 2) | 6 PD | queued |\n\n**Total: 1051, 29+ running.** The constraint removal unb…",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-19T19:34:21.848Z",
       "text": "**Hourly tick — ⚡ A40 unlock:**\n\n| Metric | Before | After |\n|---|---|---|\n| Queue | 569 | **1081** |\n| Running | 3 | **28** |\n| GPU types accessible | A40 only | A40 + V100 + TITAN + K80 |\n\nChanged `--gres=gpu:A40:1` → `--gres=gpu:1` across all 17 active co_nilah lowprio sbatch scripts. Resubmitted the stalled arrays (abB3p_ood, esm2_refill2_ood, rlhf_ood, retr). Jobs immediately landed on non-A40 slots that had been sitting idle.\n\n**Expected 5-10× throughput increase** on OOD evaluation. The critical-path jobs (abB3p_ood, esm2_refill2_ood, retrieval) should start completing within the next hour.\n\nHANDOFF at 1286 lines. Next tick will have first leak-free aayl numbers.",
@@ -369,20 +383,6 @@
       "text": "## Hourly tick complete — the real OOD story\n\n**First honest OOD number: ρ = +0.007 on aayl* synthetic scFvs** for base `esm2_stab_only`. That's the field ceiling FLAb2 warned about. Not a model failure — a fundamental-learnability result.\n\n**Queue**: 490 jobs (250 refill_80 PD + 210 refill_ood PD + 27 R + 3 aayl resubmits). Both partitions busy, no refill needed.\n\n**HANDOFF**: 890 lines with urgent leak-free update.\n\n**Next hourly (~1h)**: champion + base_abB3 + base_esm2_lora aayl* scores come in; will tell us whether hybrid post-training moves the ρ≈0 ceiling on genuinely novel antibodies.",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T05:18:42.001Z",
-      "text": "# 🎯 FIRST REAL LEAK-FREE OOD NUMBERS — ρ ≈ 0\n\n**Base `interface_dpl_v2_esm2_stab_only` on the 4 aayl* synthetic scFvs (the only clean complexes):**\n\n| aayl complex | ρ | n |\n|---|---|---|\n| aayl49 | −0.039 | 3000 |\n| aayl49_ML | −0.132 | 3000 |\n| aayl50_LC | +0.055 | 3000 |\n| aayl51 | +0.092 | 3000 |\n| aayl52_LC | +0.058 | 3000 |\n| **MEAN** | **+0.007** | — |\n\n**Essentially zero** — exactly what FLAb2 (Graylab 2025) predicted as the field-wide baseline.\n\n**Compare to the leaked complexes (for this same model):**\n- 4d5_her2: +0.315 (LEAKED — H 100% / L 97% in training)\n- 1n8z: −0.352 (LEAKED — 35 training rows, now we know the \"sign flip\" was memorization)\n- 3gbn: −0.256 (SUSPICIOUS — antigen 94% id to training HA)\n\n## Implications\n\n1. **Confirmed**: true sequence-only antibody OOD ρ ≈ 0 — FLAb2's \"80% null\" is validated.\n2. **Previous +0.159 was 100% leakage artifact** — the 9 leaked com…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T04:18:56.143Z",
-      "text": "**Hourly tick done.**\n\n| Check | State |\n|---|---|\n| Queue before | 254 |\n| New submission | +250 OOD eval jobs (33528558) on completed abB3_refill cells |\n| Queue after | **504** |\n| aayl status | 4 running, ~21 min in (eval'd complexes alphabetically, aayl* at the end) |\n| New OOD results | none this hour |\n| HANDOFF | appended 12-line hourly tick → 862 lines |\n\nBoth partitions still busy:\n- 250 `refill_80` PD on savio2_1080ti\n- 250 `refill_ood` PD on savio3_gpu\n- 4 aayl rerun R on savio3_gpu\n\nNext hourly tick: ~`:07` — by then aayl* OOD numbers should land + abB3_refill AbBiBench results start populating.",
-      "tags": [
-        "infra"
       ]
     }
   ]
