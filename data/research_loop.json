@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-20T01:12:40Z",
+  "generated_at": "2026-04-20T01:42:43Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4520,
-    "assistant_turns": 6791,
+    "user_turns": 4523,
+    "assistant_turns": 6796,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-20T00:21:15.280Z"
+    "last_ts": "2026-04-20T01:21:18.521Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-20T01:18:11.833Z",
+      "text": "**Hourly tick** — queue **868**, no refill needed.\n\n| Check | State |\n|---|---|\n| 15 zero-shot base aayl | still 0 landed |\n| 5 noise-floor evals | still 0 landed |\n| 30 abB3p_ood | still PD |\n| esm2_refill2 OOD | 34 R + 358 PD |\n\nAll 50 decisive jobs blocked in priority queue. Savio lowprio contention. No new aayl numbers this hour.\n\nHANDOFF appended briefly.",
+      "tags": [
+        "infra"
+      ]
+    },
     {
       "ts": "2026-04-20T00:18:09.839Z",
       "text": "**Hourly tick** — queue **914**, no refill.\n\n| Check | State |\n|---|---|\n| 15 zero-shot base aayl evals | **0 landed** — priority-starved |\n| 5 noise-floor evals | 0 landed |\n| 30 abB3p_ood (leak-free baseline) | 30 PD |\n| esm2_refill2 | 33 R + 404 PD |\n\n**No new aayl numbers this hour.** All 50 decisive jobs still pending. Savio lowprio contention continues.\n\nHANDOFF at 1459 lines. Next tick should have the zero-shot base numbers that decide the +0.115 question.",
@@ -376,13 +383,6 @@
       "text": "# 🎯 BREAKTHROUGH — first HONEST champion-vs-base aayl numbers\n\n**All 4 aayl retry2 jobs finished. Head-to-head on the 4 truly-OOD synthetic scFvs:**\n\n| Model | aayl49 | aayl49_ML | aayl50_LC | aayl51 | aayl52_LC | **MEAN** |\n|---|---|---|---|---|---|---|\n| 🟢 **base esm2_lora** (general SKEMPI) | −0.104 | +0.088 | +0.113 | **+0.173** | **+0.168** | **+0.088** ⭐ |\n| 🔵 base abB3 (antibody-specialized) | +0.049 | +0.076 | +0.048 | +0.042 | −0.022 | +0.039 |\n| 🟡 base esm2_stab_only | −0.039 | −0.132 | +0.055 | +0.092 | +0.058 | +0.007 |\n| 🔴 **CHAMPION hybrid × abB3** | −0.043 | −0.024 | +0.018 | +0.066 | −0.004 | **+0.003** ← worst |\n\n## Two MAJOR findings\n\n1. **CHAMPION hybrid × abB3 is WORSE than its own base (+0.003 vs +0.039 Δ=−0.036)** — confirms post-training actively damages true-OOD transfer. Every insight from the last session is vindicated.\n\n2. **🏆 `interface_dpl_v2_esm2_lora` (gene…",
       "tags": [
         "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T11:18:14.968Z",
-      "text": "**Hourly tick — 🏃 first real milestone in hours:**\n\n| Status | This hour |\n|---|---|\n| Queue | **506** (no refill) |\n| refill_ood | 168 → **213/250** (+45) |\n| **aayl retry2 (champion + 2 bases)** | **ALL 3 NOW RUNNING** ← first critical jobs started |\n| RLHF | 0/200 trained |\n| abB3p retrains | 0/15 |\n\n**The critical head-to-head comparison is now running.** In ~45-60 min we'll have:\n- Champion hybrid × abB3 aayl ρ\n- Base abB3 fold1_seed0 aayl ρ (post-training started from here)\n- Base esm2_lora fold0_seed0 aayl ρ (general-binding baseline)\n\nCombined with the existing esm2_stab_only = +0.007, that's 4 data points on the only leak-free OOD axis we have.\n\nHANDOFF at 1043 lines. Next tick at `:07` should have the first post-training-on-genuine-OOD signal.",
-      "tags": [
         "model"
       ]
     }
