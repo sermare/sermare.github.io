@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-20T16:15:10Z",
+  "generated_at": "2026-04-20T16:45:15Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4552,
-    "assistant_turns": 6846,
+    "user_turns": 4567,
+    "assistant_turns": 6868,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-20T16:10:00.438Z"
+    "last_ts": "2026-04-20T16:44:25.851Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,36 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-20T16:44:25.759Z",
+      "text": "**Hourly tick — pivoted per your plan:**\n\n| Action | Status |\n|---|---|\n| Killed 122 base-variance jobs | ✅ (76 running already, can't interrupt) |\n| **#3 AUROC re-analysis** | ✅ **esm2_stab × aayl49: AUROC 0.651** — triage-useful |\n| **#4 WT-anchored re-analysis** | ✅ pooled ρ recovers +0.03–0.08 after anchoring |\n| **#5 Tail-restricted (bonus)** | ✅ **base abB3 × aayl49 tail ρ = +0.227** — first >0.2 on leak-free data |\n| **#2 MLM-marginals** | **5 jobs fired** (aayl49/49_ML/50/51/52), frozen ESM-2, ~2h each |\n| **#1 Per-target FT** | next — script TBD |\n\n## Key takeaway from reframing: we had signal, pooled Spearman was hiding it\n\n- **base abB3 f1s0 on aayl49 tail ρ = +0.227** — crosses the \"useful\" threshold\n- **base esm2_stab_only AUROC = 0.651** on the same complex — triage-capable\n- Both from EXISTING preds, zero new compute\n\n**Neither \"champion hybrid×abB3\" nor post-training help…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-20T16:43:26.191Z",
+      "text": "# 🎯 The re-analyses already found signal\n\n## #3 AUROC (binary: top 25% binders vs rest) — triage metric\n\n| Model | Complex | AUROC | Useful? |\n|---|---|---|---|\n| **base esm2_stab_only** | **aayl49_bca** | **0.651** | ✅ **above 0.6 threshold** |\n| CHAMPION hybrid×abB3 | aayl49 | 0.529 | ❌ |\n| base abB3 | aayl49 | 0.432 | ❌ (wrong direction) |\n| base esm2_lora | aayl50–52 | 0.40–0.43 | ❌ |\n\n**`esm2_stab_only` on aayl49 gets AUROC 0.651** — that's useful triage. Note same model: ρ = −0.295 raw. Classification framing reveals signal that ranking obscures.\n\n## #4 WT-anchored POOLED across 4 aayl complexes\n\n| Model | raw pooled ρ | anchored pooled ρ | Δ from anchoring |\n|---|---|---|---|\n| base abB3 f1s0 | +0.057 | **+0.093** | +0.036 |\n| base esm2_lora | −0.039 | +0.026 | +0.065 |\n| CHAMPION | −0.101 | −0.018 | +0.083 |\n| base esm2_stab | −0.141 | −0.100 | +0.041 |\n\n**Anchoring recovers +0.0…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-20T16:41:44.146Z",
+      "text": "Going. Killing the base-variance queue and starting the re-analyses + MLM pilot now.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-20T16:19:55.713Z",
+      "text": "**Hourly tick — queue refilled 56 → 122.**\n\n## The honest numbers we have\n\n| Quantity | ρ |\n|---|---|\n| Best leak-free zero-shot (single base) | **+0.116** |\n| Mean across 10 leak-free bases | +0.056 |\n| Cross-base SGD variance (σ) | ±0.03 |\n| **Subsample noise floor (σ)** | **±0.003** |\n| Post-training delta | 0 (no-op) |\n| **Usefulness threshold** | **≥ +0.3** ❌ |\n\n**Conclusion: zero-shot sequence-only antibody ΔΔG has cross-SGD base variance ±0.03 and a ceiling around ρ = +0.12 on leak-free aayl*. Nothing we've tested crosses the usefulness threshold. The \"+0.115 winner\" was a lucky base draw.**\n\n## Refill this tick\n\n72 new zero-shot aayl jobs across 5 more base pools (esmc_lora, esmc_stab_only, abonly_A2, D5, E2). Either cements the ±0.03 variance claim across architectures, or reveals one that breaks the ceiling (low prior given 10 esm2 + 10 abB3p already showed the same pattern).…",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-20T16:06:45.424Z",
       "text": "You're right. Let me state it plainly.\n\n## Nothing we have crosses the signal threshold\n\n| Metric | Our best | Usefulness threshold |\n|---|---|---|\n| Leak-free aayl* pooled | +0.06 ± 0.03 | ≥ +0.3 |\n| Best single leak-free base | +0.113 | ≥ +0.3 |\n| Best single aayl complex (aayl52_LC) | +0.179 | ≥ +0.3 |\n| \"Champion\" post-training | artifact | — |\n\n**Everything is in the noise**. ρ=0.06 means on 5 ranked mutations, the model is right ~52% of the time vs 50% random. Useless for picking antibodies.\n\n## What we actually proved vs what we hoped\n\n**Proved (boring)**:\n- Training on SKEMPI+AB-Bind, testing on AbBiBench synthetic scFvs → ρ ≈ 0\n- 4 RLHF losses, 7 MSE/rank losses, 3 data-aug strategies: all ρ ≈ 0\n- Leakage in AbBiBench inflates numbers but not enough to cross 0.3 anyway\n- val_ρ (+0.6 SKEMPI) does not predict aayl_ρ (r = +0.39, noisy)\n\n**What the field also says (FLAb2 2025, Alpha…",
@@ -349,35 +379,6 @@
       "text": "**Hourly tick — 🎯 first positive post-train signal in the entire project:**\n\n**DPO × esm2_lora = +0.082 aayl ρ (n=1, single cell)** — essentially matching the +0.088 base. All other techniques on this base so far are worse. If DPO preserves OOD at 30 seeds, **this is the first publishable \"post-training that doesn't damage OOD\" recipe**.\n\n| Status | |\n|---|---|\n| Queue | 1051 (29 R + rest PD) |\n| Running throughput | 9× improvement from removing A40 constraint |\n| DPO signal | +0.082 vs +0.088 base — nearly full preservation |\n\nNext tick: DPO confirmation at higher n + abB3p leak-free aayl numbers.\n\nHANDOFF at 1312 lines.",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T20:18:15.842Z",
-      "text": "# 🔥 FIRST POSITIVE SIGNAL — DPO × esm2_lora = +0.082 aayl ρ (n=1)!\n\n| Technique × base | n | aayl ρ | vs base esm2_lora (+0.088) |\n|---|---|---|---|\n| **dpo × esm2_lora** | 1 | **+0.082** | **Δ ≈ 0** — preserves OOD ✅ |\n| group_dro × esm2_lora | 2 | +0.048 | −0.040 |\n| ranknet × esm2_lora | 3 | +0.007 | −0.081 |\n\n**DPO on the esm2_lora base preserves nearly full OOD capability.** First post-training technique that didn't damage true OOD. Single cell so far but strong signal — the 300-cell esm2_refill2_ood array will confirm/falsify at full seed×base coverage.\n\n## Queue health (A40 constraint removed)\n\n| Pool | Count | State |\n|---|---|---|\n| e2r2_ood | 29 R + 565 PD | churning now |\n| rlhf_ood | 210 PD | queued |\n| abB3p_ood | 30 PD | queued |\n| 1080Ti refill_80 | 210 PD | partition separate |\n| retr (3 jobs × 2) | 6 PD | queued |\n\n**Total: 1051, 29+ running.** The constraint removal unb…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T19:34:21.848Z",
-      "text": "**Hourly tick — ⚡ A40 unlock:**\n\n| Metric | Before | After |\n|---|---|---|\n| Queue | 569 | **1081** |\n| Running | 3 | **28** |\n| GPU types accessible | A40 only | A40 + V100 + TITAN + K80 |\n\nChanged `--gres=gpu:A40:1` → `--gres=gpu:1` across all 17 active co_nilah lowprio sbatch scripts. Resubmitted the stalled arrays (abB3p_ood, esm2_refill2_ood, rlhf_ood, retr). Jobs immediately landed on non-A40 slots that had been sitting idle.\n\n**Expected 5-10× throughput increase** on OOD evaluation. The critical-path jobs (abB3p_ood, esm2_refill2_ood, retrieval) should start completing within the next hour.\n\nHANDOFF at 1286 lines. Next tick will have first leak-free aayl numbers.",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-19T19:34:05.355Z",
-      "text": "**✅ A40 constraint removed, queue more than doubled** (579 → 1081) and jobs IMMEDIATELY landed:\n\n| Pool | State |\n|---|---|\n| e2r2_ood | 596 PD + **4 RUNNING** ← new GPU types picked up |\n| rlhf_ood | 210 PD + **24 RUNNING** ← running on non-A40 GPUs now |\n| abB3p_ood | 30 PD (overshoot from resubmit — duplicate OOD eval will just rewrite results.json) |\n| retr jobs | 2 each PD |\n| 1080Ti refill_80 | 210 PD (separate partition, unaffected) |\n\n**The removal of `--gres=gpu:A40:1` → `--gres=gpu:1`** opened up V100/TITAN/K80 slots that were sitting idle on savio3_gpu. 28 cells now running vs the 0-3 we were stuck at for hours.",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-19T19:18:21.934Z",
-      "text": "**Hourly tick** — queue **569**, no refill.\n\n| Check | State |\n|---|---|\n| Retrieval jobs (3) | PD since last hour |\n| abB3p_ood (leak-free test) | 15 still PD |\n| esm2_refill2_ood | 300 still PD |\n| 1080Ti refill_80 | 210 still PD |\n| New aayl numbers | **none** |\n\nSavio A40 lowprio severely contested — no slots freeing up for our queue. Standing leaderboard unchanged: base esm2_lora +0.088 aayl still the sole result on leak-free data.\n\nHANDOFF at 1268 lines.",
-      "tags": [
-        "model",
-        "infra"
       ]
     }
   ]
