@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-20T03:12:52Z",
+  "generated_at": "2026-04-20T03:42:58Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4526,
-    "assistant_turns": 6801,
+    "user_turns": 4538,
+    "assistant_turns": 6823,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-20T02:21:15.476Z"
+    "last_ts": "2026-04-20T03:25:11.586Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,56 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-20T03:22:06.698Z",
+      "text": "**Done reframing.** HANDOFF at 1564 lines with the honest scope:\n\n## What's now running (41 jobs, all confirmatory)\n\n- 11 R + 5 PD abB3p_ood (completes the leak-free base-seed variance CI)\n- 5 noise-floor evals (within-base sampling noise)\n- 15 zero-shot base evals (leaky-base distribution, compare to leak-free)\n- 3 retrieval-aug jobs (one last sanity check on k-NN baseline)\n\nTotal: **~40 jobs, ~2-3h to finish**, then we stop sweeping.\n\n## What's cancelled\n~700 jobs: esm2_refill2, rlhf, pt_iter20, pt_deep, gen_deep, champ_ext, refill_80, refill_a40, pt_spam, etc. Cron killed too.\n\n## Three defensible findings for the paper\n\n1. **+0.09 ID beat over retrained SOTA** (non-overlapping 95% CIs)\n2. **Base-seed variance floor σ=0.027 on aayl** — the methodology contribution\n3. **Per-complex transfer asymmetry** — folds adjacent to training transfer; synthetic scFvs don't\n\n## What we DON'T claim…",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-20T03:21:32.768Z",
+      "text": "# Honest master table compiled. Here's the clean picture:\n\n## 1. Leak-free base-seed variance on aayl (n=10 abB3p retrains)\n\n- Mean: **+0.056** (σ=0.027)\n- 95% CI on mean: **[+0.039, +0.074]**\n- Range: **[+0.003, +0.113]** ← spread of 0.11 ρ across 10 seeds of the same architecture\n- **2σ spread: 0.054 ρ**\n\nAny claimed OOD gain ≤ **0.054 ρ is within base-seed noise**. This IS the paper headline.\n\n## 2. The \"+0.115\" post-training number in context\n\n- Post-trained (fold0_seed0 × 4 losses × 28 cells): **+0.117 ± 0.001**\n- Δ over base-mean +0.056: **+0.061 (2.29σ)**\n- But the BEST leak-free base seed reaches **+0.113** without any post-training\n- **Post-training's best = base-seed best**. Not distinguishable.\n\n## 3. ID wins (DEFENSIBLE)\n\n| Model | val ρ | 95% CI | n |\n|---|---|---|---|\n| Our **abE1** | **+0.427** | [+0.330, +0.526] | 9 |\n| Our **abB3** | **+0.391** | [+0.317, +0.469] | 12 |…",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-20T03:20:29.771Z",
+      "text": "Cron killed. Now executing the refocus — systematic bootstrap CI analysis on all OOD numbers, plus an honest master table.",
+      "tags": [
+        "result"
+      ]
+    },
+    {
+      "ts": "2026-04-20T03:20:20.685Z",
+      "text": "**Cancelled ~700 jobs.** Queue down to 41 — all confirmatory:\n\n| Running | Purpose |\n|---|---|\n| 11 abB3p_ood + 5 PD | leak-free base aayl (completes the +0.081/σ=0.025 picture) |\n| 1 retr_base_esm2_lora | retrieval k-NN baseline |\n| 1 retr_base_abB3 | retrieval on antibody base |\n| 1 retr_abB3p | retrieval on leak-free base |\n| 5 nf_abbs* | noise floor (fold0_seed0 × ABB_SAMPLE_SEED 1-5) |\n| 15 zeroshot base aayl (zs_f*s*) | additional base-seed variance data |\n\nAlso stopping the hourly cron since we don't need more sweeps.",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-20T03:19:27.435Z",
+      "text": "You're right. I'm going to stop sweeping and refocus. The data supports a good paper — just not the one I was trying to write.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-20T03:15:21.424Z",
+      "text": "**Addressing your \"any progress?\" question** — YES, major progress this hour:\n\n## 📊 The decisive experiment has partially landed\n\n**abB3p (leak-free) retrains on aayl — 7/15 cells done:**\n\n| Fold×Seed | val ρ | aayl ρ |\n|---|---|---|\n| fold0_seed0 | +0.626 | **+0.081** |\n| fold4_seed2 | +0.629 | +0.061 |\n| fold2_seed0 | +0.631 | +0.053 |\n| fold4_seed1 | +0.622 | +0.051 |\n| fold0_seed2 | +0.606 | +0.043 |\n| fold4_seed0 | +0.624 | +0.042 |\n| fold1_seed0 | +0.532 | +0.003 |\n\n**Mean +0.048, σ=0.025, range +0.003 to +0.081.**\n\n## What this confirms\n\n1. **Base-seed variance on aayl = ±0.03 ρ** (exactly the noise floor predicted)\n2. **fold0_seed0 leak-free = +0.081** ≈ original leaky esm2_lora +0.088 (Δ=0.007, noise)\n3. **fold1_seed0 = +0.003** — same architecture, different seed, 0.08 ρ swing\n4. **The \"+0.115 post-trained\" is only +0.034 above leak-free fold0_seed0** — inside the bootstrap CI…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-20T03:15:02.197Z",
+      "text": "# 🎯 FIRST LEAK-FREE AAYL NUMBERS LANDED — and they match your prediction\n\n**abB3p LEAK-FREE retrains on aayl (7/15 cells done):**\n\n| Fold×Seed | val ρ | **aayl ρ** |\n|---|---|---|\n| fold0_seed0 | +0.626 | **+0.081** |\n| fold4_seed2 | +0.629 | +0.061 |\n| fold2_seed0 | +0.631 | +0.053 |\n| fold4_seed1 | +0.622 | +0.051 |\n| fold0_seed2 | +0.606 | +0.043 |\n| fold4_seed0 | +0.624 | +0.042 |\n| fold1_seed0 | +0.532 | +0.003 |\n\n**Mean: +0.048, σ_across_bases = 0.025, range +0.003 to +0.081.** \n\n## This confirms your hypothesis\n\n- **aayl varies ±0.03–0.04 across bases** — exactly the noise floor you predicted\n- **fold0_seed0 hits +0.081** leak-free — close to the contaminated esm2_lora +0.088 we'd been comparing to\n- **fold1_seed0 hits +0.003** — same architecture, same training, different random seed, 0.08 ρ gap\n- **The \"+0.115 post-trained\" is still only +0.034 above this fold0_seed0 leak-free b…",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-20T02:18:09.024Z",
       "text": "**Hourly tick** — queue **821**, no refill.\n\nStill blocked. All 50 decisive zero-shot/noise-floor/abB3p jobs remain PD. Running: 36 e2r2_ood (more post-train base-variance data, can't falsify the hypothesis).\n\nNo new aayl numbers this hour. Priority contention continues.",
@@ -327,62 +377,6 @@
       "text": "**Hourly tick** — queue **643**, no refill needed.\n\n## 🎯 DPO/KTO/SimPO/IPO: all 4 preference losses fully measured (83 cells total)\n\n| Technique | n | aayl ρ |\n|---|---|---|\n| **kto** | 23 | **+0.002** |\n| **dpo** | 15 | **+0.000** |\n| **ipo** | 15 | −0.003 |\n| **simpo** | 30 | −0.007 |\n\n**Zero across all 4.** RLHF-family confirms the ceiling — no preference-optimization loss helps sequence-only antibody OOD.\n\n## Still pending\n- 15 abB3p_ood (leak-free base OOD — the decisive test)\n- 300 esm2_refill2_ood (10 techniques × best-base)\n- 250 1080Ti refill_80\n\n## Standing ranking unchanged\n1. 🏆 base esm2_lora (general) **+0.088**\n2. base abB3 +0.039\n3. base esm2_stab +0.007\n4. kto/dpo/ipo/simpo × abB3: ≈ 0\n5. hybrid × abB3 (\"champion\"): +0.003\n\nHANDOFF at 1207 lines. Paper story solidifying: **no post-training trick beats the untouched general base** on leak-free antibody OOD.",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T16:18:37.300Z",
-      "text": "**Hourly tick** — queue **692**, no refill.\n\n## 🎯 RLHF/DPO family VERDICT is in (42 cells)\n\n| Technique | n | aayl ρ | vs base esm2_lora (+0.088) |\n|---|---|---|---|\n| **kto** | 18 | **+0.004** | −0.084 ❌ |\n| **simpo** | 20 | **−0.010** | −0.098 ❌ |\n| **ipo** | 4 | **−0.012** | −0.100 ❌ |\n| dpo | 0 | pending | — |\n\n**Every preference-optimization loss (IPO/KTO/SimPO) scores aayl ρ ≈ 0.** No better than MSE/rank/hybrid from prior sweeps. **RLHF-family does NOT break the OOD ceiling on genuine antibody test set.**\n\n## Still pending\n\n- **15 abB3p_ood** (leak-free base OOD test — will confirm if +0.088 was leakage-inflated or real)\n- **300 esm2_refill2_ood** (10-technique sweep on esm2_lora bases)\n- 250 1080Ti refill_80\n\n## Updated aayl leaderboard\n\n| # | Config | aayl ρ |\n|---|---|---|\n| 🏆 | **base esm2_lora (general SKEMPI)** | **+0.088** |\n| 2 | base abB3 | +0.039 |\n| 3 | base esm2_stab_o…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T15:19:30.614Z",
-      "text": "**Hourly tick — 🎉 LEAK-FREE BASES ARE PUBLISHABLE:**\n\n| Check | State |\n|---|---|\n| abB3p retrains | **12/15 DONE** (val ρ +0.53 to +0.63, **mean +0.60**) |\n| Queue | **733** (+15 abB3p_ood submitted) |\n| abB3p OOD jobs | **11 queued** for AbBiBench aayl scoring |\n| RLHF progress (14 aayl cells) | simpo −0.006, kto −0.020 — no ceiling break |\n| esm2_refill2 OOD | 300 still PD |\n\n**The critical deliverable just landed:** leak-free base ckpts with val ρ +0.60 — equal to the contaminated esm2_lora baseline. These are the publishable bases.\n\n**The decisive experiment firing now:** abB3p_ood (11 jobs) will tell us aayl ρ of the leak-free bases. If aayl ≈ +0.088 (matching leaky esm2_lora), then our +0.088 OOD ceiling was **real** not inflated. If it drops to ρ ≈ 0, it was leakage-driven all along.\n\nHANDOFF at 1156 lines. Next tick will have the answer.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T15:18:58.900Z",
-      "text": "# 🎉 HUGE MILESTONE — 12 abB3p retrains finished with val ρ +0.53 to +0.63!\n\n**Leak-free retraining results** (purged manifest, skempi+abbind, 8 epochs):\n\n| Fold×Seed | val ρ | n_train |\n|---|---|---|\n| fold0_seed0 | **+0.626** | 5721 |\n| fold0_seed1 | +0.594 | 5682 |\n| fold0_seed2 | +0.606 | 5682 |\n| fold1_seed0 | +0.532 | 6336 |\n| fold1_seed1 | +0.561 | 6336 |\n| fold2_seed0 | +0.631 | 6013 |\n| fold3_seed1 | +0.579 | 7300 |\n| fold3_seed2 | +0.567 | 7300 |\n| fold4_seed0 | +0.624 | 5976 |\n| fold4_seed1 | +0.622 | 5976 |\n| fold4_seed2 | +0.629 | 6268 |\n\n**Mean val ρ ≈ +0.60** — **on par with the leaky esm2_lora base (+0.602)** and these are LEAK-FREE. 3 more still running.\n\n**These are publishable base ckpts.** Need AbBiBench OOD on them next (especially aayl* to see true OOD ρ with clean training).\n\n**RLHF so far (14/200 aayl):**\n- simpo × abB3: aayl_mean −0.006 (n=9) — no break of ceiling…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T14:19:03.830Z",
-      "text": "**Hourly tick — 🎉 breakthrough hour:**\n\n| Milestone | State |\n|---|---|\n| RLHF training | **200/200 ✅** |\n| esm2_refill2 training | **300/300 ✅** |\n| abB3p retrains | **9/15 RUNNING** 🏃 (6h to finish) |\n| New OOD eval jobs | **500 submitted** (33546282, 33546283) |\n\n**Queue**: 254 → **754** after refill.\n\n**What the next hour will tell us:**\n1. Do DPO/KTO/SimPO/IPO preference losses break the aayl ρ≈0 ceiling when applied to esm2_lora base? (the sweep tests all 4 on the proven-best backbone)\n2. Does any of the 10 techniques × esm2_lora combination beat base esm2_lora's +0.088 on aayl?\n3. abB3p retrains give us leak-free bases — first checkpoint expected ~hour 6\n\nHANDOFF at 1126 lines. Next tick at `:07`.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T14:18:16.603Z",
-      "text": "# 🎉 Major progress this hour: 500 cells trained\n\n| Array | State | New |\n|---|---|---|\n| **RLHF (DPO/KTO/SimPO/IPO)** | **200/200 TRAINED** ✅ | need OOD eval |\n| **esm2_refill2** | **300/300 TRAINED** ✅ | need OOD eval |\n| **abB3p retrains** | **9/15 RUNNING** 🏃 | ~6h to go |\n| refill_80 (1080Ti) | 238 PD, 1 R | slow |\n\nQueue: 254 — need to submit 500 OOD-eval jobs on the newly-trained cells.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T13:19:29.489Z",
-      "text": "**Hourly tick — ⚠️ discovered and fixed 515 silent failures:**\n\n| Failed array | Reason | Fix |\n|---|---|---|\n| 200 RLHF | JobLaunchFailure — `_rlhf_logs` missing at submit time | mkdir + resubmit |\n| 300 esm2_refill2 | JobLaunchFailure — `_esm2_refill2_logs` missing | mkdir + resubmit |\n| 15 abB3p retrains | `sabdab_v2` not a valid `--skempi-sources` value (no manifest.json) | drop it, use `skempi,abbind` + resubmit |\n\n**Queue**: 250 → **765** after resubmit.\n**refill_ood**: DONE (250/250). All abB3 refill cells have AbBiBench OOD.\n\nNow all critical paths are queued cleanly:\n- 200 RLHF (DPO/KTO/SimPO/IPO × 10 bases × 5 seeds)\n- 300 esm2_refill2 (10 techniques × 10 esm2_lora bases × 3 seeds) — targets our winner\n- 15 abB3p retrains (leak-free base ckpts, 6h each, **publication-critical**)\n- 250 refill_80 (1080Ti)\n\nNext tick: first RLHF / esm2_refill2 cells should start landing; abB3p ret…",
-      "tags": [
-        "error",
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T12:19:13.892Z",
-      "text": "**Hourly tick — 🎯 the aayl retry comparison landed AND queue topped up to 550.**\n\n## The real story in 4 numbers\n\n| Model | aayl ρ | Verdict |\n|---|---|---|\n| base `esm2_lora` (general SKEMPI-trained) | **+0.088** | 🏆 winner |\n| base abB3 (antibody-specialized) | +0.039 | runner-up |\n| base esm2_stab_only | +0.007 | weak |\n| CHAMPION hybrid×abB3 post-train | **+0.003** | ← post-training HURT |\n\n**Paper headline**: **\"Sequence-only antibody ΔΔG OOD peaks at ρ=+0.09 using a GENERAL binding model; antibody specialization and hybrid-loss post-training both hurt.\"**\n\n## What I submitted this tick\n\n**300-job `esm2_refill2` sweep (33543232)** — since esm2_lora is the proven-best base, I focused next-round compute on it:\n- 10 techniques (pearson/ranknet/hybrid/group_dro/cycle_aug/ipo/**dpo/kto/simpo**/rank_dist)\n- × 10 esm2_lora bases\n- × 3 seeds\n- = 300 cells on savio3_gpu\n\nThe question now: **…",
-      "tags": [
-        "result",
-        "dataset",
-        "model",
-        "infra"
       ]
     }
   ]
