@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-20T03:42:58Z",
+  "generated_at": "2026-04-20T04:13:07Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4538,
-    "assistant_turns": 6823,
+    "user_turns": 4542,
+    "assistant_turns": 6829,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-20T03:25:11.586Z"
+    "last_ts": "2026-04-20T04:12:32.857Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-20T03:58:40.361Z",
+      "text": "## Partial progress — abB3p 11/15 done, new highest-base seen\n\n| Fold×Seed | val ρ | **aayl ρ** |\n|---|---|---|\n| **fold0_seed1** | +0.594 | **+0.113** ← NEW best (n=11) |\n| fold0_seed0 | +0.626 | +0.082 |\n| fold1_seed1 | +0.561 | +0.063 |\n| fold4_seed2 | +0.629 | +0.061 |\n| fold2_seed0 | +0.631 | +0.053 |\n| fold4_seed1 | +0.622 | +0.051 |\n| fold3_seed1 | +0.579 | +0.047 |\n| fold0_seed2 | +0.606 | +0.044 |\n| fold4_seed0 | +0.624 | +0.042 |\n| fold3_seed2 | +0.567 | +0.034 |\n| fold1_seed0 | +0.532 | +0.004 |\n\n**Distribution updated:** mean **+0.054**, σ **0.026**, range **[+0.004, +0.113]** (n=11/15).\n\n## 🎯 The decisive data point just landed\n\n**fold0_seed1 leak-free base = +0.113 aayl** — *same as the post-trained \"champion\" (+0.117)*, achieved **without any post-training whatsoever.**\n\nBase-seed lottery is the whole story. The +0.117 \"post-train champion\" wasn't breaking any ceiling — it…",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-20T03:22:06.698Z",
       "text": "**Done reframing.** HANDOFF at 1564 lines with the honest scope:\n\n## What's now running (41 jobs, all confirmatory)\n\n- 11 R + 5 PD abB3p_ood (completes the leak-free base-seed variance CI)\n- 5 noise-floor evals (within-base sampling noise)\n- 15 zero-shot base evals (leaky-base distribution, compare to leak-free)\n- 3 retrieval-aug jobs (one last sanity check on k-NN baseline)\n\nTotal: **~40 jobs, ~2-3h to finish**, then we stop sweeping.\n\n## What's cancelled\n~700 jobs: esm2_refill2, rlhf, pt_iter20, pt_deep, gen_deep, champ_ext, refill_80, refill_a40, pt_spam, etc. Cron killed too.\n\n## Three defensible findings for the paper\n\n1. **+0.09 ID beat over retrained SOTA** (non-overlapping 95% CIs)\n2. **Base-seed variance floor σ=0.027 on aayl** — the methodology contribution\n3. **Per-complex transfer asymmetry** — folds adjacent to training transfer; synthetic scFvs don't\n\n## What we DON'T claim…",
@@ -370,13 +377,6 @@
       "text": "**Hourly tick** — queue **605**, no refill.\n\n| Item | State |\n|---|---|\n| **abB3p_ood** (leak-free aayl test) | 15 still PD — priority-starved |\n| esm2_refill2_ood | 300 PD |\n| RLHF aayl (122 cells) | kto +0.001, dpo **+0.000**, ipo −0.006, simpo −0.006 |\n\nRLHF fully measured — all 4 preference-optimization methods score aayl ρ ≈ 0 ± 0.007. No new winning configs. Leak-free abB3p aayl eval still blocked in queue.\n\nHANDOFF at 1222 lines.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T17:18:46.820Z",
-      "text": "**Hourly tick** — queue **643**, no refill needed.\n\n## 🎯 DPO/KTO/SimPO/IPO: all 4 preference losses fully measured (83 cells total)\n\n| Technique | n | aayl ρ |\n|---|---|---|\n| **kto** | 23 | **+0.002** |\n| **dpo** | 15 | **+0.000** |\n| **ipo** | 15 | −0.003 |\n| **simpo** | 30 | −0.007 |\n\n**Zero across all 4.** RLHF-family confirms the ceiling — no preference-optimization loss helps sequence-only antibody OOD.\n\n## Still pending\n- 15 abB3p_ood (leak-free base OOD — the decisive test)\n- 300 esm2_refill2_ood (10 techniques × best-base)\n- 250 1080Ti refill_80\n\n## Standing ranking unchanged\n1. 🏆 base esm2_lora (general) **+0.088**\n2. base abB3 +0.039\n3. base esm2_stab +0.007\n4. kto/dpo/ipo/simpo × abB3: ≈ 0\n5. hybrid × abB3 (\"champion\"): +0.003\n\nHANDOFF at 1207 lines. Paper story solidifying: **no post-training trick beats the untouched general base** on leak-free antibody OOD.",
-      "tags": [
-        "model"
       ]
     }
   ]
