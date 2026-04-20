@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-19T23:42:23Z",
+  "generated_at": "2026-04-20T00:12:26Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4511,
-    "assistant_turns": 6776,
+    "user_turns": 4517,
+    "assistant_turns": 6786,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T23:22:35.678Z"
+    "last_ts": "2026-04-19T23:48:06.034Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,28 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-19T23:48:05.945Z",
+      "text": "**Correction logged.** HANDOFF at 1442 lines with the pushback and bootstrap CI.\n\n## The math\n\n- Cell-level σ = 0.002 ← tight (but wrong metric — measures \"do different losses produce same output?\")\n- **Complex-level bootstrap σ ≈ 0.02 with 95% CI spread 0.04** ← the right noise floor\n- **My claimed +0.027 gain sits inside 1× noise floor**\n\n## What's running now (20 decisive jobs)\n\n- **15 zero-shot aayl evals** on untouched esm2_lora bases (5 folds × 3 seeds)\n- **5 noise-floor evals** on the exact fold0_seed0 ckpt with different `ABB_SAMPLE_SEED`\n\nEach job is a forward-pass only (no training) — should complete in 20-45 min per cell. By next hourly tick we'll know whether +0.115 is the base's true aayl or a post-training effect.\n\n## The bigger lesson — and your point about \"methodology contribution\"\n\nEven if outcome 3 (base-variance ±0.03) is correct, the finding *\"the FLAb2 null-result c…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-19T23:47:42.707Z",
+      "text": "# ✋ You called it. The σ=0.001 IS a tell.\n\n## Bootstrap CI on my \"winner\" (10 cells × 4 losses × fold0_seed0)\n\n- Cell-pooled ρ: **+0.117 ± 0.002** (yes, that's tight — but wrong metric)\n- **5-complex bootstrap 95% CI: [+0.096, +0.136]** — **spread 0.040 ρ**\n\nThe 95% CI overlaps the base's reported +0.088. My \"+0.027 gain\" is **statistically indistinguishable from complex-level sampling noise** on 5 complexes.\n\n## Per-complex decomposition reveals more\n\n| Complex | mean ρ across 10 cells | σ across cells |\n|---|---|---|\n| **aayl49** | **−0.027** | 0.004 |\n| aayl49_ML | +0.137 | 0.006 |\n| aayl51 | +0.155 | 0.003 |\n| aayl50_LC | +0.140 | 0.002 |\n| aayl52_LC | +0.179 | 0.003 |\n\n**σ across cells per complex: 0.002–0.006.** Four different loss families produce nearly-identical per-complex predictions. This confirms: **the model output is not moving.**\n\nThe post-training output ≈ the base outpu…",
+      "tags": [
+        "result"
+      ]
+    },
+    {
+      "ts": "2026-04-19T23:46:17.918Z",
+      "text": "You're right. σ=0.001 across IPO/SimPO/KTO/RankNet with fundamentally different gradient geometries means the post-training isn't moving the model — I was measuring base-seed variance on aayl and calling it a recipe. Let me run the decisive test now.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-19T23:19:29.741Z",
       "text": "**Hourly tick — 🎯 recipe refined:**\n\n| Finding | Detail |\n|---|---|\n| Progress | 130/300 esm2_refill2 cells done |\n| Winning base | **fold0_seed0** ← ALL 4 techniques land at +0.115–0.118 |\n| Loss invariance | ranknet=ipo=simpo=kto ± 0.003 on this base |\n| Reproducibility | σ = 0.001 across seeds |\n| Gap to base zero-shot | +0.088 → +0.115 (**+0.027**) |\n\n**The recipe is base-specific, not technique-specific.** Any loss function on `fold0_seed0` unlocks +0.03 aayl gain. Other folds show nothing.\n\n**The decisive pending experiment**: 30 abB3p_ood jobs (leak-free retrain of fold0_seed0). If its aayl is +0.088 and post-training pushes it to +0.115, we have a clean publishable claim.\n\nHANDOFF at 1407 lines. Queue 927.",
@@ -360,27 +382,6 @@
     {
       "ts": "2026-04-19T10:18:09.632Z",
       "text": "**Hourly tick** — queue **551**, no refill needed.\n\n| Delta | This hour |\n|---|---|\n| refill_ood AbBiBench | 126 → **168/250** (+42, pace doubled) |\n| RLHF trained | still 0/200 |\n| abB3p retrains | still 0/15 |\n| aayl retry2 | 3 PD |\n\n**Only new data:** another +42 refill_ood cells evaluated. No new winning configs, no new aayl* numbers. Critical-path jobs (RLHF + retrains + aayl retries) still queued behind higher-priority users on savio_lowprio.\n\nHANDOFF appended. Queue healthy, loop continues.",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-19T09:18:29.096Z",
-      "text": "**Hourly tick** — queue **593**, no refill needed.\n\n| Delta | This hour |\n|---|---|\n| refill_ood AbBiBench eval | 101 → **126/250** (+25) |\n| RLHF cells trained | 0/200 |\n| abB3p retrains | 0/15 |\n| aayl retry2 | 3 PD |\n| New OOD numbers | none |\n\n**Lowprio saturation dragging.** ~25 cells/hour throughput — at this rate refill_ood finishes in ~5h, and the critical path (abB3p retrains + RLHF) requires 6h+ of uninterrupted A40 time once slots free.\n\nHANDOFF at 1003 lines. Nothing to do but wait.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T08:18:24.039Z",
-      "text": "**Hourly tick** — queue **618**, no refill needed.\n\n| Change this hour | State |\n|---|---|\n| refill_ood AbBiBench eval | 70 → **101/250** (+31 cells) |\n| RLHF trained | 0 (200 still PD) |\n| abB3p retrains | 0 (15 still PD) |\n| aayl retry2 | 3 still PD |\n\n**No new OOD numbers this hour.** Savio lowprio contested — our jobs queued behind higher-priority users. `esm2_stab_only` remains the only cell with aayl* ρ (+0.007).\n\nHANDOFF at 980 lines. Next tick at `:07` — RLHF and abB3p retrains should start landing as lowprio slots free.",
-      "tags": [
-        "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-19T07:18:31.276Z",
-      "text": "**Hourly tick** — queue healthy at **650** (> 200 threshold, no refill needed).\n\n| Check | State |\n|---|---|\n| refill_80 (1080Ti) | 250 PD — contested partition, no slots freeing up |\n| rlhf (DPO/KTO/SimPO/IPO) | 200 PD — awaiting A40 slots |\n| refill_ood (AbBiBench eval) | 23 R + 158 PD, **70/250 done** — slow churn on savio_lowprio |\n| aayl retry2 (champion + 2 bases) | 3 PD |\n| abB3p retrains (leak-free bases) | 15 PD, 6h runtime once they start |\n\n**New OOD results this hour**: zero. Only `esm2_stab_only` has aayl numbers (+0.007 mean).\n\nEverything we submitted last hour (RLHF sweep, abB3p retrains, aayl retries) is still PENDING due to savio_lowprio contention — other users are burning A40 quota. Low-prio is lowest priority by design.\n\nHANDOFF at 962 lines. Next tick at `:07` should catch the first RLHF cell completions and start abB3p retrains.",
       "tags": [
         "infra"
       ]
