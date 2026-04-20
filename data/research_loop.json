@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-20T15:45:04Z",
+  "generated_at": "2026-04-20T16:15:10Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4550,
-    "assistant_turns": 6842,
+    "user_turns": 4552,
+    "assistant_turns": 6846,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-20T15:41:52.718Z"
+    "last_ts": "2026-04-20T16:10:00.438Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,21 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-20T16:06:45.424Z",
+      "text": "You're right. Let me state it plainly.\n\n## Nothing we have crosses the signal threshold\n\n| Metric | Our best | Usefulness threshold |\n|---|---|---|\n| Leak-free aayl* pooled | +0.06 ± 0.03 | ≥ +0.3 |\n| Best single leak-free base | +0.113 | ≥ +0.3 |\n| Best single aayl complex (aayl52_LC) | +0.179 | ≥ +0.3 |\n| \"Champion\" post-training | artifact | — |\n\n**Everything is in the noise**. ρ=0.06 means on 5 ranked mutations, the model is right ~52% of the time vs 50% random. Useless for picking antibodies.\n\n## What we actually proved vs what we hoped\n\n**Proved (boring)**:\n- Training on SKEMPI+AB-Bind, testing on AbBiBench synthetic scFvs → ρ ≈ 0\n- 4 RLHF losses, 7 MSE/rank losses, 3 data-aug strategies: all ρ ≈ 0\n- Leakage in AbBiBench inflates numbers but not enough to cross 0.3 anyway\n- val_ρ (+0.6 SKEMPI) does not predict aayl_ρ (r = +0.39, noisy)\n\n**What the field also says (FLAb2 2025, Alpha…",
+      "tags": [
+        "result",
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-20T16:04:32.917Z",
+      "text": "Good angle. Ties directly to our ±0.03 finding — the entire \"±0.03 base-variance, no method signal\" result is measured on survivor-biased data (SAbDab, AB-Bind, AbBiBench). All those are winners. **We haven't tested a single model on \"reject vs accept\"** because the negative data didn't exist at scale.\n\n## How this changes our analysis\n\nOur leak-free baseline says: **on positive-only antibody ΔΔG, ρ ≈ +0.06 ± 0.03 is the ceiling.** That's weak, but it's STILL measuring \"can we tell apart survivors from other survivors?\" The more useful clinical question is: **can we tell survivors from rejects?** — and we have no signal on that.\n\nKyDab reframes the problem from **regression on binding ΔΔG** (what we've been doing) to **classification on developability** (what actually kills clones). The feature space might be different enough that our ESM-2 LoRA backbone fails in interesting new ways — o…",
+      "tags": [
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-20T15:38:46.881Z",
       "text": "**Hourly tick — 🎯 decisive result landed:**\n\n## The answer is outcome #3 (you predicted 30% prior)\n\n| Metric | Value |\n|---|---|\n| Leak-free bases evaluated zero-shot | 10 |\n| **aayl range across bases** | **+0.003 to +0.113** (spread 0.110) |\n| Mean ± σ | +0.056 ± 0.027 |\n| 95% CI on mean | [+0.040, +0.072] |\n| val_ρ vs aayl_ρ (Pearson) | +0.39 |\n\n**The \"+0.115 post-training win\" is fully explained by base-seed variance.** Leak-free fold0_seed1 zero-shot already gets +0.113. No post-training needed.\n\n## Queue refill (60 base-variance expansion jobs)\n\n- 15 esm2_lora zero-shot (resubmitted, 2h30m time)\n- 5 noise-floor (same ckpt, different ABB_SAMPLE_SEED)\n- ~40 more: all esm2_stab_only + abonly_B3 + abonly_F1 fold×seed variants\n\nQueue was 0 (300 esm2r2 training jobs FAILED post-A40-removal, likely output-dir conflict on resubmit). Refilled with base-variance probe — the science-correct n…",
@@ -363,20 +378,6 @@
       "tags": [
         "model",
         "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-19T19:04:38.906Z",
-      "text": "**Hourly tick — 🚀 pivoting out of the zero-shot paradigm**\n\n**Agreement on your framing** — ρ≈0 on aayl is the FLAb2 ceiling *for our regime*. The three directions you picked all break out of it.\n\n## Action this tick\n\n| Task | State |\n|---|---|\n| **Backed up leak-free bases** (639 MB) | ✅ `abB3_purged_LEAKFREE_20260419.tar.gz` |\n| **Backed up top post-train cells** (291 MB) | ✅ `post_train_rlhf_20260419.tar.gz` |\n| **Total backup footprint** | 60 GB across 14 archives |\n| **Retrieval-aug script** (~150 LOC) | ✅ `scripts/eval_retrieval_aayl.py` — mean-pool ESM-2 heavy chains, k-NN, exp(−d/τ) weighted labels |\n| **3 retrieval eval jobs submitted** | base_esm2_lora, base_abB3, abB3p_f0s0 (leak-free) |\n\n## Queue status\n\n| Pool | Count |\n|---|---|\n| Queue total | **579** (no refill) |\n| 300 esm2_refill2_ood | PD |\n| 210 1080Ti refill_80 | PD |\n| 50 rlhf_ood | PD+R |\n| 15 abB3p_ood | PD |\n| **…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T19:03:12.039Z",
-      "text": "Backups secured. Now implementing retrieval-augmented inference (the ~50-LOC free-lunch win) since it can run independently of all the pending jobs.",
-      "tags": [
-        "note"
       ]
     }
   ]
