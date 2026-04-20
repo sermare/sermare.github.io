@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-20T02:12:46Z",
+  "generated_at": "2026-04-20T02:42:50Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4523,
-    "assistant_turns": 6796,
+    "user_turns": 4526,
+    "assistant_turns": 6801,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-20T01:21:18.521Z"
+    "last_ts": "2026-04-20T02:21:15.476Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-20T02:18:09.024Z",
+      "text": "**Hourly tick** — queue **821**, no refill.\n\nStill blocked. All 50 decisive zero-shot/noise-floor/abB3p jobs remain PD. Running: 36 e2r2_ood (more post-train base-variance data, can't falsify the hypothesis).\n\nNo new aayl numbers this hour. Priority contention continues.",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-20T01:18:11.833Z",
       "text": "**Hourly tick** — queue **868**, no refill needed.\n\n| Check | State |\n|---|---|\n| 15 zero-shot base aayl | still 0 landed |\n| 5 noise-floor evals | still 0 landed |\n| 30 abB3p_ood | still PD |\n| esm2_refill2 OOD | 34 R + 358 PD |\n\nAll 50 decisive jobs blocked in priority queue. Savio lowprio contention. No new aayl numbers this hour.\n\nHANDOFF appended briefly.",
@@ -376,14 +383,6 @@
         "dataset",
         "model",
         "infra"
-      ]
-    },
-    {
-      "ts": "2026-04-19T12:18:23.968Z",
-      "text": "# 🎯 BREAKTHROUGH — first HONEST champion-vs-base aayl numbers\n\n**All 4 aayl retry2 jobs finished. Head-to-head on the 4 truly-OOD synthetic scFvs:**\n\n| Model | aayl49 | aayl49_ML | aayl50_LC | aayl51 | aayl52_LC | **MEAN** |\n|---|---|---|---|---|---|---|\n| 🟢 **base esm2_lora** (general SKEMPI) | −0.104 | +0.088 | +0.113 | **+0.173** | **+0.168** | **+0.088** ⭐ |\n| 🔵 base abB3 (antibody-specialized) | +0.049 | +0.076 | +0.048 | +0.042 | −0.022 | +0.039 |\n| 🟡 base esm2_stab_only | −0.039 | −0.132 | +0.055 | +0.092 | +0.058 | +0.007 |\n| 🔴 **CHAMPION hybrid × abB3** | −0.043 | −0.024 | +0.018 | +0.066 | −0.004 | **+0.003** ← worst |\n\n## Two MAJOR findings\n\n1. **CHAMPION hybrid × abB3 is WORSE than its own base (+0.003 vs +0.039 Δ=−0.036)** — confirms post-training actively damages true-OOD transfer. Every insight from the last session is vindicated.\n\n2. **🏆 `interface_dpl_v2_esm2_lora` (gene…",
-      "tags": [
-        "dataset",
-        "model"
       ]
     }
   ]
