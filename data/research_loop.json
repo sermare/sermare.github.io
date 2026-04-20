@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-20T00:12:26Z",
+  "generated_at": "2026-04-20T00:42:36Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4517,
-    "assistant_turns": 6786,
+    "user_turns": 4520,
+    "assistant_turns": 6791,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-19T23:48:06.034Z"
+    "last_ts": "2026-04-20T00:21:15.280Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-20T00:18:09.839Z",
+      "text": "**Hourly tick** — queue **914**, no refill.\n\n| Check | State |\n|---|---|\n| 15 zero-shot base aayl evals | **0 landed** — priority-starved |\n| 5 noise-floor evals | 0 landed |\n| 30 abB3p_ood (leak-free baseline) | 30 PD |\n| esm2_refill2 | 33 R + 404 PD |\n\n**No new aayl numbers this hour.** All 50 decisive jobs still pending. Savio lowprio contention continues.\n\nHANDOFF at 1459 lines. Next tick should have the zero-shot base numbers that decide the +0.115 question.",
+      "tags": [
+        "infra"
+      ]
+    },
     {
       "ts": "2026-04-19T23:48:05.945Z",
       "text": "**Correction logged.** HANDOFF at 1442 lines with the pushback and bootstrap CI.\n\n## The math\n\n- Cell-level σ = 0.002 ← tight (but wrong metric — measures \"do different losses produce same output?\")\n- **Complex-level bootstrap σ ≈ 0.02 with 95% CI spread 0.04** ← the right noise floor\n- **My claimed +0.027 gain sits inside 1× noise floor**\n\n## What's running now (20 decisive jobs)\n\n- **15 zero-shot aayl evals** on untouched esm2_lora bases (5 folds × 3 seeds)\n- **5 noise-floor evals** on the exact fold0_seed0 ckpt with different `ABB_SAMPLE_SEED`\n\nEach job is a forward-pass only (no training) — should complete in 20-45 min per cell. By next hourly tick we'll know whether +0.115 is the base's true aayl or a post-training effect.\n\n## The bigger lesson — and your point about \"methodology contribution\"\n\nEven if outcome 3 (base-variance ±0.03) is correct, the finding *\"the FLAb2 null-result c…",
@@ -377,13 +384,6 @@
       "text": "**Hourly tick — 🏃 first real milestone in hours:**\n\n| Status | This hour |\n|---|---|\n| Queue | **506** (no refill) |\n| refill_ood | 168 → **213/250** (+45) |\n| **aayl retry2 (champion + 2 bases)** | **ALL 3 NOW RUNNING** ← first critical jobs started |\n| RLHF | 0/200 trained |\n| abB3p retrains | 0/15 |\n\n**The critical head-to-head comparison is now running.** In ~45-60 min we'll have:\n- Champion hybrid × abB3 aayl ρ\n- Base abB3 fold1_seed0 aayl ρ (post-training started from here)\n- Base esm2_lora fold0_seed0 aayl ρ (general-binding baseline)\n\nCombined with the existing esm2_stab_only = +0.007, that's 4 data points on the only leak-free OOD axis we have.\n\nHANDOFF at 1043 lines. Next tick at `:07` should have the first post-training-on-genuine-OOD signal.",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T10:18:09.632Z",
-      "text": "**Hourly tick** — queue **551**, no refill needed.\n\n| Delta | This hour |\n|---|---|\n| refill_ood AbBiBench | 126 → **168/250** (+42, pace doubled) |\n| RLHF trained | still 0/200 |\n| abB3p retrains | still 0/15 |\n| aayl retry2 | 3 PD |\n\n**Only new data:** another +42 refill_ood cells evaluated. No new winning configs, no new aayl* numbers. Critical-path jobs (RLHF + retrains + aayl retries) still queued behind higher-priority users on savio_lowprio.\n\nHANDOFF appended. Queue healthy, loop continues.",
-      "tags": [
-        "infra"
       ]
     }
   ]
