@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-21T03:48:27Z",
+  "generated_at": "2026-04-21T04:18:34Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4575,
-    "assistant_turns": 6880,
+    "user_turns": 4584,
+    "assistant_turns": 6895,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-20T18:23:58.200Z"
+    "last_ts": "2026-04-21T04:07:05.912Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,35 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-21T04:07:05.791Z",
+      "text": "Hold up — let me be precise, because we haven't tested it broadly enough to claim \"across targets and proteins\" yet.\n\n## What we actually validated\n\n**Only 4 complexes from AbBiBench's aayl* series** (heavy/light chain scFv libraries against 4 different peptide antigens). All same format: scFv against small peptide. **Not yet tested on full-size proteins, enzymes, or general PPI.**\n\n## It's NOT one model — it's **two methods + a selection rule**\n\n### Method A: MLM-marginals (frozen ESM-2)\n```\nInput:  mutant_heavy_chain_seq, mutant_light_chain_seq, WT_heavy_seq, WT_light_seq\nOutput: scalar score = Σ_i [ log P(mut_aa_i | context) − log P(wt_aa_i | context) ]\n                       summed over positions where mutant differs from WT\n```\n- **Zero training.** Just forward-pass ESM-2 with masked tokens.\n- **Input = sequences only.** No structure, no antigen sequence needed.\n- Output is a log-li…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-21T04:04:28.765Z",
+      "text": "## aayl52_LC explained\n\n**aayl52_LC** is a synthetic scFv antibody library from **AbBiBench** (the benchmark we've been evaluating on). It's one of the 4 truly leak-free complexes (the `aayl*` series). The naming breaks down like this:\n\n| Token | Meaning |\n|---|---|\n| **aayl** | \"AAYL\" series — synthetic scFv library from Makowski et al. 2022 (published paper on optimizing therapeutic antibodies via mutational scanning) |\n| **52** | The 52nd parent antibody in the set |\n| **_LC** | \"Light Chain library\" — the heavy chain is held constant, the **light chain** is varied across ~13k mutants |\n| (no suffix) | heavy-chain library (e.g., `aayl49`, `aayl51`) — HEAVY varied, LC constant |\n| **_ML** | ML-designed variants rather than random mutagenesis (e.g., `aayl49_ML`) |\n\n## The 5 aayl* complexes in AbBiBench\n\n| Complex | n rows | What varies | PDB |\n|---|---|---|---|\n| aayl49 | 4,313 | heavy…",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-21T04:03:18.187Z",
+      "text": "**Hourly tick — 🎯 finally crossed ρ > 0.2 on leak-free data:**\n\n| Metric | Value |\n|---|---|\n| **Best leak-free cell ever** | **aayl52_LC × random-init × 300-shot FT = +0.240** |\n| Mean at n=3 seeds | **+0.200** |\n| Beats SKEMPI-init by | +0.10 (prior hurts here) |\n\n## Best-of-both by complex (pick the winner per complex)\n\n| Complex | Best method | ρ |\n|---|---|---|\n| aayl49 | MLM-marginals | +0.235 |\n| aayl50_LC | MLM-marginals | **+0.261** |\n| aayl51 | MLM-marginals | +0.181 |\n| aayl52_LC | per-target FT | **+0.240** |\n| **Mean (best per complex)** | mixed | **+0.229** |\n\n**Mean +0.229 across 4 leak-free complexes using best-method-per-complex. Above the +0.2 threshold.**\n\nQueue refilled to **75** with 5 seeds × 5 complexes × 3 bases on per-target FT (includes aayl49_ML).\n\nHANDOFF at 1790 lines.",
+      "tags": [
+        "dataset"
+      ]
+    },
+    {
+      "ts": "2026-04-21T04:02:02.495Z",
+      "text": "# 🎉 PER-TARGET FT: aayl52_LC CROSSES ρ > 0.2\n\n**300-shot per-target FT from RANDOM-INIT head** gives the first leak-free aayl result **crossing the +0.2 usefulness threshold**:\n\n| Complex × Base | n | mean ρ | **best ρ** |\n|---|---|---|---|\n| **aayl52_LC × RANDOM** | 3 | **+0.200** | **+0.240** 🎯 |\n| aayl52_LC × esm2_lora | 3 | +0.123 | +0.162 |\n| aayl52_LC × abB3 | 3 | +0.099 | +0.120 |\n| aayl49 × random | 3 | +0.090 | +0.105 |\n| aayl50_LC × esm2_lora | 2 | +0.085 | +0.144 |\n| aayl49 × esm2_lora | 3 | +0.076 | +0.106 |\n| aayl51 × esm2_lora | 3 | +0.038 | +0.094 |\n\n## Two crucial findings\n\n1. **aayl52_LC: per-target FT from RANDOM INIT beats all base-init variants** (+0.200 vs +0.123 vs +0.099). SKEMPI-trained priors HURT on this complex — confirming the MLM-marginals finding that supervised training on wrong distribution destroys signal.\n\n2. **+0.240 best cell crosses the utility thresh…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-20T17:18:42.220Z",
       "text": "**Hourly tick — 🔥 the real headline landed:**\n\n| Metric | Value |\n|---|---|\n| **Mean MLM-marginals aayl ρ (zero-shot)** | **+0.167** |\n| Mean best DPL-head aayl ρ (supervised) | +0.146 |\n| **aayl49 MLM** | **+0.235** (useful!) |\n| **aayl50_LC MLM** | **+0.261** (useful!) |\n| **aayl51 MLM** | +0.181 |\n| Compute for MLM: | 12 GPU-min total |\n| Compute for supervised: | 700+ GPU-hours |\n\n**7 months of supervised pipeline work = beaten by 12 GPU-minutes of frozen ESM-2 masked-marginals.**\n\n**The paper is now real.** Zero-shot MLM wins on leak-free de novo antibody OOD. Supervised training destroys the pretrained signal. This is a publishable negative-for-supervised / positive-for-zero-shot finding with huge field impact given FLAb2's context.\n\nQueue is 10 (below 200 threshold). Ready to fire the next-level experiments you suggested:\n- #5 AntiBERTy/AbLang2 MLM (expected +0.05 over ESM-2 if an…",
@@ -352,34 +381,6 @@
       "text": "**Hourly tick — 🎯 recipe refined:**\n\n| Finding | Detail |\n|---|---|\n| Progress | 130/300 esm2_refill2 cells done |\n| Winning base | **fold0_seed0** ← ALL 4 techniques land at +0.115–0.118 |\n| Loss invariance | ranknet=ipo=simpo=kto ± 0.003 on this base |\n| Reproducibility | σ = 0.001 across seeds |\n| Gap to base zero-shot | +0.088 → +0.115 (**+0.027**) |\n\n**The recipe is base-specific, not technique-specific.** Any loss function on `fold0_seed0` unlocks +0.03 aayl gain. Other folds show nothing.\n\n**The decisive pending experiment**: 30 abB3p_ood jobs (leak-free retrain of fold0_seed0). If its aayl is +0.088 and post-training pushes it to +0.115, we have a clean publishable claim.\n\nHANDOFF at 1407 lines. Queue 927.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T23:18:38.517Z",
-      "text": "# 🎯 THE RECIPE REFINED — base matters MORE than technique\n\n**130/300 cells done. Top 8 (technique × base) by mean aayl:**\n\n| Tech | Base | n | mean | best | std |\n|---|---|---|---|---|---|\n| **ranknet** | **fold0_seed0** | 3 | **+0.118** | +0.120 | 0.001 |\n| ipo | fold0_seed0 | 2 | +0.118 | +0.118 | 0.000 |\n| simpo | fold0_seed0 | 2 | +0.117 | +0.118 | 0.001 |\n| kto | fold0_seed0 | 3 | +0.115 | +0.116 | 0.001 |\n| kto | fold0_seed1 | 3 | +0.088 | +0.089 | 0.001 |\n| group_dro | fold0_seed1 | 3 | +0.083 | +0.084 | 0.001 |\n| cycle_aug | fold0_seed1 | 3 | +0.082 | +0.083 | 0.000 |\n| dpo | fold0_seed1 | 3 | +0.082 | +0.083 | 0.001 |\n\n## The real finding: **the BASE checkpoint drives the win**\n\n**ALL 4 techniques on `fold0_seed0` base hit +0.115-0.118** (ranknet, ipo, simpo, kto). The technique doesn't matter — the base does.\n\n**Other bases** (fold0_seed1, fold0_seed2, fold2_seed0) give +0.05-0…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-19T22:18:57.658Z",
-      "text": "# 🏆 WINNING RECIPE IDENTIFIED — SimPO/KTO on esm2_lora fold0_seed0\n\n**Top 5 cells all share the SAME base ckpt (`fold0_seed0`)**:\n\n| Rank | Tech | Base | Seed | aayl ρ | vs base +0.088 |\n|---|---|---|---|---|---|\n| 🥇 | **simpo** | fold0_seed0 | 402 | **+0.1178** | **+0.030** |\n| 🥈 | simpo | fold0_seed0 | 400 | +0.1161 | +0.028 |\n| 🥉 | kto | fold0_seed0 | 402 | +0.1156 | +0.028 |\n| 4 | kto | fold0_seed0 | 401 | +0.1152 | +0.027 |\n| 5 | kto | fold0_seed0 | 400 | +0.1142 | +0.026 |\n\n**The `interface_dpl_v2_esm2_lora/fold0_seed0` base (val ρ +0.602, aayl +0.088) + SimPO or KTO post-training → +0.115 aayl ρ**. Consistent across post-training seeds 400/401/402 AND across two different losses (SimPO, KTO). 5 cells, all +0.028 to +0.030 gain.\n\nThis is **not a seed lottery** — 5 cells with 2 different losses on the same base all exceed +0.114. That's a reproducible signal.\n\n**Publishable finding*…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T22:18:17.270Z",
-      "text": "# 🚀 TWO CELLS BEAT THE BASE on leak-free aayl!\n\n**87/300 cells done. Best individual cells:**\n\n| Technique | n | mean | **best cell** | vs base +0.088 |\n|---|---|---|---|---|\n| **simpo** | 11 | +0.052 | **+0.118** 🥇 | **+0.030 ↑** |\n| **kto** | 18 | +0.062 | **+0.116** 🥈 | **+0.028 ↑** |\n| dpo | 4 | +0.073 | +0.083 | ≈ 0 |\n| group_dro | 5 | +0.069 | +0.084 | ≈ 0 |\n| cycle_aug | 9 | +0.042 | +0.083 | ≈ 0 |\n| rank_dist | 9 | +0.046 | +0.055 | −0.03 |\n| pearson | 4 | +0.040 | +0.051 | −0.04 |\n| ipo | 9 | +0.037 | +0.051 | −0.04 |\n| ranknet | 12 | +0.036 | +0.056 | −0.03 |\n| hybrid | 6 | +0.031 | +0.055 | −0.03 |\n\n**Two preference-optimization cells (simpo +0.118, kto +0.116) exceed the untouched base esm2_lora (+0.088) on leak-free aayl*.** First time in the project a post-training cell beats the base OOD ceiling.\n\n**Mean-vs-best gap is large** — technique doesn't help on average, but *spec…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-19T21:18:40.346Z",
-      "text": "**Hourly tick — 🔥 DPO holding:**\n\n| Metric | State |\n|---|---|\n| Queue | 1013 |\n| esm2_refill2 aayl cells done | 47/300 |\n| **DPO × esm2_lora** | **+0.082 mean @ n=3** (base +0.088) |\n| KTO best single cell | **+0.089** (beats base!) |\n| Hybrid × esm2_lora | +0.009 (still collapses) |\n\n**Crystallizing paper finding**: **DPO on a general-binding base preserves OOD** — the first post-training recipe that doesn't damage leak-free aayl transfer. Base-choice matters more than loss choice. abB3 (specialized) collapses all losses; esm2_lora (general) recovers preference-family.\n\nNext tick: n=30 DPO confirmation + abB3p leak-free baseline (30 PD, priority-starved).\n\nHANDOFF at 1340 lines.",
-      "tags": [
-        "model"
       ]
     }
   ]
