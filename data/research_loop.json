@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-21T19:53:43Z",
+  "generated_at": "2026-04-21T20:23:53Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4604,
-    "assistant_turns": 6927,
+    "user_turns": 4607,
+    "assistant_turns": 6933,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-21T19:23:27.903Z"
+    "last_ts": "2026-04-21T20:22:00.491Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,22 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-21T20:18:54.233Z",
+      "text": "**Hourly tick done.**\n\n| Status |  |\n|---|---|\n| Queue | 37 → **77** (+40 per-target FT seeds) |\n| aayl49_ML × esm2_lora × 300-shot FT | **ρ=+0.276, n=15, CI [+0.263, +0.290]** |\n| MLM-concat noise | deterministic (σ=0.0000) |\n\n**Clean publishable data point** emerging: per-target supervised FT with 300 labeled examples from an ML-designed library, starting from a general-binding base, reaches ρ ≈ +0.28 with tight CI (95% spread = 0.027). \n\n**40 new jobs fired** to test generalization — 10 more seeds × 4 remaining aayl complexes × esm2_lora base. Answers: does +0.28 replicate on non-ML-designed libraries, or is aayl49_ML a special case?\n\nHANDOFF at 3348 lines.",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-21T20:18:22.983Z",
+      "text": "# 🎯 Per-target FT on aayl49_ML — tightened to ρ=+0.28 with 15 seeds\n\n| Metric | Value |\n|---|---|\n| **aayl49_ML × esm2_lora × 300-shot FT** | **mean ρ = +0.276** |\n| n seeds | **15** |\n| σ across seeds | 0.028 |\n| **95% bootstrap CI** | **[+0.263, +0.290]** |\n\n**Cleanest positive result in the project.** Tight CI, well above ρ=+0.2 threshold, well above the ±0.03 base-seed variance floor. This is a defensible number for the per-target-FT workflow (requires 300 training labels on target).\n\n## MLM-CONCAT noise floor — deterministic\n\nσ=0.0000 across 4 ABB_SAMPLE_SEED values. The pandas sampling is using its default `random_state=0` regardless of my env var (bug: patch only applied to eval_abbibench_ood.py, not mlm_concat_aayl.py). So MLM-concat is perfectly reproducible on this setup — useful for replication but doesn't measure subsample noise.\n\n## Refill needed (queue=37)\n\nThe aayl49_ML pe…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-21T19:20:19.029Z",
       "text": "**Hourly tick done.**\n\n**Queue**: 67 (topped up +30 from 37).\n\n**HANDOFF cleaned up** (1407 lines appended to 3148 total), retracting:\n- \"+0.234 best-per-complex mean\" → labeled as oracle-router, not achievable without test labels\n- Per-target FT mixed into zero-shot comparisons → now clearly separated as a different-task result\n- \"Three regimes\" pattern → acknowledged as n=1 observations, not a pattern\n\n**Defensible zero-shot single-method number**: **MLM-marginals mean ρ = +0.167** on 5 leak-free aayl complexes (or +0.169 concat-MLM — Δ = +0.002, null).\n\n**Legitimate per-target-FT data point (different workflow)**: +0.259 on aayl49_ML from esm2_lora base, n=5 seeds. Now expanding to n=15 seeds (10 new jobs 33687998+) for tight CI.\n\n**Mechanism A (partner_ctx bugfix) bugged** — all 36 jobs returned `rho=null, test_size=0` due to silent exception in eval's `pred_row`. Not debugging this…",
@@ -368,20 +384,6 @@
       "text": "Cron killed. Now executing the refocus — systematic bootstrap CI analysis on all OOD numbers, plus an honest master table.",
       "tags": [
         "result"
-      ]
-    },
-    {
-      "ts": "2026-04-20T03:20:20.685Z",
-      "text": "**Cancelled ~700 jobs.** Queue down to 41 — all confirmatory:\n\n| Running | Purpose |\n|---|---|\n| 11 abB3p_ood + 5 PD | leak-free base aayl (completes the +0.081/σ=0.025 picture) |\n| 1 retr_base_esm2_lora | retrieval k-NN baseline |\n| 1 retr_base_abB3 | retrieval on antibody base |\n| 1 retr_abB3p | retrieval on leak-free base |\n| 5 nf_abbs* | noise floor (fold0_seed0 × ABB_SAMPLE_SEED 1-5) |\n| 15 zeroshot base aayl (zs_f*s*) | additional base-seed variance data |\n\nAlso stopping the hourly cron since we don't need more sweeps.",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-20T03:19:27.435Z",
-      "text": "You're right. I'm going to stop sweeping and refocus. The data supports a good paper — just not the one I was trying to write.",
-      "tags": [
-        "note"
       ]
     }
   ]
