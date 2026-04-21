@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-21T21:54:37Z",
+  "generated_at": "2026-04-21T22:24:53Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4610,
-    "assistant_turns": 6939,
+    "user_turns": 4615,
+    "assistant_turns": 6948,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-21T21:22:08.878Z"
+    "last_ts": "2026-04-21T22:24:34.334Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,22 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-21T22:21:26.684Z",
+      "text": "**Hourly tick — critical methodological update:**\n\n| Method | Mean | **95% CI (5-complex bootstrap)** |\n|---|---|---|\n| MLM-concat | +0.169 | **[+0.088, +0.237]** |\n| MLM-separate | +0.167 | [+0.083, +0.234] |\n| Per-target FT × esm2_lora | +0.118 | [+0.061, +0.202] |\n\n**All three CIs overlap.** The +0.05 \"MLM beats per-target FT\" difference I claimed an hour ago is **statistically indistinguishable** at n=5 complexes — cross-complex σ ≈ 0.08 dominates.\n\n**Honest minimum-detectable-effect on this benchmark**: ~0.075 ρ. Any claimed improvement below that is noise.\n\n## Queue refill (24 jobs)\n\nFired MLM-marginals + MLM-concat on the other **12 AbBiBench complexes** (1mlc, 1n8z, 3gbn, 4d5_her2, etc.). These are LEAKED so not directly publishable as OOD, but:\n- Add 12 complex-level points to tighten cross-complex CI (5 → 17 complexes)\n- Tell us if MLM \"sees\" leakage as inflated ρ on those comp…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-21T22:20:45.261Z",
+      "text": "# 🎯 Cross-complex bootstrap CIs — methods are statistically indistinguishable\n\n| Method | Mean | 95% CI (5-complex bootstrap) | CI spread |\n|---|---|---|---|\n| MLM-concat | +0.169 | **[+0.088, +0.237]** | 0.149 |\n| MLM-separate | +0.167 | [+0.083, +0.234] | 0.152 |\n| Per-target FT × esm2_lora | +0.118 | [+0.061, +0.202] | 0.141 |\n\n**All three 95% CIs overlap substantially.** At n=5 complexes with per-complex σ ≈ 0.08, the complex-level noise dominates any method-level effect. We literally **cannot distinguish MLM from per-target FT at the +0.03-0.05 level of method differences.**\n\n**Critical honest reframing**: \n- Cross-complex bootstrap CI of our best method is [+0.088, +0.237]\n- **Any reported improvement below 0.075 ρ is noise** on this 5-complex benchmark\n- The aayl49_ML per-target FT +0.28 is ABOVE the upper CI bound — real outlier, but single complex\n- The +0.02 Δ between MLM-conca…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-21T21:19:03.023Z",
       "text": "**Hourly tick** — queue **37**.\n\n## The clean story after this round of evidence\n\n**On 5 leak-free aayl complexes:**\n\n| Method | Mean ρ | Rank |\n|---|---|---|\n| **MLM-concat (frozen ESM-2)** | **+0.169** | 🥇 |\n| **MLM-marginals (frozen ESM-2)** | +0.167 | 🥈 |\n| Per-target FT × esm2_lora (300 labels) | +0.118 | worse |\n| Per-target FT × random init | ~+0.07 | worst |\n\n**Per-target FT underperforms zero-shot MLM by −0.05 ρ on average.** Only wins on aayl49_ML (+0.28 vs MLM +0.01), which is a Makowski et al. ML-designed variant library — likely measuring \"can our model recover their model's design landscape,\" not genuine generalization.\n\n**Revised paper thesis:**\n1. Zero-shot sequence-only antibody ΔΔG OOD ceiling: **+0.17 ρ** on this benchmark\n2. Supervised per-target FT **does not improve** over zero-shot (net −0.05)\n3. Antigen concatenation into ESM input is null here (constant 14-mer an…",
@@ -368,20 +384,6 @@
     {
       "ts": "2026-04-20T04:13:29.310Z",
       "text": "Fresh data just landed — the picture is now complete and clean.\n\n# The full story in 3 numbers\n\n## 1. Noise floor on same ckpt (3/5 cells)\n`fold0_seed0 × ABB_SAMPLE_SEED ∈ {3,4,5}` = +0.122, +0.117, +0.122 → **σ=0.003** (subsample noise only)\n\n## 2. Zero-shot base-seed variance (12/15 cells)\n| Fold×Seed | aayl ρ |\n|---|---|\n| **fold0_seed0** | **+0.116** |\n| fold0_seed1 | +0.079 |\n| fold3_seed1 | +0.065 |\n| fold0_seed2 | +0.053 |\n| fold2_seed0 | +0.046 |\n| … | … |\n| fold2_seed2 | **−0.005** |\n\n- mean **+0.042**, σ **0.033**, range **[−0.005, +0.116]**\n\n## 3. Post-training effect — **confirmed NULL**\n\n| Measurement | aayl ρ |\n|---|---|\n| fold0_seed0 zero-shot | **+0.116** |\n| fold0_seed0 × DPO/KTO/SimPO/IPO post-train (28 cells) | **+0.117 ± 0.001** |\n| **Δ from post-training** | **+0.001** |\n\n**The original \"+0.088 base vs +0.117 post-trained = +0.027 gain\" was a measurement artifact.**…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-20T03:58:40.361Z",
-      "text": "## Partial progress — abB3p 11/15 done, new highest-base seen\n\n| Fold×Seed | val ρ | **aayl ρ** |\n|---|---|---|\n| **fold0_seed1** | +0.594 | **+0.113** ← NEW best (n=11) |\n| fold0_seed0 | +0.626 | +0.082 |\n| fold1_seed1 | +0.561 | +0.063 |\n| fold4_seed2 | +0.629 | +0.061 |\n| fold2_seed0 | +0.631 | +0.053 |\n| fold4_seed1 | +0.622 | +0.051 |\n| fold3_seed1 | +0.579 | +0.047 |\n| fold0_seed2 | +0.606 | +0.044 |\n| fold4_seed0 | +0.624 | +0.042 |\n| fold3_seed2 | +0.567 | +0.034 |\n| fold1_seed0 | +0.532 | +0.004 |\n\n**Distribution updated:** mean **+0.054**, σ **0.026**, range **[+0.004, +0.113]** (n=11/15).\n\n## 🎯 The decisive data point just landed\n\n**fold0_seed1 leak-free base = +0.113 aayl** — *same as the post-trained \"champion\" (+0.117)*, achieved **without any post-training whatsoever.**\n\nBase-seed lottery is the whole story. The +0.117 \"post-train champion\" wasn't breaking any ceiling — it…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-20T03:22:06.698Z",
-      "text": "**Done reframing.** HANDOFF at 1564 lines with the honest scope:\n\n## What's now running (41 jobs, all confirmatory)\n\n- 11 R + 5 PD abB3p_ood (completes the leak-free base-seed variance CI)\n- 5 noise-floor evals (within-base sampling noise)\n- 15 zero-shot base evals (leaky-base distribution, compare to leak-free)\n- 3 retrieval-aug jobs (one last sanity check on k-NN baseline)\n\nTotal: **~40 jobs, ~2-3h to finish**, then we stop sweeping.\n\n## What's cancelled\n~700 jobs: esm2_refill2, rlhf, pt_iter20, pt_deep, gen_deep, champ_ext, refill_80, refill_a40, pt_spam, etc. Cron killed too.\n\n## Three defensible findings for the paper\n\n1. **+0.09 ID beat over retrained SOTA** (non-overlapping 95% CIs)\n2. **Base-seed variance floor σ=0.027 on aayl** — the methodology contribution\n3. **Per-complex transfer asymmetry** — folds adjacent to training transfer; synthetic scFvs don't\n\n## What we DON'T claim…",
       "tags": [
         "note"
       ]
