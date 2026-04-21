@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-21T18:53:24Z",
+  "generated_at": "2026-04-21T19:23:33Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4598,
-    "assistant_turns": 6916,
+    "user_turns": 4604,
+    "assistant_turns": 6927,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-21T18:33:46.115Z"
+    "last_ts": "2026-04-21T19:23:27.903Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,22 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-21T19:20:19.029Z",
+      "text": "**Hourly tick done.**\n\n**Queue**: 67 (topped up +30 from 37).\n\n**HANDOFF cleaned up** (1407 lines appended to 3148 total), retracting:\n- \"+0.234 best-per-complex mean\" → labeled as oracle-router, not achievable without test labels\n- Per-target FT mixed into zero-shot comparisons → now clearly separated as a different-task result\n- \"Three regimes\" pattern → acknowledged as n=1 observations, not a pattern\n\n**Defensible zero-shot single-method number**: **MLM-marginals mean ρ = +0.167** on 5 leak-free aayl complexes (or +0.169 concat-MLM — Δ = +0.002, null).\n\n**Legitimate per-target-FT data point (different workflow)**: +0.259 on aayl49_ML from esm2_lora base, n=5 seeds. Now expanding to n=15 seeds (10 new jobs 33687998+) for tight CI.\n\n**Mechanism A (partner_ctx bugfix) bugged** — all 36 jobs returned `rho=null, test_size=0` due to silent exception in eval's `pred_row`. Not debugging this…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-21T19:19:11.018Z",
+      "text": "# Mechanism A bug — all jobs returned null\n\n**Scripting bug**: all 36 `per_target_ft_with_partner.py` jobs completed but produced `per_target_rho=null` / `test_size=0`. The test-set `pred_row(row)` is silently throwing exceptions on every test row (try/except swallowing). Training step worked (loss converged), eval pass fails. Bug is in the partner_ctx passthrough for eval — probably tensor-shape mismatch when batch-dim is introduced for `head.forward_site`.\n\n**Not debugging mechanism A further this tick** — the honest mechanism B result (null on identical-antigen benchmark) already answered the question; the A/B distinction matters mainly if we had a diverse-antigen benchmark. Will revisit when I set up SKEMPI/AB-Bind.\n\n# HANDOFF cleanup — honest framing per your critique",
+      "tags": [
+        "result",
+        "dataset"
+      ]
+    },
     {
       "ts": "2026-04-21T18:33:46.115Z",
       "text": "Yes, that lands much better — and you're right on all three critiques. Let me internalize them:\n\n## Where I was sloppy\n\n1. **\"Best-per-complex mean +0.234\" is an oracle router.** You need the test labels to pick the winning method per complex. No single method achieves this, so it's not a real number — it's a ceiling that assumes perfect method selection. The honest single-method zero-shot number stays at **MLM mean +0.167** (or +0.169 for concat-MLM). I conflated \"ceiling\" with \"performance.\"\n\n2. **Per-target FT is a different task.** 300 labeled binding measurements on the target complex ≠ zero-shot. It's the AlphaBind workflow — useful if wet lab data exists on the target, irrelevant if you're trying to predict before any measurements. Reporting the +0.259 in the same table as the zero-shot numbers was a category error.\n\n3. **\"Three regimes\" from n=1 complex each is not a pattern.** a…",
@@ -366,21 +382,6 @@
       "text": "You're right. I'm going to stop sweeping and refocus. The data supports a good paper — just not the one I was trying to write.",
       "tags": [
         "note"
-      ]
-    },
-    {
-      "ts": "2026-04-20T03:15:21.424Z",
-      "text": "**Addressing your \"any progress?\" question** — YES, major progress this hour:\n\n## 📊 The decisive experiment has partially landed\n\n**abB3p (leak-free) retrains on aayl — 7/15 cells done:**\n\n| Fold×Seed | val ρ | aayl ρ |\n|---|---|---|\n| fold0_seed0 | +0.626 | **+0.081** |\n| fold4_seed2 | +0.629 | +0.061 |\n| fold2_seed0 | +0.631 | +0.053 |\n| fold4_seed1 | +0.622 | +0.051 |\n| fold0_seed2 | +0.606 | +0.043 |\n| fold4_seed0 | +0.624 | +0.042 |\n| fold1_seed0 | +0.532 | +0.003 |\n\n**Mean +0.048, σ=0.025, range +0.003 to +0.081.**\n\n## What this confirms\n\n1. **Base-seed variance on aayl = ±0.03 ρ** (exactly the noise floor predicted)\n2. **fold0_seed0 leak-free = +0.081** ≈ original leaky esm2_lora +0.088 (Δ=0.007, noise)\n3. **fold1_seed0 = +0.003** — same architecture, different seed, 0.08 ρ swing\n4. **The \"+0.115 post-trained\" is only +0.034 above leak-free fold0_seed0** — inside the bootstrap CI…",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-20T03:15:02.197Z",
-      "text": "# 🎯 FIRST LEAK-FREE AAYL NUMBERS LANDED — and they match your prediction\n\n**abB3p LEAK-FREE retrains on aayl (7/15 cells done):**\n\n| Fold×Seed | val ρ | **aayl ρ** |\n|---|---|---|\n| fold0_seed0 | +0.626 | **+0.081** |\n| fold4_seed2 | +0.629 | +0.061 |\n| fold2_seed0 | +0.631 | +0.053 |\n| fold4_seed1 | +0.622 | +0.051 |\n| fold0_seed2 | +0.606 | +0.043 |\n| fold4_seed0 | +0.624 | +0.042 |\n| fold1_seed0 | +0.532 | +0.003 |\n\n**Mean: +0.048, σ_across_bases = 0.025, range +0.003 to +0.081.** \n\n## This confirms your hypothesis\n\n- **aayl varies ±0.03–0.04 across bases** — exactly the noise floor you predicted\n- **fold0_seed0 hits +0.081** leak-free — close to the contaminated esm2_lora +0.088 we'd been comparing to\n- **fold1_seed0 hits +0.003** — same architecture, same training, different random seed, 0.08 ρ gap\n- **The \"+0.115 post-trained\" is still only +0.034 above this fold0_seed0 leak-free b…",
-      "tags": [
-        "model"
       ]
     }
   ]
