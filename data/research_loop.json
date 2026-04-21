@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-21T18:23:14Z",
+  "generated_at": "2026-04-21T18:53:24Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4597,
-    "assistant_turns": 6915,
+    "user_turns": 4598,
+    "assistant_turns": 6916,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-21T18:21:50.339Z"
+    "last_ts": "2026-04-21T18:33:46.115Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-21T18:33:46.115Z",
+      "text": "Yes, that lands much better — and you're right on all three critiques. Let me internalize them:\n\n## Where I was sloppy\n\n1. **\"Best-per-complex mean +0.234\" is an oracle router.** You need the test labels to pick the winning method per complex. No single method achieves this, so it's not a real number — it's a ceiling that assumes perfect method selection. The honest single-method zero-shot number stays at **MLM mean +0.167** (or +0.169 for concat-MLM). I conflated \"ceiling\" with \"performance.\"\n\n2. **Per-target FT is a different task.** 300 labeled binding measurements on the target complex ≠ zero-shot. It's the AlphaBind workflow — useful if wet lab data exists on the target, irrelevant if you're trying to predict before any measurements. Reporting the +0.259 in the same table as the zero-shot numbers was a category error.\n\n3. **\"Three regimes\" from n=1 complex each is not a pattern.** a…",
+      "tags": [
+        "error"
+      ]
+    },
     {
       "ts": "2026-04-21T18:18:43.055Z",
       "text": "**Hourly tick — key findings update:**\n\n| Finding | Status |\n|---|---|\n| Mechanism B (concat-MLM) mean Δ | **+0.002 (null)** — as expected with identical antigen |\n| Mechanism B per-complex | 3 improve (+0.02-0.03), 2 degrade (−0.02-0.03) |\n| **aayl49_ML × per-target FT × esm2_lora** | **+0.259 (n=5)** — new strong result |\n| **Best-per-complex mean across 5 aayl** | **+0.234** |\n| Mechanism A (partner_ctx) | still running, ~1h out |\n\n## Takeaway\n\n- **ML-designed libraries** (aayl49_ML) favor **per-target supervised FT** (+0.26)\n- **Random libraries** (aayl49/50/51) favor **MLM-marginals** (+0.18 to +0.26)\n- **Light-chain libraries** (aayl52_LC) favor **random-init per-target FT** (+0.19)\n\nThree distinct method-match regimes on the 5 aayl variants.\n\n**Still missing the decisive validation**: SKEMPI/AB-Bind with real antigen diversity. That's the next priority after mechanism A lands.\n\nQu…",
@@ -374,13 +381,6 @@
       "text": "# 🎯 FIRST LEAK-FREE AAYL NUMBERS LANDED — and they match your prediction\n\n**abB3p LEAK-FREE retrains on aayl (7/15 cells done):**\n\n| Fold×Seed | val ρ | **aayl ρ** |\n|---|---|---|\n| fold0_seed0 | +0.626 | **+0.081** |\n| fold4_seed2 | +0.629 | +0.061 |\n| fold2_seed0 | +0.631 | +0.053 |\n| fold4_seed1 | +0.622 | +0.051 |\n| fold0_seed2 | +0.606 | +0.043 |\n| fold4_seed0 | +0.624 | +0.042 |\n| fold1_seed0 | +0.532 | +0.003 |\n\n**Mean: +0.048, σ_across_bases = 0.025, range +0.003 to +0.081.** \n\n## This confirms your hypothesis\n\n- **aayl varies ±0.03–0.04 across bases** — exactly the noise floor you predicted\n- **fold0_seed0 hits +0.081** leak-free — close to the contaminated esm2_lora +0.088 we'd been comparing to\n- **fold1_seed0 hits +0.003** — same architecture, same training, different random seed, 0.08 ρ gap\n- **The \"+0.115 post-trained\" is still only +0.034 above this fold0_seed0 leak-free b…",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-20T02:18:09.024Z",
-      "text": "**Hourly tick** — queue **821**, no refill.\n\nStill blocked. All 50 decisive zero-shot/noise-floor/abB3p jobs remain PD. Running: 36 e2r2_ood (more post-train base-variance data, can't falsify the hypothesis).\n\nNo new aayl numbers this hour. Priority contention continues.",
-      "tags": [
-        "note"
       ]
     }
   ]
