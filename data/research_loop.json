@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-22T03:28:27Z",
+  "generated_at": "2026-04-22T03:58:49Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4634,
-    "assistant_turns": 6978,
+    "user_turns": 4637,
+    "assistant_turns": 6981,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-22T03:17:49.658Z"
+    "last_ts": "2026-04-22T03:34:02.039Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-22T03:30:53.205Z",
+      "text": "**Hourly tick.** Queue 0 → **26**.\n\nBootstrap: 130 cells, n=10/complex. **|ρ| pooled = +0.294, 95% CI [+0.193, +0.411]** — stable at 3 decimal places across 2 rounds of added seeds.\n\nThe key number has converged. Refilled with 26 more jobs (seeds 11-12) for final n=12.",
+      "tags": [
+        "result"
+      ]
+    },
     {
       "ts": "2026-04-22T02:18:26.842Z",
       "text": "**Hourly tick.** Queue 0 → **26**.\n\nBootstrap now at n=8/complex (104 cells total). **|ρ| pooled = +0.293, 95% CI [+0.195, +0.411]** — stable. Refilled with 26 more jobs (seeds 9-10) to push n=10.\n\nHANDOFF appended one line.",
@@ -377,14 +384,6 @@
       "text": "# 🔥 THE HEAD IS DESTROYING SIGNAL — frozen ESM-2 MLM WINS\n\n**Completed in 15 min total. Zero training.**\n\n## MLM-marginals vs best DPL-head (leak-free aayl)\n\n| Complex | MLM (frozen ESM-2) | Best DPL head | Δ |\n|---|---|---|---|\n| **aayl49** | **+0.235** | +0.138 (abB3) | **+0.097** |\n| aayl49_ML | +0.010 | +0.137 | −0.127 |\n| **aayl50_LC** | **+0.261** | +0.113 (esm2_lora) | **+0.148** |\n| **aayl51** | **+0.181** | +0.173 (esm2_lora) | +0.008 |\n| aayl52_LC | +0.150 | +0.168 | −0.018 |\n| **MEAN** | **+0.167** | +0.146 | +0.02 |\n\n**Zero-shot MLM scoring beats every trained variant on 3 of 5 complexes.** aayl50_LC jumps from +0.113 → +0.261 and aayl49 from +0.138 → +0.235 — **crossing ρ = +0.2 usefulness threshold** on both.\n\n**The regression head + SKEMPI supervised signal is ACTIVELY destroying the backbone's natural ranking capacity on novel antibodies.** Meier et al.'s 2021 finding rep…",
       "tags": [
         "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-20T16:44:25.759Z",
-      "text": "**Hourly tick — pivoted per your plan:**\n\n| Action | Status |\n|---|---|\n| Killed 122 base-variance jobs | ✅ (76 running already, can't interrupt) |\n| **#3 AUROC re-analysis** | ✅ **esm2_stab × aayl49: AUROC 0.651** — triage-useful |\n| **#4 WT-anchored re-analysis** | ✅ pooled ρ recovers +0.03–0.08 after anchoring |\n| **#5 Tail-restricted (bonus)** | ✅ **base abB3 × aayl49 tail ρ = +0.227** — first >0.2 on leak-free data |\n| **#2 MLM-marginals** | **5 jobs fired** (aayl49/49_ML/50/51/52), frozen ESM-2, ~2h each |\n| **#1 Per-target FT** | next — script TBD |\n\n## Key takeaway from reframing: we had signal, pooled Spearman was hiding it\n\n- **base abB3 f1s0 on aayl49 tail ρ = +0.227** — crosses the \"useful\" threshold\n- **base esm2_stab_only AUROC = 0.651** on the same complex — triage-capable\n- Both from EXISTING preds, zero new compute\n\n**Neither \"champion hybrid×abB3\" nor post-training help…",
-      "tags": [
-        "result",
         "model"
       ]
     }
