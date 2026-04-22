@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-22T01:57:41Z",
+  "generated_at": "2026-04-22T02:27:56Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4630,
-    "assistant_turns": 6971,
+    "user_turns": 4633,
+    "assistant_turns": 6976,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-22T01:21:52.618Z"
+    "last_ts": "2026-04-22T02:21:33.811Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-22T02:18:26.842Z",
+      "text": "**Hourly tick.** Queue 0 → **26**.\n\nBootstrap now at n=8/complex (104 cells total). **|ρ| pooled = +0.293, 95% CI [+0.195, +0.411]** — stable. Refilled with 26 more jobs (seeds 9-10) to push n=10.\n\nHANDOFF appended one line.",
+      "tags": [
+        "result"
+      ]
+    },
     {
       "ts": "2026-04-22T01:18:45.954Z",
       "text": "**Hourly tick.** Queue 0 → **39**.\n\n**Bootstrap confirmed reproducibility**: per-complex subsample σ ≈ 0.012 across 13 AbBiBench complexes (mean of 5 seeds each). The ρ=+0.29 |ρ| pooled estimate is stable.\n\n**Publishable finding, tightened**:\n> *Zero-shot ESM-2 MLM-concat (antigen + H + L in a single input) achieves mean |ρ| = +0.29 (95% CI [+0.20, +0.41]) across 13 AbBiBench antibody-antigen complexes. Per-complex subsample noise σ = 0.012; cross-complex σ = 0.20 dominates. Four complexes have benchmark-level inverted binding_score labels (consistent across methods tested). Zero-shot frozen ESM-2 beats all 808 supervised post-training cells at 0.5% the compute.*\n\nHANDOFF at 3485 lines. Refilled with 39 more bootstrap jobs (seeds 6-8) to push per-complex n to 8.",
@@ -376,14 +383,6 @@
     {
       "ts": "2026-04-20T16:44:25.759Z",
       "text": "**Hourly tick — pivoted per your plan:**\n\n| Action | Status |\n|---|---|\n| Killed 122 base-variance jobs | ✅ (76 running already, can't interrupt) |\n| **#3 AUROC re-analysis** | ✅ **esm2_stab × aayl49: AUROC 0.651** — triage-useful |\n| **#4 WT-anchored re-analysis** | ✅ pooled ρ recovers +0.03–0.08 after anchoring |\n| **#5 Tail-restricted (bonus)** | ✅ **base abB3 × aayl49 tail ρ = +0.227** — first >0.2 on leak-free data |\n| **#2 MLM-marginals** | **5 jobs fired** (aayl49/49_ML/50/51/52), frozen ESM-2, ~2h each |\n| **#1 Per-target FT** | next — script TBD |\n\n## Key takeaway from reframing: we had signal, pooled Spearman was hiding it\n\n- **base abB3 f1s0 on aayl49 tail ρ = +0.227** — crosses the \"useful\" threshold\n- **base esm2_stab_only AUROC = 0.651** on the same complex — triage-capable\n- Both from EXISTING preds, zero new compute\n\n**Neither \"champion hybrid×abB3\" nor post-training help…",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-20T16:43:26.191Z",
-      "text": "# 🎯 The re-analyses already found signal\n\n## #3 AUROC (binary: top 25% binders vs rest) — triage metric\n\n| Model | Complex | AUROC | Useful? |\n|---|---|---|---|\n| **base esm2_stab_only** | **aayl49_bca** | **0.651** | ✅ **above 0.6 threshold** |\n| CHAMPION hybrid×abB3 | aayl49 | 0.529 | ❌ |\n| base abB3 | aayl49 | 0.432 | ❌ (wrong direction) |\n| base esm2_lora | aayl50–52 | 0.40–0.43 | ❌ |\n\n**`esm2_stab_only` on aayl49 gets AUROC 0.651** — that's useful triage. Note same model: ρ = −0.295 raw. Classification framing reveals signal that ranking obscures.\n\n## #4 WT-anchored POOLED across 4 aayl complexes\n\n| Model | raw pooled ρ | anchored pooled ρ | Δ from anchoring |\n|---|---|---|---|\n| base abB3 f1s0 | +0.057 | **+0.093** | +0.036 |\n| base esm2_lora | −0.039 | +0.026 | +0.065 |\n| CHAMPION | −0.101 | −0.018 | +0.083 |\n| base esm2_stab | −0.141 | −0.100 | +0.041 |\n\n**Anchoring recovers +0.0…",
       "tags": [
         "result",
         "model"
