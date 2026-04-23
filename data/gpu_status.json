@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-23T21:45:44Z",
+  "timestamp": "2026-04-23T22:45:53Z",
   "nodes": [
     {
       "partition": "savio2_1080ti",
@@ -120,21 +120,21 @@
     },
     {
       "partition": "savio3_gpu",
-      "gpu_type": "TITAN",
-      "gpus_per_node": 2,
-      "num_nodes": 1,
-      "total_gpus": 2,
-      "state": "mixed",
-      "nodelist": "n0175.savio3"
-    },
-    {
-      "partition": "savio3_gpu",
       "gpu_type": "A40",
       "gpus_per_node": 2,
       "num_nodes": 4,
       "total_gpus": 8,
       "state": "mixed",
       "nodelist": "n0215.savio3,n0216.savio3,n0217.savio3,n0262.savio3"
+    },
+    {
+      "partition": "savio3_gpu",
+      "gpu_type": "A40",
+      "gpus_per_node": 4,
+      "num_nodes": 1,
+      "total_gpus": 4,
+      "state": "mixed",
+      "nodelist": "n0277.savio3"
     },
     {
       "partition": "savio3_gpu",
@@ -183,6 +183,15 @@
     },
     {
       "partition": "savio3_gpu",
+      "gpu_type": "TITAN",
+      "gpus_per_node": 2,
+      "num_nodes": 1,
+      "total_gpus": 2,
+      "state": "idle",
+      "nodelist": "n0175.savio3"
+    },
+    {
+      "partition": "savio3_gpu",
       "gpu_type": "A40",
       "gpus_per_node": 2,
       "num_nodes": 5,
@@ -194,10 +203,10 @@
       "partition": "savio3_gpu",
       "gpu_type": "A40",
       "gpus_per_node": 4,
-      "num_nodes": 4,
-      "total_gpus": 16,
+      "num_nodes": 3,
+      "total_gpus": 12,
       "state": "idle",
-      "nodelist": "n0277.savio3,n0278.savio3,n0279.savio3,n0281.savio3"
+      "nodelist": "n0278.savio3,n0279.savio3,n0281.savio3"
     },
     {
       "partition": "savio4_gpu",
@@ -216,6 +225,15 @@
       "total_gpus": 32,
       "state": "drained",
       "nodelist": "n0134.savio4,n0140.savio4,n0144.savio4,n0145.savio4"
+    },
+    {
+      "partition": "savio4_gpu",
+      "gpu_type": "A5000",
+      "gpus_per_node": 8,
+      "num_nodes": 9,
+      "total_gpus": 72,
+      "state": "mixed",
+      "nodelist": "n0120.savio4,n0125.savio4,n0128.savio4,n0130.savio4,n0131.savio4,n0132.savio4,n0137.savio4,n0141.savio4,n0142.savio4"
     },
     {
       "partition": "savio4_gpu",
@@ -239,10 +257,10 @@
       "partition": "savio4_gpu",
       "gpu_type": "A5000",
       "gpus_per_node": 8,
-      "num_nodes": 21,
-      "total_gpus": 168,
+      "num_nodes": 12,
+      "total_gpus": 96,
       "state": "allocated",
-      "nodelist": "n0120.savio4,n0121.savio4,n0122.savio4,n0123.savio4,n0124.savio4,n0125.savio4,n0126.savio4,n0127.savio4,n0128.savio4,n0129.savio4,n0130.savio4,n0131.savio4,n0132.savio4,n0133.savio4,n0135.savio4,n0136.savio4,n0137.savio4,n0138.savio4,n0141.savio4,n0142.savio4,n0143.savio4"
+      "nodelist": "n0121.savio4,n0122.savio4,n0123.savio4,n0124.savio4,n0126.savio4,n0127.savio4,n0129.savio4,n0133.savio4,n0135.savio4,n0136.savio4,n0138.savio4,n0143.savio4"
     },
     {
       "partition": "savio4_gpu",
@@ -272,7 +290,7 @@
       "gpu_type": "A40",
       "total": 52,
       "in_use": 16,
-      "mixed": 8,
+      "mixed": 12,
       "free": 34,
       "unavailable": 2,
       "down": 0,
@@ -296,7 +314,7 @@
       "gpu_type": "TITAN",
       "total": 36,
       "in_use": 0,
-      "mixed": 18,
+      "mixed": 16,
       "free": 25,
       "unavailable": 11,
       "down": 0,
@@ -319,9 +337,9 @@
       "partition": "savio4_gpu",
       "gpu_type": "A5000",
       "total": 208,
-      "in_use": 168,
-      "mixed": 0,
-      "free": 0,
+      "in_use": 96,
+      "mixed": 72,
+      "free": 72,
       "unavailable": 40,
       "down": 8,
       "drained": 32,
@@ -354,6 +372,17 @@
   ],
   "running_jobs": [
     {
+      "job_id": "33718232",
+      "name": "llama_ft",
+      "user": "jmcavanagh",
+      "partition": "savio3_gpu",
+      "nodelist": "n0277.savio3",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A40:4",
+      "elapsed": "27:37",
+      "time_limit": "3-00:00:00"
+    },
+    {
       "job_id": "33714072",
       "name": "OOD_Jupyter",
       "user": "jmcavanagh",
@@ -361,7 +390,7 @@
       "nodelist": "n0280.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:4",
-      "elapsed": "3:03:09",
+      "elapsed": "4:03:18",
       "time_limit": "2-08:00:00"
     },
     {
@@ -372,7 +401,7 @@
       "nodelist": "n0209.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "13:33:21",
+      "elapsed": "14:33:30",
       "time_limit": "2-00:00:00"
     },
     {
@@ -383,19 +412,19 @@
       "nodelist": "n0215.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "1-16:39:57",
+      "elapsed": "1-17:40:06",
       "time_limit": "2-00:00:00"
     },
     {
-      "job_id": "33714157",
+      "job_id": "33717856",
       "name": "test",
       "user": "kushalnimkar",
       "partition": "savio3_gpu",
       "nodelist": "n0005.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:1",
-      "elapsed": "2:54:16",
-      "time_limit": "4:00:00"
+      "elapsed": "45:32",
+      "time_limit": "3:00:00"
     },
     {
       "job_id": "33712399",
@@ -405,7 +434,7 @@
       "nodelist": "n0264.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "3:58:46",
+      "elapsed": "4:58:55",
       "time_limit": "3-00:00:00"
     },
     {
@@ -416,7 +445,7 @@
       "nodelist": "n0211.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "3:25:35",
+      "elapsed": "4:25:44",
       "time_limit": "1-00:00:00"
     },
     {
@@ -427,7 +456,7 @@
       "nodelist": "n0209.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "2:50:13",
+      "elapsed": "3:50:22",
       "time_limit": "1-00:00:00"
     },
     {
@@ -438,7 +467,7 @@
       "nodelist": "n0210.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "3:28:36",
+      "elapsed": "4:28:45",
       "time_limit": "1-00:00:00"
     },
     {
@@ -449,7 +478,7 @@
       "nodelist": "n0216.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "1-14:08:44",
+      "elapsed": "1-15:08:53",
       "time_limit": "2-07:00:00"
     },
     {
@@ -460,7 +489,7 @@
       "nodelist": "n0212.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "1-00:20:35",
+      "elapsed": "1-01:20:44",
       "time_limit": "3-00:00:00"
     },
     {
@@ -471,18 +500,18 @@
       "nodelist": "n0212.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "1-00:20:35",
+      "elapsed": "1-01:20:44",
       "time_limit": "3-00:00:00"
     },
     {
-      "job_id": "33712516",
+      "job_id": "33712564",
       "name": "two_enc_ddg",
       "user": "sergiomar10",
       "partition": "savio3_gpu",
       "nodelist": "n0213.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "0:33",
+      "elapsed": "0:01",
       "time_limit": "30:00"
     },
     {
@@ -493,7 +522,7 @@
       "nodelist": "n0136.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:GTX2080TI:1",
-      "elapsed": "2:55:17",
+      "elapsed": "3:55:26",
       "time_limit": "2-00:00:00"
     },
     {
@@ -504,7 +533,7 @@
       "nodelist": "n0160.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:GTX2080TI:1",
-      "elapsed": "2:56:48",
+      "elapsed": "3:56:57",
       "time_limit": "2-00:00:00"
     },
     {
@@ -515,7 +544,7 @@
       "nodelist": "n0210.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "15:42:17",
+      "elapsed": "16:42:26",
       "time_limit": "2-07:00:00"
     },
     {
@@ -526,7 +555,7 @@
       "nodelist": "n0211.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "16:17:57",
+      "elapsed": "17:18:06",
       "time_limit": "2-07:00:00"
     },
     {
@@ -537,19 +566,8 @@
       "nodelist": "n0213.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "15:30:16",
+      "elapsed": "16:30:25",
       "time_limit": "2-07:00:00"
-    },
-    {
-      "job_id": "33717016",
-      "name": "OOD_Jupyter",
-      "user": "cupidisabellachen",
-      "partition": "savio3_gpu",
-      "nodelist": "n0158.savio3",
-      "state": "RUNNING",
-      "tres": "gres:gpu:GTX2080TI:1",
-      "elapsed": "29:24",
-      "time_limit": "4:00:00"
     },
     {
       "job_id": "33712068",
@@ -559,7 +577,7 @@
       "nodelist": "n0217.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:2",
-      "elapsed": "4:01:47",
+      "elapsed": "5:01:56",
       "time_limit": "1-00:00:00"
     },
     {
@@ -570,85 +588,52 @@
       "nodelist": "n0262.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:2",
-      "elapsed": "4:01:47",
+      "elapsed": "5:01:56",
       "time_limit": "1-00:00:00"
     },
     {
-      "job_id": "33714915_2",
+      "job_id": "33718552",
+      "name": "ac0-pilot",
+      "user": "wanzhoulei",
+      "partition": "savio3_gpu",
+      "nodelist": "n0215.savio3",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A40:1",
+      "elapsed": "2:04",
+      "time_limit": "20:00"
+    },
+    {
+      "job_id": "33718293_0",
       "name": "generate_wt_main_lineage_early_reps.sh",
       "user": "daniellewinsohn",
       "partition": "savio3_gpu",
       "nodelist": "n0144.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:1",
-      "elapsed": "2:19:26",
+      "elapsed": "19:16",
       "time_limit": "1-16:00:00"
     },
     {
-      "job_id": "33714915_3",
-      "name": "generate_wt_main_lineage_early_reps.sh",
-      "user": "daniellewinsohn",
-      "partition": "savio3_gpu",
-      "nodelist": "n0144.savio3",
-      "state": "RUNNING",
-      "tres": "gres:gpu:1",
-      "elapsed": "2:19:26",
-      "time_limit": "1-16:00:00"
-    },
-    {
-      "job_id": "33714915_4",
+      "job_id": "33718293_1",
       "name": "generate_wt_main_lineage_early_reps.sh",
       "user": "daniellewinsohn",
       "partition": "savio3_gpu",
       "nodelist": "n0145.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:1",
-      "elapsed": "2:19:26",
+      "elapsed": "19:16",
       "time_limit": "1-16:00:00"
     },
     {
-      "job_id": "33714915_6",
-      "name": "generate_wt_main_lineage_early_reps.sh",
-      "user": "daniellewinsohn",
+      "job_id": "33718488",
+      "name": "S12",
+      "user": "xiaohuizhang",
       "partition": "savio3_gpu",
-      "nodelist": "n0175.savio3",
+      "nodelist": "n0158.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:1",
-      "elapsed": "2:19:26",
-      "time_limit": "1-16:00:00"
-    },
-    {
-      "job_id": "33714915_8",
-      "name": "generate_wt_main_lineage_early_reps.sh",
-      "user": "daniellewinsohn",
-      "partition": "savio3_gpu",
-      "nodelist": "n0216.savio3",
-      "state": "RUNNING",
-      "tres": "gres:gpu:1",
-      "elapsed": "2:19:26",
-      "time_limit": "1-16:00:00"
-    },
-    {
-      "job_id": "33712818",
-      "name": "uiu_77",
-      "user": "yoonjae_park",
-      "partition": "savio3_gpu",
-      "nodelist": "n0145.savio3",
-      "state": "RUNNING",
-      "tres": "gres:gpu:1",
-      "elapsed": "3:39:09",
-      "time_limit": "3-00:00:00"
-    },
-    {
-      "job_id": "33712819",
-      "name": "uiu_500",
-      "user": "yoonjae_park",
-      "partition": "savio3_gpu",
-      "nodelist": "n0175.savio3",
-      "state": "RUNNING",
-      "tres": "gres:gpu:1",
-      "elapsed": "3:39:09",
-      "time_limit": "3-00:00:00"
+      "elapsed": "4:35",
+      "time_limit": "2-00:00:00"
     },
     {
       "job_id": "33715372",
@@ -658,18 +643,18 @@
       "nodelist": "n0004.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:1",
-      "elapsed": "1:16:56",
+      "elapsed": "2:17:05",
       "time_limit": "3-00:00:00"
     },
     {
-      "job_id": "33689328",
+      "job_id": "33718332",
       "name": "Te_ACE_S1",
       "user": "ma_ke_0305",
       "partition": "savio3_gpu",
       "nodelist": "n0004.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:V100:1",
-      "elapsed": "1-22:16:09",
+      "elapsed": "16:08",
       "time_limit": "3-00:00:00"
     },
     {
@@ -680,7 +665,7 @@
       "nodelist": "n0264.savio3",
       "state": "RUNNING",
       "tres": "gres:gpu:A40:1",
-      "elapsed": "1-07:52:17",
+      "elapsed": "1-08:52:26",
       "time_limit": "3-00:00:00"
     },
     {
@@ -691,7 +676,7 @@
       "nodelist": "n0141.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "2-00:38:31",
+      "elapsed": "2-01:38:40",
       "time_limit": "3-00:00:00"
     },
     {
@@ -702,7 +687,7 @@
       "nodelist": "n0387.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:L40:1",
-      "elapsed": "2:10:05",
+      "elapsed": "3:10:14",
       "time_limit": "5-00:00:00"
     },
     {
@@ -713,7 +698,7 @@
       "nodelist": "n0388.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:L40:1",
-      "elapsed": "2:44:27",
+      "elapsed": "3:44:36",
       "time_limit": "5-00:00:00"
     },
     {
@@ -724,7 +709,7 @@
       "nodelist": "n0388.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:L40:1",
-      "elapsed": "2:44:30",
+      "elapsed": "3:44:39",
       "time_limit": "5-00:00:00"
     },
     {
@@ -735,7 +720,7 @@
       "nodelist": "n0388.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:L40:1",
-      "elapsed": "2:44:31",
+      "elapsed": "3:44:40",
       "time_limit": "5-00:00:00"
     },
     {
@@ -746,7 +731,7 @@
       "nodelist": "n0387.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:L40:1",
-      "elapsed": "4:17:42",
+      "elapsed": "5:17:51",
       "time_limit": "5-00:00:00"
     },
     {
@@ -757,7 +742,7 @@
       "nodelist": "n0387.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:L40:1",
-      "elapsed": "3:55:41",
+      "elapsed": "4:55:50",
       "time_limit": "3-00:00:00"
     },
     {
@@ -768,7 +753,7 @@
       "nodelist": "n0387.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:L40:1",
-      "elapsed": "5:09:18",
+      "elapsed": "6:09:27",
       "time_limit": "3-00:00:00"
     },
     {
@@ -779,7 +764,7 @@
       "nodelist": "n0388.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:L40:1",
-      "elapsed": "8:32:49",
+      "elapsed": "9:32:58",
       "time_limit": "3-00:00:00"
     },
     {
@@ -790,7 +775,7 @@
       "nodelist": "n0130.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1-22:06:19",
+      "elapsed": "1-23:06:28",
       "time_limit": "3-00:00:00"
     },
     {
@@ -801,7 +786,7 @@
       "nodelist": "n0126.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1-17:21:06",
+      "elapsed": "1-18:21:15",
       "time_limit": "3-00:00:00"
     },
     {
@@ -812,7 +797,7 @@
       "nodelist": "n0123.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1-21:37:32",
+      "elapsed": "1-22:37:41",
       "time_limit": "3-00:00:00"
     },
     {
@@ -823,7 +808,7 @@
       "nodelist": "n0121.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4-01:57:39",
+      "elapsed": "4-02:57:48",
       "time_limit": "6-00:00:00"
     },
     {
@@ -834,7 +819,7 @@
       "nodelist": "n0121.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4-02:01:05",
+      "elapsed": "4-03:01:14",
       "time_limit": "6-00:00:00"
     },
     {
@@ -845,7 +830,7 @@
       "nodelist": "n0121.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4-02:57:34",
+      "elapsed": "4-03:57:43",
       "time_limit": "6-00:00:00"
     },
     {
@@ -856,7 +841,7 @@
       "nodelist": "n0121.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4-03:42:11",
+      "elapsed": "4-04:42:20",
       "time_limit": "6-00:00:00"
     },
     {
@@ -867,7 +852,7 @@
       "nodelist": "n0136.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4-08:12:49",
+      "elapsed": "4-09:12:58",
       "time_limit": "6-00:00:00"
     },
     {
@@ -878,7 +863,7 @@
       "nodelist": "n0136.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4-10:29:34",
+      "elapsed": "4-11:29:43",
       "time_limit": "6-00:00:00"
     },
     {
@@ -889,7 +874,7 @@
       "nodelist": "n0123.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:54:25",
+      "elapsed": "5:54:34",
       "time_limit": "6-00:00:00"
     },
     {
@@ -900,7 +885,7 @@
       "nodelist": "n0120.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "5:51:33",
+      "elapsed": "6:51:42",
       "time_limit": "6-00:00:00"
     },
     {
@@ -911,7 +896,7 @@
       "nodelist": "n0120.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "6:11:37",
+      "elapsed": "7:11:46",
       "time_limit": "6-00:00:00"
     },
     {
@@ -922,7 +907,7 @@
       "nodelist": "n0123.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "7:25:02",
+      "elapsed": "8:25:11",
       "time_limit": "6-00:00:00"
     },
     {
@@ -933,7 +918,7 @@
       "nodelist": "n0123.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "7:32:48",
+      "elapsed": "8:32:57",
       "time_limit": "6-00:00:00"
     },
     {
@@ -944,7 +929,7 @@
       "nodelist": "n0121.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "7:46:19",
+      "elapsed": "8:46:28",
       "time_limit": "6-00:00:00"
     },
     {
@@ -955,7 +940,7 @@
       "nodelist": "n0120.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "8:23:53",
+      "elapsed": "9:24:02",
       "time_limit": "6-00:00:00"
     },
     {
@@ -966,7 +951,7 @@
       "nodelist": "n0120.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "9:22:02",
+      "elapsed": "10:22:11",
       "time_limit": "6-00:00:00"
     },
     {
@@ -977,7 +962,7 @@
       "nodelist": "n0124.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "10:13:08",
+      "elapsed": "11:13:17",
       "time_limit": "6-00:00:00"
     },
     {
@@ -988,7 +973,7 @@
       "nodelist": "n0120.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "10:16:39",
+      "elapsed": "11:16:48",
       "time_limit": "6-00:00:00"
     },
     {
@@ -999,7 +984,7 @@
       "nodelist": "n0121.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:05:48",
+      "elapsed": "2:05:57",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1010,7 +995,7 @@
       "nodelist": "n0122.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:20",
+      "elapsed": "2:06:29",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1021,7 +1006,7 @@
       "nodelist": "n0124.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1032,7 +1017,7 @@
       "nodelist": "n0127.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1043,7 +1028,7 @@
       "nodelist": "n0128.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1054,7 +1039,7 @@
       "nodelist": "n0129.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1065,7 +1050,7 @@
       "nodelist": "n0130.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1076,7 +1061,7 @@
       "nodelist": "n0131.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1087,7 +1072,7 @@
       "nodelist": "n0132.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1098,7 +1083,7 @@
       "nodelist": "n0133.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1109,7 +1094,7 @@
       "nodelist": "n0135.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1120,7 +1105,7 @@
       "nodelist": "n0136.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1131,7 +1116,7 @@
       "nodelist": "n0137.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1142,7 +1127,7 @@
       "nodelist": "n0138.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1153,7 +1138,7 @@
       "nodelist": "n0141.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "3-00:00:00"
     },
     {
@@ -1164,8 +1149,19 @@
       "nodelist": "n0122.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "5:07:01",
+      "elapsed": "6:07:10",
       "time_limit": "10-00:00:00"
+    },
+    {
+      "job_id": "33718234",
+      "name": "bash",
+      "user": "kwanyoungpark",
+      "partition": "savio4_gpu",
+      "nodelist": "n0120.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "25:50",
+      "time_limit": "3-00:00:00"
     },
     {
       "job_id": "33716874",
@@ -1175,19 +1171,41 @@
       "nodelist": "n0137.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "34:58",
+      "elapsed": "1:35:07",
       "time_limit": "3-00:00:00"
     },
     {
-      "job_id": "33713932",
+      "job_id": "33718263",
       "name": "bash",
       "user": "andriaxu",
       "partition": "savio4_gpu",
-      "nodelist": "n0138.savio4",
+      "nodelist": "n0131.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "3:15:30",
+      "elapsed": "23:49",
       "time_limit": "4-00:00:00"
+    },
+    {
+      "job_id": "33713329_38",
+      "name": "0423_ogbench_chunking_qam_iql",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0135.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "20:17",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_10",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0127.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "34:26",
+      "time_limit": "4:00:00"
     },
     {
       "job_id": "33711891_2",
@@ -1197,41 +1215,8 @@
       "nodelist": "n0129.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:00:45",
+      "elapsed": "2:00:54",
       "time_limit": "1-00:00:00"
-    },
-    {
-      "job_id": "33713331_3",
-      "name": "0423_ogbench_chunking_cgql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0133.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:36:59",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713328_3",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0129.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:56:13",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713328_2",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0127.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "2:19:26",
-      "time_limit": "4:00:00"
     },
     {
       "job_id": "33711889_1",
@@ -1241,7 +1226,7 @@
       "nodelist": "n0123.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1252,7 +1237,7 @@
       "nodelist": "n0123.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1263,7 +1248,7 @@
       "nodelist": "n0124.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1274,7 +1259,7 @@
       "nodelist": "n0124.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1285,7 +1270,7 @@
       "nodelist": "n0124.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1296,7 +1281,7 @@
       "nodelist": "n0125.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1307,7 +1292,7 @@
       "nodelist": "n0125.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1318,7 +1303,7 @@
       "nodelist": "n0125.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1329,7 +1314,7 @@
       "nodelist": "n0125.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1340,7 +1325,7 @@
       "nodelist": "n0126.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1351,7 +1336,7 @@
       "nodelist": "n0126.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1362,7 +1347,18 @@
       "nodelist": "n0126.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
+      "time_limit": "1-00:00:00"
+    },
+    {
+      "job_id": "33683215_64",
+      "name": "qwq",
+      "user": "qcli",
+      "partition": "savio4_gpu",
+      "nodelist": "n0138.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "26:20",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1373,7 +1369,7 @@
       "nodelist": "n0122.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:05:48",
+      "elapsed": "2:05:57",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1384,7 +1380,7 @@
       "nodelist": "n0123.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:05:48",
+      "elapsed": "2:05:57",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1395,7 +1391,7 @@
       "nodelist": "n0126.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:05:48",
+      "elapsed": "2:05:57",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1406,7 +1402,7 @@
       "nodelist": "n0142.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1417,7 +1413,7 @@
       "nodelist": "n0143.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:06:50",
+      "elapsed": "2:06:59",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1428,41 +1424,8 @@
       "nodelist": "n0120.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "3:35:08",
+      "elapsed": "4:35:17",
       "time_limit": "1-00:00:00"
-    },
-    {
-      "job_id": "33683215_55",
-      "name": "qwq",
-      "user": "qcli",
-      "partition": "savio4_gpu",
-      "nodelist": "n0120.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "6:13:07",
-      "time_limit": "1-00:00:00"
-    },
-    {
-      "job_id": "33683215_54",
-      "name": "qwq",
-      "user": "qcli",
-      "partition": "savio4_gpu",
-      "nodelist": "n0120.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "6:13:38",
-      "time_limit": "1-00:00:00"
-    },
-    {
-      "job_id": "33714880_44",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0133.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "40:33",
-      "time_limit": "4:00:00"
     },
     {
       "job_id": "33715375",
@@ -1472,7 +1435,7 @@
       "nodelist": "n0123.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:14:29",
+      "elapsed": "2:14:38",
       "time_limit": "2-00:00:00"
     },
     {
@@ -1483,8 +1446,30 @@
       "nodelist": "n0138.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "2:16:55",
+      "elapsed": "3:17:04",
       "time_limit": "2-00:00:00"
+    },
+    {
+      "job_id": "33717832_2",
+      "name": "0422_fdfo",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0122.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "6:37",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_23",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0128.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "30:54",
+      "time_limit": "4:00:00"
     },
     {
       "job_id": "33713328_1",
@@ -1494,7 +1479,7 @@
       "nodelist": "n0127.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:03:16",
+      "elapsed": "2:03:25",
       "time_limit": "4:00:00"
     },
     {
@@ -1505,19 +1490,8 @@
       "nodelist": "n0129.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:04:17",
+      "elapsed": "2:04:26",
       "time_limit": "1-00:00:00"
-    },
-    {
-      "job_id": "33713329_52",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0133.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:48:10",
-      "time_limit": "4:00:00"
     },
     {
       "job_id": "33713330_2",
@@ -1527,7 +1501,7 @@
       "nodelist": "n0138.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "2:36:05",
+      "elapsed": "3:36:14",
       "time_limit": "4:00:00"
     },
     {
@@ -1538,7 +1512,7 @@
       "nodelist": "n0126.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:19",
+      "elapsed": "5:12:28",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1549,7 +1523,7 @@
       "nodelist": "n0127.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:19",
+      "elapsed": "5:12:28",
       "time_limit": "1-00:00:00"
     },
     {
@@ -1560,51 +1534,73 @@
       "nodelist": "n0126.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:12:49",
+      "elapsed": "5:12:58",
       "time_limit": "1-00:00:00"
     },
     {
-      "job_id": "33714880_84",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33717832_5",
+      "name": "0422_fdfo",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0121.savio4",
+      "nodelist": "n0132.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "5:37",
+      "elapsed": "4:35",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_21",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0143.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "58:44",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713331_14",
-      "name": "0423_ogbench_chunking_cgql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0128.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:25:00",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713331_5",
-      "name": "0423_ogbench_chunking_cgql",
+      "job_id": "33717832_4",
+      "name": "0422_fdfo",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
       "nodelist": "n0127.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:27:01",
+      "elapsed": "6:07",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_30",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0142.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "24:19",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33713326_3",
+      "name": "0423_ogbench_chunking_cgrl_train",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0125.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "28:22",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_18",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0135.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "32:25",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_3",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0128.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "35:27",
       "time_limit": "4:00:00"
     },
     {
@@ -1615,7 +1611,7 @@
       "nodelist": "n0138.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:38:05",
+      "elapsed": "2:38:14",
       "time_limit": "4:00:00"
     },
     {
@@ -1626,29 +1622,73 @@
       "nodelist": "n0127.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:42:14",
+      "elapsed": "2:42:23",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33713331_1",
-      "name": "0423_ogbench_chunking_cgql",
+      "job_id": "33714880_136",
+      "name": "0422_cgrl_inference_eval_only_v2",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0122.savio4",
+      "nodelist": "n0141.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:52:42",
+      "elapsed": "36:57",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33713326_3",
-      "name": "0423_ogbench_chunking_cgrl_train",
+      "job_id": "33714880_129",
+      "name": "0422_cgrl_inference_eval_only_v2",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0128.savio4",
+      "nodelist": "n0137.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "3:25:05",
+      "elapsed": "38:58",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33714880_108",
+      "name": "0422_cgrl_inference_eval_only_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0141.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "46:32",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33714880_95",
+      "name": "0422_cgrl_inference_eval_only_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0142.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "53:36",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33714880_93",
+      "name": "0422_cgrl_inference_eval_only_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0124.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "56:40",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33714880_89",
+      "name": "0422_cgrl_inference_eval_only_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0133.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "59:42",
       "time_limit": "4:00:00"
     },
     {
@@ -1659,29 +1699,7 @@
       "nodelist": "n0136.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:34",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_87",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0135.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "2:04",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_86",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0141.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "2:35",
+      "elapsed": "1:01:43",
       "time_limit": "4:00:00"
     },
     {
@@ -1692,29 +1710,7 @@
       "nodelist": "n0136.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:06",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_83",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0142.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "6:37",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_82",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0132.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "7:08",
+      "elapsed": "1:04:15",
       "time_limit": "4:00:00"
     },
     {
@@ -1725,7 +1721,7 @@
       "nodelist": "n0142.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "7:38",
+      "elapsed": "1:07:47",
       "time_limit": "4:00:00"
     },
     {
@@ -1736,40 +1732,7 @@
       "nodelist": "n0138.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "11:41",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_79",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0131.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "12:11",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_76",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0141.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "12:42",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_77",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0141.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "12:42",
+      "elapsed": "1:11:50",
       "time_limit": "4:00:00"
     },
     {
@@ -1780,29 +1743,7 @@
       "nodelist": "n0143.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "12:42",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_73",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0142.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "13:12",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_74",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0142.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "13:12",
+      "elapsed": "1:12:51",
       "time_limit": "4:00:00"
     },
     {
@@ -1813,18 +1754,7 @@
       "nodelist": "n0143.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "13:12",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_70",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0130.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "14:43",
+      "elapsed": "1:13:21",
       "time_limit": "4:00:00"
     },
     {
@@ -1835,18 +1765,7 @@
       "nodelist": "n0135.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "14:43",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_72",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0142.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "14:43",
+      "elapsed": "1:14:52",
       "time_limit": "4:00:00"
     },
     {
@@ -1857,7 +1776,40 @@
       "nodelist": "n0128.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "15:14",
+      "elapsed": "1:15:23",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_31",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0137.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "23:49",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_32",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0141.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "23:49",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_29",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0143.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "24:49",
       "time_limit": "4:00:00"
     },
     {
@@ -1868,29 +1820,7 @@
       "nodelist": "n0131.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "16:15",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_66",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0131.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "18:59",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_65",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0143.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "19:17",
+      "elapsed": "1:16:24",
       "time_limit": "4:00:00"
     },
     {
@@ -1901,29 +1831,62 @@
       "nodelist": "n0136.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "20:18",
+      "elapsed": "1:20:27",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_64",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33715284_28",
+      "name": "0422_cfg_on_s_v2",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0141.savio4",
+      "nodelist": "n0130.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "20:18",
+      "elapsed": "27:52",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33713331_18",
-      "name": "0423_ogbench_chunking_cgql",
+      "job_id": "33715284_26",
+      "name": "0422_cfg_on_s_v2",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0132.savio4",
+      "nodelist": "n0130.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:18:27",
+      "elapsed": "28:22",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_27",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0143.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "28:22",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_25",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0137.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "29:54",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_24",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0135.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "30:24",
       "time_limit": "4:00:00"
     },
     {
@@ -1934,7 +1897,7 @@
       "nodelist": "n0133.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:19:44",
+      "elapsed": "2:19:53",
       "time_limit": "4:00:00"
     },
     {
@@ -1945,18 +1908,7 @@
       "nodelist": "n0130.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "20:48",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_60",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0130.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "21:18",
+      "elapsed": "1:20:57",
       "time_limit": "4:00:00"
     },
     {
@@ -1967,40 +1919,194 @@
       "nodelist": "n0143.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "21:48",
+      "elapsed": "1:21:57",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_58",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33715284_20",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0127.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "31:55",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_21",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0129.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "31:55",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_22",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0133.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "31:55",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_19",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0143.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "32:25",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_17",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0121.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "32:38",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_16",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0122.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "32:56",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_15",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0142.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "33:26",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_12",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0132.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "33:56",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_13",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0132.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "33:56",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_14",
+      "name": "0422_cfg_on_s_v2",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
       "nodelist": "n0135.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "21:59",
+      "elapsed": "33:56",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_57",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33715284_11",
+      "name": "0422_cfg_on_s_v2",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0141.savio4",
+      "nodelist": "n0129.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "23:19",
+      "elapsed": "34:26",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_56",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33715284_8",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0125.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "34:56",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_9",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0142.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "34:56",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_4",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0135.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "35:27",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_5",
+      "name": "0422_cfg_on_s_v2",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
       "nodelist": "n0137.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "24:50",
+      "elapsed": "35:27",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_6",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0138.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "35:27",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33715284_7",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0142.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "35:27",
       "time_limit": "4:00:00"
     },
     {
@@ -2011,7 +2117,7 @@
       "nodelist": "n0129.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:21:28",
+      "elapsed": "2:21:37",
       "time_limit": "4:00:00"
     },
     {
@@ -2022,205 +2128,139 @@
       "nodelist": "n0132.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:24:30",
+      "elapsed": "2:24:39",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33713331_12",
-      "name": "0423_ogbench_chunking_cgql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0128.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:25:30",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713331_13",
-      "name": "0423_ogbench_chunking_cgql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0132.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:25:30",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_55",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0137.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "27:22",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713331_10",
-      "name": "0423_ogbench_chunking_cgql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0129.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:26:00",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713331_11",
-      "name": "0423_ogbench_chunking_cgql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0132.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:26:00",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713331_7",
-      "name": "0423_ogbench_chunking_cgql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0128.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:26:30",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713331_8",
-      "name": "0423_ogbench_chunking_cgql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0130.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:26:30",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713331_9",
-      "name": "0423_ogbench_chunking_cgql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0143.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:26:30",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713331_6",
-      "name": "0423_ogbench_chunking_cgql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0130.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:27:01",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713331_4",
-      "name": "0423_ogbench_chunking_cgql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0133.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:27:31",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713329_57",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0128.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:29:01",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_54",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0142.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "30:55",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_52",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0137.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "32:29",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_51",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33715284_1",
+      "name": "0422_cfg_on_s_v2",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
       "nodelist": "n0135.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "32:57",
+      "elapsed": "35:57",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_49",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33715284_2",
+      "name": "0422_cfg_on_s_v2",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0136.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "35:57",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33713329_31",
+      "name": "0423_ogbench_chunking_qam_iql",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
       "nodelist": "n0132.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "33:57",
+      "elapsed": "10:40",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_47",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0131.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "37:31",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_46",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0131.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "39:32",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713329_56",
+      "job_id": "33713329_39",
       "name": "0423_ogbench_chunking_qam_iql",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0124.savio4",
+      "nodelist": "n0141.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:37:35",
+      "elapsed": "10:40",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33713329_24",
+      "name": "0423_ogbench_chunking_qam_iql",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0131.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "12:23",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33713329_20",
+      "name": "0423_ogbench_chunking_qam_iql",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0138.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "12:42",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33713327_35",
+      "name": "0423_ogbench_chunking_cgrl_train",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0129.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "14:43",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33713327_28",
+      "name": "0423_ogbench_chunking_cgrl_train",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0131.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "15:13",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33713329_23",
+      "name": "0423_ogbench_chunking_qam_iql",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0133.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "19:47",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33713329_30",
+      "name": "0423_ogbench_chunking_qam_iql",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0137.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "19:47",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33713327_33",
+      "name": "0423_ogbench_chunking_cgrl_train",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0128.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "20:47",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33713329_11",
+      "name": "0423_ogbench_chunking_qam_iql",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0133.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "20:47",
       "time_limit": "4:00:00"
     },
     {
@@ -2231,84 +2271,40 @@
       "nodelist": "n0133.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:37:44",
+      "elapsed": "2:37:53",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33713329_54",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0131.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:40:06",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_42",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33713327_17",
+      "name": "0423_ogbench_chunking_cgrl_train",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
       "nodelist": "n0130.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "43:04",
+      "elapsed": "22:49",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_43",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33713327_27",
+      "name": "0423_ogbench_chunking_cgrl_train",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0135.savio4",
+      "nodelist": "n0141.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "43:04",
+      "elapsed": "22:49",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_41",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33713327_7",
+      "name": "0423_ogbench_chunking_cgrl_train",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0143.savio4",
+      "nodelist": "n0124.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "43:44",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_39",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0127.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "44:35",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_40",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0142.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "44:35",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_35",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0125.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "46:44",
+      "elapsed": "23:19",
       "time_limit": "4:00:00"
     },
     {
@@ -2319,73 +2315,7 @@
       "nodelist": "n0131.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "49:44",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_30",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0137.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "50:08",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713329_51",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0129.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:48:40",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_26",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0135.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "54:41",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_25",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0138.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "55:11",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713329_50",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0125.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:53:42",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_23",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0138.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "56:29",
+      "elapsed": "1:49:53",
       "time_limit": "4:00:00"
     },
     {
@@ -2396,139 +2326,106 @@
       "nodelist": "n0127.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:56:43",
+      "elapsed": "2:56:52",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_5",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33717832_11",
+      "name": "0422_fdfo",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0128.savio4",
+      "nodelist": "n0130.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:05:48",
+      "elapsed": "0:33",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_8",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0133.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:05:48",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33714880_10",
-      "name": "0422_cgrl_inference_eval_only_v2",
+      "job_id": "33717832_12",
+      "name": "0422_fdfo",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
       "nodelist": "n0136.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:05:48",
+      "elapsed": "0:33",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33714880_11",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0137.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "1:05:48",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713329_48",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0125.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "2:10:22",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713329_47",
-      "name": "0423_ogbench_chunking_qam_iql",
+      "job_id": "33717832_10",
+      "name": "0422_fdfo",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
       "nodelist": "n0122.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "2:14:54",
+      "elapsed": "1:03",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33713329_46",
-      "name": "0423_ogbench_chunking_qam_iql",
+      "job_id": "33717832_9",
+      "name": "0422_fdfo",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0124.savio4",
+      "nodelist": "n0131.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "2:23:58",
+      "elapsed": "2:04",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33713329_45",
-      "name": "0423_ogbench_chunking_qam_iql",
+      "job_id": "33717832_8",
+      "name": "0422_fdfo",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0143.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "3:05",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33717832_7",
+      "name": "0422_fdfo",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "nodelist": "n0128.savio4",
+      "state": "RUNNING",
+      "tres": "gres:gpu:A5000:1",
+      "elapsed": "3:35",
+      "time_limit": "4:00:00"
+    },
+    {
+      "job_id": "33717832_6",
+      "name": "0422_fdfo",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
       "nodelist": "n0132.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "2:37:05",
+      "elapsed": "4:35",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33713329_29",
-      "name": "0423_ogbench_chunking_qam_iql",
+      "job_id": "33717832_3",
+      "name": "0422_fdfo",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0141.savio4",
+      "nodelist": "n0128.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "3:24:05",
+      "elapsed": "6:37",
       "time_limit": "4:00:00"
     },
     {
-      "job_id": "33713329_2",
-      "name": "0423_ogbench_chunking_qam_iql",
+      "job_id": "33717832_1",
+      "name": "0422_fdfo",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
-      "nodelist": "n0135.savio4",
+      "nodelist": "n0133.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "3:24:15",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713329_10",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0136.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "3:24:15",
-      "time_limit": "4:00:00"
-    },
-    {
-      "job_id": "33713329_16",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "nodelist": "n0137.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "3:24:15",
+      "elapsed": "7:38",
       "time_limit": "4:00:00"
     },
     {
@@ -2539,7 +2436,7 @@
       "nodelist": "n0122.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "5:12:57",
+      "elapsed": "6:13:06",
       "time_limit": "10:00:00"
     },
     {
@@ -2550,7 +2447,7 @@
       "nodelist": "n0129.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "18:26:16",
+      "elapsed": "19:26:25",
       "time_limit": "3-00:00:00"
     },
     {
@@ -2561,7 +2458,7 @@
       "nodelist": "n0121.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "18:27:46",
+      "elapsed": "19:27:55",
       "time_limit": "3-00:00:00"
     },
     {
@@ -2572,7 +2469,7 @@
       "nodelist": "n0124.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "18:27:46",
+      "elapsed": "19:27:55",
       "time_limit": "3-00:00:00"
     },
     {
@@ -2583,19 +2480,8 @@
       "nodelist": "n0125.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "18:28:16",
+      "elapsed": "19:28:25",
       "time_limit": "3-00:00:00"
-    },
-    {
-      "job_id": "33711618_4",
-      "name": "ODip",
-      "user": "bjsinger",
-      "partition": "savio4_gpu",
-      "nodelist": "n0122.savio4",
-      "state": "RUNNING",
-      "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:28:51",
-      "time_limit": "10:00:00"
     },
     {
       "job_id": "33711618_5",
@@ -2605,7 +2491,7 @@
       "nodelist": "n0122.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "4:28:51",
+      "elapsed": "5:29:00",
       "time_limit": "10:00:00"
     },
     {
@@ -2616,7 +2502,7 @@
       "nodelist": "n0126.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:A5000:1",
-      "elapsed": "18:23:45",
+      "elapsed": "19:23:54",
       "time_limit": "3-00:00:00"
     },
     {
@@ -2627,7 +2513,7 @@
       "nodelist": "n0387.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:1",
-      "elapsed": "3:18:01",
+      "elapsed": "4:18:10",
       "time_limit": "1-11:00:00"
     },
     {
@@ -2638,11 +2524,38 @@
       "nodelist": "n0389.savio4",
       "state": "RUNNING",
       "tres": "gres:gpu:r6k:1",
-      "elapsed": "2:41:37",
+      "elapsed": "3:41:46",
       "time_limit": "12:00:00"
     }
   ],
   "pending_jobs": [
+    {
+      "job_id": "33712570",
+      "name": "two_enc_ddg",
+      "user": "sergiomar10",
+      "partition": "savio3_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A40:1",
+      "submit_time": "2026-04-23T10:51:44"
+    },
+    {
+      "job_id": "33712568",
+      "name": "two_enc_ddg",
+      "user": "sergiomar10",
+      "partition": "savio3_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A40:1",
+      "submit_time": "2026-04-23T10:51:44"
+    },
+    {
+      "job_id": "33712566",
+      "name": "two_enc_ddg",
+      "user": "sergiomar10",
+      "partition": "savio3_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A40:1",
+      "submit_time": "2026-04-23T10:51:44"
+    },
     {
       "job_id": "33712612",
       "name": "two_enc_ddg",
@@ -2833,276 +2746,6 @@
       "submit_time": "2026-04-23T10:51:45"
     },
     {
-      "job_id": "33712570",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:44"
-    },
-    {
-      "job_id": "33712568",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:44"
-    },
-    {
-      "job_id": "33712566",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:44"
-    },
-    {
-      "job_id": "33712564",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:43"
-    },
-    {
-      "job_id": "33712562",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:43"
-    },
-    {
-      "job_id": "33712560",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:43"
-    },
-    {
-      "job_id": "33712558",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:42"
-    },
-    {
-      "job_id": "33712556",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:42"
-    },
-    {
-      "job_id": "33712554",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:42"
-    },
-    {
-      "job_id": "33712552",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:42"
-    },
-    {
-      "job_id": "33712550",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:41"
-    },
-    {
-      "job_id": "33712548",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:41"
-    },
-    {
-      "job_id": "33712546",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:41"
-    },
-    {
-      "job_id": "33712544",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:41"
-    },
-    {
-      "job_id": "33712542",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:40"
-    },
-    {
-      "job_id": "33712540",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:40"
-    },
-    {
-      "job_id": "33712538",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:40"
-    },
-    {
-      "job_id": "33712536",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:40"
-    },
-    {
-      "job_id": "33712534",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:39"
-    },
-    {
-      "job_id": "33712532",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:39"
-    },
-    {
-      "job_id": "33712530",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:39"
-    },
-    {
-      "job_id": "33712528",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:38"
-    },
-    {
-      "job_id": "33712526",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:38"
-    },
-    {
-      "job_id": "33712524",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:38"
-    },
-    {
-      "job_id": "33712522",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:38"
-    },
-    {
-      "job_id": "33712520",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:37"
-    },
-    {
-      "job_id": "33712518",
-      "name": "two_enc_ddg",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T10:51:37"
-    },
-    {
-      "job_id": "33714937",
-      "name": "ddg_vanilla_two_enc_A_s112_f1s1",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T12:29:03"
-    },
-    {
-      "job_id": "33714934",
-      "name": "ddg_vanilla_two_enc_A_s111_f2s1",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T12:29:03"
-    },
-    {
-      "job_id": "33714931",
-      "name": "ddg_vanilla_two_enc_A_s111_f0s1",
-      "user": "sergiomar10",
-      "partition": "savio3_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A40:1",
-      "submit_time": "2026-04-23T12:29:03"
-    },
-    {
       "job_id": "33714961",
       "name": "ddg_single_mega173k_650M_s30_f1s1",
       "user": "sergiomar10",
@@ -3175,6 +2818,33 @@
       "submit_time": "2026-04-23T12:29:04"
     },
     {
+      "job_id": "33714937",
+      "name": "ddg_vanilla_two_enc_A_s112_f1s1",
+      "user": "sergiomar10",
+      "partition": "savio3_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A40:1",
+      "submit_time": "2026-04-23T12:29:03"
+    },
+    {
+      "job_id": "33714934",
+      "name": "ddg_vanilla_two_enc_A_s111_f2s1",
+      "user": "sergiomar10",
+      "partition": "savio3_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A40:1",
+      "submit_time": "2026-04-23T12:29:03"
+    },
+    {
+      "job_id": "33714931",
+      "name": "ddg_vanilla_two_enc_A_s111_f0s1",
+      "user": "sergiomar10",
+      "partition": "savio3_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A40:1",
+      "submit_time": "2026-04-23T12:29:03"
+    },
+    {
       "job_id": "33653933",
       "name": "chem242",
       "user": "anikaa",
@@ -3220,6 +2890,33 @@
       "submit_time": "2026-04-23T11:41:49"
     },
     {
+      "job_id": "33718556_[0-11%12]",
+      "name": "anime-smoke-eval",
+      "user": "wanzhoulei",
+      "partition": "savio3_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A40:1",
+      "submit_time": "2026-04-23T15:43:33"
+    },
+    {
+      "job_id": "33718555_[0-11%12]",
+      "name": "anime-smoke",
+      "user": "wanzhoulei",
+      "partition": "savio3_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A40:1",
+      "submit_time": "2026-04-23T15:43:33"
+    },
+    {
+      "job_id": "33718553_[0-49%50]",
+      "name": "pixart-attn",
+      "user": "wanzhoulei",
+      "partition": "savio3_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A40:1",
+      "submit_time": "2026-04-23T15:43:33"
+    },
+    {
       "job_id": "33714266",
       "name": "temp_MACE-water-dipole",
       "user": "dongjinkim",
@@ -3238,15 +2935,6 @@
       "submit_time": "2026-04-23T12:09:17"
     },
     {
-      "job_id": "33714557",
-      "name": "temp_MACE-water-dipole",
-      "user": "dongjinkim",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:L40:1",
-      "submit_time": "2026-04-23T12:09:52"
-    },
-    {
       "job_id": "33714554",
       "name": "temp_MACE-water-dipole",
       "user": "dongjinkim",
@@ -3254,15 +2942,6 @@
       "state": "PENDING",
       "tres": "gres:gpu:L40:1",
       "submit_time": "2026-04-23T12:09:37"
-    },
-    {
-      "job_id": "33714565",
-      "name": "temp_MACE-water-dipole",
-      "user": "dongjinkim",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:L40:1",
-      "submit_time": "2026-04-23T12:10:18"
     },
     {
       "job_id": "33714560",
@@ -3274,6 +2953,24 @@
       "submit_time": "2026-04-23T12:10:00"
     },
     {
+      "job_id": "33714557",
+      "name": "temp_MACE-water-dipole",
+      "user": "dongjinkim",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:L40:1",
+      "submit_time": "2026-04-23T12:09:52"
+    },
+    {
+      "job_id": "33714565",
+      "name": "temp_MACE-water-dipole",
+      "user": "dongjinkim",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:L40:1",
+      "submit_time": "2026-04-23T12:10:18"
+    },
+    {
       "job_id": "33715374",
       "name": "RQ77",
       "user": "yoonjae_park",
@@ -3281,15 +2978,6 @@
       "state": "PENDING",
       "tres": "gres:gpu:L40:1",
       "submit_time": "2026-04-23T13:30:34"
-    },
-    {
-      "job_id": "33715421",
-      "name": "R10",
-      "user": "yoonjae_park",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:L40:1",
-      "submit_time": "2026-04-23T13:38:01"
     },
     {
       "job_id": "33715415",
@@ -3301,13 +2989,13 @@
       "submit_time": "2026-04-23T13:37:48"
     },
     {
-      "job_id": "33717602",
-      "name": "caceles-uiuQ-dipep.slurm",
-      "user": "king1305",
+      "job_id": "33715421",
+      "name": "R10",
+      "user": "yoonjae_park",
       "partition": "savio4_gpu",
       "state": "PENDING",
       "tres": "gres:gpu:L40:1",
-      "submit_time": "2026-04-23T14:44:28"
+      "submit_time": "2026-04-23T13:38:01"
     },
     {
       "job_id": "33717606",
@@ -3344,6 +3032,51 @@
       "state": "PENDING",
       "tres": "gres:gpu:L40:1",
       "submit_time": "2026-04-23T14:44:43"
+    },
+    {
+      "job_id": "33717602",
+      "name": "caceles-uiuQ-dipep.slurm",
+      "user": "king1305",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:L40:1",
+      "submit_time": "2026-04-23T14:44:28"
+    },
+    {
+      "job_id": "33718331",
+      "name": "caceles-uiuiqQ-dipep.slurm",
+      "user": "king1305",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:L40:1",
+      "submit_time": "2026-04-23T15:29:39"
+    },
+    {
+      "job_id": "33718330",
+      "name": "caceles-uiqiu-dipep.slurm",
+      "user": "king1305",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:L40:1",
+      "submit_time": "2026-04-23T15:29:39"
+    },
+    {
+      "job_id": "33718329",
+      "name": "caceles-uiq-dipep.slurm",
+      "user": "king1305",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:L40:1",
+      "submit_time": "2026-04-23T15:29:39"
+    },
+    {
+      "job_id": "33718354",
+      "name": "caceles-uQ-dipep.slurm",
+      "user": "king1305",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:L40:1",
+      "submit_time": "2026-04-23T15:30:22"
     },
     {
       "job_id": "33708361_[10-15]",
@@ -3517,166 +3250,13 @@
       "submit_time": "2026-04-21T11:24:06"
     },
     {
-      "job_id": "33714880_[89-140%140]",
-      "name": "0422_cgrl_inference_eval_only_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T12:18:31"
-    },
-    {
-      "job_id": "33708309_6",
-      "name": "0423_ogbench_100m_proportion_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T12:52:34"
-    },
-    {
-      "job_id": "33708309_12",
-      "name": "0423_ogbench_100m_proportion_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T12:57:33"
-    },
-    {
-      "job_id": "33715284_[1-32%32]",
-      "name": "0422_cfg_on_s_v2",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:10:13"
-    },
-    {
-      "job_id": "33713329_38",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:38:26"
-    },
-    {
-      "job_id": "33713329_30",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:38:26"
-    },
-    {
-      "job_id": "33713329_23",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:38:25"
-    },
-    {
-      "job_id": "33713329_19",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:38:25"
-    },
-    {
-      "job_id": "33713329_11",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:38:25"
-    },
-    {
-      "job_id": "33713327_33",
+      "job_id": "33713327_2",
       "name": "0423_ogbench_chunking_cgrl_train",
       "user": "zhiyuanzhou",
       "partition": "savio4_gpu",
       "state": "PENDING",
       "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:38:25"
-    },
-    {
-      "job_id": "33713327_27",
-      "name": "0423_ogbench_chunking_cgrl_train",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:38:25"
-    },
-    {
-      "job_id": "33713327_17",
-      "name": "0423_ogbench_chunking_cgrl_train",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:38:25"
-    },
-    {
-      "job_id": "33713327_7",
-      "name": "0423_ogbench_chunking_cgrl_train",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:38:25"
-    },
-    {
-      "job_id": "33708310_6",
-      "name": "0423_ogbench_100m_diff_arch_cgrl",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:38:25"
-    },
-    {
-      "job_id": "33713329_39",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:39:28"
-    },
-    {
-      "job_id": "33713329_31",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:39:28"
-    },
-    {
-      "job_id": "33713329_24",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:39:28"
-    },
-    {
-      "job_id": "33713329_20",
-      "name": "0423_ogbench_chunking_qam_iql",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:39:28"
+      "submit_time": "2026-04-23T15:45:52"
     },
     {
       "job_id": "33713329_12",
@@ -3685,34 +3265,7 @@
       "partition": "savio4_gpu",
       "state": "PENDING",
       "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:39:28"
-    },
-    {
-      "job_id": "33713327_35",
-      "name": "0423_ogbench_chunking_cgrl_train",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:39:27"
-    },
-    {
-      "job_id": "33713327_28",
-      "name": "0423_ogbench_chunking_cgrl_train",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:39:27"
-    },
-    {
-      "job_id": "33713327_18",
-      "name": "0423_ogbench_chunking_cgrl_train",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:39:27"
+      "submit_time": "2026-04-23T15:45:53"
     },
     {
       "job_id": "33713329_1",
@@ -3721,34 +3274,7 @@
       "partition": "savio4_gpu",
       "state": "PENDING",
       "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:39:27"
-    },
-    {
-      "job_id": "33713327_1",
-      "name": "0423_ogbench_chunking_cgrl_train",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:39:27"
-    },
-    {
-      "job_id": "33713327_2",
-      "name": "0423_ogbench_chunking_cgrl_train",
-      "user": "zhiyuanzhou",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:40:28"
-    },
-    {
-      "job_id": "33569789_67",
-      "name": "qwq",
-      "user": "qcli",
-      "partition": "savio4_gpu",
-      "state": "PENDING",
-      "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:38:25"
+      "submit_time": "2026-04-23T15:45:52"
     },
     {
       "job_id": "33713327_9",
@@ -3757,7 +3283,34 @@
       "partition": "savio4_gpu",
       "state": "PENDING",
       "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:44:31"
+      "submit_time": "2026-04-23T15:45:52"
+    },
+    {
+      "job_id": "33713329_19",
+      "name": "0423_ogbench_chunking_qam_iql",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A5000:1",
+      "submit_time": "2026-04-23T15:45:53"
+    },
+    {
+      "job_id": "33713327_18",
+      "name": "0423_ogbench_chunking_cgrl_train",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A5000:1",
+      "submit_time": "2026-04-23T15:45:53"
+    },
+    {
+      "job_id": "33713327_1",
+      "name": "0423_ogbench_chunking_cgrl_train",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A5000:1",
+      "submit_time": "2026-04-23T15:45:52"
     },
     {
       "job_id": "33713327_11",
@@ -3766,7 +3319,34 @@
       "partition": "savio4_gpu",
       "state": "PENDING",
       "tres": "gres:gpu:A5000:1",
-      "submit_time": "2026-04-23T13:53:06"
+      "submit_time": "2026-04-23T15:45:53"
+    },
+    {
+      "job_id": "33717832_[13-80]",
+      "name": "0422_fdfo",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A5000:1",
+      "submit_time": "2026-04-23T14:58:19"
+    },
+    {
+      "job_id": "33713329_48",
+      "name": "0423_ogbench_chunking_qam_iql",
+      "user": "zhiyuanzhou",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A5000:1",
+      "submit_time": "2026-04-23T15:17:03"
+    },
+    {
+      "job_id": "33569789_67",
+      "name": "qwq",
+      "user": "qcli",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A5000:1",
+      "submit_time": "2026-04-23T15:38:48"
     },
     {
       "job_id": "33203505",
@@ -3796,6 +3376,15 @@
       "submit_time": "2026-04-23T10:18:08"
     },
     {
+      "job_id": "33718269",
+      "name": "yolo",
+      "user": "marcuspoad",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A5000:1",
+      "submit_time": "2026-04-23T15:22:05"
+    },
+    {
       "job_id": "33484964",
       "name": "yolo",
       "user": "marcuspoad",
@@ -3803,8 +3392,17 @@
       "state": "PENDING",
       "tres": "gres:gpu:A5000:1",
       "submit_time": "2026-04-17T11:02:32"
+    },
+    {
+      "job_id": "33717674",
+      "name": "caceles-uiuQ-dipep.slurm",
+      "user": "king1305",
+      "partition": "savio4_gpu",
+      "state": "PENDING",
+      "tres": "gres:gpu:A5000:1",
+      "submit_time": "2026-04-23T14:51:01"
     }
   ],
-  "total_running": 208,
-  "total_pending": 129
+  "total_running": 196,
+  "total_pending": 97
 }
