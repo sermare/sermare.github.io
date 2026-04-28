@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-28T21:52:35Z",
+  "generated_at": "2026-04-28T22:22:49Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4640,
-    "assistant_turns": 6985,
+    "user_turns": 4652,
+    "assistant_turns": 6999,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-22T04:21:27.436Z"
+    "last_ts": "2026-04-28T22:20:27.715Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,13 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-28T22:10:55.339Z",
+      "text": "# Status report (no submissions made)\n\n## 1. What HANDOFF reflects vs reality (mismatch)\n\n**HANDOFF.md (3,488 lines, last-edited 2026-04-28 14:25):** ends with my hourly-cron entries on the MLM-marginals analysis — final number `|ρ| = +0.294, 95% CI [+0.199, +0.409]` across 13 AbBiBench complexes, n=12-15 bootstrap seeds. **Does NOT include the two-encoder antibody work** done by the other Claude session.\n\n**UPDATE.md (110,455 lines, 5.4 MB, last-edited 2026-04-23):** stale, hasn't been updated since Apr 23.\n\n## 2. Currently running (142 jobs, started ~3 min ago)\n\n| Pool | Count | Description |\n|---|---|---|\n| `ddg_two_enc_A_sup_15…` | 98 | rank-loss + LP-FT ablations on **pretrained 150M two-encoder champions** |\n| `ddg_single_mega173k_…` | 30 | rank-loss + LP-FT ablations on **single-encoder 650M ID champion** |\n| `ddg_two_enc_A_s4__ra…` | 7 | rank-loss tail on the s4 ckpt |\n\nSanity ch…",
+      "tags": [
+        "result"
+      ]
+    },
     {
       "ts": "2026-04-22T04:18:19.773Z",
       "text": "**Hourly tick.** Queue 2 → **39**.\n\nBootstrap: 155 cells, ~n=12/complex. **|ρ| = +0.294, 95% CI [+0.199, +0.409]** — unchanged from last 3 ticks. The estimate has fully converged.\n\nThe headline number is locked. Refilled with 39 more jobs (seeds 13-15) to push n=15/complex for final publication-grade CI.",
@@ -376,13 +383,6 @@
       "text": "# 🎉 PER-TARGET FT: aayl52_LC CROSSES ρ > 0.2\n\n**300-shot per-target FT from RANDOM-INIT head** gives the first leak-free aayl result **crossing the +0.2 usefulness threshold**:\n\n| Complex × Base | n | mean ρ | **best ρ** |\n|---|---|---|---|\n| **aayl52_LC × RANDOM** | 3 | **+0.200** | **+0.240** 🎯 |\n| aayl52_LC × esm2_lora | 3 | +0.123 | +0.162 |\n| aayl52_LC × abB3 | 3 | +0.099 | +0.120 |\n| aayl49 × random | 3 | +0.090 | +0.105 |\n| aayl50_LC × esm2_lora | 2 | +0.085 | +0.144 |\n| aayl49 × esm2_lora | 3 | +0.076 | +0.106 |\n| aayl51 × esm2_lora | 3 | +0.038 | +0.094 |\n\n## Two crucial findings\n\n1. **aayl52_LC: per-target FT from RANDOM INIT beats all base-init variants** (+0.200 vs +0.123 vs +0.099). SKEMPI-trained priors HURT on this complex — confirming the MLM-marginals finding that supervised training on wrong distribution destroys signal.\n\n2. **+0.240 best cell crosses the utility thresh…",
       "tags": [
         "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-20T17:18:42.220Z",
-      "text": "**Hourly tick — 🔥 the real headline landed:**\n\n| Metric | Value |\n|---|---|\n| **Mean MLM-marginals aayl ρ (zero-shot)** | **+0.167** |\n| Mean best DPL-head aayl ρ (supervised) | +0.146 |\n| **aayl49 MLM** | **+0.235** (useful!) |\n| **aayl50_LC MLM** | **+0.261** (useful!) |\n| **aayl51 MLM** | +0.181 |\n| Compute for MLM: | 12 GPU-min total |\n| Compute for supervised: | 700+ GPU-hours |\n\n**7 months of supervised pipeline work = beaten by 12 GPU-minutes of frozen ESM-2 masked-marginals.**\n\n**The paper is now real.** Zero-shot MLM wins on leak-free de novo antibody OOD. Supervised training destroys the pretrained signal. This is a publishable negative-for-supervised / positive-for-zero-shot finding with huge field impact given FLAb2's context.\n\nQueue is 10 (below 200 threshold). Ready to fire the next-level experiments you suggested:\n- #5 AntiBERTy/AbLang2 MLM (expected +0.05 over ESM-2 if an…",
-      "tags": [
         "model"
       ]
     }
