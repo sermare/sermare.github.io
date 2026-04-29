@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-29T01:54:09Z",
+  "generated_at": "2026-04-29T02:24:25Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4665,
-    "assistant_turns": 7017,
+    "user_turns": 4695,
+    "assistant_turns": 7049,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-29T01:45:58.022Z"
+    "last_ts": "2026-04-29T02:17:56.633Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -166,6 +166,95 @@
   ],
   "recent_updates": [
     {
+      "ts": "2026-04-29T02:17:56.632Z",
+      "text": "You've hit your org's monthly usage limit",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-29T02:17:56.163Z",
+      "text": "You've hit your org's monthly usage limit",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-29T02:13:27.438Z",
+      "text": "Going. Cancelling-via-let-finish (their output goes to old paths, no conflict with new) and dispatching 5 fresh agents on the correct 5-paper structure.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-29T02:11:36.250Z",
+      "text": "Two more landed. **3/4 PDFs built.**\n\n## `paper/main.pdf` — final version with 3 figures (18 pages, 1.87 MB)\n\n| Detail | Value |\n|---|---|\n| Pages | 18 (was 16 without figures) |\n| Filesize | 1.87 MB |\n| **main_fig1** DPL architecture schematic | embedded p.5 |\n| **main_fig2** SKEMPI matched-protocol SOTA | embedded p.8 |\n| **main_fig3** v2 ablation grid | embedded p.11 |\n| All references | resolved cleanly, zero warnings |\n\n## `paper/brief_two_encoder.{md,pdf}` — first version (5 pages, 231 KB)\n\n2,233-word markdown + clean pdflatex build. Headline: vanilla_two_enc_B = +0.253 ± 0.077 (n=150), beats in-house +0.198 baseline by +0.055 ρ. Honest \"not yet vs published SOTA\" caveat in abstract + conclusion.\n\n**But this is in the wrong framing per your message** — should be Paper 5 (PLM shared-embedding two-forward-pass + UMAP + ΔΔG), not a generic \"two-encoder method comparison.\" Missing UMAP…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-29T02:11:10.704Z",
+      "text": "You're right — my structure was wrong. Let me map what we have vs your 5-paper structure honestly:\n\n## Your 5-paper structure (correct framing)\n\n| # | Paper | Core question |\n|---|---|---|\n| **1** | **General PPI ΔΔG** | Can sequence-only methods predict ΔΔG across diverse protein-protein interactions (SKEMPI, AB-Bind, S1131, Tsuboyama, FireProt)? |\n| **2** | **Antibody-specific ΔΔG** | Same question, narrowed to antibody-antigen complexes (SAbDab, AbBiBench, abonly_*) |\n| **3** | **Transferability: general → antibody** | Does a model trained on general PPI data generalize to antibody OOD? |\n| **4** | **ΔΔG architectures + SOTA** | Methodological — ΔPL theorem, InterfaceAware-DPL v2, head-to-head against PPAC/ProtAttBA/GearBind at matched protocol |\n| **5** | **PLM shared-embedding (two forward passes) + UMAP + ΔΔG** | Methodological — two forward passes through same PLM, combined embedd…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-29T02:09:07.998Z",
+      "text": "Old leakage agent finished — first version of the brief PDF lands.\n\n## `paper/brief_leakage_audit.pdf` — first version (8 pages, 306 KB)\n\n| Detail | Value |\n|---|---|\n| Build path | `pandoc → .tex → pdflatex` (texlive/2024) |\n| Pages | 8 |\n| Filesize | 306 KB |\n| Tables | leakage (16 complexes), sign-direction, base-seed variance, loss-family — all render via longtable/booktabs |\n| ΔΔG / ρ / σ | render as native unicode |\n| Patches needed | `\\$\\sim\\$` → `\\(\\sim\\)`, `\\{,\\}` → `,` (pandoc artifact), title metadata fix |\n| TOC | hyperlinks all 8 sections + Acknowledgments/References |\n| Figures | none — agent flagged that brief markdown didn't reference fig1-5 |\n\n**Note**: this version has no figures embedded. The newer agent (a2cfdb99c820787a3) currently running will:\n1. Generate 3 unique figures (PDB cluster leakage tier diagram, sign-flip cross-method heatmap, variance-floor + bootstrap…",
+      "tags": [
+        "result"
+      ]
+    },
+    {
+      "ts": "2026-04-29T02:08:54.108Z",
+      "text": "Old MLM agent finished — first version of the brief PDF lands.\n\n## `paper/brief_mlm_zeroshot.pdf` — first version (9 pages, 361 KB)\n\n| Detail | Value |\n|---|---|\n| Build path | pandoc → tex → pdflatex (texlive/2024 module) |\n| Pages | 9 |\n| Filesize | 361 KB |\n| 62% fix | applied (abstract + §4.2); also corrected \"9 of 13\" → \"8 of 13\" |\n| Figures embedded | fig3 (p5) + fig5 (p7) — from existing pool |\n| Tables | rendered via longtable |\n| Errors | zero |\n\n## Useful build-environment intel for remaining agents\n\nThe agent had to navigate:\n- xelatex path failed on `\\linethickness` macro in pandoc output\n- Greek glyphs (ρ σ Δ ≥ ≤ ± × → ↔ ✓ ≈) needed a `newunicodechar` mapping block\n- Working recipe: `pandoc → .tex` then patch `\\linethickness` → `0.4pt`, add `newunicodechar` mappings, then `pdflatex` twice for TOC\n\n**This first version of the MLM brief PDF is publication-ready** as-is. The ne…",
+      "tags": [
+        "error"
+      ]
+    },
+    {
+      "ts": "2026-04-29T02:07:34.956Z",
+      "text": "Old-round agent for main.pdf finished (the no-figures rebuild). Useful as proof-of-build.\n\n## `paper/main.pdf` — first version (16 pages, 1.77 MB)\n\n| Detail | Value |\n|---|---|\n| pdflatex path | `module load texlive/2024` (NOT in tttppi conda env) |\n| Filesize | 1,766,663 bytes |\n| Pages | 16 |\n| Reconciliation Note | inserted after `\\end{abstract}` (line 102), references both briefs |\n| Bibtex | clean, all citations resolved |\n| Float warning | line 736 — one wide table overflows by 125pt (cosmetic) |\n| hyperref bookmark warning | line 1322 (math shift in section title, cosmetic) |\n\n**Note:** this version has the original 0 paper-specific figures from the existing main.tex. The newer agent (`a82104f8e4f7d83bd`) currently running will:\n1. Generate 3 unique figures (DPL architecture / SKEMPI matched-SOTA / v2 ablation grid)\n2. Embed them via `\\includegraphics`\n3. Rebuild main.pdf — overwr…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-29T02:07:16.951Z",
+      "text": "4 agents running in parallel. Each has ownership of one paper end-to-end:\n\n| Paper | Agent task | New unique figures |\n|---|---|---|\n| **Main NeurIPS** | rebuild main.tex with Reconciliation Note + 3 figs | DPL architecture schematic, SKEMPI matched-protocol SOTA bars, v2 ablation grid |\n| **Brief: Leakage** | embed 3 figs into MD, build PDF | PDB cluster leakage tier diagram, sign-flip cross-method heatmap, variance-floor + bootstrap CI overlap |\n| **Brief: MLM zero-shot** | apply 69%→62% fix + 3 figs + PDF | Mechanism A/B schematic, compute-efficiency log scatter (60000× less compute), ID-OOD decoupling scatter |\n| **Brief: Two-encoder** | re-aggregate from `/clusterfs/nilah/sergio/loop_overflow/two_enc_ckpts/`, MD + 3 figs + PDF | Two-encoder vs single architecture, pretraining-doesn't-lift-OOD bars, honest SOTA landscape (in-house ✓ / published ✗) |\n\nEach paper gets 3 unique figures…",
+      "tags": [
+        "result",
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-29T02:04:59.606Z",
+      "text": "Understood. Each paper gets 3+ unique figures; the two-encoder paper specifically needs the in-house-vs-SOTA honest framing. Dispatching 4 dedicated agents now.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-29T02:04:37.661Z",
+      "text": "4 PDF-build agents dispatched in parallel:\n\n| # | Paper | Source → Output |\n|---|---|---|\n| **1** | **Main NeurIPS submission** (ΔPL theorem + v2 architecture) | `paper/main.tex` + new `Reconciliation Note` paragraph → `main.pdf` |\n| **2** | **Brief: Leakage + Null Result** | `brief_leakage_audit.md` → `brief_leakage_audit.pdf` |\n| **3** | **Brief: Zero-Shot MLM** (with 69%→62% fix applied) | `brief_mlm_zeroshot.md` → `brief_mlm_zeroshot.pdf` |\n| **4** | **Brief: Two-Encoder** (new draft, then PDF) | (writes new) `brief_two_encoder.md` → `brief_two_encoder.pdf` |\n\nEach agent:\n- Locates pdflatex/pandoc in env (fallback paths included)\n- Compiles independently (4 separate tex/pandoc paths, no shared state)\n- Verifies output: file size > 50 KB, ≥ 4 pages\n- Reports failures with first 20 lines (no infinite-loop fixes)\n\nWill report each PDF as auto-notifications fire.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-29T02:03:19.213Z",
+      "text": "Spawning 4 parallel agents — one per paper. Each converts to LaTeX, compiles to PDF, verifies output.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
       "ts": "2026-04-29T01:45:57.898Z",
       "text": "Agent 3 done. **All 5 agents complete.**\n\n## All deliverables landed\n\n### Figures (5 PNG + 5 PDF in `paper/figures/`)\nEach with a Python script in `scripts/paper_figs/`:\n- **fig1_abonly_variants** — 21 variants, family-colored bars + ID/OOD scatter, PPAC/ProtAttBA outlined\n- **fig2_ood_heatmap** — 11 v2 variants × 4 OOD benchmarks, RdBu_r\n- **fig3_mlm_concat_full** — 3-panel: signed ρ, sign-flipped |ρ|, bootstrap distribution. Pooled |ρ| ≈ +0.294, 95% CI ≈ [+0.286, +0.303]\n- **fig4_base_variance** — 11 abB3p bases (one more than initially counted), val_ρ vs aayl scatter, Pearson r = +0.43\n- **fig5_method_comparison** — 4 methods × 5 aayl complexes, bootstrap CI forest plot\n\n### Honest data quirks the agent flagged\n- Several abonly variants don't have on-disk dirs; script falls back to summary mean ± SEM (rendered with a different marker style)\n- Post-train champion has only **1 seed** wi…",
       "tags": [
@@ -295,97 +384,6 @@
     {
       "ts": "2026-04-21T23:19:24.317Z",
       "text": "## |ρ| framing exposes real signal masked by benchmark sign-flip\n\n**On 13 AbBiBench complexes (5 leak-free aayl + 8 leaked):**\n- Mean |ρ| = **+0.294**, 95% CI [+0.195, +0.407]\n- **69% of complexes have |ρ| > 0.2**\n- 38% have |ρ| > 0.3\n\n**4 of 13 complexes return strongly negative ρ** (3gbn −0.76, 4fqi −0.56, 1mlc −0.30, 1n8z −0.07). ESM-2 MLM has no supervised bias toward any direction, so consistent-across-methods negative ρ → benchmark label-direction inconsistency.\n\n**Proposed sign-flip set**: {1n8z, 3gbn, 1mlc, 4fqi} — 4 complexes with inverted binding_score semantics.\n\n## If we apply this sign flip",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T23:18:51.405Z",
-      "text": "# 🔥 MLM-CONCAT ON LEAKED COMPLEXES — diverse-antigen signal is HUGE (but direction-inconsistent)\n\nResults just landed on 8 leaked AbBiBench complexes (full-size protein antigens):\n\n| Complex | MLM-concat ρ | |ρ| |\n|---|---|---|\n| **g6_LC** | **+0.507** | 0.51 |\n| **2fjg** | **+0.405** | 0.40 |\n| 4d5_her2 | +0.214 | 0.21 |\n| 5a12_ang2 | +0.166 | 0.17 |\n| 1n8z | −0.073 | 0.07 |\n| **1mlc** | **−0.301** | 0.30 |\n| **4fqi** | **−0.558** | 0.56 |\n| **3gbn** | **−0.757** | 0.76 |\n\n**σ across 8 complexes = 0.355** (vs 0.086 on aayl). But **mean |ρ| = 0.37** — MLM-concat is detecting strong signal on 7/8 leaked complexes, just with **inconsistent direction.**\n\n## Critical reframing\n\n**\"Leakage\" does not affect MLM-marginals in the usual sense** — ESM-2 was never trained on ΔΔG labels. The strong |ρ| signals on these complexes mean ESM-2's pretrained self-attention genuinely scores antibody-antige…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T22:21:26.684Z",
-      "text": "**Hourly tick — critical methodological update:**\n\n| Method | Mean | **95% CI (5-complex bootstrap)** |\n|---|---|---|\n| MLM-concat | +0.169 | **[+0.088, +0.237]** |\n| MLM-separate | +0.167 | [+0.083, +0.234] |\n| Per-target FT × esm2_lora | +0.118 | [+0.061, +0.202] |\n\n**All three CIs overlap.** The +0.05 \"MLM beats per-target FT\" difference I claimed an hour ago is **statistically indistinguishable** at n=5 complexes — cross-complex σ ≈ 0.08 dominates.\n\n**Honest minimum-detectable-effect on this benchmark**: ~0.075 ρ. Any claimed improvement below that is noise.\n\n## Queue refill (24 jobs)\n\nFired MLM-marginals + MLM-concat on the other **12 AbBiBench complexes** (1mlc, 1n8z, 3gbn, 4d5_her2, etc.). These are LEAKED so not directly publishable as OOD, but:\n- Add 12 complex-level points to tighten cross-complex CI (5 → 17 complexes)\n- Tell us if MLM \"sees\" leakage as inflated ρ on those comp…",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T22:20:45.261Z",
-      "text": "# 🎯 Cross-complex bootstrap CIs — methods are statistically indistinguishable\n\n| Method | Mean | 95% CI (5-complex bootstrap) | CI spread |\n|---|---|---|---|\n| MLM-concat | +0.169 | **[+0.088, +0.237]** | 0.149 |\n| MLM-separate | +0.167 | [+0.083, +0.234] | 0.152 |\n| Per-target FT × esm2_lora | +0.118 | [+0.061, +0.202] | 0.141 |\n\n**All three 95% CIs overlap substantially.** At n=5 complexes with per-complex σ ≈ 0.08, the complex-level noise dominates any method-level effect. We literally **cannot distinguish MLM from per-target FT at the +0.03-0.05 level of method differences.**\n\n**Critical honest reframing**: \n- Cross-complex bootstrap CI of our best method is [+0.088, +0.237]\n- **Any reported improvement below 0.075 ρ is noise** on this 5-complex benchmark\n- The aayl49_ML per-target FT +0.28 is ABOVE the upper CI bound — real outlier, but single complex\n- The +0.02 Δ between MLM-conca…",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T21:19:03.023Z",
-      "text": "**Hourly tick** — queue **37**.\n\n## The clean story after this round of evidence\n\n**On 5 leak-free aayl complexes:**\n\n| Method | Mean ρ | Rank |\n|---|---|---|\n| **MLM-concat (frozen ESM-2)** | **+0.169** | 🥇 |\n| **MLM-marginals (frozen ESM-2)** | +0.167 | 🥈 |\n| Per-target FT × esm2_lora (300 labels) | +0.118 | worse |\n| Per-target FT × random init | ~+0.07 | worst |\n\n**Per-target FT underperforms zero-shot MLM by −0.05 ρ on average.** Only wins on aayl49_ML (+0.28 vs MLM +0.01), which is a Makowski et al. ML-designed variant library — likely measuring \"can our model recover their model's design landscape,\" not genuine generalization.\n\n**Revised paper thesis:**\n1. Zero-shot sequence-only antibody ΔΔG OOD ceiling: **+0.17 ρ** on this benchmark\n2. Supervised per-target FT **does not improve** over zero-shot (net −0.05)\n3. Antigen concatenation into ESM input is null here (constant 14-mer an…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T21:18:33.372Z",
-      "text": "# 🔬 Per-target FT generalization test — aayl49_ML is a SPECIAL CASE\n\n| Complex | n | mean ρ | 95% CI |\n|---|---|---|---|\n| **aayl49_ML** | 15 | **+0.276** | [+0.263, +0.290] |\n| aayl52_LC | 15 | +0.122 | [+0.106, +0.139] |\n| aayl49 | 18 | +0.076 | [+0.065, +0.087] |\n| aayl50_LC | 16 | +0.058 | [+0.035, +0.083] |\n| aayl51 | 15 | +0.056 | [+0.039, +0.071] |\n| **MEAN all 5** | — | **+0.118** | — |\n\n**Per-target FT mean +0.118 < MLM-marginals mean +0.167.** Per-target FT is *worse than zero-shot MLM* on average. The +0.276 on aayl49_ML is an outlier: 4.6× higher than any other complex with the same method+base.\n\n**Plausible explanation**: aayl49_ML's \"ML\" label = Machine-Learning-designed variants (Makowski et al. 2022 engineered those variants to be learnable by an ML model). The +0.28 is measuring \"can a model predict what an earlier model's design scored\" — biased toward high ρ by constru…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-21T20:18:54.233Z",
-      "text": "**Hourly tick done.**\n\n| Status |  |\n|---|---|\n| Queue | 37 → **77** (+40 per-target FT seeds) |\n| aayl49_ML × esm2_lora × 300-shot FT | **ρ=+0.276, n=15, CI [+0.263, +0.290]** |\n| MLM-concat noise | deterministic (σ=0.0000) |\n\n**Clean publishable data point** emerging: per-target supervised FT with 300 labeled examples from an ML-designed library, starting from a general-binding base, reaches ρ ≈ +0.28 with tight CI (95% spread = 0.027). \n\n**40 new jobs fired** to test generalization — 10 more seeds × 4 remaining aayl complexes × esm2_lora base. Answers: does +0.28 replicate on non-ML-designed libraries, or is aayl49_ML a special case?\n\nHANDOFF at 3348 lines.",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T20:18:22.983Z",
-      "text": "# 🎯 Per-target FT on aayl49_ML — tightened to ρ=+0.28 with 15 seeds\n\n| Metric | Value |\n|---|---|\n| **aayl49_ML × esm2_lora × 300-shot FT** | **mean ρ = +0.276** |\n| n seeds | **15** |\n| σ across seeds | 0.028 |\n| **95% bootstrap CI** | **[+0.263, +0.290]** |\n\n**Cleanest positive result in the project.** Tight CI, well above ρ=+0.2 threshold, well above the ±0.03 base-seed variance floor. This is a defensible number for the per-target-FT workflow (requires 300 training labels on target).\n\n## MLM-CONCAT noise floor — deterministic\n\nσ=0.0000 across 4 ABB_SAMPLE_SEED values. The pandas sampling is using its default `random_state=0` regardless of my env var (bug: patch only applied to eval_abbibench_ood.py, not mlm_concat_aayl.py). So MLM-concat is perfectly reproducible on this setup — useful for replication but doesn't measure subsample noise.\n\n## Refill needed (queue=37)\n\nThe aayl49_ML pe…",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T19:20:19.029Z",
-      "text": "**Hourly tick done.**\n\n**Queue**: 67 (topped up +30 from 37).\n\n**HANDOFF cleaned up** (1407 lines appended to 3148 total), retracting:\n- \"+0.234 best-per-complex mean\" → labeled as oracle-router, not achievable without test labels\n- Per-target FT mixed into zero-shot comparisons → now clearly separated as a different-task result\n- \"Three regimes\" pattern → acknowledged as n=1 observations, not a pattern\n\n**Defensible zero-shot single-method number**: **MLM-marginals mean ρ = +0.167** on 5 leak-free aayl complexes (or +0.169 concat-MLM — Δ = +0.002, null).\n\n**Legitimate per-target-FT data point (different workflow)**: +0.259 on aayl49_ML from esm2_lora base, n=5 seeds. Now expanding to n=15 seeds (10 new jobs 33687998+) for tight CI.\n\n**Mechanism A (partner_ctx bugfix) bugged** — all 36 jobs returned `rho=null, test_size=0` due to silent exception in eval's `pred_row`. Not debugging this…",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T19:19:11.018Z",
-      "text": "# Mechanism A bug — all jobs returned null\n\n**Scripting bug**: all 36 `per_target_ft_with_partner.py` jobs completed but produced `per_target_rho=null` / `test_size=0`. The test-set `pred_row(row)` is silently throwing exceptions on every test row (try/except swallowing). Training step worked (loss converged), eval pass fails. Bug is in the partner_ctx passthrough for eval — probably tensor-shape mismatch when batch-dim is introduced for `head.forward_site`.\n\n**Not debugging mechanism A further this tick** — the honest mechanism B result (null on identical-antigen benchmark) already answered the question; the A/B distinction matters mainly if we had a diverse-antigen benchmark. Will revisit when I set up SKEMPI/AB-Bind.\n\n# HANDOFF cleanup — honest framing per your critique",
-      "tags": [
-        "result",
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-21T18:33:46.115Z",
-      "text": "Yes, that lands much better — and you're right on all three critiques. Let me internalize them:\n\n## Where I was sloppy\n\n1. **\"Best-per-complex mean +0.234\" is an oracle router.** You need the test labels to pick the winning method per complex. No single method achieves this, so it's not a real number — it's a ceiling that assumes perfect method selection. The honest single-method zero-shot number stays at **MLM mean +0.167** (or +0.169 for concat-MLM). I conflated \"ceiling\" with \"performance.\"\n\n2. **Per-target FT is a different task.** 300 labeled binding measurements on the target complex ≠ zero-shot. It's the AlphaBind workflow — useful if wet lab data exists on the target, irrelevant if you're trying to predict before any measurements. Reporting the +0.259 in the same table as the zero-shot numbers was a category error.\n\n3. **\"Three regimes\" from n=1 complex each is not a pattern.** a…",
-      "tags": [
-        "error"
-      ]
-    },
-    {
-      "ts": "2026-04-21T18:18:43.055Z",
-      "text": "**Hourly tick — key findings update:**\n\n| Finding | Status |\n|---|---|\n| Mechanism B (concat-MLM) mean Δ | **+0.002 (null)** — as expected with identical antigen |\n| Mechanism B per-complex | 3 improve (+0.02-0.03), 2 degrade (−0.02-0.03) |\n| **aayl49_ML × per-target FT × esm2_lora** | **+0.259 (n=5)** — new strong result |\n| **Best-per-complex mean across 5 aayl** | **+0.234** |\n| Mechanism A (partner_ctx) | still running, ~1h out |\n\n## Takeaway\n\n- **ML-designed libraries** (aayl49_ML) favor **per-target supervised FT** (+0.26)\n- **Random libraries** (aayl49/50/51) favor **MLM-marginals** (+0.18 to +0.26)\n- **Light-chain libraries** (aayl52_LC) favor **random-init per-target FT** (+0.19)\n\nThree distinct method-match regimes on the 5 aayl variants.\n\n**Still missing the decisive validation**: SKEMPI/AB-Bind with real antigen diversity. That's the next priority after mechanism A lands.\n\nQu…",
-      "tags": [
-        "dataset",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T18:18:19.712Z",
-      "text": "# 🎯 Mechanism B landed + aayl49_ML per-target FT breakthrough\n\n## MLM-CONCAT (mechanism B: antigen in ESM input)\n\n| Complex | MLM-separate | **MLM-concat** | Δ |\n|---|---|---|---|\n| aayl49 | +0.235 | **+0.260** | +0.025 |\n| aayl49_ML | +0.010 | +0.028 | +0.018 |\n| aayl50_LC | +0.261 | +0.238 | −0.023 |\n| aayl51 | +0.181 | **+0.204** | +0.023 |\n| aayl52_LC | +0.150 | +0.117 | −0.033 |\n| **MEAN** | **+0.167** | **+0.169** | **+0.002** |\n\n**Null on mean** — as expected since aayl's antigen is identical across all 4 complexes. Per-complex: 3 slight wins, 2 slight losses. ESM-2 self-attention doesn't meaningfully exploit the (identical) antigen.\n\n## Per-target FT (antigen-blind) with MORE SEEDS — new winner for aayl49_ML\n\n| Complex × base | n | **mean ρ** |\n|---|---|---|\n| **aayl49_ML × esm2_lora** | 5 | **+0.259** 🎯 |\n| **aayl49_ML × abB3** | 5 | **+0.231** |\n| aayl52_LC × random | 8 | +0.18…",
       "tags": [
         "model"
       ]
