@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-29T03:24:54Z",
+  "generated_at": "2026-04-29T03:55:07Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4725,
-    "assistant_turns": 7084,
+    "user_turns": 4729,
+    "assistant_turns": 7090,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-29T03:24:21.210Z"
+    "last_ts": "2026-04-29T03:30:56.127Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,21 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-29T03:27:52.295Z",
+      "text": "# Ranking — most → least impactful\n\n## 1. Paper 3 — Transferability (general → antibody) [STRONGEST]\n\n**Why #1.** It overturns a widely-implicit field assumption: \"train on big PPI corpora, transfer to antibodies.\" It shows that's empirically false on this benchmark suite — and replaces it with a frozen, zero-shot baseline at ~3,500× less compute.\n\n- **Finding:** Pearson r=+0.34 (p=0.33, n=10) between val ρ and SAbDab-v2 OOD across 11 v2 variants — no transfer signal. On the only CLEAN tier (aayl), supervised mean is +0.054 (indistinguishable from zero) while frozen MLM-marginals holds +0.169.\n- **Controls (excellent):** Frozen ESM-2 MLM-marginals is the *negative* control that turns out to be a *positive* result. Per-target FT with 300 wet-lab labels (+0.118) is the supervised null. Both bracket the supervised pipeline from above and below.\n- **Leakage:** Leakage stratification is the a…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-29T03:25:40.054Z",
+      "text": "**All 5 papers landed on disk.** 15 unique figures, no overlap.\n\n| paper | pages | size | figures |\n|---|---|---|---|\n| p1 General PPI ΔΔG | 13 | 441 KB | dpl_theorem_ppi · skempi_general_ppi · multitask_stability_transfer |\n| p2 Antibody-specific ΔΔG | 10 | 399 KB | abonly_leaderboard · abbibench_inventory · matched_protocol |\n| p3 Transferability g→ab | 12 | 362 KB | id_ood_decoupling_v2 · supervised_null_vs_mlm · leakage_stratified_transfer |\n| p4 Architectures + SOTA | 10 | 419 KB | ablation_grid · sample_efficiency · sota_landscape |\n| p5 Two-encoder + UMAP | 9 | 650 KB | two_pass_architecture · umap_real · ood_sota_band |\n\n**Empirical re-aggregation (Paper 5):** the +0.2476 (n=143) vs +0.253 (n=150) discrepancy resolved — same variant `vanilla_two_enc_B`, OOD vs ID. SEM=0.0071, prior \"±0.085\" was across-cell SD. UMAP shows mild source separation (silhouette 0.114) but no antigen cl…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
     {
       "ts": "2026-04-29T03:21:17.504Z",
       "text": "**Paper 2 landed.** `paper/p2_antibody_ddg.pdf` — 10 pp, 408 KB. Figures: `p2_fig1_abonly_leaderboard` (21 variants vs ±0.03 variance floor), `p2_fig2_abbibench_inventory` (9/16 leaked + 3 SUSP + 5 CLEAN, all CLEAN share `PDVDLGDISGINAS` peptide → effective antigen n=1; 4/13 architecture-invariant sign-flips: 1mlc, 1n8z, 3gbn, 4fqi), `p2_fig3_matched_protocol` (with explicit \"NOT yet head-to-head with published SOTA\" caveat). Champion overlaps variance floor, bootstrap CIs cross — honest framing held. Just Paper 5 left.",
@@ -369,20 +384,6 @@
     {
       "ts": "2026-04-28T22:10:55.339Z",
       "text": "# Status report (no submissions made)\n\n## 1. What HANDOFF reflects vs reality (mismatch)\n\n**HANDOFF.md (3,488 lines, last-edited 2026-04-28 14:25):** ends with my hourly-cron entries on the MLM-marginals analysis — final number `|ρ| = +0.294, 95% CI [+0.199, +0.409]` across 13 AbBiBench complexes, n=12-15 bootstrap seeds. **Does NOT include the two-encoder antibody work** done by the other Claude session.\n\n**UPDATE.md (110,455 lines, 5.4 MB, last-edited 2026-04-23):** stale, hasn't been updated since Apr 23.\n\n## 2. Currently running (142 jobs, started ~3 min ago)\n\n| Pool | Count | Description |\n|---|---|---|\n| `ddg_two_enc_A_sup_15…` | 98 | rank-loss + LP-FT ablations on **pretrained 150M two-encoder champions** |\n| `ddg_single_mega173k_…` | 30 | rank-loss + LP-FT ablations on **single-encoder 650M ID champion** |\n| `ddg_two_enc_A_s4__ra…` | 7 | rank-loss tail on the s4 ckpt |\n\nSanity ch…",
-      "tags": [
-        "result"
-      ]
-    },
-    {
-      "ts": "2026-04-22T04:18:19.773Z",
-      "text": "**Hourly tick.** Queue 2 → **39**.\n\nBootstrap: 155 cells, ~n=12/complex. **|ρ| = +0.294, 95% CI [+0.199, +0.409]** — unchanged from last 3 ticks. The estimate has fully converged.\n\nThe headline number is locked. Refilled with 39 more jobs (seeds 13-15) to push n=15/complex for final publication-grade CI.",
-      "tags": [
-        "result"
-      ]
-    },
-    {
-      "ts": "2026-04-22T03:30:53.205Z",
-      "text": "**Hourly tick.** Queue 0 → **26**.\n\nBootstrap: 130 cells, n=10/complex. **|ρ| pooled = +0.294, 95% CI [+0.193, +0.411]** — stable at 3 decimal places across 2 rounds of added seeds.\n\nThe key number has converged. Refilled with 26 more jobs (seeds 11-12) for final n=12.",
       "tags": [
         "result"
       ]
