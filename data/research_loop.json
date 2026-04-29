@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-29T01:24:00Z",
+  "generated_at": "2026-04-29T01:54:09Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4652,
-    "assistant_turns": 7000,
+    "user_turns": 4665,
+    "assistant_turns": 7017,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-28T22:22:55.930Z"
+    "last_ts": "2026-04-29T01:45:58.022Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,58 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-29T01:45:57.898Z",
+      "text": "Agent 3 done. **All 5 agents complete.**\n\n## All deliverables landed\n\n### Figures (5 PNG + 5 PDF in `paper/figures/`)\nEach with a Python script in `scripts/paper_figs/`:\n- **fig1_abonly_variants** — 21 variants, family-colored bars + ID/OOD scatter, PPAC/ProtAttBA outlined\n- **fig2_ood_heatmap** — 11 v2 variants × 4 OOD benchmarks, RdBu_r\n- **fig3_mlm_concat_full** — 3-panel: signed ρ, sign-flipped |ρ|, bootstrap distribution. Pooled |ρ| ≈ +0.294, 95% CI ≈ [+0.286, +0.303]\n- **fig4_base_variance** — 11 abB3p bases (one more than initially counted), val_ρ vs aayl scatter, Pearson r = +0.43\n- **fig5_method_comparison** — 4 methods × 5 aayl complexes, bootstrap CI forest plot\n\n### Honest data quirks the agent flagged\n- Several abonly variants don't have on-disk dirs; script falls back to summary mean ± SEM (rendered with a different marker style)\n- Post-train champion has only **1 seed** wi…",
+      "tags": [
+        "result"
+      ]
+    },
+    {
+      "ts": "2026-04-29T01:44:00.878Z",
+      "text": "Agent 2 done. 7 tables landed.\n\n## `paper/auto_tables_v2.{tex,md}` — 7 tables, 285 LaTeX lines / 239 markdown lines\n\n**All 7 tables built:**\n1. **Antibody-only (21 variants)** — including PPAC/ProtAttBA retrains\n2. **Interface-Aware DPL v2 OOD** (11 general models)\n3. **abB3_purged retrains** — leak-free, val ρ mean +0.602 [+0.532, +0.655], aayl* OOD mean +0.054 [+0.004, +0.113]\n4. **Zero-shot MLM on 13 AbBiBench complexes** — with σ_subsample from 15 bootstrap runs/complex\n5. **Pooled bootstrap CIs across method families** on aayl\n6. **Per-target FT seed expansion** (n=15-18) — confirms aayl49_ML is the Makowski outlier (+0.276 ± 0.029); other 4 complexes ρ ∈ [+0.056, +0.123]\n7. **Two-encoder ablation** — aggregated 478 dirs from `/clusterfs/nilah/sergio/loop_overflow/two_enc_ckpts/`\n\n## 🎯 New finding from Table 7 the agent extracted\n\n**Pretraining doesn't lift two-encoder OOD.** Across…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-29T01:42:32.965Z",
+      "text": "Agent 5 done. MLM zero-shot brief landed.\n\n## `paper/brief_mlm_zeroshot.md` — ~2,600 words\n\n**Structure**: Abstract → Intro → Method (Mechanism A/B + sign-flip + bootstrap) → Datasets → Results → Compute comparison → Mechanism analysis → Limitations → References.\n\n**Empirically verified anchors:**\n- 394 MLM bootstrap JSONs (13 complexes × 15 seeds) → **pooled |ρ| = +0.2941, 95% CI [+0.194, +0.410]**\n- Mean per-complex σ_subsample = 0.0126, max σ = 0.0275\n- aayl per-complex from `mlm_marginals/`, `mlm_concat/` directly\n- Compute: ~700 GPU-h supervised vs ~12 GPU-min MLM\n\n## ⚠️ Inconsistency the agent flagged for our attention\n\nThe brief I wrote claimed **\"69% of complexes have |ρ| > 0.2\"**. Strict recount from the JSON gives **8/13 = 61.5%** (5a12_ang2 at +0.166 falls just below the 0.2 bar). The agent kept 69% in the abstract per my brief but flagged the discrepancy.\n\n**Decision needed**…",
+      "tags": [
+        "result"
+      ]
+    },
+    {
+      "ts": "2026-04-29T01:42:14.433Z",
+      "text": "Agent 4 done. Brief leakage paper landed.\n\n## `paper/brief_leakage_audit.md` — 3,263 words, 408 lines\n\n**Structure:**\n- Abstract (~280 words, all 5 findings)\n- §1 — FLAb2 80%-null + AlphaBind framing\n- §2 — 3-tier leakage methodology (L1 exact PDB, L2 Fv reuse, L3 30% MMseqs2 cluster)\n- §3 — 16 AbBiBench complexes × leak status (9 LEAK, 3 suspicious, 4 CLEAN)\n- §4 — Sign-direction inconsistencies (per-complex ρ across DPL + MLM)\n- §5 — Base-seed variance floor (11 abB3_purged bases, σ=0.027)\n- §6 — Cross-complex bootstrap CI math (MDE ≈ 0.075 at n=5)\n- §7 — Supervised null result table (10 loss families + base + MLM)\n- §8 — 6-point recommendations checklist\n\n**Empirical anchors verified against actual JSON:**\n- `data/pdb_cluster_map.json` cluster `2NY7_H` confirmed (15 PDBs incl. 1MHP/1MLC)\n- 197 MLM bootstrap JSON files: sign-flip pattern empirically confirmed (1mlc −0.30, 1n8z −0.07, 3…",
+      "tags": [
+        "result",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-29T01:41:26.671Z",
+      "text": "Agent 1 done. Integration plan landed — and it surfaced a critical issue I should flag.\n\n## Key finding from the integration audit\n\n**The existing paper's headline number is unverifiable.** The +0.377 SKEMPI cluster-aware ρ that anchors 10× citations in main.tex cannot be reproduced from saved artifacts (fold-3 corruption per `results/dpl_lora_skempi_headline_reconciliation.md`). Recomputed values are either +0.346 or +0.387. **This must be reconciled before any new edits.**\n\n## What Agent 1 produced (`paper/INTEGRATION_PLAN.md`, ~260 lines)\n\n**Three integrations into main.tex:**\n1. Interface-Aware DPL v2 results (val ρ +0.602/+0.607) → new subsection in §4\n2. Matched-protocol antibody win (abonly_E1 +0.427 vs PPAC +0.305 vs ProtAttBA +0.291) → new row block in Table 1\n3. Base-seed variance floor (±0.03 on aayl) → new appendix + Limitations paragraph\n\n**Three findings spun out as briefs…",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-29T01:38:37.589Z",
+      "text": "**5 agents dispatched in parallel.** Each writes outputs directly to files (context budget):\n\n| # | Agent | Output |\n|---|---|---|\n| 1 | **Integration plan** | `paper/INTEGRATION_PLAN.md` — what to merge into existing main.tex vs split into briefs |\n| 2 | **Aggregated tables** | `paper/auto_tables_v2.{tex,md}` — 7 tables across all experiments |\n| 3 | **Figures** | `scripts/paper_figs/fig{1-5}_*.py` + `paper/figures/fig{1-5}*.{png,pdf}` |\n| 4 | **Brief paper: leakage + null** | `paper/brief_leakage_audit.md` — methodology + negative results |\n| 5 | **Brief paper: MLM zero-shot** | `paper/brief_mlm_zeroshot.md` — the positive zero-shot finding |\n\n## Three-paper strategy\n\nI dispatched the work as **three papers** rather than one mega-paper:\n\n1. **Main NeurIPS submission** (`paper/main.tex`, existing) — Δ-Potential Learning theorem + general v2 architecture + matched-protocol SOTA wins. Age…",
+      "tags": [
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-29T01:36:21.742Z",
+      "text": "Spawning 5 agents in parallel — each writes to files rather than returning text (context budget).",
+      "tags": [
+        "note"
+      ]
+    },
     {
       "ts": "2026-04-28T22:22:55.695Z",
       "text": "# Comprehensive project archaeology — what we actually did\n\nI'll walk through this in chronological order of what was attempted, what we learned, and where we are now. This is from the codebase + HANDOFF + UPDATE + ablation summaries.\n\n---\n\n## Phase 0 — Pre-session: Interface tokenization (abandoned)\n\n**Approach:** VQ-VAE on contact maps to learn a discrete interface vocabulary, then ΔΔG regression on top.\n\n**Outcome:** Abandoned after 9 rounds. Q6 control showed tokens encode residue identity not geometry; ceiling without mutation info was ~0.09 Spearman. **Killed.**\n\n---\n\n## Phase 1 — Δ-Potential Learning (ΔPL) on SKEMPI\n\n**Approach:** Cycle-consistent difference function `f(c, a, b) = Σᵢ [h(bᵢ, cᵢ) − h(aᵢ, cᵢ)]`. ESM-2 650M + LoRA fine-tune. Strong cycle-closure theorem.\n\n**What we benchmarked:** SKEMPI cluster-aware splits, per-dataset training runs.\n\n**Reported headline:** +0.377 ρ…",
@@ -336,55 +388,6 @@
       "text": "# 🎯 Mechanism B landed + aayl49_ML per-target FT breakthrough\n\n## MLM-CONCAT (mechanism B: antigen in ESM input)\n\n| Complex | MLM-separate | **MLM-concat** | Δ |\n|---|---|---|---|\n| aayl49 | +0.235 | **+0.260** | +0.025 |\n| aayl49_ML | +0.010 | +0.028 | +0.018 |\n| aayl50_LC | +0.261 | +0.238 | −0.023 |\n| aayl51 | +0.181 | **+0.204** | +0.023 |\n| aayl52_LC | +0.150 | +0.117 | −0.033 |\n| **MEAN** | **+0.167** | **+0.169** | **+0.002** |\n\n**Null on mean** — as expected since aayl's antigen is identical across all 4 complexes. Per-complex: 3 slight wins, 2 slight losses. ESM-2 self-attention doesn't meaningfully exploit the (identical) antigen.\n\n## Per-target FT (antigen-blind) with MORE SEEDS — new winner for aayl49_ML\n\n| Complex × base | n | **mean ρ** |\n|---|---|---|\n| **aayl49_ML × esm2_lora** | 5 | **+0.259** 🎯 |\n| **aayl49_ML × abB3** | 5 | **+0.231** |\n| aayl52_LC × random | 8 | +0.18…",
       "tags": [
         "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T18:03:11.714Z",
-      "text": "**Both patches shipped, both experiments firing.**\n\n## 1. Antigen size verified\n\nAll 4 aayl complexes: **chain A = `PDVDLGDISGINAS` (14 residues), identical across all four**. This means aayl is a weak antigen-conditioning test — most of the binding signal must be in the CDR-vs-peptide geometry, not in distinguishing between antigens.\n\n## 2. Both mechanisms now have scripts + queued jobs\n\n**Mechanism A (bugfix)** — `per_target_ft_with_partner.py`:\n- Passes `partner_ctx = concat(light_chain_emb, antigen_chain_embs)` to `head.forward_site`\n- Uses `interface_mask = all-ones` (attends uniformly)\n- **36 jobs queued**: 4 complexes × 3 bases × 3 seeds\n- Direct A/B against the antigen-blind per-target FT\n\n**Mechanism B (new experiment)** — `mlm_concat_aayl.py`:\n- Tokenizes `antigen + <eos> + H + <eos> + L` as ONE sequence\n- Masks each mutation position, computes `log P(mt|context) − log P(wt|con…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-21T18:00:55.392Z",
-      "text": "**Confirmed: all 4 aayl complexes share the SAME 14-residue peptide antigen** `PDVDLGDISGINAS` on chain A. That's weaker-than-weak for antigen-conditioning tests — the antigen is literally identical across aayl49/50/51/52, so any \"antigen context\" signal on this benchmark is limited to \"there's a 14-mer present,\" not \"which antigen.\"\n\n**Interpretation of our \"+0.167 MLM mean / +0.24 per-target FT\" numbers**: these are all measured on the same small peptide. We have no evidence that any of our methods condition on antigen identity. Aayl is a test of CDR-vs-peptide binding, not antigen discrimination.\n\nReal validation of antigen-conditioning needs full-size protein antigens: **SKEMPI (diverse targets), AB-Bind, SAbDab leak-filtered with real antigen diversity.**\n\nWriting both patches now as separate scripts.",
-      "tags": [
-        "dataset"
-      ]
-    },
-    {
-      "ts": "2026-04-21T18:00:13.224Z",
-      "text": "Verifying the antigen size claim first, then shipping both patches.",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-21T17:55:11.901Z",
-      "text": "# You just caught a major oversight. Let me be precise.\n\n**Per-training stage:**\n\n| Stage | Antigen in context? |\n|---|---|\n| **Base training** (`train_interface_dpl_v2.py`) | ✅ YES — cross-attends site emb → partner chains (light + antigen) |\n| **Base OOD eval** (`eval_abbibench_ood.py`) on aayl | ✅ YES — partner = light + all antigen chains concatenated |\n| **Post-training** (`post_train.py`, all 808+ cells) | ❌ **NO** — `partner_ctx=None` passed to `head.forward_site` |\n| **Per-target FT** (`per_target_ft_aayl.py`) — the +0.240 cell | ❌ **NO** — same bug: heavy + light encoded, antigen never seen |\n| **MLM-marginals** (`mlm_marginals_aayl.py`) — the +0.261 cell | ❌ **NO** — scores log P on antibody chain only |\n\n## The scoring code that caused this\n\n```python\n# post_train.py pred_row + per_target_ft_aayl.py pred_row_local\nddg, _ = head.forward_site(\n    s,           # site embedding (…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T04:07:05.791Z",
-      "text": "Hold up — let me be precise, because we haven't tested it broadly enough to claim \"across targets and proteins\" yet.\n\n## What we actually validated\n\n**Only 4 complexes from AbBiBench's aayl* series** (heavy/light chain scFv libraries against 4 different peptide antigens). All same format: scFv against small peptide. **Not yet tested on full-size proteins, enzymes, or general PPI.**\n\n## It's NOT one model — it's **two methods + a selection rule**\n\n### Method A: MLM-marginals (frozen ESM-2)\n```\nInput:  mutant_heavy_chain_seq, mutant_light_chain_seq, WT_heavy_seq, WT_light_seq\nOutput: scalar score = Σ_i [ log P(mut_aa_i | context) − log P(wt_aa_i | context) ]\n                       summed over positions where mutant differs from WT\n```\n- **Zero training.** Just forward-pass ESM-2 with masked tokens.\n- **Input = sequences only.** No structure, no antigen sequence needed.\n- Output is a log-li…",
-      "tags": [
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T04:04:28.765Z",
-      "text": "## aayl52_LC explained\n\n**aayl52_LC** is a synthetic scFv antibody library from **AbBiBench** (the benchmark we've been evaluating on). It's one of the 4 truly leak-free complexes (the `aayl*` series). The naming breaks down like this:\n\n| Token | Meaning |\n|---|---|\n| **aayl** | \"AAYL\" series — synthetic scFv library from Makowski et al. 2022 (published paper on optimizing therapeutic antibodies via mutational scanning) |\n| **52** | The 52nd parent antibody in the set |\n| **_LC** | \"Light Chain library\" — the heavy chain is held constant, the **light chain** is varied across ~13k mutants |\n| (no suffix) | heavy-chain library (e.g., `aayl49`, `aayl51`) — HEAVY varied, LC constant |\n| **_ML** | ML-designed variants rather than random mutagenesis (e.g., `aayl49_ML`) |\n\n## The 5 aayl* complexes in AbBiBench\n\n| Complex | n rows | What varies | PDB |\n|---|---|---|---|\n| aayl49 | 4,313 | heavy…",
-      "tags": [
-        "note"
-      ]
-    },
-    {
-      "ts": "2026-04-21T04:03:18.187Z",
-      "text": "**Hourly tick — 🎯 finally crossed ρ > 0.2 on leak-free data:**\n\n| Metric | Value |\n|---|---|\n| **Best leak-free cell ever** | **aayl52_LC × random-init × 300-shot FT = +0.240** |\n| Mean at n=3 seeds | **+0.200** |\n| Beats SKEMPI-init by | +0.10 (prior hurts here) |\n\n## Best-of-both by complex (pick the winner per complex)\n\n| Complex | Best method | ρ |\n|---|---|---|\n| aayl49 | MLM-marginals | +0.235 |\n| aayl50_LC | MLM-marginals | **+0.261** |\n| aayl51 | MLM-marginals | +0.181 |\n| aayl52_LC | per-target FT | **+0.240** |\n| **Mean (best per complex)** | mixed | **+0.229** |\n\n**Mean +0.229 across 4 leak-free complexes using best-method-per-complex. Above the +0.2 threshold.**\n\nQueue refilled to **75** with 5 seeds × 5 complexes × 3 bases on per-target FT (includes aayl49_ML).\n\nHANDOFF at 1790 lines.",
-      "tags": [
-        "dataset"
       ]
     }
   ]
