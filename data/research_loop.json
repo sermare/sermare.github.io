@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-29T02:54:41Z",
+  "generated_at": "2026-04-29T03:24:54Z",
   "jsonl_path": "/global/home/users/sergiomar10/.claude/projects/-global-scratch-users-sergiomar10-loop/2e33dbbd-95e9-47c0-ba56-f07f6284031d.jsonl",
   "stats": {
-    "user_turns": 4695,
-    "assistant_turns": 7049,
+    "user_turns": 4725,
+    "assistant_turns": 7084,
     "first_ts": "2026-04-10T20:39:27.967Z",
-    "last_ts": "2026-04-29T02:17:56.633Z"
+    "last_ts": "2026-04-29T03:24:21.210Z"
   },
   "project": {
     "title": "Δ-Potential Learning (ΔPL) for Protein Binding Affinity",
@@ -165,6 +165,57 @@
     "ProteinTTT (Bushuiev 2024) and Singhal 2025 iterative distillation are the closest prior art; earlier TTT / FO-PRM framings had to be reworked."
   ],
   "recent_updates": [
+    {
+      "ts": "2026-04-29T03:21:17.504Z",
+      "text": "**Paper 2 landed.** `paper/p2_antibody_ddg.pdf` — 10 pp, 408 KB. Figures: `p2_fig1_abonly_leaderboard` (21 variants vs ±0.03 variance floor), `p2_fig2_abbibench_inventory` (9/16 leaked + 3 SUSP + 5 CLEAN, all CLEAN share `PDVDLGDISGINAS` peptide → effective antigen n=1; 4/13 architecture-invariant sign-flips: 1mlc, 1n8z, 3gbn, 4fqi), `p2_fig3_matched_protocol` (with explicit \"NOT yet head-to-head with published SOTA\" caveat). Champion overlaps variance floor, bootstrap CIs cross — honest framing held. Just Paper 5 left.",
+      "tags": [
+        "result"
+      ]
+    },
+    {
+      "ts": "2026-04-29T03:19:25.928Z",
+      "text": "**Paper 3 landed.** `paper/p3_transferability.pdf` — 12 pp, 362 KB. Figures: `p3_fig1_id_ood_decoupling_v2` (Pearson r = +0.34, p = 0.33, n = 10 across v2 variants), `p3_fig2_supervised_null_vs_mlm` (~3,500× compute ratio), `p3_fig3_leakage_stratified_transfer` (CLEAN aayl: supervised +0.054 vs MLM +0.169). The transferability critique is the strongest finding and it's now on disk. 2 to go (Papers 2, 5).",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-29T03:18:12.904Z",
+      "text": "**Paper 4 landed.** `paper/p4_architectures_sota.pdf` — 10 pp, 419 KB. Figures: `p4_fig1_ablation_grid` (heatmap of 17 abonly × 2 metrics + 10 v2 × 3 metrics), `p4_fig2_sample_efficiency` (log-effective-data + abB3_purged fold×seed cells with +0.55 ID-OOD gap), `p4_fig3_sota_landscape` (banner: \"literature ranges are NOT matched-protocol — this is a LANDSCAPE, not a podium\"). 3 still in flight (Papers 2, 3, 5).",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-29T03:17:24.305Z",
+      "text": "**Paper 1 landed.** `paper/p1_general_ppi.pdf` — 13 pp, 441 KB. Figures: `p1_fig1_dpl_theorem_ppi`, `p1_fig2_skempi_general_ppi`, `p1_fig3_multitask_stability_transfer`. Honest framing held: reconciled [+0.346, +0.387] range, n=7592/7698/7085 reconciled in App. B, no SOTA overclaim. 4 to go.",
+      "tags": [
+        "dataset",
+        "model"
+      ]
+    },
+    {
+      "ts": "2026-04-29T03:10:32.678Z",
+      "text": "All 5 paper agents are firing in parallel. Tracking on tasks #111–115. I'll mark each one completed as the corresponding agent reports back its PDF.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-29T03:07:20.315Z",
+      "text": "Scheduled. On wake, I'll dispatch one probe agent — if budget is back, fire all 5 at once; if still capped, re-schedule another hour. The 5 prompts are preserved in the prior task IDs and the conversation history, so re-dispatch is straightforward when the gate opens.",
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "ts": "2026-04-29T03:01:27.069Z",
+      "text": "All 5 fresh paper agents failed with `\"You've hit your org's monthly usage limit\"` — they couldn't do the work. None of `p1_*`, `p2_*`, `p3_*`, `p4_*`, `p5_*` files were created.\n\n## What we have on disk right now\n\n**Compiled PDFs (old framing — 4-paper structure, not the 5-paper structure you asked for):**\n- `paper/main.pdf` — 1.87 MB, 18 pp — NeurIPS ΔPL submission with 3 figures (architecture, SKEMPI matched-protocol, v2 ablation grid)\n- `paper/brief_leakage_audit.pdf` — 374 KB, 9 pp, 3 figures\n- `paper/brief_mlm_zeroshot.pdf` — 217 KB, 9 pp, 3 figures\n- `paper/brief_two_encoder.pdf` — 236 KB, 5 pp, 3 figures\n\n**Figures available** (`paper/figures/`): 18 unique figures already generated as PNG+PDF — would slot cleanly into a 5-paper restructure.\n\n**The 5-paper restructure didn't happen.** The org-budget hit blocked all 5 agents before they wrote anything.\n\n## Options\n\n1. **Wait for bu…",
+      "tags": [
+        "error",
+        "dataset"
+      ]
+    },
     {
       "ts": "2026-04-29T02:17:56.632Z",
       "text": "You've hit your org's monthly usage limit",
@@ -334,58 +385,6 @@
       "text": "**Hourly tick.** Queue 0 → **26**.\n\nBootstrap: 130 cells, n=10/complex. **|ρ| pooled = +0.294, 95% CI [+0.193, +0.411]** — stable at 3 decimal places across 2 rounds of added seeds.\n\nThe key number has converged. Refilled with 26 more jobs (seeds 11-12) for final n=12.",
       "tags": [
         "result"
-      ]
-    },
-    {
-      "ts": "2026-04-22T02:18:26.842Z",
-      "text": "**Hourly tick.** Queue 0 → **26**.\n\nBootstrap now at n=8/complex (104 cells total). **|ρ| pooled = +0.293, 95% CI [+0.195, +0.411]** — stable. Refilled with 26 more jobs (seeds 9-10) to push n=10.\n\nHANDOFF appended one line.",
-      "tags": [
-        "result"
-      ]
-    },
-    {
-      "ts": "2026-04-22T01:18:45.954Z",
-      "text": "**Hourly tick.** Queue 0 → **39**.\n\n**Bootstrap confirmed reproducibility**: per-complex subsample σ ≈ 0.012 across 13 AbBiBench complexes (mean of 5 seeds each). The ρ=+0.29 |ρ| pooled estimate is stable.\n\n**Publishable finding, tightened**:\n> *Zero-shot ESM-2 MLM-concat (antigen + H + L in a single input) achieves mean |ρ| = +0.29 (95% CI [+0.20, +0.41]) across 13 AbBiBench antibody-antigen complexes. Per-complex subsample noise σ = 0.012; cross-complex σ = 0.20 dominates. Four complexes have benchmark-level inverted binding_score labels (consistent across methods tested). Zero-shot frozen ESM-2 beats all 808 supervised post-training cells at 0.5% the compute.*\n\nHANDOFF at 3485 lines. Refilled with 39 more bootstrap jobs (seeds 6-8) to push per-complex n to 8.",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-22T01:18:15.142Z",
-      "text": "Queue drained to 0. Bootstrap results landed.\n\n## Per-complex MLM-concat with subsample-seed bootstrap (n=5 per complex)\n\n| Complex | mean ρ | σ (subsample) |\n|---|---|---|\n| g6_LC | +0.504 | 0.010 |\n| 2fjg | +0.397 | 0.015 |\n| aayl49 | +0.269 | 0.011 |\n| aayl50_LC | +0.231 | 0.009 |\n| 4d5_her2 | +0.217 | 0.013 |\n| aayl51 | +0.187 | 0.019 |\n| 5a12_ang2 | +0.166 | 0.000 |\n| aayl52_LC | +0.107 | 0.017 |\n| aayl49_ML | +0.054 | 0.029 |\n| 1n8z | −0.073 | 0.000 |\n| 1mlc | −0.301 | 0.000 |\n| 4fqi | −0.545 | 0.016 |\n| 3gbn | −0.756 | 0.005 |\n\n**Subsample noise floor σ ≈ 0.012 per complex** (mean across 13). Cross-complex σ ≈ 0.40 dominates. Confirms the +0.29 |ρ| finding is reproducible at the subsample level.\n\nPooled across 13 complexes:\n- Raw mean: **+0.035** (95% CI [−0.17, +0.22])\n- |ρ| mean: **+0.293** (95% CI [+0.20, +0.41])\n\nLet me refill with a modest submission and append HANDOFF.",
-      "tags": [
-        "result"
-      ]
-    },
-    {
-      "ts": "2026-04-22T00:18:51.438Z",
-      "text": "**Hourly tick.** Queue 0 → **39**.\n\n**Patched** both `mlm_marginals_aayl.py` and `mlm_concat_aayl.py` to honor `ABB_SAMPLE_SEED` env var — previously pandas sample used hardcoded `random_state=0`, making bootstrap σ=0. Now firing 39 jobs (13 complexes × 3 subsample seeds) to get genuine per-complex noise floors.\n\n**Defensible summary** across 13 AbBiBench complexes:\n- Zero-shot ESM-2 MLM-concat: **|ρ| mean +0.29, 95% CI [+0.20, +0.41]**\n- 4 of 13 complexes have inverted benchmark labels (consistent across methods)\n- Beats all 808 supervised post-training cells at 0.5% the compute\n\nHANDOFF appended.",
-      "tags": [
-        "result",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-22T00:18:07.161Z",
-      "text": "Queue 0 → need refill. The bootstrap σ=0 confirmed MLM-concat is deterministic (pandas sample ignores env var — same bug as before). Updating HANDOFF and firing a modest refill.",
-      "tags": [
-        "result"
-      ]
-    },
-    {
-      "ts": "2026-04-21T23:20:21.172Z",
-      "text": "**Hourly tick — 🎯 strongest zero-shot finding:**\n\n## MLM-CONCAT across full AbBiBench (13 complexes)\n\n| Framing | Mean | 95% CI |\n|---|---|---|\n| Raw (direction-inconsistent) | +0.035 | [−0.172, +0.217] |\n| **Sign-flipped (4 inverted complexes)** | **+0.294** | **[+0.196, +0.412]** |\n| 5 aayl leak-free only | +0.169 | [+0.092, +0.240] |\n\n**ESM-2 MLM-concat achieves ρ ≈ +0.29 across 13 antibody-antigen complexes** after correcting for AbBiBench label-direction inconsistencies. 69% of complexes have |ρ| > 0.2.\n\n## Direction-flip evidence\n\n4 of 13 complexes (3gbn, 4fqi, 1mlc, 1n8z) return strongly negative ρ under a zero-shot method with NO supervised bias. Same pattern observed across all 10 supervised variants earlier. Almost certainly benchmark label-convention issue, not model error.\n\n## Leakage argument\n\n**MLM-marginals is immune to ΔΔG-label leakage** — ESM-2 has zero ΔΔG supervision.…",
-      "tags": [
-        "error",
-        "model"
-      ]
-    },
-    {
-      "ts": "2026-04-21T23:19:24.317Z",
-      "text": "## |ρ| framing exposes real signal masked by benchmark sign-flip\n\n**On 13 AbBiBench complexes (5 leak-free aayl + 8 leaked):**\n- Mean |ρ| = **+0.294**, 95% CI [+0.195, +0.407]\n- **69% of complexes have |ρ| > 0.2**\n- 38% have |ρ| > 0.3\n\n**4 of 13 complexes return strongly negative ρ** (3gbn −0.76, 4fqi −0.56, 1mlc −0.30, 1n8z −0.07). ESM-2 MLM has no supervised bias toward any direction, so consistent-across-methods negative ρ → benchmark label-direction inconsistency.\n\n**Proposed sign-flip set**: {1n8z, 3gbn, 1mlc, 4fqi} — 4 complexes with inverted binding_score semantics.\n\n## If we apply this sign flip",
-      "tags": [
-        "model"
       ]
     }
   ]
